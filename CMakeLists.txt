@@ -511,7 +511,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex framework
     formats-apertium formats-bracketing formats-dot formats-guessing formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt
     maxent tools-tokenizers-tp tools-segmenters-srx tools-recognizers-langguesser
-    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger)
+    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-converters-unumsunt)
 
 # ----------------------------------------------------
 # TESTS_TARGETS
@@ -521,7 +521,7 @@ set(TESTS_TARGETS common-tests framework-tests utf8case-tests
     formats-simple-tests formats-apertium-tests
     tools-tokenizers-tp-tests tools-segmenters-srx-tests tools-datastructures-psi_query-tests
     tools-recognizers-langguesser-tests tools-parsers-gobio-tests tools-parsers-puddle-tests
-    tools-taggers-metagger-tests)
+    tools-taggers-metagger-tests tools-converters-unumsunt-tests)
 
 set(TARGETS ${BASE_TARGETS} psi-pipe)
 
