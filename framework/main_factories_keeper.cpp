@@ -18,6 +18,7 @@
 #include "lang_guesser.hpp"
 #include "gobio.hpp"
 #include "puddle.hpp"
+#include "unumsunt.hpp"
 
 #if HAVE_GRAPHVIZ
 #include "gv_lattice_writer.hpp"
@@ -121,6 +122,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new SrxSegmenter::Factory());
     keeper_.takeProcessorFactory(new LangGuesser::Factory());
     keeper_.takeProcessorFactory(new Gobio::Factory());
+    keeper_.takeProcessorFactory(new Unumsunt::Factory());
 
 #if HAVE_GRAPHVIZ
     keeper_.takeProcessorFactory(new GVLatticeWriter::Factory());
