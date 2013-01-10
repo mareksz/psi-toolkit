@@ -57,7 +57,7 @@ std::list<std::string> Unumsunt::Factory::doProvidedLayerTags() {
 
 
 const std::string Unumsunt::Factory::DEFAULT_RULE_FILE
-    = "%ITSDATA%/%LANG%.txt";
+    = "%ITSDATA%/%LANG%.u";
 
 
 LatticeWorker* Unumsunt::doCreateLatticeWorker(Lattice & lattice) {
