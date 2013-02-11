@@ -1,6 +1,12 @@
 #include "unumsunt.hpp"
 
 
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <utility>
+
+
 Annotator* Unumsunt::Factory::doCreateAnnotator(
     const boost::program_options::variables_map & options
 ) {
@@ -15,7 +21,7 @@ Annotator* Unumsunt::Factory::doCreateAnnotator(
         rulesPathString = rulesPath.string();
     }
 
-    return new Unumsunt(rulesPathString);
+    return new Unumsunt(lang, rulesPathString);
 }
 
 
@@ -71,7 +77,7 @@ Unumsunt::Worker::Worker(Unumsunt & processor, Lattice & lattice) :
 
 
 void Unumsunt::Worker::doRun() {
-    // TODO
+    processor_.convertTags(lattice_);
 }
 
 
@@ -80,4 +86,57 @@ std::string Unumsunt::doInfo() {
 }
 
 
-Unumsunt::Unumsunt(std::string rulesPath) : rulesPath_(rulesPath) { }
+Unumsunt::Unumsunt(
+    std::string langCode,
+    std::string rulesPath
+) :
+    langCode_(langCode)
+{
+    std::ifstream rulesFs(rulesPath.c_str());
+    std::string pairStr;
+    while (rulesFs.good()) {
+        std::getline(rulesFs, pairStr);
+        std::stringstream pairSs(pairStr);
+        std::string source;
+        std::string target;
+        pairSs >> source >> target;
+        symbol_map_.insert(std::pair<std::string, std::string>(source, target));
+    }
+}
+
+
+void Unumsunt::convertTags(Lattice & lattice) {
+    LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMaskWithLangCode(
+        getSourceTagset_(),
+        langCode_
+    );
+    Lattice::EdgesSortedBySourceIterator ei(lattice, maskSourceTagset);
+    while (ei.hasNext()) {
+        Lattice::EdgeDescriptor edge = ei.next();
+        LayerTagCollection tagTargetTagset
+            = lattice.getLayerTagManager().createTagCollectionFromListWithLangCode(
+                boost::assign::list_of("tagset-converter")(getTargetTagset_().c_str()),
+                langCode_
+            );
+        lattice.addEdge(
+            lattice.getEdgeSource(edge),
+            lattice.getEdgeTarget(edge),
+            lattice.getEdgeAnnotationItem(edge),
+            tagTargetTagset,
+            lattice.getEdgePartitions(edge).front().getSequence()
+        );
+    }
+}
+
+
+std::string Unumsunt::getSourceTagset_() const {
+    if (langCode_ == "pl") return "morfologik-tagset";
+    return "morfologik-tagset";
+}
+
+
+std::string Unumsunt::getTargetTagset_() const {
+    if (langCode_ == "pl") return "gobio-tagset";
+    return "gobio-tagset";
+}
+

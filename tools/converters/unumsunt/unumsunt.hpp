@@ -2,6 +2,8 @@
 #define UNUMSUNT_HDR
 
 
+#include <map>
+
 #include <boost/program_options.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -33,7 +35,9 @@ public:
         static const std::string DEFAULT_RULE_FILE;
     };
 
-    Unumsunt(std::string rulesPath);
+    Unumsunt(std::string langCode, std::string rulesPath);
+
+    void convertTags(Lattice & lattice);
 
 private:
 
@@ -49,7 +53,12 @@ private:
 
     virtual std::string doInfo();
 
-    std::string rulesPath_;
+    std::string langCode_;
+
+    std::string getSourceTagset_() const;
+    std::string getTargetTagset_() const;
+
+    std::map<std::string, std::string> symbol_map_;
 
 };
 
