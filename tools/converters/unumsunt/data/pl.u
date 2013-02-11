@@ -1,15 +1,15 @@
-adj:przymiotnik
-adjp:po_przymiotnik
-adv:przysłówek
-brev:rzeczownik
-conj:spójnik
-interj:wykrzyknienie
-num:liczebnik_główny
-ppron12:zaimek_rzeczowny_osobowy
-ppron3:zaimek_rzeczowny_osobowy
-pred:czasownik
-prep:przyimek
-qub:przysłówek
-siebie:'@się'
-subst:rzeczownik
-verb:czasownik
+adj przymiotnik
+adjp    po_przymiotnik
+adv przysłówek
+brev    rzeczownik
+conj    spójnik
+interj  wykrzyknienie
+num liczebnik_główny
+ppron12 zaimek_rzeczowny_osobowy
+ppron3  zaimek_rzeczowny_osobowy
+pred    czasownik
+prep    przyimek
+qub przysłówek
+siebie  '@się'
+subst   rzeczownik
+verb    czasownik
