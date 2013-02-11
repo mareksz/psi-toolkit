@@ -118,10 +118,21 @@ void Unumsunt::convertTags(Lattice & lattice) {
                 boost::assign::list_of("tagset-converter")(getTargetTagset_().c_str()),
                 langCode_
             );
+        AnnotationItem sourceAI = lattice.getEdgeAnnotationItem(edge);
+        std::string sourceCategory = sourceAI.getCategory();
+        std::string targetCategory;
+        std::map<std::string, std::string>::iterator smi = symbol_map_.find(sourceCategory);
+        if (smi == symbol_map_.end()) {
+            targetCategory = sourceCategory;
+        } else {
+            targetCategory = smi->second;
+        }
+        AnnotationItem targetAI(targetCategory, sourceAI.getTextAsStringFrag());
+
         lattice.addEdge(
             lattice.getEdgeSource(edge),
             lattice.getEdgeTarget(edge),
-            lattice.getEdgeAnnotationItem(edge),
+            targetAI,
             tagTargetTagset,
             lattice.getEdgePartitions(edge).front().getSequence()
         );
