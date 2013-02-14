@@ -7,101 +7,29 @@ namespace poleng
 namespace bonsai
 {
 
-/*
-    Translator::Factory::Factory(RuleLoaderPtr rl_, LmContainerPtr lm_, int k_)
-    {
-        this->rl = rl_;
-        this->lm = lm_;
-        this->k = k_;
-    }
+Translator::Translator(RuleLoaderPtr rl_, LmContainerPtr lm_, int n_ = 1, int k_=20)
+    : rl(rl_), lm(lm_), k(k_), verbosity(0), pedantry(false), n(n_),
+      sentence_no(0), total_time(0) {}
 
-    Translator* Translator::Factory::getObject(void)
-    {
-        Translator* translator = new Translator(this->rl, this->lm, this->k);
-        return translator;
-    }
-*/
-
-Translator::Translator(RuleLoaderPtr rl_, LmContainerPtr lm_, SymInflectorPtr inf_, int k_=20)
-    : rl(rl_), lm(lm_), inf(inf_), k(k_), verbosity(0), pedantry(false), n(1), sentence_no(0), total_time(0) {}
-
-Translator::Translator(RuleLoaderPtr rl_, LmContainerPtr lm_, int k_=20)
-    : rl(rl_), lm(lm_), k(k_), verbosity(0), pedantry(false), n(1), sentence_no(0), total_time(0) {}
-
-TranslationQueuePtr Translator::translate(ParseGraphPtr& pg) {
+void Translator::translate(Lattice& lattice,
+                           Lattice::VertexDescriptor start,
+			   Lattice::VertexDescriptor end,
+			   std::string langCode)
+{
     boost::posix_time::ptime pt_start = boost::posix_time::microsec_clock::local_time();
     
     node_translation_memory.clear();
 
-    if(verbosity >= 1) {
-        std::cerr << "Translating: " << pg->deepest_path()->str() << std::endl;
-	
-	std::cerr << "Loading rules ..." << std::endl;
-    }
-
-    EdgeTransformationsPtr et = rl->get_edge_transformations(pg);
-    Symbol top = add_top_symbol(pg, et);
+    std::map<Symbol, Lattice::EdgeDescriptor, SymbolSorterMap2> symbolEdgeMap;
+    EdgeTransformationsPtr et = rl->get_edge_transformations(lattice, start, end, symbolEdgeMap);
     
-    if( inf != false ) {
-	inf->set_parse_graph( pg );
-    }
+    Symbol top = add_top_symbol(lattice, start, end, langCode, symbolEdgeMap, et);
     
     if(verbosity >= 1)
 	std::cerr << "Starting translation ..." << std::endl;
     
     TranslationQueuePtr translations = translate_recursive(top, et);
-    
-    if(translations->size() > 0) {
-        if(n == 1) {
-            TranslationPtr best = *(translations->begin());
-            std::cout << best->str() << std::endl;
-            
-            if(verbosity == 1) {
-                std::cerr << "Best: " << best->nice() << std::endl;
-            }
-            if(verbosity >= 2) {
-                std::cerr << best->back_track(0);
-		AlignmentPtr a = best->reconstruct_alignment();
-		
-		std::cerr << std::endl;
-		std::cerr << "Inferred word alignment: ";
-		for(Alignment::iterator it = a->begin(); it != a->end(); it++) {
-		    std::cerr << it->first << "-" << it->second;
-		    
-		    Alignment::iterator tit = it;
-		    tit++;
-		    if(tit != a->end()) {
-			std::cerr << " ";
-		    }
-		}
-		std::cerr << std::endl;
-	    }
-        }
-        if(n > 1) {
-            int c = 0;
-            for(TranslationQueue::iterator it = translations->begin(); it != translations->end() and c < n; it++, c++) {
-                TranslationPtr act = *it;
-                
-		if(mert)
-		    std::cout << act->mert(sentence_no) << std::endl;
-                else 
-		    std::cout << act->str() << std::endl;
-		    
-                if(verbosity == 1 and c == 0) {
-                    std::cerr << c+1 << "-best: " << act->nice() << std::endl;
-                }
-                if(verbosity >= 2 and not mert) {
-                    std::cerr << act->back_track(0);
-                }
-            }
-        }
-    }
-    else {
-	std::cerr << "No translation found" << std::endl;
-	std::cout << "ERROR" << std::endl;
-    }
- 
-    
+     
     boost::posix_time::ptime pt_end = boost::posix_time::microsec_clock::local_time();
     boost::posix_time::time_duration delta = pt_end - pt_start;
     int d = delta.total_milliseconds();
@@ -112,10 +40,19 @@ TranslationQueuePtr Translator::translate(ParseGraphPtr& pg) {
     sentence_no++;
     lm->clear_memory();
     
-    return translations;
+    static std::map<int, Lattice::EdgeDescriptor> idEdgeMap;
+    int i = 0;
+    for(TranslationQueue::iterator it = translations->begin(); it != translations->end() && i < n; it++) {
+	if(verbosity > 1)
+	    std::cerr << (*it)->back_track(0);
+	    
+        (*it)->annotateLattice(lattice, symbolEdgeMap, idEdgeMap);
+	i++;
+    }
 }
 
-TranslationQueuePtr& Translator::translate_recursive(Symbol& s, EdgeTransformationsPtr& et) {
+TranslationQueuePtr& Translator::translate_recursive(Symbol& s, EdgeTransformationsPtr& et)
+{
     bool is_top = false;
     if(s.label() == "<TOP>") {
 	is_top = true;
@@ -126,9 +63,12 @@ TranslationQueuePtr& Translator::translate_recursive(Symbol& s, EdgeTransformati
     }
     else {
 	TranslationQueuePtr node_translations( new TranslationQueue() );
+	if(et->count(s) == 0)
+	    std::cerr << "Symbol " << s.str() << " is empty!" << std::endl;
 	HyperEdgeSetPtr hyper_edges = (*et)[s];
 	node_translations = merge(hyper_edges, et, is_top);
 	node_translation_memory[s] = node_translations;
+	
 	return node_translation_memory[s];
     }
 }
@@ -144,13 +84,15 @@ TranslationQueuePtr Translator::merge(HyperEdgeSetPtr& hs, EdgeTransformationsPt
 	
 	TransformationPtr t = *r0;
 	TranslationNodes tn;
-	for(int i = 0; i < (*h_it)->nts()->size(); i++) {
-	    TranslationQueuePtr tq = translate_recursive((*h_it)->nts()->at(i), et);
+	for(size_t i = 0; i < (*h_it)->nts()->size(); i++) {
+	    Symbol nt = (*h_it)->nts()->at(i);
+	    TranslationQueuePtr tq = translate_recursive(nt, et);
 	    r.push_back(tq->begin());
 	    tn[(*h_it)->nts()->at(i)] = *(r[i]);
 	}
-	TranslationPtr translation( new Translation(t, tn, lm, inf, top) );
-
+	TranslationPtr translation( new Translation(t, tn, lm, top) );
+	
+	
 // @todo: poprawic to na cos madrzejszego np. kilka symboli <TOP> po maksymalnie n dzieci lub drzewo hierarchiczne
 // Lepiej zeby to dzialalo za pomoca jakiejs opcji, a nie ifdefa.
 // Niewiadomo jak to wplywa na jakosc tlumaczenia, pewnie nie ma tragedii, ale na pewno sa roznice.
@@ -160,7 +102,6 @@ TranslationQueuePtr Translator::merge(HyperEdgeSetPtr& hs, EdgeTransformationsPt
 	    return k_best_translations;
 	}
 #endif
-
 	cands.insert(CandidatePtr( new Candidate(translation, *h_it, r0, r) ));
     }
     
@@ -170,7 +111,7 @@ TranslationQueuePtr Translator::merge(HyperEdgeSetPtr& hs, EdgeTransformationsPt
     
     while(k_best_translations->size() < k) {
 	if(L != false) {
-	    for(int i = 0; i <= r.size(); i++) {
+	    for(size_t i = 0; i <= r.size(); i++) {
 		TransIt r0_prim = r0;
 		TransCoordinate r_prim = r;
 		if(i < r.size()) {
@@ -183,13 +124,14 @@ TranslationQueuePtr Translator::merge(HyperEdgeSetPtr& hs, EdgeTransformationsPt
 		if(r0_prim != L->get_transformations()->end()) {
 		    TransformationPtr t = *r0_prim;
 		    TranslationNodes tn;
-		    for(int j = 0; j < L->nts()->size(); j++) {
+		    for(size_t j = 0; j < L->nts()->size(); j++) {
 			TranslationQueuePtr tq = translate_recursive(L->nts()->at(j), et);
-			if(r_prim[j] != tq->end())
+			if(r_prim[j] != tq->end()) {
 			    tn[L->nts()->at(j)] = *(r_prim[j]) ;
+			}
 		    }
 		    if(tn.size() == L->nts()->size()) {
-			TranslationPtr translation( new Translation(t, tn, lm, inf, top) );
+			TranslationPtr translation( new Translation(t, tn, lm, top) );
 			cands.insert(CandidatePtr( new Candidate(translation, L, r0_prim, r_prim) ));
 		    }
 		}
@@ -221,15 +163,50 @@ TranslationQueuePtr Translator::merge(HyperEdgeSetPtr& hs, EdgeTransformationsPt
     return k_best_translations;
 }
 
-Symbol Translator::add_top_symbol(ParseGraphPtr& pg, EdgeTransformationsPtr& et) {
-    // @todo: co roby gdy pg jest pusty?;
+Symbol Translator::add_top_symbol(Lattice& lattice,
+				  Lattice::VertexDescriptor start,
+				  Lattice::VertexDescriptor end,
+				  std::string langCode,
+				  std::map<Symbol, Lattice::EdgeDescriptor, SymbolSorterMap2>& symbolEdgeMap,
+				  EdgeTransformationsPtr& et) {
     
-    SListPtr source = pg->shallow_path();
+    SListPtr source(new SList());
     
-    int start = source->front().start();
-    int end =   source->back().end();
+    std::map<int, int> charTokenMap = getCharWordTokenMap(lattice, start, end);
+    Lattice::EdgeSequence topParseSeq = getTopParseSequence(lattice, start, end);
+    Lattice::EdgeSequence::Iterator topParseSeqIt(lattice, topParseSeq);
+    while(topParseSeqIt.hasNext()) {
+	Lattice::EdgeDescriptor topEdge = topParseSeqIt.next();    
+	
+	int topStart = charTokenMap[lattice.getEdgeBeginIndex(topEdge)];
+	int topEnd   = charTokenMap[lattice.getEdgeEndIndex(topEdge)];
+	
+	if(isNonTerminal(topEdge, lattice)) {
+	    std::string label = "<" + lattice.getAnnotationCategory(topEdge) + ">";
+	    source->push_back(Symbol(label, Range(topStart, topEnd), true));
+	}
+	else {
+	    std::string label = lattice.getEdgeText(topEdge);
+	    source->push_back(Symbol(label, Range(topStart, topEnd), false));
+	}      
+    }    
     
-    Symbol top("<TOP>", Range(start,end), true);
+    int startPos = source->front().start();
+    int endPos =   source->back().end();
+    
+    Symbol top("<TOP>", Range(startPos, endPos), true);
+     
+    AnnotationItem ai("<TOP>");
+    
+    std::vector<std::string> tagVector;
+    tagVector.push_back("parse");
+    tagVector.push_back("bonsai");
+    LayerTagCollection tags = lattice.getLayerTagManager().createTagCollection(tagVector);
+
+    //LayerTagCollection tags = lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode("parse", langCode);
+    symbolEdgeMap[top] = lattice.addEdge(start, end, ai, tags, topParseSeq);
+
+     
     (*et)[top] = HyperEdgeSetPtr( new HyperEdgeSet() );
     HyperEdgePtr he( new HyperEdge(source) );
     

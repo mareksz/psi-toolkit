@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <boost/assign.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -12,24 +14,27 @@ const std::string FileRecognizer::UNKNOWN_EXTENSION = "UNKNOWN";
 
 std::map<std::string, std::string> FileRecognizer::mimeTypeToFileExtension_ =
     boost::assign::map_list_of
-        ("application/octet-stream", "bin") //?
-        ("application/pdf",          "pdf")
-        ("application/postscript",   "eps")
-        ("application/xml",          "xml")
-        ("application/x-empty",      "") //?
-        ("application/x-gzip",       "gz")
-        ("application/zip",          "zip")
-        ("image/gif",                "gif")
-        ("image/jpeg",               "jpg")
-        ("image/png",                "png")
-        ("image/svg+xml",            "svg")
-        ("image/tiff",               "tiff")
-        ("image/vnd.djvu",           "djvu")
-        ("image/x.djvu",             "djvu")
-        ("model/vrml",               "wrl")
-        ("text/html",                "html")
-        ("text/plain",               "txt")
-        ("text/rtf",                 "rtf");
+        ("application/vnd.ms-office", "doc")
+        ("application/msword",        "doc")
+        ("application/octet-stream",  "bin") //?
+        ("application/pdf",           "pdf")
+        ("application/postscript",    "eps")
+        ("application/xml",           "xml")
+        ("application/x-empty",       "") //?
+        ("application/x-gzip",        "gz")
+        ("application/zip",           "zip")
+        ("image/gif",                 "gif")
+        ("image/jpeg",                "jpg")
+        ("image/png",                 "png")
+        ("image/svg+xml",             "svg")
+        ("image/tiff",                "tiff")
+        ("image/vnd.djvu",            "djvu")
+        ("image/x.djvu",              "djvu")
+        ("model/vrml",                "wrl")
+        ("text/html",                 "html")
+        ("text/plain",                "txt")
+        ("text/x-tex",                "tex")
+        ("text/rtf",                  "rtf");
 
 FileRecognizer::FileRecognizer() { }
 
@@ -180,6 +185,10 @@ void FileRecognizer::recognizeMimeTypeAndFileExtension(const std::string & /*dat
         type = getMimeType_(magicFileInfo);
         extension = getFileExtension_(magicFileInfo);
         extension = recognizeFileFormat_(data, extension);
+
+        DEBUG("magic filetype: [" << magicFileInfo << "], "
+            << "file type: [" << type << "], "
+            << "file extension: [" << extension << "]");
     }
 
     closeLibMagic();

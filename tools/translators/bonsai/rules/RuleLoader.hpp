@@ -1,10 +1,12 @@
 #ifndef RULELOADER_HPP__
 #define RULELOADER_HPP__
 
+#include "lattice.hpp"
+#include "lattice_wrapper.hpp"
+
 #include "Transformation.hpp"
 #include "RuleSet.hpp"
 #include "LmContainer.hpp"
-#include "SymInflector.hpp"
 
 namespace poleng
 {
@@ -18,32 +20,37 @@ class RuleLoader {
     
     int max_length;          // maximal length of source language rule part (default 7)
     int max_nt;              // maximal number of non-terminal symbols (default 4)
-    
+
+    LmContainerPtr lmc;
+
     int max_trans_hyper;     // maximal number of transformations per hyper edge (default 20)
     int max_hyper_sym;       // maximal number of hyper edges per non-terminal symbol (default 20)
     double eps;              // allowed neglog distance of transformation to best transformation (default -1 = infinity)
                              // (allowed_cost <= best_cost + eps) 
     int verbosity;
     
-    LmContainerPtr lmc;
-
     static Floats tm_weights;
     static Floats lm_weights;
     static Floats rs_weights;
     static double word_penalty_weight;
     
-    void merge_edge_transformations(EdgeTransformationsPtr&, EdgeTransformationsPtr&, int);
+    void merge_edge_transformations(EdgeTransformationsPtr&, EdgeTransformationsPtr&);
     void merge_hyper_edge(HyperEdgePtr &, HyperEdgePtr);
-    void fill_empty(ParseGraphPtr&, EdgeTransformationsPtr&);
+    void fill_empty(Lattice&,
+                    Lattice::VertexDescriptor,
+                    Lattice::VertexDescriptor,
+                    EdgeTransformationsPtr&);
 
   public:
     RuleLoader(std::string, int, int, LmContainerPtr);
     RuleLoader(int, int, LmContainerPtr);
     
     void add_rule_set(std::string);
-    void add_rule_set( std::string, SymInflectorPtr );
     void add_rule_set( RuleSetPtr );
-    EdgeTransformationsPtr get_edge_transformations(ParseGraphPtr&);
+    EdgeTransformationsPtr get_edge_transformations(Lattice&,
+                                                    Lattice::VertexDescriptor,
+                                                    Lattice::VertexDescriptor,
+						    std::map<Symbol, Lattice::EdgeDescriptor, SymbolSorterMap2>&);
 
     void set_verbosity(int);    
     void set_max_transformations_per_hyperedge(int);    

@@ -71,6 +71,8 @@ typedef std::map<std::string, boost::filesystem::path> file_map_type;
 void TestExtractor::addTestBatch_(const boost::filesystem::path& directory) {
     INFO("registering test batch " << directory.string());
 
+    bool isExampleOnly = false;
+
     boost::filesystem::path commandFileName = directory / TEST_COMMAND_FILE_NAME;
     if (!boost::filesystem::is_regular_file(commandFileName)) {
         WARN("no " << commandFileName.string() << " found");
@@ -84,12 +86,20 @@ void TestExtractor::addTestBatch_(const boost::filesystem::path& directory) {
     boost::filesystem::path requiresFileName = directory / TEST_REQUIRES_FILE_NAME;
     if (boost::filesystem::is_regular_file(requiresFileName)
         && !checkRequirements_(requiresFileName)) {
-        WARN("SKIPPING as some requirements were not met");
+        INFO("SKIPPING as some requirements were not met");
         return;
     }
 
-    TestBatch testBatch(directory, readCommand_(commandFileName),
-        readCommand_(descriptionFileName));
+    boost::filesystem::path exampleOnlyFileName = directory / TEST_EXAMPLE_ONLY_FILE_NAME;
+    if (boost::filesystem::is_regular_file(exampleOnlyFileName)) {
+        isExampleOnly = true;
+    }
+
+    TestBatch testBatch(
+        directory,
+        readCommand_(commandFileName),
+        readCommand_(descriptionFileName),
+        isExampleOnly);
 
     std::map<std::string, boost::filesystem::path> inputFiles;
     std::map<std::string, boost::filesystem::path> outputFiles;
@@ -145,7 +155,7 @@ void TestExtractor::checkFileMap_(std::map<std::string, boost::filesystem::path>
                                const boost::filesystem::path& path,
                                const std::string& key,
                                const std::string& infoString) {
-    WARN("checking " << path.string() << " as " << infoString);
+    INFO("checking " << path.string() << " as " << infoString);
 
     if (filemap.count(key))
         WARN("cannot use " << path.string() << " test " << infoString << " file "
@@ -186,7 +196,7 @@ bool TestExtractor::checkRequirements_(boost::filesystem::path requiresFileName)
         std::getline(requiresStream, line);
 
         if (!line.empty()) {
-            WARN("checking requirement: `" << line << "`");
+            DEBUG("checking requirement: `" << line << "`");
 
             try {
                 keeper.getProcessorFactoriesForName(line).empty();
@@ -205,3 +215,4 @@ const boost::filesystem::path TestExtractor::TEST_BATCH_DIRECTORY_NAME = "m";
 const boost::filesystem::path TestExtractor::TEST_COMMAND_FILE_NAME = "WHAT";
 const boost::filesystem::path TestExtractor::TEST_DESCRIPTION_FILE_NAME = "DESCRIPTION";
 const boost::filesystem::path TestExtractor::TEST_REQUIRES_FILE_NAME = "REQUIRES";
+const boost::filesystem::path TestExtractor::TEST_EXAMPLE_ONLY_FILE_NAME = "EXAMPLE_ONLY";

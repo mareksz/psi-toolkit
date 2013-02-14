@@ -71,6 +71,8 @@
 #include "link_parser.hpp"
 #endif
 
+#include "bonsai.hpp"
+
 
 MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addTagBasedIzeAliases("token", "token");
@@ -86,25 +88,54 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addAlias("spellchecker", "spell");
     keeper_.addAlias("spellcheck", "spell");
 
+#if HAVE_LIBMAGIC
     keeper_.addAlias("guess-input", "guessing-reader");
+    keeper_.addAlias("guess-format", "guessing-reader");
+#endif
+
     keeper_.addAlias("guess-lang", "lang-guesser");
     keeper_.addAlias("guess-language", "lang-guesser");
 
     keeper_.addAlias("read", "txt-reader");
     keeper_.addAlias("read-txt", "txt-reader");
     keeper_.addAlias("read-text", "txt-reader");
+    keeper_.addAlias("text-reader", "txt-reader");
 
+#if HAVE_POPPLER
     keeper_.addAlias("read-pdf", "pdf-reader");
+#endif
+
+#if HAVE_DJVULIBRE
+    keeper_.addAlias("read-djvu", "djvu-reader");
+#endif
+
+#if USE_DOC_READER
+    keeper_.addAlias("read-doc", "doc-reader");
+#endif
 
     keeper_.addAlias("read-html", "apertium-reader");
+
+    keeper_.addAlias("read-nkjp", "nkjp-reader");
+
+    keeper_.addAlias("read-utt", "utt-reader");
+
+    keeper_.addAlias("read-psi", "psi-reader");
+    keeper_.addAlias("read-lattice", "psi-reader");
+
+    keeper_.addAlias("write-psi", "psi-writer");
+    keeper_.addAlias("write-lattice", "psi-writer");
 
     keeper_.addAlias("write", "simple-writer");
     keeper_.addAlias("write-simple", "simple-writer");
 
+#if HAVE_GRAPHVIZ
     keeper_.addAlias("write-graph", "gv-writer");
     keeper_.addAlias("write-chart", "gv-writer");
     keeper_.addAlias("graph", "gv-writer");
     keeper_.addAlias("draw", "gv-writer");
+#endif
+
+    keeper_.addAlias("write-dot", "dot-writer");
 
     keeper_.addAlias("write-simple-json", "json-simple-writer");
 
@@ -174,6 +205,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new LinkParser::Factory());
 #endif
 
+    keeper_.takeProcessorFactory(new Bonsai::Factory());
 }
 
 ProcessorFactory& MainFactoriesKeeper::getProcessorFactory(std::string processorName) {

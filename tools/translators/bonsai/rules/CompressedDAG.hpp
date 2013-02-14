@@ -9,8 +9,8 @@
 #include <fcntl.h>
 #include <vector>
 #include <map>
+#include <list>
 
-#include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "SimpleDAG.hpp"
@@ -78,6 +78,8 @@ namespace rules {
         CompressedDAG(unsigned int, unsigned int);
         CompressedDAG(std::string, int);
         
+        virtual ~CompressedDAG() { }
+        
         virtual Range row(State);
         bool is_end_state(State);
         
@@ -93,7 +95,7 @@ namespace rules {
         WordListHashed multiunhash(std::set<int> &);
     
         void print() {
-            for(int i = 0; i < sn; i++) {
+            for(size_t i = 0; i < sn; i++) {
                 Range r = row(i);
                 for(ArcIt it = r.first; it != r.second; it++) {
                     std::cout << i << "\t" << it->q << "\t" << it->a << std::endl;

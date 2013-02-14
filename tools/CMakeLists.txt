@@ -8,6 +8,7 @@ add_subdirectory(lexica)
 add_subdirectory(taggers)
 add_subdirectory(spellcheckers)
 add_subdirectory(converters)
+add_subdirectory(translators)
 
 set(tools_DIRS
     tokenizers/tp
@@ -34,6 +35,10 @@ set(tools_DIRS
     taggers/metagger
     spellcheckers/aspell
     converters/unumsunt
+    translators/bonsai
+    translators/bonsai/irstlm
+    translators/bonsai/rules
+    translators/bonsai/translator
     CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE
 )
 

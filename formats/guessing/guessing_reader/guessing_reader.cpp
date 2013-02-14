@@ -23,11 +23,13 @@ const int GuessingReader::DEFAULT_BLOCK_SIZE = 32;
 
 std::map<std::string, GuessingReader::PointerToReader> GuessingReader::fileTypeToReaderMap_ =
     boost::assign::map_list_of
-        ("txt", PointerToReader(new TxtLatticeReader::Factory()))
+        ("txt",  PointerToReader(new TxtLatticeReader::Factory()))
+        ("rtf", PointerToReader(new ApertiumLatticeReader::Factory()))
         ("html", PointerToReader(new ApertiumLatticeReader::Factory()))
         ("docx", PointerToReader(new ApertiumLatticeReader::Factory()))
         ("xlsx", PointerToReader(new ApertiumLatticeReader::Factory()))
         ("pptx", PointerToReader(new ApertiumLatticeReader::Factory()))
+        //("tex", PointerToReader(new ApertiumLatticeReader::Factory()))
         ("psi", PointerToReader(new PsiLatticeReader::Factory()))
 #if HAVE_POPPLER
         ("pdf", PointerToReader(new PDFLatticeReader::Factory()))
@@ -43,9 +45,11 @@ std::map<std::string, GuessingReader::PointerToReader> GuessingReader::fileTypeT
 std::map<std::string, std::string> GuessingReader::fileTypeToReaderOptionsMap_ =
     boost::assign::map_list_of
         ("html", "--format html")
+        ("rtf", "--format rtf")
         ("docx", "--format docx")
         ("xlsx", "--format xlsx")
         ("pptx", "--format pptx");
+        //("tex", "--format latex");
 
 std::string GuessingReader::getFormatName() {
     return "Guessing";
@@ -73,23 +77,6 @@ std::string GuessingReader::guessFileType(std::istream& input) {
     return filetype;
 }
 
-std::string GuessingReader::getDataWithoutTouchingIStream_(std::istream& stream) {
-    std::stringstream data;
-    data << stream.rdbuf();
-
-    std::string stringData = data.str();
-    int dataSize = stringData.size();
-    const char* rawData = stringData.c_str();
-
-    stream.clear();
-
-    for (int i = dataSize; i > 0; i--) {
-        stream.putback(rawData[i - 1]);
-    }
-
-    return stringData;
-}
-
 std::string GuessingReader::getStartingDataBlockWithoutTouchingIStream_(std::istream& stream) {
     char buffer[blockSize_];
     stream.read(buffer, blockSize_);
@@ -106,6 +93,23 @@ std::string GuessingReader::getStartingDataBlockWithoutTouchingIStream_(std::ist
     }
 
     return std::string(buffer, lastReadable);
+}
+
+std::string GuessingReader::getDataWithoutTouchingIStream_(std::istream& stream) {
+    std::stringstream data;
+    data << stream.rdbuf();
+
+    std::string stringData = data.str();
+    int dataSize = stringData.size();
+    const char* rawData = stringData.c_str();
+
+    stream.clear();
+
+    for (int i = dataSize; i > 0; i--) {
+        stream.putback(rawData[i - 1]);
+    }
+
+    return stringData;
 }
 
 LatticeReader<std::istream>* GuessingReader::getLatticeReader(std::string type) {

@@ -8,14 +8,14 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include "lattice.hpp"
+
 #include "TransferTypes.hpp"
 #include "Transformation.hpp"
 #include "RuleLoader.hpp"
 
 #include "Translation.hpp"
 #include "LmContainer.hpp"
-
-// #include "../../t5/t5_factory.h"
 
 namespace poleng
 {
@@ -30,8 +30,8 @@ class Translator {
     
     class Candidate {
       private:
-	HyperEdgePtr h;
 	TranslationPtr t;
+	HyperEdgePtr h;
 	TransIt r0;
 	TransCoordinate r;
 
@@ -58,25 +58,31 @@ class Translator {
     
     TranslationQueuePtr& translate_recursive(Symbol&, EdgeTransformationsPtr&);
     TranslationQueuePtr merge(HyperEdgeSetPtr&, EdgeTransformationsPtr&, bool);
-    Symbol add_top_symbol(ParseGraphPtr&, EdgeTransformationsPtr&);
+    Symbol add_top_symbol(Lattice&,
+			  Lattice::VertexDescriptor,
+			  Lattice::VertexDescriptor,
+			  std::string,
+			  std::map<Symbol, Lattice::EdgeDescriptor, SymbolSorterMap2>&,
+			  EdgeTransformationsPtr&);
     
     RuleLoaderPtr rl;
     LmContainerPtr lm;
-    SymInflectorPtr inf;
     
   public:
     std::map<Symbol, TranslationQueuePtr, SymbolSorterMap> node_translation_memory;
   private:
     
-    int k;
-    int n;
+    size_t k;
     
-    int verbosity;
     bool mert;
+    
+    size_t verbosity;
     bool pedantry;
     
-    int total_time;
-    int sentence_no;
+    size_t n;
+    
+    size_t sentence_no;
+    size_t total_time;
     
     static Floats tm_weights;
     static Floats lm_weights;
@@ -84,25 +90,13 @@ class Translator {
     static double word_penalty_weight;
             
   public:
-/*
-      class Factory: virtual public poleng::t5::FactoryOn<Translator>
-      {
-          public:
-              Factory(RuleLoaderPtr rl_, LmContainerPtr lm_, int k_);
-
-              virtual Translator* getObject(void);
-
-          private:
-            RuleLoaderPtr rl;
-            LmContainerPtr lm;
-            int k;
-      };
-*/
-    Translator(RuleLoaderPtr, LmContainerPtr, SymInflectorPtr, int);
-    Translator(RuleLoaderPtr, LmContainerPtr, int);
+    Translator(RuleLoaderPtr, LmContainerPtr, int, int);
     
-    TranslationQueuePtr translate(ParseGraphPtr&);
-    
+    void translate(Lattice&,
+		   Lattice::VertexDescriptor,
+		   Lattice::VertexDescriptor,
+		   std::string);
+
     void set_sentence_no(int sno) { sentence_no = sno; }
     void set_nbest(int);
     void set_verbosity(int);

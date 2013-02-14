@@ -89,6 +89,14 @@ endif(IS_INSTALLABLE)
 
 message(STATUS "The psi-server root directory is set to ${WEBSITE_ROOT}")
 
+# uninstall target
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 # ====================================================
 # Finds and includes external libraries
@@ -511,7 +519,8 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex framework
     formats-apertium formats-bracketing formats-dot formats-guessing formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt
     maxent tools-tokenizers-tp tools-segmenters-srx tools-recognizers-langguesser
-    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-converters-unumsunt)
+    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
+    tools-converters-unumsunt)
 
 # ----------------------------------------------------
 # TESTS_TARGETS

@@ -1,4 +1,5 @@
 #include "Translation.hpp"
+#include <boost/foreach.hpp>
 
 namespace poleng
 {
@@ -6,8 +7,8 @@ namespace poleng
 namespace bonsai
 {
 
-Translation::Translation(TransformationPtr pt_, TranslationNodes ndtr_, LmContainerPtr lmc_, SymInflectorPtr inf_, bool top_) :
-  parent_transformation(pt_), node_translations(ndtr_), lmc(lmc_), inf(inf_), top(top_), translation( new SList() ), cost(0), lm_heuristic(0) {
+Translation::Translation(TransformationPtr pt_, TranslationNodes ndtr_, LmContainerPtr lmc_, bool top_) :
+  my_id(id++), parent_transformation(pt_), node_translations(ndtr_), lmc(lmc_), top(top_), translation( new SList() ), cost(0), lm_heuristic(0) {
     
     cost = parent_transformation->get_cost();
     
@@ -24,13 +25,17 @@ Translation::Translation(TransformationPtr pt_, TranslationNodes ndtr_, LmContai
             Floats add_costs = trans->get_unweighted();
             if(unweighted_costs.size() < add_costs.size())
                 unweighted_costs.resize(add_costs.size(), 0);
-            for(int i=0; i<add_costs.size(); i++)
+            for(size_t i=0; i<add_costs.size(); i++)
                 unweighted_costs[i] += add_costs[i];
         }
     }
     
     substitute(parent_transformation, node_translations);
     lm_heuristic = lmc->get_front_cost(translation);
+}
+
+int Translation::get_id() {
+  return my_id;
 }
 
 double Translation::get_cost() {
@@ -63,7 +68,7 @@ std::string Translation::nice() {
     }
     ss << " ]\t(";
     if(pedantry) {
-        for(int i = 0; i < unweighted_costs.size(); i++) {
+        for(size_t i = 0; i < unweighted_costs.size(); i++) {
             ss << unweighted_costs[i];
             if(i < unweighted_costs.size()-1)
                 ss << ",";
@@ -79,9 +84,9 @@ std::string Translation::mert(int i) {
     std::stringstream ss;
     ss << i << " ||| " << this->str() << " ||| ";
     if(pedantry) {
-	for(int i = 0; i < unweighted_costs.size(); i++) {
-            ss << -1 * unweighted_costs[i];
-            if(i < unweighted_costs.size()-1)
+	for(size_t j = 0; j < unweighted_costs.size(); j++) {
+            ss << -1 * unweighted_costs[j];
+            if(j < unweighted_costs.size()-1)
                 ss << " ";
         }
 	ss << " ||| "; 
@@ -94,7 +99,7 @@ std::string Translation::back_track(int depth = 0) {
     std::stringstream ss;
     std::string indent;
     
-    for(int i = 0; i< depth; i++)
+    for(size_t i = 0; i < (size_t)depth; i++)
         indent.append("\t");
         
     ss << indent << parent_transformation->str() << std::endl;
@@ -107,6 +112,45 @@ std::string Translation::back_track(int depth = 0) {
 	}
     }
     return ss.str();
+}
+
+Lattice::EdgeDescriptor Translation::annotateLattice(Lattice& lattice, std::map<Symbol, Lattice::EdgeDescriptor, SymbolSorterMap2>& symbolEdgeMap, std::map<int, Lattice::EdgeDescriptor>& idEdgeMap)
+{
+    if(idEdgeMap.count(my_id))
+	return idEdgeMap[my_id];
+
+
+    Lattice::EdgeSequence::Builder partitionBuilder(lattice);
+    
+    Symbol lhs = parent_transformation->lhs();
+    std::string text = this->str();
+    Lattice::EdgeDescriptor lhsEdge = symbolEdgeMap[lhs];
+	
+    partitionBuilder.addEdge(lhsEdge);
+    
+    std::vector<Lattice::EdgeDescriptor> partition;
+    for(SList::iterator it = parent_transformation->targets()->begin(); it != parent_transformation->targets()->end(); it++) {
+	if(it->is_nt()) {
+	    TranslationPtr tp = node_translations[*it];
+	    Lattice::EdgeDescriptor edge = tp->annotateLattice(lattice, symbolEdgeMap, idEdgeMap);
+	    	
+	    partitionBuilder.addEdge(edge);  
+	}
+    }
+    
+    int start = lattice.getEdgeBeginIndex(lhsEdge);
+    int end   = lattice.getEdgeEndIndex(lhsEdge);
+    
+    AnnotationItem ai("TRANS[" + lhs.label() +"]", StringFrag(text));
+    std::vector<std::string> tagVector;
+    if(top)
+	tagVector.push_back("trans");
+    else
+	tagVector.push_back("transfrag");
+    tagVector.push_back("bonsai");
+    LayerTagCollection tags = lattice.getLayerTagManager().createTagCollection(tagVector);
+    idEdgeMap[my_id] = lattice.addEdge(start, end, ai, tags, partitionBuilder.build(), this->get_cost());
+    return idEdgeMap[my_id];
 }
 
 std::string Translation::dump_to_perl() {
@@ -174,29 +218,15 @@ double Translation::get_lm_heuristic() {
 void Translation::substitute(TransformationPtr &t, TranslationNodes &tn) {
     
     if(tn.size() == 0) {
-	if( inf != false ) {
-	    int i = 1;
-	    BOOST_FOREACH( Symbol s, *t->targets() ) {
-		AlignmentPtr a( new Alignment() );	    
-		BOOST_FOREACH( AlignmentPoint ap, *t->get_alignment() )
-		    if( ap.second == i )
-		      a->insert( AlignmentPoint( t->lhs().start() + ap.first, ap.second ) );
-		
-		SymbolProb si = inf->inflect( s, a );
-		translation->push_back( si.first );
-		i++;
-	    }
-	}
-	else
-	    translation = t->targets();
+	translation = t->targets();
 	    	
 	Floats lm_costs;
 	double lm_cost = lmc->get_cost(translation, lm_costs);
 	cost += lm_cost;
 	
 	if(pedantry) {
-	    for(int i = 0; i<lm_costs.size(); i++) {
-		int j = unweighted_costs.size() - lm_costs.size() + i;
+	    for(size_t i = 0; i<lm_costs.size(); i++) {
+		size_t j = unweighted_costs.size() - lm_costs.size() + i;
 		unweighted_costs[j] += lm_costs[i];
 	    }
 	}
@@ -219,9 +249,9 @@ void Translation::substitute(TransformationPtr &t, TranslationNodes &tn) {
                     //std::cerr << "Ngram: " << ngram->str() << " - " << lm_cost << std::endl;
         
                     if(pedantry) {
-                        for(int i = 0; i<lm_costs.size(); i++) {
-                            int j = unweighted_costs.size() - lm_costs.size() + i;
-                            unweighted_costs[j] += lm_costs[i];
+                        for(size_t k = 0; k<lm_costs.size(); k++) {
+                            size_t l = unweighted_costs.size() - lm_costs.size() + k;
+                            unweighted_costs[l] += lm_costs[k];
                         }
                     }  
                     ngram.reset( new SList() );
@@ -241,22 +271,8 @@ void Translation::substitute(TransformationPtr &t, TranslationNodes &tn) {
                 }
             }
             else {
-    		if( inf != false ) {
-		    Symbol s = *it;
-
-		    AlignmentPtr a( new Alignment() );
-		    BOOST_FOREACH( AlignmentPoint ap, *t->get_alignment() ) {
-		      if( ap.second == j )
-			a->insert( AlignmentPoint( t->lhs().start() + ap.first, ap.second ) );
-		    }
-		    SymbolProb si = inf->inflect( s, a );    
-		    translation->push_back( si.first );
-		    ngram->push_back( si.first );
-		}
-		else {
-		    translation->push_back( *it );
-		    ngram->push_back( *it );
-		}
+		translation->push_back( *it );
+		ngram->push_back( *it );
                 i++;
             }
 	    j++;
@@ -270,9 +286,9 @@ void Translation::substitute(TransformationPtr &t, TranslationNodes &tn) {
             //std::cerr << "Ngram: " << ngram->str() << " - " << lmc->get_plain_cost(ngram) << std::endl;
             
             if(pedantry) {
-                for(int i = 0; i<lm_costs.size(); i++) {
-                    int j = unweighted_costs.size() - lm_costs.size() + i;
-                    unweighted_costs[j] += lm_costs[i];
+                for(size_t k = 0; k<lm_costs.size(); k++) {
+                    size_t l = unweighted_costs.size() - lm_costs.size() + k;
+                    unweighted_costs[l] += lm_costs[k];
                 }
             }  
             ngram.reset( new SList() );
@@ -283,15 +299,16 @@ void Translation::substitute(TransformationPtr &t, TranslationNodes &tn) {
         cost += lmcost;
         
         if(pedantry) {
-            for(int i = 0; i<lm_costs.size(); i++) {
-                int j = unweighted_costs.size() - lm_costs.size() + i;
-                unweighted_costs[j] += lm_costs[i];
+            for(size_t k = 0; k<lm_costs.size(); k++) {
+                size_t l = unweighted_costs.size() - lm_costs.size() + k;
+                unweighted_costs[l] += lm_costs[k];
             }
         }
     }
     
 }
 
+int Translation::id = 0;
 int Translation::verbosity = 0;
 bool Translation::pedantry = false;
 
