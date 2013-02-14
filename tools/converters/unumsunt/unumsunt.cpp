@@ -6,6 +6,12 @@
 #include <string>
 #include <utility>
 
+#include <boost/foreach.hpp>
+
+#include "annotation_item.hpp"
+#include "annotation_item_manager.hpp"
+#include "zvalue.hpp"
+
 
 Annotator* Unumsunt::Factory::doCreateAnnotator(
     const boost::program_options::variables_map & options
@@ -128,7 +134,24 @@ void Unumsunt::convertTags(Lattice & lattice) {
             targetCategory = smi->second;
         }
         AnnotationItem targetAI(targetCategory, sourceAI.getTextAsStringFrag());
-
+        std::list< std::pair<std::string, zvalue> > avs
+            = lattice.getAnnotationItemManager().getValuesAsZvalues(sourceAI);
+        typedef std::pair<std::string, zvalue> AVPair;
+        BOOST_FOREACH(AVPair av, avs) {
+            std::map<std::string, std::string>::iterator smi1 = symbol_map_.find(av.first);
+            std::map<std::string, std::string>::iterator smi2 = symbol_map_.find(
+                lattice.getAnnotationItemManager().zvalueToString(av.second)
+            );
+            if (smi1 == symbol_map_.end() && smi2 == symbol_map_.end()) {
+                lattice.getAnnotationItemManager().setValue(targetAI, av.first, av.second);
+            } else if (smi1 != symbol_map_.end() && smi2 == symbol_map_.end()) {
+                lattice.getAnnotationItemManager().setValue(targetAI, smi1->second, av.second);
+            } else if (smi1 == symbol_map_.end() && smi2 != symbol_map_.end()) {
+                lattice.getAnnotationItemManager().setValue(targetAI, av.first, smi2->second);
+            } else {
+                lattice.getAnnotationItemManager().setValue(targetAI, smi1->second, smi2->second);
+            }
+        }
         lattice.addEdge(
             lattice.getEdgeSource(edge),
             lattice.getEdgeTarget(edge),
