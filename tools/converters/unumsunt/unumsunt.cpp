@@ -98,15 +98,30 @@ Unumsunt::Unumsunt(
 ) :
     langCode_(langCode)
 {
+    UnumsuntConversionGrammar grammar;
     std::ifstream rulesFs(rulesPath.c_str());
-    std::string pairStr;
+    std::string line;
     while (rulesFs.good()) {
-        std::getline(rulesFs, pairStr);
-        std::stringstream pairSs(pairStr);
+
         std::string source;
         std::string target;
-        pairSs >> source >> target;
+
+        std::getline(rulesFs, line);
+
+        UnumsuntConversionItem item;
+        std::string::const_iterator begin = line.begin();
+        std::string::const_iterator end = line.end();
+
+        if (parse(begin, end, grammar, item)) {
+            source = item.source;
+            target = item.target;
+        } else {
+            std::stringstream pairSs(line);
+            pairSs >> source >> target;
+        }
+
         symbol_map_.insert(std::pair<std::string, std::string>(source, target));
+
     }
 }
 

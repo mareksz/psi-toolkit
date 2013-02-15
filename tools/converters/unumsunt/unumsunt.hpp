@@ -4,12 +4,57 @@
 
 #include <map>
 
+#include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/program_options.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/spirit/include/qi.hpp>
 
 #include "annotator.hpp"
 #include "language_dependent_annotator_factory.hpp"
 #include "lang_specific_processor_file_fetcher.hpp"
+
+
+namespace qi = boost::spirit::qi;
+
+
+struct UnumsuntConversionItem {
+    std::string type;
+    std::string source;
+    std::string target;
+};
+
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UnumsuntConversionItem,
+    (std::string, type)
+    (std::string, source)
+    (std::string, target)
+)
+
+
+struct UnumsuntConversionGrammar : public qi::grammar<
+    std::string::const_iterator,
+    UnumsuntConversionItem()
+> {
+
+    UnumsuntConversionGrammar() : UnumsuntConversionGrammar::base_type(start) {
+
+        start
+            %= -('@' >> +(qi::char_ - ' ') >> whitespaces)
+            >> +(qi::char_ - ' ')
+            >> whitespaces
+            >> qi::lit("->")
+            >> whitespaces
+            >> +(qi::char_ - ' ');
+
+        whitespaces = +(qi::space);
+
+    }
+
+    qi::rule<std::string::const_iterator, UnumsuntConversionItem()> start;
+    qi::rule<std::string::const_iterator, qi::unused_type()> whitespaces;
+
+};
 
 
 class Unumsunt : public Annotator {
