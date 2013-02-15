@@ -1,1 +1,1 @@
-psi-reader ! tagset-converter --rules %ITSDATA%/test/test.g ! psi-writer --no-header
+psi-reader ! tagset-converter --lang pl --rules %ITSDATA%/test.u ! psi-writer --no-header
