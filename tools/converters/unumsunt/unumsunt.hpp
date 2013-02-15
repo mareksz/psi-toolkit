@@ -17,33 +17,30 @@
 namespace qi = boost::spirit::qi;
 
 
-struct UnumsuntConversionItem {
-    std::string type;
+struct UnumsuntRuleItem {
     std::string source;
     std::string target;
 };
 
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UnumsuntConversionItem,
-    (std::string, type)
+    UnumsuntRuleItem,
     (std::string, source)
     (std::string, target)
 )
 
 
-struct UnumsuntConversionGrammar : public qi::grammar<
+struct UnumsuntRuleGrammar : public qi::grammar<
     std::string::const_iterator,
-    UnumsuntConversionItem()
+    UnumsuntRuleItem()
 > {
 
-    UnumsuntConversionGrammar() : UnumsuntConversionGrammar::base_type(start) {
+    UnumsuntRuleGrammar() : UnumsuntRuleGrammar::base_type(start) {
 
         start
-            %= -('@' >> +(qi::char_ - ' ') >> whitespaces)
-            >> +(qi::char_ - ' ')
+            %= +(qi::char_ - ' ')
             >> whitespaces
-            >> qi::lit("->")
+            >> qi::lit("=>")
             >> whitespaces
             >> +(qi::char_ - ' ');
 
@@ -51,7 +48,7 @@ struct UnumsuntConversionGrammar : public qi::grammar<
 
     }
 
-    qi::rule<std::string::const_iterator, UnumsuntConversionItem()> start;
+    qi::rule<std::string::const_iterator, UnumsuntRuleItem()> start;
     qi::rule<std::string::const_iterator, qi::unused_type()> whitespaces;
 
 };
@@ -100,10 +97,12 @@ private:
 
     std::string langCode_;
 
-    std::string getSourceTagset_() const;
-    std::string getTargetTagset_() const;
+    std::string sourceTagset_;
+    std::string targetTagset_;
 
-    std::map<std::string, std::string> category_map_;
+    std::map<std::string, std::string> cat_map_;
+    std::map<std::string, std::string> attr_map_;
+    std::map<std::string, std::string> val_map_;
 
 };
 

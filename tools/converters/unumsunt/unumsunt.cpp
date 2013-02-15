@@ -100,82 +100,105 @@ Unumsunt::Unumsunt(
 ) :
     langCode_(langCode)
 {
-    UnumsuntConversionGrammar grammar;
+    UnumsuntRuleGrammar grammar;
     std::ifstream rulesFs(rulesPath.c_str());
     std::string line;
+    int lineno = 0;
     while (rulesFs.good()) {
+        ++lineno;
         std::getline(rulesFs, line);
+        DEBUG("LINE:\t" << line);
         if (boost::algorithm::trim_copy(line).empty()) break;
         switch(line.at(0)) {
             case '#': {
                 // comment
-                DEBUG("COMMENT: " << line.substr(1));
+                DEBUG("COMMENT:\t" << line.substr(1));
                 break;
             }
             case '@': {
                 // hash elements
-                UnumsuntConversionItem item;
-                std::string::const_iterator begin = line.begin();
-                std::string::const_iterator end = line.end();
-                if (parse(begin, end, grammar, item)) {
-                    if (item.type == "@cat") {
-                        category_map_.insert(
-                            std::pair<std::string, std::string>(item.source, item.target));
+                std::stringstream lineSs(line.substr(1));
+                std::string type;
+                lineSs >> type;
+                if (type == "source") {
+                    lineSs >> sourceTagset_;
+                } else if (type == "target") {
+                    lineSs >> targetTagset_;
+                } else if (type == "tags") {
+                    // TODO
+                } else {
+                    std::string source;
+                    std::string target;
+                    lineSs >> source >> target;
+                    if (type == "cat") {
+                        cat_map_.insert(std::pair<std::string, std::string>(source, target));
+                    } else if (type == "attr") {
+                        attr_map_.insert(std::pair<std::string, std::string>(source, target));
+                    } else if (type == "val") {
+                        val_map_.insert(std::pair<std::string, std::string>(source, target));
+                    } else {
+                        std::stringstream errorSs;
+                        errorSs << "Tagset converter: unknown command (@" << type <<
+                            ") in line " << lineno;
+                        throw FileFormatException(errorSs.str());
                     }
                 }
                 break;
             }
             default: {
                 // auxiliary rule
-                DEBUG("TODO with RULE: " << line);
+                DEBUG("RULE:\t" << line);
+                UnumsuntRuleItem item;
+                std::string::const_iterator begin = line.begin();
+                std::string::const_iterator end = line.end();
+                if (parse(begin, end, grammar, item)) {
+                    DEBUG("RULE LHS:\t" << item.source);
+                    DEBUG("RULE RHS:\t" << item.target);
+                } else {
+                    DEBUG("LINE NOT PARSED!");
+                }
                 break;
             }
         }
-
-
     }
 }
 
 
 void Unumsunt::convertTags(Lattice & lattice) {
-    LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMaskWithLangCode(
-        getSourceTagset_(),
-        langCode_
-    );
+    LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMask(sourceTagset_);
     Lattice::EdgesSortedBySourceIterator ei(lattice, maskSourceTagset);
     while (ei.hasNext()) {
         Lattice::EdgeDescriptor edge = ei.next();
         LayerTagCollection tagTargetTagset
-            = lattice.getLayerTagManager().createTagCollectionFromListWithLangCode(
-                boost::assign::list_of("tagset-converter")(getTargetTagset_().c_str()),
-                langCode_
+            = lattice.getLayerTagManager().createTagCollectionFromList(
+                boost::assign::list_of("tagset-converter")(targetTagset_.c_str())
             );
         AnnotationItem sourceAI = lattice.getEdgeAnnotationItem(edge);
         std::string sourceCategory = sourceAI.getCategory();
         std::string targetCategory;
-        std::map<std::string, std::string>::iterator smi = category_map_.find(sourceCategory);
-        if (smi == category_map_.end()) {
+        std::map<std::string, std::string>::iterator cmi = cat_map_.find(sourceCategory);
+        if (cmi == cat_map_.end()) {
             targetCategory = sourceCategory;
         } else {
-            targetCategory = smi->second;
+            targetCategory = cmi->second;
         }
         AnnotationItem targetAI(targetCategory, sourceAI.getTextAsStringFrag());
         std::list< std::pair<std::string, zvalue> > avs
             = lattice.getAnnotationItemManager().getValuesAsZvalues(sourceAI);
         typedef std::pair<std::string, zvalue> AVPair;
         BOOST_FOREACH(AVPair av, avs) {
-            std::map<std::string, std::string>::iterator smi1 = category_map_.find(av.first);
-            std::map<std::string, std::string>::iterator smi2 = category_map_.find(
+            std::map<std::string, std::string>::iterator ami = attr_map_.find(av.first);
+            std::map<std::string, std::string>::iterator vmi = val_map_.find(
                 lattice.getAnnotationItemManager().zvalueToString(av.second)
             );
-            if (smi1 == category_map_.end() && smi2 == category_map_.end()) {
+            if (ami == attr_map_.end() && vmi == val_map_.end()) {
                 lattice.getAnnotationItemManager().setValue(targetAI, av.first, av.second);
-            } else if (smi1 != category_map_.end() && smi2 == category_map_.end()) {
-                lattice.getAnnotationItemManager().setValue(targetAI, smi1->second, av.second);
-            } else if (smi1 == category_map_.end() && smi2 != category_map_.end()) {
-                lattice.getAnnotationItemManager().setValue(targetAI, av.first, smi2->second);
+            } else if (ami != attr_map_.end() && vmi == val_map_.end()) {
+                lattice.getAnnotationItemManager().setValue(targetAI, ami->second, av.second);
+            } else if (ami == attr_map_.end() && vmi != val_map_.end()) {
+                lattice.getAnnotationItemManager().setValue(targetAI, av.first, vmi->second);
             } else {
-                lattice.getAnnotationItemManager().setValue(targetAI, smi1->second, smi2->second);
+                lattice.getAnnotationItemManager().setValue(targetAI, ami->second, vmi->second);
             }
         }
         lattice.addEdge(
@@ -186,17 +209,5 @@ void Unumsunt::convertTags(Lattice & lattice) {
             lattice.getEdgePartitions(edge).front().getSequence()
         );
     }
-}
-
-
-std::string Unumsunt::getSourceTagset_() const {
-    if (langCode_ == "pl") return "morfologik-tagset";
-    return "morfologik-tagset";
-}
-
-
-std::string Unumsunt::getTargetTagset_() const {
-    if (langCode_ == "pl") return "gobio-tagset";
-    return "gobio-tagset";
 }
 
