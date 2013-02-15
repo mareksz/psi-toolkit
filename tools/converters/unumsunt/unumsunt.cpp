@@ -217,15 +217,24 @@ void Unumsunt::convertTags(Lattice & lattice) {
             Lattice::Partition::Iterator pi(lattice, partition);
             while (pi.hasNext()) {
                 Lattice::EdgeDescriptor partitionEdge = pi.next();
-                builder.addEdge(partitionEdge);
+                std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>::iterator ri
+                    = replacements_.find(partitionEdge);
+                if (ri == replacements_.end()) {
+                    builder.addEdge(partitionEdge);
+                } else {
+                    builder.addEdge(ri->second);
+                }
             }
-            lattice.addEdge(
-                lattice.getEdgeSource(edge),
-                lattice.getEdgeTarget(edge),
-                targetAI,
-                targetTags,
-                builder.build()
-            );
+            replacements_.insert(std::pair<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>(
+                edge,
+                lattice.addEdge(
+                    lattice.getEdgeSource(edge),
+                    lattice.getEdgeTarget(edge),
+                    targetAI,
+                    targetTags,
+                    builder.build()
+                )
+            ));
         }
     }
 }

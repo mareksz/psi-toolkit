@@ -108,6 +108,8 @@ private:
     std::map<std::string, std::string> attr_map_;
     std::map<std::string, std::string> val_map_;
 
+    std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements_;
+
 };
 
 
