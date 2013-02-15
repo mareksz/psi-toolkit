@@ -103,7 +103,7 @@ private:
     std::string getSourceTagset_() const;
     std::string getTargetTagset_() const;
 
-    std::map<std::string, std::string> symbol_map_;
+    std::map<std::string, std::string> category_map_;
 
 };
 

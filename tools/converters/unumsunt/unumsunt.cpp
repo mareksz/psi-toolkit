@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/foreach.hpp>
 
@@ -103,25 +104,34 @@ Unumsunt::Unumsunt(
     std::ifstream rulesFs(rulesPath.c_str());
     std::string line;
     while (rulesFs.good()) {
-
-        std::string source;
-        std::string target;
-
         std::getline(rulesFs, line);
-
-        UnumsuntConversionItem item;
-        std::string::const_iterator begin = line.begin();
-        std::string::const_iterator end = line.end();
-
-        if (parse(begin, end, grammar, item)) {
-            source = item.source;
-            target = item.target;
-        } else {
-            std::stringstream pairSs(line);
-            pairSs >> source >> target;
+        if (boost::algorithm::trim_copy(line).empty()) break;
+        switch(line.at(0)) {
+            case '#': {
+                // comment
+                DEBUG("COMMENT: " << line.substr(1));
+                break;
+            }
+            case '@': {
+                // hash elements
+                UnumsuntConversionItem item;
+                std::string::const_iterator begin = line.begin();
+                std::string::const_iterator end = line.end();
+                if (parse(begin, end, grammar, item)) {
+                    if (item.type == "@cat") {
+                        category_map_.insert(
+                            std::pair<std::string, std::string>(item.source, item.target));
+                    }
+                }
+                break;
+            }
+            default: {
+                // auxiliary rule
+                DEBUG("TODO with RULE: " << line);
+                break;
+            }
         }
 
-        symbol_map_.insert(std::pair<std::string, std::string>(source, target));
 
     }
 }
@@ -143,8 +153,8 @@ void Unumsunt::convertTags(Lattice & lattice) {
         AnnotationItem sourceAI = lattice.getEdgeAnnotationItem(edge);
         std::string sourceCategory = sourceAI.getCategory();
         std::string targetCategory;
-        std::map<std::string, std::string>::iterator smi = symbol_map_.find(sourceCategory);
-        if (smi == symbol_map_.end()) {
+        std::map<std::string, std::string>::iterator smi = category_map_.find(sourceCategory);
+        if (smi == category_map_.end()) {
             targetCategory = sourceCategory;
         } else {
             targetCategory = smi->second;
@@ -154,15 +164,15 @@ void Unumsunt::convertTags(Lattice & lattice) {
             = lattice.getAnnotationItemManager().getValuesAsZvalues(sourceAI);
         typedef std::pair<std::string, zvalue> AVPair;
         BOOST_FOREACH(AVPair av, avs) {
-            std::map<std::string, std::string>::iterator smi1 = symbol_map_.find(av.first);
-            std::map<std::string, std::string>::iterator smi2 = symbol_map_.find(
+            std::map<std::string, std::string>::iterator smi1 = category_map_.find(av.first);
+            std::map<std::string, std::string>::iterator smi2 = category_map_.find(
                 lattice.getAnnotationItemManager().zvalueToString(av.second)
             );
-            if (smi1 == symbol_map_.end() && smi2 == symbol_map_.end()) {
+            if (smi1 == category_map_.end() && smi2 == category_map_.end()) {
                 lattice.getAnnotationItemManager().setValue(targetAI, av.first, av.second);
-            } else if (smi1 != symbol_map_.end() && smi2 == symbol_map_.end()) {
+            } else if (smi1 != category_map_.end() && smi2 == category_map_.end()) {
                 lattice.getAnnotationItemManager().setValue(targetAI, smi1->second, av.second);
-            } else if (smi1 == symbol_map_.end() && smi2 != symbol_map_.end()) {
+            } else if (smi1 == category_map_.end() && smi2 != category_map_.end()) {
                 lattice.getAnnotationItemManager().setValue(targetAI, av.first, smi2->second);
             } else {
                 lattice.getAnnotationItemManager().setValue(targetAI, smi1->second, smi2->second);
