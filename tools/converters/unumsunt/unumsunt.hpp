@@ -2,7 +2,9 @@
 #define UNUMSUNT_HDR
 
 
+#include <list>
 #include <map>
+#include <string>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/program_options.hpp>
@@ -99,6 +101,8 @@ private:
 
     std::string sourceTagset_;
     std::string targetTagset_;
+
+    std::list<std::string> preservedTags_;
 
     std::map<std::string, std::string> cat_map_;
     std::map<std::string, std::string> attr_map_;

@@ -2,6 +2,7 @@
 
 
 #include <fstream>
+#include <list>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -125,7 +126,11 @@ Unumsunt::Unumsunt(
                 } else if (type == "target") {
                     lineSs >> targetTagset_;
                 } else if (type == "tags") {
-                    // TODO
+                    while (lineSs.good()) {
+                        std::string tag;
+                        lineSs >> tag;
+                        preservedTags_.push_back(tag);
+                    }
                 } else {
                     std::string source;
                     std::string target;
@@ -166,13 +171,18 @@ Unumsunt::Unumsunt(
 
 void Unumsunt::convertTags(Lattice & lattice) {
     LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMask(sourceTagset_);
+    LayerTagCollection tagTargetTagset
+        = lattice.getLayerTagManager().createTagCollectionFromList(
+            boost::assign::list_of("tagset-converter")(targetTagset_.c_str()));
+    LayerTagCollection preservedTags
+        = lattice.getLayerTagManager().createTagCollectionFromList(preservedTags_);
     Lattice::EdgesSortedBySourceIterator ei(lattice, maskSourceTagset);
     while (ei.hasNext()) {
         Lattice::EdgeDescriptor edge = ei.next();
-        LayerTagCollection tagTargetTagset
-            = lattice.getLayerTagManager().createTagCollectionFromList(
-                boost::assign::list_of("tagset-converter")(targetTagset_.c_str())
-            );
+        LayerTagCollection edgePreservedTags
+            = createIntersection(lattice.getEdgeLayerTags(edge), preservedTags);
+        LayerTagCollection targetTags
+            = createUnion(edgePreservedTags, tagTargetTagset);
         AnnotationItem sourceAI = lattice.getEdgeAnnotationItem(edge);
         std::string sourceCategory = sourceAI.getCategory();
         std::string targetCategory;
@@ -205,7 +215,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
             lattice.getEdgeSource(edge),
             lattice.getEdgeTarget(edge),
             targetAI,
-            tagTargetTagset,
+            targetTags,
             lattice.getEdgePartitions(edge).front().getSequence()
         );
     }
