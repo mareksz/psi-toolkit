@@ -18,7 +18,7 @@ std::list<std::pair<RegExp, std::string> > Morfologik::BREAK_FORMS_RULES = boost
     ;
 
 Morfologik::Morfologik(const boost::program_options::variables_map& options)
-    : level_(3), dictionary_("MORFOLOGIK"), annotationManager_(NULL) {
+    : level_(3), dictionary_("MORFOLOGIK"), annotationManager_(NULL), foundLemma_(false) {
 
     if (options.count("level") > 0) setLevel(options["level"].as<int>());
     if (options.count("dict") > 0) setDictionary(options["dict"].as<std::string>());
@@ -94,6 +94,7 @@ void Morfologik::setDictionary(const std::string& dict) {
 void Morfologik::lemmatize(const std::string & word, AnnotationItemManager & manager,
     LemmatizerOutputIterator & iterator) {
 
+    foundLemma_ = false;
     annotationManager_ = &manager;
 
     switch (level_) {
@@ -108,6 +109,9 @@ void Morfologik::lemmatize(const std::string & word, AnnotationItemManager & man
         default:
             stemsOnFormLevel_(word, iterator);
     }
+
+    if (foundLemma_)
+        normalizeWord_(word, iterator);
 }
 
 boost::program_options::options_description Morfologik::optionsHandled() {
@@ -119,7 +123,7 @@ boost::program_options::options_description Morfologik::optionsHandled() {
     desc.add_options()
         ("level", boost::program_options::value<int>()->default_value(3),
             "set word processing level 0-3 (0 - do nothing, 1 - return only base forms, "
-            "2 - add grammatical class and main attributes, 3 - add detailed attributes")
+            "2 - add grammatical class and main attributes, 3 - add detailed attributes)")
         ("dict", boost::program_options::value<std::string>()
             ->default_value(DICTIONARIES[0]), dictionaryDescription.c_str())
         ("keep-original", "keep original Morfologik's settings i.e. do not break brief forms")
@@ -128,8 +132,13 @@ boost::program_options::options_description Morfologik::optionsHandled() {
     return desc;
 }
 
+void Morfologik::normalizeWord_(const std::string & word,
+                               LemmatizerOutputIterator& outputIterator) {
+    outputIterator.addNormalization(word);
+}
+
 void Morfologik::stemsOnLemmaLevel_(const std::string & word,
-    LemmatizerOutputIterator & outputIterator) {
+                                    LemmatizerOutputIterator & outputIterator) {
 
     std::vector<std::string> stems = simpleStem(word);
     std::vector<std::string>::iterator i;
@@ -144,11 +153,12 @@ void Morfologik::stemsOnLemmaLevel_(const std::string & word,
     for (i = stems.begin(); i != stems.end(); ++i) {
         std::string stem = *i;
         outputIterator.addLemma(stem);
+        foundLemma_ = true;
     }
 }
 
 void Morfologik::stemsOnLexemeLevel_(const std::string & word,
-    LemmatizerOutputIterator & outputIterator) {
+                                     LemmatizerOutputIterator & outputIterator) {
 
     std::multimap<std::string, std::vector<std::string> > stems = stem(word);
 
@@ -160,6 +170,7 @@ void Morfologik::stemsOnLexemeLevel_(const std::string & word,
 
     for (lem = lemmas.begin(); lem != lemmas.end(); ++lem) {
         outputIterator.addLemma(*lem);
+        foundLemma_ = true;
 
         std::vector<std::string> lexemeTags = getLexemeTagsFromStems_(stems, *lem);
         std::vector<std::string>::iterator lxt;
@@ -185,7 +196,8 @@ std::set<std::string> Morfologik::getLemmasFromStems_(
 }
 
 std::vector<std::string> Morfologik::getLexemeTagsFromStems_(
-    std::multimap<std::string, std::vector<std::string> > & stems, const std::string & lemma) {
+    std::multimap<std::string, std::vector<std::string> > & stems,
+    const std::string & lemma) {
 
     std::vector<std::string> tags;
     std::vector<std::string>::iterator t;
@@ -233,6 +245,7 @@ void Morfologik::stemsOnFormLevel_(const std::string & word,
 
     for (lem = lemmas.begin(); lem != lemmas.end(); ++lem) {
         outputIterator.addLemma(*lem);
+        foundLemma_ = true;
 
         std::multimap<std::string, std::vector<std::string> >::iterator lex;
 

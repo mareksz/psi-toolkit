@@ -89,13 +89,17 @@ private:
 
     static std::list<std::pair<RegExp, std::string> > BREAK_FORMS_RULES;
     std::string breakForms_(std::string);
+
     bool keepOriginal_;
 
     AnnotationItemManager * annotationManager_;
 
+    void normalizeWord_(const std::string &, LemmatizerOutputIterator &);
     void stemsOnLemmaLevel_(const std::string &, LemmatizerOutputIterator &);
     void stemsOnLexemeLevel_(const std::string &, LemmatizerOutputIterator &);
     void stemsOnFormLevel_(const std::string &, LemmatizerOutputIterator &);
+
+    bool foundLemma_;
 
     AnnotationItem createLexemeAnnotation_(const std::string& stem, std::string& tag);
     AnnotationItem createFormAnnotation_(AnnotationItem& lexemeItem, const std::string& word,
