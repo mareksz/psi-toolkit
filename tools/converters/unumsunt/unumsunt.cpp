@@ -211,13 +211,22 @@ void Unumsunt::convertTags(Lattice & lattice) {
                 lattice.getAnnotationItemManager().setValue(targetAI, ami->second, vmi->second);
             }
         }
-        lattice.addEdge(
-            lattice.getEdgeSource(edge),
-            lattice.getEdgeTarget(edge),
-            targetAI,
-            targetTags,
-            lattice.getEdgePartitions(edge).front().getSequence()
-        );
+        const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
+        BOOST_FOREACH(Lattice::Partition partition, partitions) {
+            Lattice::EdgeSequence::Builder builder(lattice);
+            Lattice::Partition::Iterator pi(lattice, partition);
+            while (pi.hasNext()) {
+                Lattice::EdgeDescriptor partitionEdge = pi.next();
+                builder.addEdge(partitionEdge);
+            }
+            lattice.addEdge(
+                lattice.getEdgeSource(edge),
+                lattice.getEdgeTarget(edge),
+                targetAI,
+                targetTags,
+                builder.build()
+            );
+        }
     }
 }
 
