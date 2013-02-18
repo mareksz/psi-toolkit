@@ -240,15 +240,39 @@ chart<C,S,V,R,I>::marked_edges_index(vertex_descriptor vertex)
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>::edge_source(
-    edge_descriptor edge)
-{
+    edge_descriptor edge,
+    bool skip_blank
+) {
+    if (skip_blank) {
+        LayerTagMask maskToken = lattice_.getLayerTagManager().getMask("token");
+        Lattice::InOutEdgesIterator iei
+            = lattice_.inEdges(lattice_.getEdgeSource(edge), maskToken);
+        while (iei.hasNext()) {
+            Lattice::EdgeDescriptor edge = iei.next();
+            if (lattice_.getAnnotationCategory(edge) == "B") {
+                return lattice_.getEdgeSource(edge);
+            }
+        }
+    }
     return lattice_.getEdgeSource(edge);
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>::edge_target(
-    edge_descriptor edge)
-{
+    edge_descriptor edge,
+    bool skip_blank
+) {
+    if (skip_blank) {
+        LayerTagMask maskToken = lattice_.getLayerTagManager().getMask("token");
+        Lattice::InOutEdgesIterator oei
+            = lattice_.outEdges(lattice_.getEdgeSource(edge), maskToken);
+        while (oei.hasNext()) {
+            Lattice::EdgeDescriptor edge = oei.next();
+            if (lattice_.getAnnotationCategory(edge) == "B") {
+                return lattice_.getEdgeSource(edge);
+            }
+        }
+    }
     return lattice_.getEdgeTarget(edge);
 }
 

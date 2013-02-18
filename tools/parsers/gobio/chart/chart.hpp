@@ -136,8 +136,8 @@ public:
 
     marked_edges_index_type& marked_edges_index(vertex_descriptor vertex);
 
-    vertex_descriptor edge_source(edge_descriptor edge);
-    vertex_descriptor edge_target(edge_descriptor edge);
+    vertex_descriptor edge_source(edge_descriptor edge, bool skip_blank = false);
+    vertex_descriptor edge_target(edge_descriptor edge, bool skip_blank = false);
     category_type edge_category(edge_descriptor edge);
     score_type edge_score(edge_descriptor edge) const;
     // bool edge_accommodated(edge_descriptor edge) const;
