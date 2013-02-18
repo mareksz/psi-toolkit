@@ -99,7 +99,11 @@ void Gobio::parse(Lattice & lattice) {
     std::vector<Combinator::rule_holder> local_rules;
     std::vector<Edge> choosen_edges = chr->go(ch, combinator, local_rules);
 
-    LayerTagMask maskGobio = lattice.getLayerTagManager().getMask("gobio");
+    LayerTagMask maskGobio = lattice.getLayerTagManager().getAlternativeMask(
+        boost::assign::list_of
+            (lattice.getLayerTagManager().createSingletonTagCollection("gobio"))
+            (lattice.getLayerTagManager().createSingletonTagCollection("form"))
+    );
     LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
         boost::assign::list_of("gobio")("parse")
     );
