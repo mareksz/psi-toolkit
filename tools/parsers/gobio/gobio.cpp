@@ -104,15 +104,17 @@ void Gobio::parse(Lattice & lattice) {
             boost::assign::list_of("gobio")("parse")
         );
 
-
     BOOST_FOREACH(Edge e, choosen_edges) {
-        lattice.addEdge(
-            lattice.getEdgeSource(e),
-            lattice.getEdgeTarget(e),
-            lattice.getEdgeAnnotationItem(e),
-            tagParse,
-            lattice.getEdgePartitions(e).front().getSequence()
-        );
+        const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(e);
+        BOOST_FOREACH(Lattice::Partition partition, partitions) {
+            lattice.addEdge(
+                lattice.getEdgeSource(e),
+                lattice.getEdgeTarget(e),
+                lattice.getEdgeAnnotationItem(e),
+                tagParse,
+                partition.getSequence()
+            );
+        }
     }
 
 }
