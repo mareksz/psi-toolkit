@@ -116,6 +116,13 @@ private:
 
     std::string rulesPath_;
 
+    void markTree_(
+        Lattice & lattice,
+        LayerTagMask sourceMask,
+        LayerTagCollection targetTags,
+        Lattice::EdgeDescriptor edge
+    );
+
     virtual double doGetQualityScore(
         const boost::program_options::variables_map& options) const;
 };

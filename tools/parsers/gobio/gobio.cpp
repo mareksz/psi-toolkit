@@ -99,25 +99,50 @@ void Gobio::parse(Lattice & lattice) {
     std::vector<Combinator::rule_holder> local_rules;
     std::vector<Edge> choosen_edges = chr->go(ch, combinator, local_rules);
 
-    LayerTagCollection tagParse
-        = lattice.getLayerTagManager().createTagCollectionFromList(
-            boost::assign::list_of("gobio")("parse")
-        );
+    LayerTagMask maskGobio = lattice.getLayerTagManager().getMask("gobio");
+    LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")("parse")
+    );
 
     BOOST_FOREACH(Edge e, choosen_edges) {
-        const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(e);
-        BOOST_FOREACH(Lattice::Partition partition, partitions) {
-            lattice.addEdge(
-                lattice.getEdgeSource(e),
-                lattice.getEdgeTarget(e),
-                lattice.getEdgeAnnotationItem(e),
-                tagParse,
-                partition.getSequence()
-            );
-        }
+        markTree_(lattice, maskGobio, tagParse, e);
     }
 
 }
+
+
+void Gobio::markTree_(
+    Lattice & lattice,
+    LayerTagMask sourceMask,
+    LayerTagCollection targetTags,
+    Lattice::EdgeDescriptor edge
+) {
+    if (matches(lattice.getEdgeLayerTags(edge), sourceMask)) {
+        const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
+        Lattice::EdgeSequence edgeSequence;
+        if (!partitions.empty()) {
+            Lattice::Partition bestPartition = partitions.front();
+            BOOST_FOREACH(Lattice::Partition partition, partitions) {
+                if (partition.getScore() > bestPartition.getScore()) {
+                    bestPartition = partition;
+                }
+            }
+            Lattice::Partition::Iterator pi(lattice, bestPartition);
+            while (pi.hasNext()) {
+                markTree_(lattice, sourceMask, targetTags, pi.next());
+            }
+            edgeSequence = bestPartition.getSequence();
+        }
+        lattice.addEdge(
+            lattice.getEdgeSource(edge),
+            lattice.getEdgeTarget(edge),
+            lattice.getEdgeAnnotationItem(edge),
+            targetTags,
+            edgeSequence
+        );
+    }
+}
+
 
 double Gobio::doGetQualityScore(
     const boost::program_options::variables_map & /*options*/) const {
