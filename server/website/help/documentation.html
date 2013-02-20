@@ -6,8 +6,11 @@
   <!--#psis index_site_scripts_part -->
   <script type="text/javascript">
     <!--#psis pipe_site_options -->
+
+    $(document).ready(function(){
+        bindStickyRightMenu("help-menu");
+    });
   </script>
-  <script type="text/javascript" src="/js/help.js"></script>
 </head>
 
 <body>
@@ -17,13 +20,13 @@
 <div id="content">
   <div class="wrapper">
 
-    <aside id="help-menu">
+    <aside class="right-menu" id="help-menu">
         <!--#psis help_site_documentation_menu -->
     </aside>
 
     <h1>PSI-Pipe specification</h1>
 
-    <section id="help-list">
+    <section class="left-content">
       <!--#psis help_site_processor_helps -->
     </section>
 
