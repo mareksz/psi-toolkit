@@ -612,6 +612,10 @@ if(USE_BONSAI_PARSEGRAPH)
     set(_WITH_BONSAI_PARSEGRAPH 1)
 endif(USE_BONSAI_PARSEGRAPH)
 
+if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+    set_target_properties(fex PROPERTIES COMPILE_FLAGS "-fPIC")
+endif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+
 add_subdirectory(tests)
 
 configure_file(${psi-toolkit_SOURCE_DIR}/common/config.hpp.in
