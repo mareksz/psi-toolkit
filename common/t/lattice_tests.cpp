@@ -211,8 +211,16 @@ BOOST_AUTO_TEST_CASE( get_path ) {
     AnnotationItemManager aim;
     Lattice lattice(aim);
     lattice.appendStringWithSymbols("ćma zielona");
+    Lattice::VertexDescriptor markupBegin = lattice.getLastVertex();
     lattice.appendString("<br>");
+    Lattice::VertexDescriptor markupEnd = lattice.getLastVertex();
     lattice.appendStringWithSymbols("mucha");
+    lattice.appendString("<br>");
+
+    AnnotationItem aiBlank("B");
+    LayerTagCollection tagToken
+        = lattice.getLayerTagManager().createSingletonTagCollection("token");
+    lattice.addEdge(markupBegin, markupEnd, aiBlank, tagToken, Lattice::EdgeSequence());
 
     LayerTagMask symbolMask = lattice.getLayerTagManager().getMask("symbol");
 
@@ -223,6 +231,16 @@ BOOST_AUTO_TEST_CASE( get_path ) {
 
     Lattice::InOutEdgesIterator iter = lattice.outEdges(vertex, symbolMask);
     BOOST_CHECK(!iter.hasNext());
+
+    vertex = lattice.getFirstVertex();
+
+    Lattice::EdgeSequence sequenceWithBlank = lattice.getPathSkippingBlanks(vertex, symbolMask);
+    BOOST_CHECK_EQUAL(lattice.getSequenceText(sequenceWithBlank), "ćma zielona<br>mucha");
+
+    Lattice::InOutEdgesIterator iter2 = lattice.allOutEdges(vertex);
+    while (iter2.hasNext()) {
+        BOOST_CHECK(!lattice.isBlank(iter2.next()));
+    }
 
     BOOST_CHECK_EQUAL(sequence.size(lattice), 11U);
 }
