@@ -525,6 +525,8 @@ public:
 
     void runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask);
 
+    bool isBlank(Lattice::EdgeDescriptor edge);
+
     /**
      * Get a path starting with `vertex` composed of edges matching `mask`.
      * The final vertex of the returned path will be assigned to `vertex`.
@@ -534,6 +536,35 @@ public:
      * one is chosen (the last one with the higher score).
      */
     Lattice::EdgeSequence getPath(VertexDescriptor& vertex, LayerTagMask mask);
+
+    /**
+     * Get a path starting with `vertex` composed of edges matching `mask`,
+     * skipping edges satisfying the given predicate.
+     *
+     * The final vertex of the returned path will be assigned to `vertex`.
+     * The path is returned as an edge sequence.
+     *
+     * If there are multiple outgoing edges matching `mask` the best
+     * one is chosen (the last one with the higher score).
+     */
+    template <typename EdgePredicate>
+    Lattice::EdgeSequence getPathWithSkipping(
+        VertexDescriptor& vertex,
+        LayerTagMask mask,
+        EdgePredicate skippingPredicate
+    );
+
+    /**
+     * Get a path starting with `vertex` composed of edges matching `mask`,
+     * skipping blank edges.
+     *
+     * The final vertex of the returned path will be assigned to `vertex`.
+     * The path is returned as an edge sequence.
+     *
+     * If there are multiple outgoing edges matching `mask` the best
+     * one is chosen (the last one with the higher score).
+     */
+    Lattice::EdgeSequence getPathSkippingBlanks(VertexDescriptor& vertex, LayerTagMask mask);
 
     /**
      * Checks if the vertex is loose.
@@ -561,6 +592,15 @@ public:
     int countAllVertices();
 
 private:
+
+    struct IsBlank {
+        bool operator()(
+            Lattice & lattice,
+            EdgeDescriptor edge
+        ) {
+            return lattice.isBlank(edge);
+        }
+    };
 
     Graph graph_;
 
@@ -720,6 +760,53 @@ private:
 
     std::list<Partition> emptyPartitionList_;
 };
+
+
+template <typename EdgePredicate>
+Lattice::EdgeSequence Lattice::getPathWithSkipping(
+    VertexDescriptor& vertex,
+    LayerTagMask mask,
+    EdgePredicate skippingPredicate
+) {
+    bool nextVertexFound = true;
+
+    Lattice::EdgeSequence::Builder pathBuilder(*this);
+
+    do {
+        InOutEdgesIterator iter = outEdges(vertex, mask);
+
+        if (iter.hasNext()) {
+            EdgeDescriptor bestOne = iter.next();
+            while (iter.hasNext()) {
+                bestOne = iter.next();
+            }
+            pathBuilder.addEdge(bestOne);
+            vertex = getEdgeTarget(bestOne);
+        } else {
+            iter = allOutEdges(vertex);
+            if (iter.hasNext()) {
+                EdgeDescriptor bestOne = iter.next();
+                while (iter.hasNext()) {
+                    EdgeDescriptor currentOne = iter.next();
+                    if (skippingPredicate(*this, currentOne)) {
+                        bestOne = iter.next();
+                    }
+                }
+                if (skippingPredicate(*this, bestOne)) {
+                    pathBuilder.addEdge(bestOne);
+                    vertex = getEdgeTarget(bestOne);
+                } else {
+                    nextVertexFound = false;
+                }
+            } else {
+                nextVertexFound = false;
+            }
+        }
+
+    } while (nextVertexFound);
+
+    return pathBuilder.build();
+}
 
 
 #endif

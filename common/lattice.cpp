@@ -616,6 +616,16 @@ void Lattice::runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMas
     }
 }
 
+bool Lattice::isBlank(EdgeDescriptor edge) {
+    if (
+        matches(getEdgeLayerTags(edge), getLayerTagManager().getMask("token")) &&
+        getAnnotationCategory(edge) == "B"
+    ) {
+        return true;
+    }
+    return false;
+}
+
 
 Lattice::EdgeSequence Lattice::getPath(VertexDescriptor& vertex, LayerTagMask mask) {
     bool nextVertexFound = true;
@@ -639,6 +649,13 @@ Lattice::EdgeSequence Lattice::getPath(VertexDescriptor& vertex, LayerTagMask ma
     } while (nextVertexFound);
 
     return pathBuilder.build();
+}
+
+Lattice::EdgeSequence Lattice::getPathSkippingBlanks(
+    VertexDescriptor& vertex,
+    LayerTagMask mask
+) {
+    return getPathWithSkipping(vertex, mask, IsBlank());
 }
 
 bool Lattice::isLooseVertex(Lattice::VertexDescriptor vd) const {
