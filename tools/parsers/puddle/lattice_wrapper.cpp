@@ -981,12 +981,7 @@ namespace poleng {
             }
 
             bool isBlankTokenEdge(Lattice &lattice, Lattice::EdgeDescriptor edge) {
-                AnnotationItem annotationItem = lattice.getEdgeAnnotationItem(edge);
-                if (annotationItem.getCategory() == "B") {
-                    return true;
-                } else {
-                    return false;
-                }
+                return lattice.isBlank(edge);
             }
 
             void deleteEdges(Lattice &lattice, std::string langCode,

@@ -251,7 +251,7 @@ MeTagger::TokenEdgesMap MeTagger::createTokenEdgesMap(
         if (tokenIt.hasNext()) {
             Lattice::EdgeDescriptor token = tokenIt.next();
 
-            if (lattice.getAnnotationCategory(token) != "B") {//skip white spaces
+            if (!lattice.isBlank(token)) { //skip white spaces
                 tokenEdgesMap.insert(std::pair<int, Lattice::EdgeDescriptor>(
                             tokenCount,
                             token
