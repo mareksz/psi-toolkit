@@ -27,7 +27,7 @@ public:
     A& agenda_)
     {
         // zastosowanie regul binarnych z biezaca krawedzia po prawej stronie
-        typename chart_type::vertex_descriptor source = chart_.edge_source(e);
+        typename chart_type::vertex_descriptor source = chart_.edge_source(e, true);
 
         std::pair<
         marked_in_edge_iterator,
@@ -40,7 +40,7 @@ public:
         apply_binary_rules_for_pair_((*it), e, min_score, chart_, combinator_, agenda_);
 
         // zastosowanie regul binarnych z biezaca krawedzia po lewej stronie
-        typename chart_type::vertex_descriptor target = chart_.edge_target(e);
+        typename chart_type::vertex_descriptor target = chart_.edge_target(e, true);
 
         std::pair<
         marked_out_edge_iterator,
