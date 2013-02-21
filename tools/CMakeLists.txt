@@ -7,6 +7,7 @@ add_subdirectory(recognizers)
 add_subdirectory(lexica)
 add_subdirectory(taggers)
 add_subdirectory(spellcheckers)
+add_subdirectory(converters)
 add_subdirectory(translators)
 
 set(tools_DIRS
@@ -33,6 +34,7 @@ set(tools_DIRS
     datastructures/lexica
     taggers/metagger
     spellcheckers/aspell
+    converters/unumsunt
     translators/bonsai
     translators/bonsai/irstlm
     translators/bonsai/rules
