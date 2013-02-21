@@ -1,3 +1,4 @@
+# Reguły konwersji tagsetu Morfologika do tagsetu Translatiki
 @source morfologik-tagset
 @target gobio-tagset
 @tags   lexeme  form
@@ -68,3 +69,4 @@
 @attr   mode    C
 @val    pot przypuszczający
 @val    impt    rozkazujący
+CAT = czasownik -> L1 = L

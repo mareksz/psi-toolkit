@@ -40,18 +40,13 @@ struct UnumsuntRuleGrammar : public qi::grammar<
     UnumsuntRuleGrammar() : UnumsuntRuleGrammar::base_type(start) {
 
         start
-            %= +(qi::char_ - ' ')
-            >> whitespaces
-            >> qi::lit("=>")
-            >> whitespaces
-            >> +(qi::char_ - ' ');
-
-        whitespaces = +(qi::space);
+            %= +(qi::char_ - '-')
+            >> qi::lit("->")
+            >> +(qi::char_);
 
     }
 
     qi::rule<std::string::const_iterator, UnumsuntRuleItem()> start;
-    qi::rule<std::string::const_iterator, qi::unused_type()> whitespaces;
 
 };
 

@@ -1,6 +1,8 @@
 #include "unumsunt.hpp"
 
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <list>
 #include <sstream>
@@ -108,12 +110,11 @@ Unumsunt::Unumsunt(
     while (rulesFs.good()) {
         ++lineno;
         std::getline(rulesFs, line);
-        DEBUG("LINE:\t" << line);
-        if (boost::algorithm::trim_copy(line).empty()) break;
+        boost::algorithm::trim(line);
+        if (line.empty()) break;
         switch(line.at(0)) {
             case '#': {
                 // comment
-                DEBUG("COMMENT:\t" << line.substr(1));
                 break;
             }
             case '@': {
@@ -153,12 +154,14 @@ Unumsunt::Unumsunt(
             default: {
                 // auxiliary rule
                 DEBUG("RULE:\t" << line);
+                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+                DEBUG("RULE*:\t" << line);
                 UnumsuntRuleItem item;
                 std::string::const_iterator begin = line.begin();
                 std::string::const_iterator end = line.end();
                 if (parse(begin, end, grammar, item)) {
-                    DEBUG("RULE LHS:\t" << item.source);
-                    DEBUG("RULE RHS:\t" << item.target);
+                    DEBUG("RULE LHS: [" << item.source << "]");
+                    DEBUG("RULE RHS: [" << item.target << "]");
                 } else {
                     DEBUG("LINE NOT PARSED!");
                 }
