@@ -249,8 +249,8 @@ typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>::edge_source(
             = lattice_.inEdges(lattice_.getEdgeSource(edge), maskToken);
         while (iei.hasNext()) {
             Lattice::EdgeDescriptor edge = iei.next();
-            if (lattice_.getAnnotationCategory(edge) == "B") {
-                return lattice_.getEdgeSource(edge);
+            if (lattice_.isBlank(edge)) {
+                return edge_source(edge, true);
             }
         }
     }
@@ -265,11 +265,11 @@ typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>::edge_target(
     if (skip_blank) {
         LayerTagMask maskToken = lattice_.getLayerTagManager().getMask("token");
         Lattice::InOutEdgesIterator oei
-            = lattice_.outEdges(lattice_.getEdgeSource(edge), maskToken);
+            = lattice_.outEdges(lattice_.getEdgeTarget(edge), maskToken);
         while (oei.hasNext()) {
             Lattice::EdgeDescriptor edge = oei.next();
-            if (lattice_.getAnnotationCategory(edge) == "B") {
-                return lattice_.getEdgeSource(edge);
+            if (lattice_.isBlank(edge)) {
+                return edge_target(edge);
             }
         }
     }
