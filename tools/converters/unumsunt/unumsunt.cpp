@@ -112,7 +112,7 @@ Unumsunt::Unumsunt(
         std::getline(rulesFs, line);
         boost::algorithm::trim(line);
         if (line.empty()) break;
-        switch(line.at(0)) {
+        switch (line.at(0)) {
             case '#': {
                 // comment
                 break;
@@ -241,4 +241,3 @@ void Unumsunt::convertTags(Lattice & lattice) {
         }
     }
 }
-
