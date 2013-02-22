@@ -1,6 +1,9 @@
 #include "utt_lattice_reader.hpp"
 
 
+#include <sstream>
+
+
 std::string UTTLatticeReader::getFormatName() {
     return "UTT";
 }
@@ -50,7 +53,9 @@ void UTTLatticeReader::Worker::doRun() {
     std::string sentenceForm = "";
     int beginningOfSentencePosition = -1;
     int endPosition = -1;
+    int lineno = 0;
     while (std::getline(inputStream_, line)) {
+        ++lineno;
         UTTLRItem item;
         std::string::const_iterator begin = line.begin();
         std::string::const_iterator end = line.end();
@@ -62,7 +67,10 @@ void UTTLatticeReader::Worker::doRun() {
 
             if (item.position < 0) {
                 if (endPosition < 0) {
-                    throw FileFormatException("UTT reader: No beginning position.");
+                    std::stringstream errorSs;
+                    errorSs << "UTT reader: syntax error at line " << lineno << ": " << line
+                        << "\n\tNo beginning position.";
+                    throw FileFormatException(errorSs.str());
                 }
                 item.position = endPosition;
             }
@@ -175,7 +183,10 @@ void UTTLatticeReader::Worker::doRun() {
             } else if (item.segmentType == "EOS") {
 
                 if (beginningOfSentencePosition == -1) {
-                    throw FileFormatException("UTT reader: EOS tag does not match any BOS tag.");
+                    std::stringstream errorSs;
+                    errorSs << "UTT reader: syntax error at line " << lineno
+                        << ": EOS tag does not match any BOS tag.";
+                    throw FileFormatException(errorSs.str());
                 }
 
                 LayerTagMask tokenMask = lattice_.getLayerTagManager().getMask("token");
