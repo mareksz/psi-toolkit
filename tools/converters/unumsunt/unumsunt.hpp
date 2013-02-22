@@ -21,24 +21,6 @@
 namespace qi = boost::spirit::qi;
 
 
-struct UnumsuntRule {
-    std::pair<std::string, std::string> condition;
-    std::vector< std::pair<std::string, std::string> > commands;
-
-    operator std::string() const {
-        std::stringstream sstr;
-        sstr << "if [" << condition.first << "] == [" << condition.second << "]";
-        std::string comma(" then");
-        typedef std::pair<std::string, std::string> StrPair;
-        BOOST_FOREACH(StrPair command, commands) {
-            sstr << comma << " [" << command.first << "] := [" << command.second << "]";
-            comma = ",";
-        }
-        return sstr.str();
-    }
-};
-
-
 struct UnumsuntRuleItem {
     std::string condition;
     std::vector<std::string> commands;
@@ -154,7 +136,11 @@ private:
     std::map<std::string, std::string> cat_map_;
     std::map<std::string, std::string> attr_map_;
     std::map<std::string, std::string> val_map_;
-    std::vector<UnumsuntRule> aux_rules_;
+
+    typedef std::pair< std::string, std::string > StringPair;
+    typedef std::pair< StringPair, std::vector<StringPair> > UnumsuntRulesMapItem;
+    typedef std::map< StringPair, std::vector<StringPair> > UnumsuntRulesMap;
+    UnumsuntRulesMap aux_rules_map_;
 
     std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements_;
 

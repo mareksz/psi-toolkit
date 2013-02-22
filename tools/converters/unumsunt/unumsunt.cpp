@@ -138,11 +138,11 @@ Unumsunt::Unumsunt(
                     std::string target;
                     lineSs >> source >> target;
                     if (type == "cat") {
-                        cat_map_.insert(std::pair<std::string, std::string>(source, target));
+                        cat_map_.insert(StringPair(source, target));
                     } else if (type == "attr") {
-                        attr_map_.insert(std::pair<std::string, std::string>(source, target));
+                        attr_map_.insert(StringPair(source, target));
                     } else if (type == "val") {
-                        val_map_.insert(std::pair<std::string, std::string>(source, target));
+                        val_map_.insert(StringPair(source, target));
                     } else {
                         std::stringstream errorSs;
                         errorSs << "Tagset converter: unknown command (@" << type <<
@@ -159,25 +159,29 @@ Unumsunt::Unumsunt(
                 std::string::const_iterator rBegin = line.begin();
                 std::string::const_iterator rEnd = line.end();
                 if (parse(rBegin, rEnd, rGrammar, rItem)) {
-                    UnumsuntRule rule;
                     UnumsuntAssignmentItem aItem;
                     std::string::const_iterator aBegin = rItem.condition.begin();
                     std::string::const_iterator aEnd = rItem.condition.end();
                     if (parse(aBegin, aEnd, aGrammar, aItem)) {
                         DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
-                        rule.condition = std::pair<std::string, std::string>(aItem.arg, aItem.val);
-                    }
-                    BOOST_FOREACH(std::string command, rItem.commands) {
-                        UnumsuntAssignmentItem aItem;
-                        std::string::const_iterator aBegin = command.begin();
-                        std::string::const_iterator aEnd = command.end();
-                        if (parse(aBegin, aEnd, aGrammar, aItem)) {
-                            DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
-                            rule.commands.push_back(
-                                std::pair<std::string, std::string>(aItem.arg, aItem.val));
+                        std::pair<UnumsuntRulesMap::iterator, bool> mapInsertionResult(
+                            aux_rules_map_.insert(UnumsuntRulesMapItem(
+                                StringPair(aItem.arg, aItem.val),
+                                std::vector<StringPair>()
+                            ))
+                        );
+                        BOOST_FOREACH(std::string command, rItem.commands) {
+                            UnumsuntAssignmentItem aItem;
+                            std::string::const_iterator aBegin = command.begin();
+                            std::string::const_iterator aEnd = command.end();
+                            if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                                DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
+                                mapInsertionResult.first->second.push_back(
+                                    StringPair(aItem.arg, aItem.val)
+                                );
+                            }
                         }
                     }
-                    aux_rules_.push_back(rule);
                 } else {
                     std::stringstream errorSs;
                     errorSs << "Tagset converter: syntax error in line " << lineno << ": " << line;
@@ -188,9 +192,17 @@ Unumsunt::Unumsunt(
         }
     }
 
-    DEBUG("Imported rules:");
-    BOOST_FOREACH(UnumsuntRule rule, aux_rules_) {
-        DEBUG(rule);
+    DEBUG("Rules map size = " << aux_rules_map_.size());
+    DEBUG("Rules in map:");
+    BOOST_FOREACH(UnumsuntRulesMapItem rule, aux_rules_map_) {
+        std::stringstream sstr;
+        sstr << "if [" << rule.first.first << "] == [" << rule.first.second << "]";
+        std::string comma(" then");
+        BOOST_FOREACH(StringPair command, rule.second) {
+            sstr << comma << " [" << command.first << "] := [" << command.second << "]";
+            comma = ",";
+        }
+        DEBUG(sstr.str());
     }
 }
 
