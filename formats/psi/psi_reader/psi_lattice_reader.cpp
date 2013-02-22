@@ -214,9 +214,16 @@ void PsiLatticeReader::Worker::doRun() {
                 Lattice::EdgeSequence::Builder seqBuilder(lattice_);
                 if (!lattice_.getLayerTagManager().isThere("symbol", tags)) {
                     while (currentVertex != to) {
-                        currentEdge = lattice_.firstOutEdge(currentVertex, rawMask);
-                        seqBuilder.addEdge(currentEdge);
-                        currentVertex = lattice_.getEdgeTarget(currentEdge);
+                        try {
+                            currentEdge = lattice_.firstOutEdge(currentVertex, rawMask);
+                            seqBuilder.addEdge(currentEdge);
+                            currentVertex = lattice_.getEdgeTarget(currentEdge);
+                        } catch (NoEdgeException) {
+                            std::stringstream errorSs;
+                            errorSs << "PSI reader: syntax error in line "
+                                << lineno << ": " << line;
+                            throw FileFormatException(errorSs.str());
+                        }
                     }
                 }
                 partitionsElements.push_back(PsiLRPartitionElements(
@@ -248,7 +255,15 @@ void PsiLatticeReader::Worker::doRun() {
                                             << " (too many sub-edges)";
                                         throw FileFormatException(errorSs.str());
                                     }
-                                    currentEdge = lattice_.firstOutEdge(currentVertex, rawMask);
+                                    try {
+                                        currentEdge
+                                            = lattice_.firstOutEdge(currentVertex, rawMask);
+                                    } catch (NoEdgeException) {
+                                        std::stringstream errorSs;
+                                        errorSs << "PSI reader: syntax error in line "
+                                            << lineno << ": " << part;
+                                        throw FileFormatException(errorSs.str());
+                                    }
                                 } else if (edgeOrdinalMap.find(edgeNumber)
                                            == edgeOrdinalMap.end()) {
                                     std::stringstream errorSs;
