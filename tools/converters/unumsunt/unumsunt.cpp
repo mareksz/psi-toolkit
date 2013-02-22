@@ -103,7 +103,8 @@ Unumsunt::Unumsunt(
 ) :
     langCode_(langCode)
 {
-    UnumsuntRuleGrammar grammar;
+    UnumsuntRuleGrammar rGrammar;
+    UnumsuntAssignmentGrammar aGrammar;
     std::ifstream rulesFs(rulesPath.c_str());
     std::string line;
     int lineno = 0;
@@ -153,21 +154,43 @@ Unumsunt::Unumsunt(
             }
             default: {
                 // auxiliary rule
-                DEBUG("RULE:\t" << line);
                 line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
-                DEBUG("RULE*:\t" << line);
-                UnumsuntRuleItem item;
-                std::string::const_iterator begin = line.begin();
-                std::string::const_iterator end = line.end();
-                if (parse(begin, end, grammar, item)) {
-                    DEBUG("RULE LHS: [" << item.source << "]");
-                    DEBUG("RULE RHS: [" << item.target << "]");
+                UnumsuntRuleItem rItem;
+                std::string::const_iterator rBegin = line.begin();
+                std::string::const_iterator rEnd = line.end();
+                if (parse(rBegin, rEnd, rGrammar, rItem)) {
+                    UnumsuntRule rule;
+                    UnumsuntAssignmentItem aItem;
+                    std::string::const_iterator aBegin = rItem.condition.begin();
+                    std::string::const_iterator aEnd = rItem.condition.end();
+                    if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                        DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
+                        rule.condition = std::pair<std::string, std::string>(aItem.arg, aItem.val);
+                    }
+                    BOOST_FOREACH(std::string command, rItem.commands) {
+                        UnumsuntAssignmentItem aItem;
+                        std::string::const_iterator aBegin = command.begin();
+                        std::string::const_iterator aEnd = command.end();
+                        if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                            DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
+                            rule.commands.push_back(
+                                std::pair<std::string, std::string>(aItem.arg, aItem.val));
+                        }
+                    }
+                    aux_rules_.push_back(rule);
                 } else {
-                    DEBUG("LINE NOT PARSED!");
+                    std::stringstream errorSs;
+                    errorSs << "Tagset converter: syntax error in line " << lineno << ": " << line;
+                    throw FileFormatException(errorSs.str());
                 }
                 break;
             }
         }
+    }
+
+    DEBUG("Imported rules:");
+    BOOST_FOREACH(UnumsuntRule rule, aux_rules_) {
+        DEBUG(rule);
     }
 }
 
