@@ -52,7 +52,9 @@ void PsiLatticeReader::Worker::doRun() {
     std::map<int, Lattice::VertexDescriptor> looseVertices;
     std::map<int, Lattice::EdgeDescriptor> edgeOrdinalMap;
     std::string line;
+    int lineno = 0;
     while (std::getline(inputStream_, line)) {
+        ++lineno;
         if (
             boost::algorithm::trim_copy(line).empty()
             || boost::algorithm::trim_copy(line).at(0) == '#'
@@ -164,9 +166,10 @@ void PsiLatticeReader::Worker::doRun() {
                 }
             } else {
                 if (item.lengthLoose) {
-                    throw FileFormatException(
-                        "PSI reader: Edge length cannot be a loose vertex. Missed point marker(*)?"
-                    );
+                    std::stringstream errorSs;
+                    errorSs << "PSI reader: syntax error in line " << lineno << ": " << line
+                        << "\n\tEdge length cannot be a loose vertex. Missed point marker(*)?";
+                    throw FileFormatException(errorSs.str());
                 } else {
                     to = lattice_.getVertexForRawCharIndex(item.beginning + item.length);
                 }
@@ -238,16 +241,21 @@ void PsiLatticeReader::Worker::doRun() {
                             BOOST_FOREACH(int edgeNumber, partItem.edgeNumbers) {
                                 if (edgeNumber < 1) {
                                     if (currentVertex == to) {
-                                        throw FileFormatException(
-                                     "PSI reader: Wrong partition's notation (too many sub-edges)"
-                                        );
+                                        std::stringstream errorSs;
+                                        errorSs << "PSI reader: syntax error in line "
+                                            << lineno << ": " << part
+                                            << "\n\tWrong partition's notation"
+                                            << " (too many sub-edges)";
+                                        throw FileFormatException(errorSs.str());
                                     }
                                     currentEdge = lattice_.firstOutEdge(currentVertex, rawMask);
                                 } else if (edgeOrdinalMap.find(edgeNumber)
                                            == edgeOrdinalMap.end()) {
-                                    throw FileFormatException(
-                                        "PSI reader: Wrong partition's notation (unknown sub-edge)"
-                                    );
+                                    std::stringstream errorSs;
+                                    errorSs << "PSI reader: syntax error in line "
+                                        << lineno << ": " << part
+                                        << "\n\tWrong partition's notation (unknown sub-edge)";
+                                    throw FileFormatException(errorSs.str());
                                 } else {
                                     currentEdge = edgeOrdinalMap[edgeNumber];
                                 }
@@ -293,7 +301,9 @@ void PsiLatticeReader::Worker::doRun() {
 
         } else {
 
-            throw FileFormatException("PSI reader: Wrong line.");
+            std::stringstream errorSs;
+            errorSs << "PSI reader: syntax error in line " << lineno << ": " << line;
+            throw FileFormatException(errorSs.str());
 
         }
     }
