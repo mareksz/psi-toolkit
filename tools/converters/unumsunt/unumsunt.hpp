@@ -5,6 +5,8 @@
 #include <list>
 #include <map>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/program_options.hpp>
@@ -20,15 +22,15 @@ namespace qi = boost::spirit::qi;
 
 
 struct UnumsuntRuleItem {
-    std::string source;
-    std::string target;
+    std::string condition;
+    std::vector<std::string> commands;
 };
 
 
 BOOST_FUSION_ADAPT_STRUCT(
     UnumsuntRuleItem,
-    (std::string, source)
-    (std::string, target)
+    (std::string, condition)
+    (std::vector<std::string>, commands)
 )
 
 
@@ -42,11 +44,43 @@ struct UnumsuntRuleGrammar : public qi::grammar<
         start
             %= +(qi::char_ - '-')
             >> qi::lit("->")
-            >> +(qi::char_);
+            >> +(qi::char_ - ',') % ',';
 
     }
 
     qi::rule<std::string::const_iterator, UnumsuntRuleItem()> start;
+
+};
+
+
+struct UnumsuntAssignmentItem {
+    std::string arg;
+    std::string val;
+};
+
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UnumsuntAssignmentItem,
+    (std::string, arg)
+    (std::string, val)
+)
+
+
+struct UnumsuntAssignmentGrammar : public qi::grammar<
+    std::string::const_iterator,
+    UnumsuntAssignmentItem()
+> {
+
+    UnumsuntAssignmentGrammar() : UnumsuntAssignmentGrammar::base_type(start) {
+
+        start
+            %= +(qi::char_ - ',' - '=')
+            >> '='
+            >> +(qi::char_ - ',' - '=');
+
+    }
+
+    qi::rule<std::string::const_iterator, UnumsuntAssignmentItem()> start;
 
 };
 
@@ -102,6 +136,11 @@ private:
     std::map<std::string, std::string> cat_map_;
     std::map<std::string, std::string> attr_map_;
     std::map<std::string, std::string> val_map_;
+
+    typedef std::pair< std::string, std::string > StringPair;
+    typedef std::pair< StringPair, std::vector<StringPair> > UnumsuntRulesMapItem;
+    typedef std::map< StringPair, std::vector<StringPair> > UnumsuntRulesMap;
+    UnumsuntRulesMap aux_rules_map_;
 
     std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements_;
 

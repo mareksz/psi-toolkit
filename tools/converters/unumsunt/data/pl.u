@@ -69,4 +69,4 @@
 @attr   mode    C
 @val    pot przypuszczający
 @val    impt    rozkazujący
-CAT = czasownik -> L1 = L
+CAT = rzeczownik -> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak

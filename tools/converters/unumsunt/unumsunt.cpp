@@ -103,7 +103,8 @@ Unumsunt::Unumsunt(
 ) :
     langCode_(langCode)
 {
-    UnumsuntRuleGrammar grammar;
+    UnumsuntRuleGrammar rGrammar;
+    UnumsuntAssignmentGrammar aGrammar;
     std::ifstream rulesFs(rulesPath.c_str());
     std::string line;
     int lineno = 0;
@@ -111,7 +112,9 @@ Unumsunt::Unumsunt(
         ++lineno;
         std::getline(rulesFs, line);
         boost::algorithm::trim(line);
-        if (line.empty()) break;
+        if (line.empty()) {
+            break;
+        }
         switch (line.at(0)) {
             case '#': {
                 // comment
@@ -137,15 +140,15 @@ Unumsunt::Unumsunt(
                     std::string target;
                     lineSs >> source >> target;
                     if (type == "cat") {
-                        cat_map_.insert(std::pair<std::string, std::string>(source, target));
+                        cat_map_.insert(StringPair(source, target));
                     } else if (type == "attr") {
-                        attr_map_.insert(std::pair<std::string, std::string>(source, target));
+                        attr_map_.insert(StringPair(source, target));
                     } else if (type == "val") {
-                        val_map_.insert(std::pair<std::string, std::string>(source, target));
+                        val_map_.insert(StringPair(source, target));
                     } else {
                         std::stringstream errorSs;
-                        errorSs << "Tagset converter: unknown command (@" << type <<
-                            ") in line " << lineno;
+                        errorSs << "Tagset converter: unknown command (@" << type
+                            << ") in line " << lineno;
                         throw FileFormatException(errorSs.str());
                     }
                 }
@@ -153,39 +156,78 @@ Unumsunt::Unumsunt(
             }
             default: {
                 // auxiliary rule
-                DEBUG("RULE:\t" << line);
                 line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
-                DEBUG("RULE*:\t" << line);
-                UnumsuntRuleItem item;
-                std::string::const_iterator begin = line.begin();
-                std::string::const_iterator end = line.end();
-                if (parse(begin, end, grammar, item)) {
-                    DEBUG("RULE LHS: [" << item.source << "]");
-                    DEBUG("RULE RHS: [" << item.target << "]");
+                UnumsuntRuleItem rItem;
+                std::string::const_iterator rBegin = line.begin();
+                std::string::const_iterator rEnd = line.end();
+                if (parse(rBegin, rEnd, rGrammar, rItem)) {
+                    UnumsuntAssignmentItem aItem;
+                    std::string::const_iterator aBegin = rItem.condition.begin();
+                    std::string::const_iterator aEnd = rItem.condition.end();
+                    if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                        DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
+                        std::pair<UnumsuntRulesMap::iterator, bool> mapInsertionResult(
+                            aux_rules_map_.insert(UnumsuntRulesMapItem(
+                                StringPair(aItem.arg, aItem.val),
+                                std::vector<StringPair>()
+                            ))
+                        );
+                        BOOST_FOREACH(std::string command, rItem.commands) {
+                            UnumsuntAssignmentItem aItem;
+                            std::string::const_iterator aBegin = command.begin();
+                            std::string::const_iterator aEnd = command.end();
+                            if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                                DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
+                                mapInsertionResult.first->second.push_back(
+                                    StringPair(aItem.arg, aItem.val)
+                                );
+                            }
+                        }
+                    }
                 } else {
-                    DEBUG("LINE NOT PARSED!");
+                    std::stringstream errorSs;
+                    errorSs << "Tagset converter: syntax error in line " << lineno << ": " << line;
+                    throw FileFormatException(errorSs.str());
                 }
                 break;
             }
         }
     }
+
+    DEBUG("Rules map size = " << aux_rules_map_.size());
+    DEBUG("Rules in map:");
+    BOOST_FOREACH(UnumsuntRulesMapItem rule, aux_rules_map_) {
+        std::stringstream sstr;
+        sstr << "if [" << rule.first.first << "] == [" << rule.first.second << "]";
+        std::string comma(" then");
+        BOOST_FOREACH(StringPair command, rule.second) {
+            sstr << comma << " [" << command.first << "] := [" << command.second << "]";
+            comma = ",";
+        }
+        DEBUG(sstr.str());
+    }
 }
 
 
 void Unumsunt::convertTags(Lattice & lattice) {
+
     LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMask(sourceTagset_);
     LayerTagCollection tagTargetTagset
         = lattice.getLayerTagManager().createTagCollectionFromList(
             boost::assign::list_of("tagset-converter")(targetTagset_.c_str()));
     LayerTagCollection preservedTags
         = lattice.getLayerTagManager().createTagCollectionFromList(preservedTags_);
+
     Lattice::EdgesSortedBySourceIterator ei(lattice, maskSourceTagset);
     while (ei.hasNext()) {
+
         Lattice::EdgeDescriptor edge = ei.next();
+
         LayerTagCollection edgePreservedTags
             = createIntersection(lattice.getEdgeLayerTags(edge), preservedTags);
         LayerTagCollection targetTags
             = createUnion(edgePreservedTags, tagTargetTagset);
+
         AnnotationItem sourceAI = lattice.getEdgeAnnotationItem(edge);
         std::string sourceCategory = sourceAI.getCategory();
         std::string targetCategory;
@@ -196,6 +238,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
             targetCategory = cmi->second;
         }
         AnnotationItem targetAI(targetCategory, sourceAI.getTextAsStringFrag());
+
         std::list< std::pair<std::string, zvalue> > avs
             = lattice.getAnnotationItemManager().getValuesAsZvalues(sourceAI);
         typedef std::pair<std::string, zvalue> AVPair;
@@ -213,7 +256,27 @@ void Unumsunt::convertTags(Lattice & lattice) {
             } else {
                 lattice.getAnnotationItemManager().setValue(targetAI, ami->second, vmi->second);
             }
+            UnumsuntRulesMap::iterator rmi
+                = aux_rules_map_.find(StringPair("CAT", targetCategory));
+            if (rmi != aux_rules_map_.end()) {
+                BOOST_FOREACH(StringPair command, rmi->second) {
+                    if (command.second[0] == '$') {
+                        lattice.getAnnotationItemManager().setValue(
+                            targetAI,
+                            command.first,
+                            lattice.getAnnotationItemManager().getValue(
+                                targetAI,
+                                command.second.substr(1)));
+                    } else {
+                        lattice.getAnnotationItemManager().setValue(
+                            targetAI,
+                            command.first,
+                            command.second);
+                    }
+                }
+            }
         }
+
         const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
         BOOST_FOREACH(Lattice::Partition partition, partitions) {
             Lattice::EdgeSequence::Builder builder(lattice);
@@ -239,5 +302,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
                 )
             ));
         }
+
     }
+
 }
