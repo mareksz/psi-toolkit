@@ -256,6 +256,25 @@ void Unumsunt::convertTags(Lattice & lattice) {
             } else {
                 lattice.getAnnotationItemManager().setValue(targetAI, ami->second, vmi->second);
             }
+            UnumsuntRulesMap::iterator rmi
+                = aux_rules_map_.find(StringPair("CAT", targetCategory));
+            if (rmi != aux_rules_map_.end()) {
+                BOOST_FOREACH(StringPair command, rmi->second) {
+                    if (command.second[0] == '$') {
+                        lattice.getAnnotationItemManager().setValue(
+                            targetAI,
+                            command.first,
+                            lattice.getAnnotationItemManager().getValue(
+                                targetAI,
+                                command.second.substr(1)));
+                    } else {
+                        lattice.getAnnotationItemManager().setValue(
+                            targetAI,
+                            command.first,
+                            command.second);
+                    }
+                }
+            }
         }
 
         const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
