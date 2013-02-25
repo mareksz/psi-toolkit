@@ -36,7 +36,7 @@ void UnumsuntRule::addCommand(std::string arg, std::string val) {
 }
 
 
-bool UnumsuntRule::apply(Lattice & lattice, AnnotationItem & item) {
+bool UnumsuntRule::apply(AnnotationItemManager & manager, AnnotationItem & item) {
     bool doesSatisfyAllConditions = true;
     BOOST_FOREACH(StringPair condition, conditions) {
         if (condition.first == "CAT") {
@@ -45,8 +45,7 @@ bool UnumsuntRule::apply(Lattice & lattice, AnnotationItem & item) {
                 break;
             }
         } else {
-            if (lattice.getAnnotationItemManager().getValueAsString(item, condition.first)
-                    != condition.second) {
+            if (manager.getValueAsString(item, condition.first) != condition.second) {
                 doesSatisfyAllConditions = false;
                 break;
             }
@@ -55,14 +54,14 @@ bool UnumsuntRule::apply(Lattice & lattice, AnnotationItem & item) {
     if (doesSatisfyAllConditions) {
         BOOST_FOREACH(StringPair command, commands) {
             if (command.second[0] == '$') {
-                lattice.getAnnotationItemManager().setValue(
+                manager.setValue(
                     item,
                     command.first,
-                    lattice.getAnnotationItemManager().getValue(
+                    manager.getValue(
                         item,
                         command.second.substr(1)));
             } else {
-                lattice.getAnnotationItemManager().setValue(
+                manager.setValue(
                     item,
                     command.first,
                     command.second);

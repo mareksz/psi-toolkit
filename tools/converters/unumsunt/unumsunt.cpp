@@ -242,7 +242,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
         }
 
         BOOST_FOREACH(UnumsuntRule rule, aux_rules_) {
-            rule.apply(lattice, targetAI);
+            rule.apply(lattice.getAnnotationItemManager(), targetAI);
         }
 
         const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);

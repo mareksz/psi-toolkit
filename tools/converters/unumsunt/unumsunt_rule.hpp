@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-#include "lattice.hpp"
+#include "annotation_item_manager.hpp"
 
 
 typedef std::pair< std::string, std::string > StringPair;
@@ -22,7 +22,7 @@ public:
     void addCondition(std::string arg, std::string val);
     void addCommand(std::string arg, std::string val);
 
-    bool apply(Lattice & lattice, AnnotationItem & item);
+    bool apply(AnnotationItemManager & manager, AnnotationItem & item);
 
 private:
     std::vector<StringPair> conditions;
