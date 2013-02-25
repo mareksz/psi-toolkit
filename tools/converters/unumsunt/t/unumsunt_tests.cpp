@@ -143,4 +143,33 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule_change_category ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( unumsunt_rule_with_words ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "noun");
+    rule.addCommand("A", "x");
+    rule.addWord("aaa");
+    rule.addWord("bbb");
+
+    AnnotationItemManager aim;
+
+    {
+        AnnotationItem item("noun", std::string("aaa"));
+        aim.setValue(item, "A", "a");
+
+        BOOST_CHECK(rule.apply(aim, item));
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "x");
+    }
+
+    {
+        AnnotationItem item("noun", std::string("ccc"));
+        aim.setValue(item, "A", "a");
+
+        BOOST_CHECK(!rule.apply(aim, item));
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
+    }
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

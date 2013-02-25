@@ -170,6 +170,14 @@ Unumsunt::Unumsunt(
                             aux_rules_.back().addCondition(
                                 boost::algorithm::trim_copy(aItem.arg),
                                 boost::algorithm::trim_copy(aItem.val));
+                        } else {
+                            DEBUG("Condition*: [" << condition << "]");
+                            std::stringstream wordDictSs;
+                            while (wordDictSs.good()) {
+                                std::string word;
+                                wordDictSs >> word;
+                                aux_rules_.back().addWord(word);
+                            }
                         }
                     }
                     BOOST_FOREACH(std::string command, rItem.commands) {
