@@ -125,4 +125,22 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( unumsunt_rule_change_category ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "noun");
+    rule.addCommand("CAT", "pronoun");
+
+    AnnotationItemManager aim;
+
+    AnnotationItem item("noun");
+    aim.setValue(item, "A", "a");
+
+    BOOST_CHECK(rule.apply(aim, item));
+    BOOST_CHECK_EQUAL(item.getCategory(), "pronoun");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
