@@ -1,5 +1,6 @@
 add_library(tools-converters-unumsunt SHARED
     unumsunt.cpp
+    unumsunt_rule.cpp
 )
 
 add_subdirectory("t")

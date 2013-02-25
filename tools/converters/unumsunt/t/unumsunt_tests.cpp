@@ -2,7 +2,9 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include "annotation_item_manager.hpp"
 #include "unumsunt.hpp"
+#include "zvalue.hpp"
 
 
 BOOST_AUTO_TEST_SUITE( unumsunt )
@@ -66,6 +68,59 @@ BOOST_AUTO_TEST_CASE( unumsunt_simple ) {
     BOOST_CHECK_EQUAL(
         lattice.getAnnotationItemManager().getValueAsString(tai3, "Atrybut"),
         "Wartość");
+
+}
+
+
+BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "cat");
+    rule.addCondition("A", "a");
+    rule.addCondition("B", "b");
+    rule.addCommand("X", "x");
+    rule.addCommand("A", "aa");
+
+    AnnotationItemManager aim;
+
+    {
+        AnnotationItem item("cat");
+        aim.setValue(item, "A", "a");
+        aim.setValue(item, "B", "b");
+        aim.setValue(item, "C", "c");
+
+        BOOST_CHECK(rule.apply(aim, item));
+        BOOST_CHECK_EQUAL(item.getCategory(), "cat");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "aa");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "b");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "C"), "c");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "X"), "x");
+    }
+
+    {
+        AnnotationItem item("cat2");
+        aim.setValue(item, "A", "a");
+        aim.setValue(item, "B", "b");
+
+        BOOST_CHECK(!rule.apply(aim, item));
+        BOOST_CHECK_EQUAL(item.getCategory(), "cat2");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "b");
+        BOOST_CHECK_EQUAL(aim.getValue(item, "X"), NULL_ZVALUE);
+    }
+
+    {
+        AnnotationItem item("cat");
+        aim.setValue(item, "A", "a");
+        aim.setValue(item, "B", "c");
+
+        BOOST_CHECK(!rule.apply(aim, item));
+        BOOST_CHECK_EQUAL(item.getCategory(), "cat");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "c");
+        BOOST_CHECK_EQUAL(aim.getValue(item, "C"), NULL_ZVALUE);
+        BOOST_CHECK_EQUAL(aim.getValue(item, "X"), NULL_ZVALUE);
+    }
 
 }
 
