@@ -5,6 +5,8 @@
 BOOST_AUTO_TEST_CASE( annotation_simple ) {
     AnnotationItemManager manager;
     AnnotationItem annotationItem("noun");
+    BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), annotationItem.getCategory());
+    BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), "noun");
     BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "case"), NULL_ZVALUE);
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "NULL_ZVALUE");
     manager.setValue(annotationItem, "case", "nominative");
@@ -15,6 +17,7 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "number"), "plural");
     manager.setValue(annotationItem, "count", INTEGER_TO_ZVALUE(123));
     BOOST_CHECK_EQUAL(ZVALUE_TO_INTEGER(manager.getValue(annotationItem, "count")), 123);
+
     std::list< std::pair<std::string, std::string> > av = manager.getValues(annotationItem);
     std::list< std::pair<std::string, std::string> >::iterator avi = av.begin();
     BOOST_CHECK_EQUAL((*avi).first, "case");
@@ -23,7 +26,25 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_REQUIRE(avi != av.end());
     BOOST_CHECK_EQUAL((*avi).first, "number");
     BOOST_CHECK_EQUAL((*avi).second, "plural");
+
+    manager.setCategory(annotationItem, "pronoun");
+    BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), annotationItem.getCategory());
+    BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), "pronoun");
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "genitive");
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "number"), "plural");
 };
+
+BOOST_AUTO_TEST_CASE( annotation_more ) {
+    AnnotationItemManager manager;
+    AnnotationItem annotationItem1("noun");
+    manager.setValue(annotationItem1, "case", "nominative");
+    AnnotationItem annotationItem2("verb");
+    manager.setValue(annotationItem2, "tense", "past");
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem1, "case"), "nominative");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem1, "tense"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem2, "case"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem2, "tense"), "past");
+}
 
 BOOST_AUTO_TEST_CASE( annotation_compare ) {
     AnnotationItemManager manager;

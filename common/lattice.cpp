@@ -1,5 +1,7 @@
 #include "lattice.hpp"
 
+#include <sstream>
+
 #include "string_helpers.hpp"
 
 Lattice::Lattice(AnnotationItemManager & annotationItemManager) :
@@ -442,7 +444,13 @@ Lattice::EdgeDescriptor Lattice::firstOutEdge(
     LayerTagMask mask
 ) {
     if (outEdges(vertex, mask).hasNext()) return outEdges(vertex, mask).next();
-    throw NoEdgeException("No out-edges found.");
+    std::stringstream errorSs;
+    if (isLooseVertex(vertex)) {
+        errorSs << "No out-edges found for loose vertex " << getLooseVertexIndex(vertex) << ".";
+    } else {
+        errorSs << "No out-edges found for vertex " << getVertexRawCharIndex(vertex) << ".";
+    }
+    throw NoEdgeException(errorSs.str());
 }
 
 Lattice::EdgeDescriptor Lattice::firstInEdge(
@@ -450,7 +458,13 @@ Lattice::EdgeDescriptor Lattice::firstInEdge(
     LayerTagMask mask
 ) {
     if (inEdges(vertex, mask).hasNext()) return inEdges(vertex, mask).next();
-    throw NoEdgeException("No in-edges found.");
+    std::stringstream errorSs;
+    if (isLooseVertex(vertex)) {
+        errorSs << "No in-edges found for loose vertex " << getLooseVertexIndex(vertex) << ".";
+    } else {
+        errorSs << "No in-edges found for vertex " << getVertexRawCharIndex(vertex) << ".";
+    }
+    throw NoEdgeException(errorSs.str());
 }
 
 Lattice::EdgesSortedBySourceIterator Lattice::edgesSortedBySource(LayerTagMask mask) {

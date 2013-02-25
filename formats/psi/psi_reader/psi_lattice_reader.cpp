@@ -219,10 +219,8 @@ void PsiLatticeReader::Worker::doRun() {
                             seqBuilder.addEdge(currentEdge);
                             currentVertex = lattice_.getEdgeTarget(currentEdge);
                         } catch (NoEdgeException) {
-                            std::stringstream errorSs;
-                            errorSs << "PSI reader: syntax error in line "
-                                << lineno << ": " << line;
-                            throw FileFormatException(errorSs.str());
+                            lattice_.addSymbols(currentVertex, to);
+                            continue;
                         }
                     }
                 }
@@ -255,15 +253,7 @@ void PsiLatticeReader::Worker::doRun() {
                                             << " (too many sub-edges)";
                                         throw FileFormatException(errorSs.str());
                                     }
-                                    try {
-                                        currentEdge
-                                            = lattice_.firstOutEdge(currentVertex, rawMask);
-                                    } catch (NoEdgeException) {
-                                        std::stringstream errorSs;
-                                        errorSs << "PSI reader: syntax error in line "
-                                            << lineno << ": " << part;
-                                        throw FileFormatException(errorSs.str());
-                                    }
+                                    currentEdge = lattice_.firstOutEdge(currentVertex, rawMask);
                                 } else if (edgeOrdinalMap.find(edgeNumber)
                                            == edgeOrdinalMap.end()) {
                                     std::stringstream errorSs;

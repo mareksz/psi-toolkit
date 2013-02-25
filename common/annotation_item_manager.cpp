@@ -4,16 +4,20 @@
 #include <sstream>
 
 
-AnnotationItemManager::AnnotationItemManager() :
-    fail_string_("fail"),
-    false_string_("false"),
-    empty_string_("empty"),
-    any_string_("any"),
-    nil_string_("nil")
-{
+AnnotationItemManager::AnnotationItemManager() {
     zObjectsHolder_ = zvector::generate(EMPTY_ZOBJECTS_HOLDER);
     zSymbolTable_ = zsymboltable::generate(zObjectsHolder_);
     zSymbolFactory_ = new zsymbolfactory(zSymbolTable_);
+}
+
+
+AnnotationItemManager::AnnotationItemManager(AnnotationItemManager & other) {
+    zObjectsHolder_ = zvector::generate(EMPTY_ZOBJECTS_HOLDER);
+    *zObjectsHolder_ = *(other.zObjectsHolder_);
+    zSymbolTable_ = zsymboltable::generate(zObjectsHolder_);
+    *zSymbolTable_ = *(other.zSymbolTable_);
+    zSymbolFactory_ = new zsymbolfactory(zSymbolTable_);
+    *zSymbolFactory_ = *(other.zSymbolFactory_);
 }
 
 
@@ -79,7 +83,12 @@ zvalue AnnotationItemManager::getValue(
     if (m_.left.find(attribute) == m_.left.end()) {
         return NULL_ZVALUE;
     } else {
-        return annotationItem.values_[m_.left.at(attribute)];
+        size_t ix = m_.left.at(attribute);
+        if (annotationItem.attributes_[ix]) {
+            return annotationItem.values_[m_.left.at(attribute)];
+        } else {
+            return NULL_ZVALUE;
+        }
     }
 }
 
@@ -169,10 +178,10 @@ int AnnotationItemManager::to_int(zvalue value) const {
 std::string AnnotationItemManager::to_string(zvalue value) const {
     assert(is_string(value));
     if (is_any(value)) {
-        return nil_string_;
+        return NIL_STRING;
     }
     if (is_false(value)) {
-        return fail_string_;
+        return FAIL_STRING;
     }
     return zvalueToString(value);
 }
@@ -189,10 +198,10 @@ zvalue AnnotationItemManager::from_int(int i) {
 
 
 zvalue AnnotationItemManager::from_string(const std::string& s) {
-    if (s == any_string_ || s == nil_string_) {
+    if (s == ANY_STRING || s == NIL_STRING) {
         return any_value();
     }
-    if (s == fail_string_ || s == false_string_ || s == empty_string_) {
+    if (s == FAIL_STRING || s == FALSE_STRING || s == EMPTY_STRING) {
         return false_value();
     }
     return stringToZvalue(s);
@@ -225,3 +234,9 @@ bool AnnotationItemManager::is_true(zvalue value) const {
 bool AnnotationItemManager::is_any(zvalue value) const {
     return DEFAULTP(value);
 }
+
+const std::string AnnotationItemManager::FAIL_STRING = "fail";
+const std::string AnnotationItemManager::FALSE_STRING = "false";
+const std::string AnnotationItemManager::EMPTY_STRING = "empty";
+const std::string AnnotationItemManager::ANY_STRING = "any";
+const std::string AnnotationItemManager::NIL_STRING = "nil";
