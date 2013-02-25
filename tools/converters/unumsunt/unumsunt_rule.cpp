@@ -53,18 +53,20 @@ bool UnumsuntRule::apply(AnnotationItemManager & manager, AnnotationItem & item)
     }
     if (doesSatisfyAllConditions) {
         BOOST_FOREACH(StringPair command, commands) {
-            if (command.second[0] == '$') {
-                manager.setValue(
-                    item,
-                    command.first,
-                    manager.getValue(
-                        item,
-                        command.second.substr(1)));
+            if (command.first == "CAT") {
+                if (command.second[0] == '$') {
+                    manager.setCategory(item,
+                        manager.getValueAsString(item, command.second.substr(1)));
+                } else {
+                    manager.setCategory(item, command.second);
+                }
             } else {
-                manager.setValue(
-                    item,
-                    command.first,
-                    command.second);
+                if (command.second[0] == '$') {
+                    manager.setValue(item, command.first,
+                        manager.getValue(item, command.second.substr(1)));
+                } else {
+                    manager.setValue(item, command.first, command.second);
+                }
             }
         }
     }
