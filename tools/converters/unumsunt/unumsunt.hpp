@@ -16,20 +16,21 @@
 #include "annotator.hpp"
 #include "language_dependent_annotator_factory.hpp"
 #include "lang_specific_processor_file_fetcher.hpp"
+#include "unumsunt_rule.hpp"
 
 
 namespace qi = boost::spirit::qi;
 
 
 struct UnumsuntRuleItem {
-    std::string condition;
+    std::vector<std::string> conditions;
     std::vector<std::string> commands;
 };
 
 
 BOOST_FUSION_ADAPT_STRUCT(
     UnumsuntRuleItem,
-    (std::string, condition)
+    (std::vector<std::string>, conditions)
     (std::vector<std::string>, commands)
 )
 
@@ -42,7 +43,7 @@ struct UnumsuntRuleGrammar : public qi::grammar<
     UnumsuntRuleGrammar() : UnumsuntRuleGrammar::base_type(start) {
 
         start
-            %= +(qi::char_ - '-')
+            %= +(qi::char_ - '-') % ','
             >> qi::lit("->")
             >> +(qi::char_ - ',') % ',';
 
@@ -137,10 +138,7 @@ private:
     std::map<std::string, std::string> attr_map_;
     std::map<std::string, std::string> val_map_;
 
-    typedef std::pair< std::string, std::string > StringPair;
-    typedef std::pair< StringPair, std::vector<StringPair> > UnumsuntRulesMapItem;
-    typedef std::map< StringPair, std::vector<StringPair> > UnumsuntRulesMap;
-    UnumsuntRulesMap aux_rules_map_;
+    std::vector<UnumsuntRule> aux_rules_;
 
     std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements_;
 

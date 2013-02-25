@@ -161,27 +161,23 @@ Unumsunt::Unumsunt(
                 std::string::const_iterator rBegin = line.begin();
                 std::string::const_iterator rEnd = line.end();
                 if (parse(rBegin, rEnd, rGrammar, rItem)) {
-                    UnumsuntAssignmentItem aItem;
-                    std::string::const_iterator aBegin = rItem.condition.begin();
-                    std::string::const_iterator aEnd = rItem.condition.end();
-                    if (parse(aBegin, aEnd, aGrammar, aItem)) {
-                        DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
-                        std::pair<UnumsuntRulesMap::iterator, bool> mapInsertionResult(
-                            aux_rules_map_.insert(UnumsuntRulesMapItem(
-                                StringPair(aItem.arg, aItem.val),
-                                std::vector<StringPair>()
-                            ))
-                        );
-                        BOOST_FOREACH(std::string command, rItem.commands) {
-                            UnumsuntAssignmentItem aItem;
-                            std::string::const_iterator aBegin = command.begin();
-                            std::string::const_iterator aEnd = command.end();
-                            if (parse(aBegin, aEnd, aGrammar, aItem)) {
-                                DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
-                                mapInsertionResult.first->second.push_back(
-                                    StringPair(aItem.arg, aItem.val)
-                                );
-                            }
+                    aux_rules_.push_back(UnumsuntRule());
+                    BOOST_FOREACH(std::string condition, rItem.conditions) {
+                        UnumsuntAssignmentItem aItem;
+                        std::string::const_iterator aBegin = condition.begin();
+                        std::string::const_iterator aEnd = condition.end();
+                        if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                            DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
+                            aux_rules_.back().addCondition(aItem.arg, aItem.val);
+                        }
+                    }
+                    BOOST_FOREACH(std::string command, rItem.commands) {
+                        UnumsuntAssignmentItem aItem;
+                        std::string::const_iterator aBegin = command.begin();
+                        std::string::const_iterator aEnd = command.end();
+                        if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                            DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
+                            aux_rules_.back().addCommand(aItem.arg, aItem.val);
                         }
                     }
                 } else {
@@ -192,19 +188,6 @@ Unumsunt::Unumsunt(
                 break;
             }
         }
-    }
-
-    DEBUG("Rules map size = " << aux_rules_map_.size());
-    DEBUG("Rules in map:");
-    BOOST_FOREACH(UnumsuntRulesMapItem rule, aux_rules_map_) {
-        std::stringstream sstr;
-        sstr << "if [" << rule.first.first << "] == [" << rule.first.second << "]";
-        std::string comma(" then");
-        BOOST_FOREACH(StringPair command, rule.second) {
-            sstr << comma << " [" << command.first << "] := [" << command.second << "]";
-            comma = ",";
-        }
-        DEBUG(sstr.str());
     }
 }
 
@@ -256,25 +239,10 @@ void Unumsunt::convertTags(Lattice & lattice) {
             } else {
                 lattice.getAnnotationItemManager().setValue(targetAI, ami->second, vmi->second);
             }
-            UnumsuntRulesMap::iterator rmi
-                = aux_rules_map_.find(StringPair("CAT", targetCategory));
-            if (rmi != aux_rules_map_.end()) {
-                BOOST_FOREACH(StringPair command, rmi->second) {
-                    if (command.second[0] == '$') {
-                        lattice.getAnnotationItemManager().setValue(
-                            targetAI,
-                            command.first,
-                            lattice.getAnnotationItemManager().getValue(
-                                targetAI,
-                                command.second.substr(1)));
-                    } else {
-                        lattice.getAnnotationItemManager().setValue(
-                            targetAI,
-                            command.first,
-                            command.second);
-                    }
-                }
-            }
+        }
+
+        BOOST_FOREACH(UnumsuntRule rule, aux_rules_) {
+            rule.apply(lattice, targetAI);
         }
 
         const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
