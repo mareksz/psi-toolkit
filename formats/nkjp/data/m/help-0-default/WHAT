@@ -1,1 +1,1 @@
-nkjp-reader ! simple-writer --tag token --sep | --spec sentence \n
+nkjp-reader ! simple-writer --tag token --sep / --spec sentence \n
