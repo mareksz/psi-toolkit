@@ -17,6 +17,8 @@ public:
 
     AnnotationItemManager();
 
+    AnnotationItemManager(AnnotationItemManager & other);
+
     ~AnnotationItemManager();
 
     /**
@@ -89,11 +91,11 @@ private:
     zsymboltable * zSymbolTable_;
     zsymbolfactory * zSymbolFactory_;
 
-    std::string fail_string_;
-    std::string false_string_;
-    std::string empty_string_;
-    std::string any_string_;
-    std::string nil_string_;
+    static const std::string FAIL_STRING;
+    static const std::string FALSE_STRING;
+    static const std::string EMPTY_STRING;
+    static const std::string ANY_STRING;
+    static const std::string NIL_STRING;
 
 };
 
