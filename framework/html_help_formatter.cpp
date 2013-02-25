@@ -16,6 +16,7 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
     boost::program_options::options_description options,
     std::list<std::string> aliases,
     std::vector<TestBatch> usingExamples,
+    std::list<std::string> languagesHandled,
     std::ostream& output) {
 
     output << "<div class=\"help-item\">"
@@ -30,11 +31,27 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
         formatAliases_(aliases, output);
     }
 
+    if (!languagesHandled.empty()) {
+        formatLanguagesHandled_(languagesHandled, output);
+    }
+
     if (!usingExamples.empty()) {
         formatUsingExamples_(usingExamples, output);
     }
 
     formatAllowedOptions_(options, output);
+    output << "</div>" << std::endl;
+}
+
+void HtmlHelpFormatter::formatLanguagesHandled_(std::list<std::string> langCodes,
+                                                std::ostream& output) {
+    output << "<div class=\"help-langs\">" << std::endl
+           << "<h3>" << LANGUAGES_HEADER << "</h3>" << std::endl;
+
+    BOOST_FOREACH(std::string langCode, langCodes) {
+        output << "<span>" << langCode << ", </span>";
+    };
+
     output << "</div>" << std::endl;
 }
 
