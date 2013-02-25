@@ -25,6 +25,18 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_CHECK_EQUAL((*avi).second, "plural");
 };
 
+BOOST_AUTO_TEST_CASE( annotation_more ) {
+    AnnotationItemManager manager;
+    AnnotationItem annotationItem1("noun");
+    manager.setValue(annotationItem1, "case", "nominative");
+    AnnotationItem annotationItem2("verb");
+    manager.setValue(annotationItem2, "tense", "past");
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem1, "case"), "nominative");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem1, "tense"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem2, "case"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem2, "tense"), "past");
+}
+
 BOOST_AUTO_TEST_CASE( annotation_compare ) {
     AnnotationItemManager manager;
     AnnotationItem ai1("noun");
