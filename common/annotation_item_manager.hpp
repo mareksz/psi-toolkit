@@ -40,6 +40,10 @@ public:
         return annotationItem.category_;
     }
 
+    void setCategory(AnnotationItem & annotationItem, std::string value) const {
+        annotationItem.category_ = value;
+    }
+
     std::list< std::pair<std::string, zvalue> > getValuesAsZvalues(
         const AnnotationItem & annotationItem
     );
