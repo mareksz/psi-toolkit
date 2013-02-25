@@ -156,7 +156,6 @@ Unumsunt::Unumsunt(
             }
             default: {
                 // auxiliary rule
-                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
                 UnumsuntRuleItem rItem;
                 std::string::const_iterator rBegin = line.begin();
                 std::string::const_iterator rEnd = line.end();
@@ -168,7 +167,9 @@ Unumsunt::Unumsunt(
                         std::string::const_iterator aEnd = condition.end();
                         if (parse(aBegin, aEnd, aGrammar, aItem)) {
                             DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
-                            aux_rules_.back().addCondition(aItem.arg, aItem.val);
+                            aux_rules_.back().addCondition(
+                                boost::algorithm::trim_copy(aItem.arg),
+                                boost::algorithm::trim_copy(aItem.val));
                         }
                     }
                     BOOST_FOREACH(std::string command, rItem.commands) {
@@ -177,7 +178,9 @@ Unumsunt::Unumsunt(
                         std::string::const_iterator aEnd = command.end();
                         if (parse(aBegin, aEnd, aGrammar, aItem)) {
                             DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
-                            aux_rules_.back().addCommand(aItem.arg, aItem.val);
+                            aux_rules_.back().addCommand(
+                                boost::algorithm::trim_copy(aItem.arg),
+                                boost::algorithm::trim_copy(aItem.val));
                         }
                     }
                 } else {
