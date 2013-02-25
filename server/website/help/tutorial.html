@@ -2,10 +2,14 @@
 <html>
 
 <head>
-  <title>psi-toolkit :: help</title>
+  <title>psi-toolkit :: help :: tutorial</title>
   <!--#psis index_site_scripts_part -->
   <script type="text/javascript">
     <!--#psis pipe_site_options -->
+
+    $(document).ready(function(){
+        addRightMenu("tutorial-menu", "tutorial");
+    });
   </script>
 </head>
 
@@ -16,7 +20,10 @@
 <div id="content">
   <div class="wrapper">
 
-    <section id="tutorial">
+    <aside class="right-menu" id="tutorial-menu">
+    </aside>
+
+    <section id="tutorial" class="left-content">
       <h1>Tutorial</h1>
       <!--#psis help_site_tutorial -->
     </section>

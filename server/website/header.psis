@@ -9,7 +9,8 @@
       <nav>
       <ul id="menu">
         <li><a href="/about.html">About</a></li>
-        <li><a href="/help/start.html">Help</a></li>
+        <li><a href="/help/start.html">Getting Started</a></li>
+        <li><a href="/help/Tutorial.html">Tutorial</a></li>
         <li><a href="/help/documentation.html">Documentation</a></li>
         <li><a href="/download.html">Download</a></li>
         <li><a href="/publications.html">Publications</a></li>

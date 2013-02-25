@@ -25,6 +25,8 @@ public:
     void formatTutorial(std::ostream& output);
     void formatLicence(std::ostream& output);
     void formatAboutPsiFormat(std::ostream& output);
+    void formatFAQ(std::ostream& output);
+    void formatInstallationGuide(std::ostream& output);
 
     virtual ~HelpFormatter();
 

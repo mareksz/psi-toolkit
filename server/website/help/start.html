@@ -2,10 +2,14 @@
 <html>
 
 <head>
-  <title>psi-toolkit :: help</title>
+  <title>psi-toolkit :: help :: getting started</title>
   <!--#psis index_site_scripts_part -->
   <script type="text/javascript">
     <!--#psis pipe_site_options -->
+
+    $(document).ready(function(){
+        addRightMenu("getting-started-menu", "getting-started");
+    });
   </script>
 </head>
 
@@ -16,17 +20,16 @@
 <div id="content">
   <div class="wrapper">
 
-    <section>
-      <h1>Getting started</h1>
+    <aside class="right-menu" id="getting-started-menu">
+    </aside>
 
+    <h1>Getting started</h1>
+
+    <section id="getting-started" class="left-content">
       <h2>Introduction</h2>
       <p>
         PSI-Toolkit is a set of linguistic tools for processing texts written in various
         formats and various languages.
-        The majority of tools has been designed for Polish, but also available are tools for
-        English, French, German and Russian.
-      </p>
-      <p>
         The full range of PSI-Toolkit functions is offered with the command-line version,
         but you can test most of the features via this web-service.
       </p>
@@ -44,7 +47,7 @@
         Commands let you specify what you want to do, for instance, to <code>tokenize</code>
         or to <code>lemmatize</code>.
         The full command usually is a sequence of three tasks: read, annotate
-        and write because data have to be firstly read, then processed (annotated) and finnaly
+        and write because data have to be firstly read, then processed (annotated) and finally
         displayed.
       </p>
       <img class="screen" src="/img/intro-screen-2.png" />
@@ -60,7 +63,6 @@
       </p>
 
       <h2>Input data</h2>
-
       <p>
         To specify input data you want to process, you may choose between typing your text,
         and selecting a file from your disk.
@@ -73,7 +75,6 @@
       </p>
 
       <h2>Results</h2>
-
       <p>
         If you are not familiar with available writers, you may select output format
         from the selection list.
@@ -82,8 +83,6 @@
         Finally, in most cases it is possible to download results in a file.
       </p>
       <img class="screen" src="/img/intro-screen-3.png" />
-
-      <!--#psis help_site_licence -->
     </section>
 
     <section>

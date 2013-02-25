@@ -1,0 +1,41 @@
+## Installation from Ubuntu Package
+
+Check your Ubuntu release:
+
+    $ lsb_release -a
+    Distributor ID:	Ubuntu
+    Description:	Ubuntu 10.04.3 LTS
+    Release:	10.04
+    Codename:	lucid
+
+and your system architecture type:
+
+    $ uname -m
+    x86_64
+
+Find and download appropriate Ubuntu package from the PSI-Toolkit (download web
+page)[download.html] or via terminal:
+
+    $ wget http://mrt.wmi.amu.edu.pl:8080/job/ubuntu-10.04-package-psi-toolkit/lastSuccessfulBuild/artifact/packages/psi-toolkit_0.3.0-1_amd64.deb
+
+Next double click on the downloaded file or run in terminal: </p>
+
+    $ sudo dpkg -i psi-toolkit_0.3.0-1_amd64.deb
+
+If you get some errors during installation, you  may need to install some
+additional packages like `python-software-properties`:
+
+    $ sudo apt-get install python-software-properties
+
+or Boost libraries (at least in 1.42 version). There is an example for Ubuntu
+10.04:
+
+    $ sudo add-apt-repository ppa:lucid-bleed/ppa
+    $ sudo apt-get update
+    $ sudo apt-get install libboost-filesystem1.42.0 libboost-graph1.42.0 \
+      libboost-program-options1.42.0 libboost-serialization1.42.0 \
+      libboost-system1.42.0 libboost-test1.42.0 libboost-thread1.42.0
+
+## Installation from source code
+
+TODO
