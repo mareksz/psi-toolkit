@@ -40,6 +40,7 @@ protected:
         boost::program_options::options_description options,
         std::list<std::string> aliases,
         std::vector<TestBatch> usingExamples,
+        std::list<std::string> languagesHandled,
         std::ostream& output) =0;
 
     std::string getProcessorDescription(std::string processorName);
@@ -62,6 +63,10 @@ protected:
     const static std::string EXAMPLES_HEADER;
     const static std::string OPTIONS_HEADER;
     const static std::string ALIASES_HEADER;
+    const static std::string LANGUAGES_HEADER;
+
+    std::list<std::string> getLanguagesHandledForProcessor(std::string processorName);
+
 };
 
 #endif

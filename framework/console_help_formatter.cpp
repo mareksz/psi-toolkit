@@ -8,6 +8,7 @@ void ConsoleHelpFormatter::doFormatOneProcessorHelp(
     boost::program_options::options_description options,
     std::list<std::string> aliases,
     std::vector<TestBatch> usingExamples,
+    std::list<std::string> languagesHandled,
     std::ostream& output) {
 
     output << "### " << processorName << " ###" << std::endl
@@ -19,12 +20,26 @@ void ConsoleHelpFormatter::doFormatOneProcessorHelp(
         output << std::endl;
     }
 
+    if (!languagesHandled.empty()) {
+        formatLanguagesHandled_(languagesHandled, output);
+        output << std::endl;
+    }
+
     if (!usingExamples.empty())
         output << "To see one of the " << usingExamples.size()
             << " examples check installed files or visit PSI website."
             << std::endl << std::endl;
 
     output << options;
+}
+
+void ConsoleHelpFormatter::formatLanguagesHandled_(std::list<std::string> langCodes,
+                                                   std::ostream& output) {
+    output << "Handled languages: ";
+    BOOST_FOREACH(std::string langCode, langCodes) {
+        output << langCode << ", ";
+    }
+    output << std::endl;
 }
 
 void ConsoleHelpFormatter::formatAliases_(std::list<std::string> aliases, std::ostream& output) {

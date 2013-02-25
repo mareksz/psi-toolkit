@@ -33,6 +33,7 @@ private:
         boost::program_options::options_description options,
         std::list<std::string> aliases,
         std::vector<TestBatch> usingExamples,
+        std::list<std::string> languagesHandled,
         std::ostream& output);
 
     void formatAliases_(std::list<std::string> aliases, std::ostream& output);
@@ -59,6 +60,8 @@ private:
     std::string escapeJSON_(std::string& text);
 
     static std::set<std::string> extensionsForRandomExamples_;
+
+    void formatLanguagesHandled_(std::list<std::string> langCodes, std::ostream& output);
 };
 
 #endif

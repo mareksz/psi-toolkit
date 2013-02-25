@@ -23,6 +23,7 @@ void HelpFormatter::formatOneProcessorHelp(std::string processorName, std::ostre
         getProcessorOptions(processorName),
         getAliasesForProcessorName(processorName),
         getProcessorUsingExamples(processorName),
+        getLanguagesHandledForProcessor(processorName),
         output
     );
 }
@@ -159,3 +160,25 @@ std::list<std::string> HelpFormatter::getAliasesForProcessorName(std::string pro
 const std::string HelpFormatter::EXAMPLES_HEADER = "Examples";
 const std::string HelpFormatter::OPTIONS_HEADER = "Options";
 const std::string HelpFormatter::ALIASES_HEADER = "Aliases";
+const std::string HelpFormatter::LANGUAGES_HEADER = "Languages";
+
+std::list<std::string> HelpFormatter::getLanguagesHandledForProcessor(
+    std::string /*processorName*/) {
+
+    /*
+    ProcessorFactory* processorFactory
+        = &MainFactoriesKeeper::getInstance().getProcessorFactory(processorName);
+
+    AnnotatorFactory* annotatorFactory = dynamic_cast<AnnotatorFactory*>(processorFactory);
+
+    boost::program_options::variables_map fakeOptions;
+    std::list<std::string> langCodes = annotatorFactory->languagesHandled(fakeOptions);
+
+    BOOST_FOREACH(std::string langCode, langCodes) {
+        std::cout << "lang: " << langCode << std::endl;
+    }
+    */
+
+    //return langCodes;
+    return std::list<std::string>();
+}
