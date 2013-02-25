@@ -79,7 +79,12 @@ zvalue AnnotationItemManager::getValue(
     if (m_.left.find(attribute) == m_.left.end()) {
         return NULL_ZVALUE;
     } else {
-        return annotationItem.values_[m_.left.at(attribute)];
+        size_t ix = m_.left.at(attribute);
+        if (annotationItem.attributes_[ix]) {
+            return annotationItem.values_[m_.left.at(attribute)];
+        } else {
+            return NULL_ZVALUE;
+        }
     }
 }
 
