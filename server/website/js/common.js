@@ -43,3 +43,19 @@ function bindStickyRightMenu(menuId) {
 
   document.addEventListener('scroll', onScroll);
 }
+
+function createFAQList(listId, faqId) {
+    var menu = $("<ul>");
+
+    $('#' + faqId).children('h2').each(function(index) {
+        if (typeof $(this).prop('tagName') != 'undefined') {
+            var id = "faq-" + index;
+            $(this).attr('id', id);
+
+            menu.append("<li><a href=\"#" + id + "\">" + $(this).text() + "</a></li>");
+        }
+    });
+
+    menu.append("</ul>");
+    $('#' + listId).append(menu);
+}

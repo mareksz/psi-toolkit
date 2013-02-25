@@ -1,0 +1,32 @@
+## Is the graphical user interface available offline?
+
+Yes, but currently the GUI is available only for Linux users.
+If you install one of the PSI Linux packages, you will get the same webservice
+as you see now to work offline by simple running:
+
+    $ psi-server
+
+
+## Which types of input files does PSI-Toolkit support?
+
+PSI-Toolkit deals with all kinds of text files, including some NLP-tools internal
+formats like PSI and UTT formats. Other supported file formats are: (x)html, pdf,
+doc, djvu, docx, xlsx and pptx.
+
+
+## I can not find the appropriate PSI-reader to handle my file.
+
+You may try to use the <code>guessing-reader</code> to automatically guess
+the input file format. Another possibility is that PSI-Toolkit does not support
+your file format currently.
+
+
+## Where can I check if PSI-Toolkit supports text in my language?
+
+TODO
+
+
+## How can I display all text fragments with particular tag?
+
+TODO
+

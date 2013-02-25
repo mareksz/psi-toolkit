@@ -22,6 +22,10 @@ HelpSite::HelpSite(PsiServer& server)
         "help_site_psi_format", boost::bind(&HelpSite::psiFormat, this));
     psiServer_.registerIncludeCode(
         "help_site_documentation_menu", boost::bind(&HelpSite::documentationMenu, this));
+    psiServer_.registerIncludeCode(
+        "help_site_faq", boost::bind(&HelpSite::faq, this));
+    psiServer_.registerIncludeCode(
+        "help_site_installation_guide", boost::bind(&HelpSite::installationGuide, this));
 
     psiServer_.registerIncludeCode(
         "help_site_pipeline_examples", boost::bind(&HelpSite::pipelineExamples, this));
@@ -81,4 +85,18 @@ char * HelpSite::pipelineExamples() {
     htmlHelpFormatter_.formatPipelineExamplesInJSON(streamForExamples);
 
     return stringToChar(streamForExamples.str());
+}
+
+char * HelpSite::faq() {
+    std::ostringstream stream;
+    htmlHelpFormatter_.formatFAQ(stream);
+
+    return stringToChar(stream.str());
+}
+
+char * HelpSite::installationGuide() {
+    std::ostringstream stream;
+    htmlHelpFormatter_.formatInstallationGuide(stream);
+
+    return stringToChar(stream.str());
 }

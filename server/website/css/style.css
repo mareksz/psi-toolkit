@@ -79,7 +79,7 @@ header { height:63px; width:100%; color:#fefefe; background:#444 repeat scroll 0
 #promotion { margin:32px 0; padding-bottom:6px; }
 #promotion section { width:310px; float:left; padding:0; }
 #promotion section + section { padding-left:20px; }
-#promotion h2 { border-bottom:1px solid #004766; font-weight:bold; margin-bottom:6px; }
+#promotion h2 { border-bottom: 1px dotted #ccc; font-weight:bold; margin-bottom:6px; }
 #promotion h2 > a:hover { text-decoration:none; }
 #promotion p { padding:3px 0; }
 

@@ -88,6 +88,18 @@ void HelpFormatter::formatAboutPsiFormat(std::ostream& output) {
     doFormatDataFile(getFileContent(path), output);
 }
 
+void HelpFormatter::formatFAQ(std::ostream& output) {
+    boost::filesystem::path path = getPathToFrameworkDataFile_("faq.txt");
+
+    doFormatDataFile(getFileContent(path), output);
+}
+
+void HelpFormatter::formatInstallationGuide(std::ostream& output) {
+    boost::filesystem::path path = getPathToFrameworkDataFile_("installation_guide.txt");
+
+    doFormatDataFile(getFileContent(path), output);
+}
+
 HelpFormatter::~HelpFormatter() { }
 
 boost::filesystem::path HelpFormatter::getPathToFrameworkDataFile_(const std::string& filename) {

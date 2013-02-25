@@ -21,6 +21,8 @@ public:
     char * licence();
     char * documentationMenu();
     char * psiFormat();
+    char * faq();
+    char * installationGuide();
 
     char * pipelineExamples();
 
