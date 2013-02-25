@@ -8,7 +8,7 @@
 #include "sundown/cpp/stringwrapper.hpp"
 
 std::set<std::string> HtmlHelpFormatter::extensionsForRandomExamples_ =
-    boost::assign::list_of("txt")("html")("xml");
+    boost::assign::list_of("txt")("html");
 
 void HtmlHelpFormatter::doFormatOneProcessorHelp(
     std::string processorName,
