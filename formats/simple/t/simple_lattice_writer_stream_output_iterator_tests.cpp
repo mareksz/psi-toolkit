@@ -24,6 +24,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_stream_output_iterator ) {
     std::vector<std::string> handledTags;
     handledTags.push_back("token");
 
+    std::vector<std::string> fallbackTags;
+
     std::ostringstream osstr;
 
     SimpleLatticeWriterStreamOutputIterator outputIterator(
@@ -41,7 +43,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_stream_output_iterator ) {
         false, //no-alts
         true, //with-blank
         "symbol", //basicTag
-        handledTags
+        handledTags,
+        fallbackTags
     ));
 
     writer->run();
@@ -71,6 +74,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_stream_output_iterator_advanced ) {
     handledTags.push_back("level1");
     handledTags.push_back("level2");
 
+    std::vector<std::string> fallbackTags;
+
     std::ostringstream osstr;
 
     SimpleLatticeWriterStreamOutputIterator outputIterator(
@@ -89,7 +94,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_stream_output_iterator_advanced ) {
         false, //no-alts
         true, //with-blank
         "token", //basicTag
-        handledTags
+        handledTags,
+        fallbackTags
     ));
 
     writer->run();

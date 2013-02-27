@@ -25,7 +25,8 @@ public:
         bool noAlts,
         bool withBlank,
         std::string basicTag,
-        std::vector<std::string> handledTags
+        std::vector<std::string> handledTags,
+        std::vector<std::string> fallbackTags
     ) :
         lattice_(lattice),
         outputIterator_(outputIterator),
@@ -33,7 +34,8 @@ public:
         noAlts_(noAlts),
         withBlank_(withBlank),
         basicTag_(basicTag),
-        handledTags_(handledTags)
+        handledTags_(handledTags),
+        fallbackTags_(fallbackTags)
     {
         outputIterator.setLatticeAnnotationItemManagerPointer(
                       &lattice_.getAnnotationItemManager());
@@ -50,6 +52,7 @@ private:
     bool withBlank_;
     std::string basicTag_;
     std::vector<std::string> handledTags_;
+    std::vector<std::string> fallbackTags_;
 
     bool isHandledTag_(std::string tagName);
 

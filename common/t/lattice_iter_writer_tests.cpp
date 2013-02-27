@@ -27,6 +27,8 @@ BOOST_AUTO_TEST_CASE( lattice_iter_writer ) {
     handledTags.push_back("level1");
     handledTags.push_back("level2");
 
+    std::vector<std::string> fallbackTags;
+
     std::ostringstream osstr;
 
     LiteralTestOutputIterator outputIterator(
@@ -40,7 +42,8 @@ BOOST_AUTO_TEST_CASE( lattice_iter_writer ) {
         false, //no-alts
         true, //with-blank
         "token", //basicTag
-        handledTags
+        handledTags,
+        fallbackTags
     ));
 
     writer->run();

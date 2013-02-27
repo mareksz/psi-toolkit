@@ -25,13 +25,23 @@ LatticeWriter<Sink> * PerlSimpleLatticeWriter::Factory::doCreateLatticeWriter(
         }
     }
 
+    std::vector<std::string> fallbackTags;
+    if (options.count("fallback-tags")) {
+        std::vector<std::string> fallbackTagsEscaped
+            = options["fallback-tags"].as< std::vector<std::string> >();
+        BOOST_FOREACH(std::string tag, fallbackTagsEscaped) {
+            fallbackTags.push_back(quoter.unescape(tag));
+        }
+    }
+
     return new PerlSimpleLatticeWriter(
         options.count("linear"),
         options.count("no-alts"),
         options.count("with-blank"),
         quoter.unescape(options["tag"].as<std::string>()),
         higherOrderTags,
-        options.count("with-args")
+        options.count("with-args"),
+        fallbackTags
         );
 }
 
@@ -39,18 +49,23 @@ boost::program_options::options_description PerlSimpleLatticeWriter::Factory::do
     boost::program_options::options_description optionsDescription("Allowed options");
 
     optionsDescription.add_options()
+        ("fallback-tags",
+            boost::program_options::value< std::vector<std::string> >()->multitoken(),
+            "tags that should be printed out if basic tags not found")
         ("linear",
             "skips cross-edges")
         ("no-alts",
             "skips alternative edges")
         ("with-blank",
             "does not skip edges with whitespace text")
-        ("tag", boost::program_options::value<std::string>()->default_value("token"),
+        ("tag",
+            boost::program_options::value<std::string>()->default_value("token"),
             "basic tag")
-        ("spec", boost::program_options::value< std::vector<std::string> >()->multitoken(),
+        ("spec",
+            boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "specification of higher-order tags")
         ("with-args",
-         "if set, then returns text with annotation as a hash element")
+            "if set, then returns text with annotation as a hash element")
         ;
 
     return optionsDescription;
@@ -95,7 +110,8 @@ void PerlSimpleLatticeWriter::Worker::doRun() {
         processor_.isNoAlts(),
         processor_.isWithBlank(),
         processor_.getBasicTag(),
-        handledTags
+        handledTags,
+        processor_.getFallbackTags()
     );
 
     writer.run();

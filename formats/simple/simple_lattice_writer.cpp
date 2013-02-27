@@ -117,7 +117,8 @@ void SimpleLatticeWriter::Worker::doRun() {
         processor_.isNoAlts(),
         processor_.isWithBlank(),
         processor_.getBasicTag(),
-        handledTags
+        handledTags,
+        processor_.getFallbackTags()
     );
 
     writer.run();

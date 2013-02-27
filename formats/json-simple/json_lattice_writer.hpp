@@ -37,14 +37,16 @@ public:
         bool withBlank,
         std::string basicTag,
         std::set<std::string> higherOrderTags,
-        bool withArgs
+        bool withArgs,
+        std::vector<std::string> fallbackTags
     ) :
         linear_(linear),
         noAlts_(noAlts),
         withBlank_(withBlank),
         basicTag_(basicTag),
         higherOrderTags_(higherOrderTags),
-        withArgs_(withArgs)
+        withArgs_(withArgs),
+        fallbackTags_(fallbackTags)
     { }
 
     bool isLinear() const {
@@ -69,6 +71,10 @@ public:
 
     std::set<std::string> getHigherOrderTags() const {
         return higherOrderTags_;
+    }
+
+    std::vector<std::string> getFallbackTags() const {
+        return fallbackTags_;
     }
 
 private:
@@ -99,6 +105,7 @@ private:
     std::string basicTag_;
     std::set<std::string> higherOrderTags_;
     bool withArgs_;
+    std::vector<std::string> fallbackTags_;
 };
 
 #endif
