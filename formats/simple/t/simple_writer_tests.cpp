@@ -20,6 +20,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer ) {
     std::map<std::string, std::string> tagsSeparators;
     tagsSeparators["token"] = ";";
 
+    std::vector<std::string> fallbackTags;
+
     boost::scoped_ptr<LatticeWriter<std::ostream> > writer(new SimpleLatticeWriter(
                                                 false, //linear
                                                 false, //no-alts
@@ -27,7 +29,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer ) {
                                                 "symbol", //tag
                                                 ",", //sep
                                                 "|", //alt-sep
-                                                tagsSeparators
+                                                tagsSeparators, //spec
+                                                fallbackTags //fallback-tags
                                                 ));
 
     std::ostringstream osstr;
@@ -55,6 +58,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_linear ) {
     std::map<std::string, std::string> tagsSeparators;
     tagsSeparators["token"] = ";";
 
+    std::vector<std::string> fallbackTags;
+
     boost::scoped_ptr<LatticeWriter<std::ostream> > writer(new SimpleLatticeWriter(
                                                 true, //linear
                                                 false, //no-alts
@@ -62,7 +67,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_linear ) {
                                                 "symbol", //tag
                                                 ",", //sep
                                                 "|", //alt-sep
-                                                tagsSeparators
+                                                tagsSeparators, //spec
+                                                fallbackTags //fallback-tags
                                                 ));
 
     std::ostringstream osstr;
@@ -90,6 +96,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_advanced ) {
     std::map<std::string, std::string> tagsSeparators;
     // tagsSeparators["splitter"] = "\n";
 
+    std::vector<std::string> fallbackTags;
+
     boost::scoped_ptr<LatticeWriter<std::ostream> > writer(new SimpleLatticeWriter(
                                                 false, //linear
                                                 false, //no-alts
@@ -97,7 +105,8 @@ BOOST_AUTO_TEST_CASE( simple_lattice_writer_advanced ) {
                                                 "token", //tag
                                                 ",", //sep
                                                 "|", //alt-sep
-                                                tagsSeparators
+                                                tagsSeparators, //spec
+                                                fallbackTags //fallback-tags
                                                 ));
 
     std::ostringstream osstr;

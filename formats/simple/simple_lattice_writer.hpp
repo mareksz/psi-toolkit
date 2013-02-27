@@ -2,6 +2,7 @@
 #define SIMPLE_LATTICE_WRITER_HDR
 
 #include <map>
+#include <vector>
 
 #include <boost/foreach.hpp>
 
@@ -35,7 +36,8 @@ public:
         std::string basicTag,
         std::string basicTagSeparator,
         std::string altSeparator,
-        std::map<std::string, std::string> tagsSeparators
+        std::map<std::string, std::string> tagsSeparators,
+        std::vector<std::string> fallbackTags
     ) :
         linear_(linear),
         noAlts_(noAlts),
@@ -43,7 +45,8 @@ public:
         basicTag_(basicTag),
         basicTagSeparator_(basicTagSeparator),
         altSeparator_(altSeparator),
-        tagsSeparators_(tagsSeparators)
+        tagsSeparators_(tagsSeparators),
+        fallbackTags_(fallbackTags)
     { }
 
     bool isLinear() const { return linear_; }
@@ -53,10 +56,7 @@ public:
     std::string getBasicTagSeparator() const { return basicTagSeparator_; }
     std::string getAltSeparator() const { return altSeparator_; }
     std::map<std::string, std::string> getTagsSeparatorsMap() const { return tagsSeparators_; }
-
-    bool isHandledTag(std::string tagName) {
-        return tagsSeparators_.find(tagName) != tagsSeparators_.end();
-    }
+    std::vector<std::string> getFallbackTags() const { return fallbackTags_; }
 
     std::string getTagSeparator(std::string tagName) {
         return tagsSeparators_[tagName];
@@ -92,6 +92,7 @@ private:
     std::string basicTagSeparator_;
     std::string altSeparator_;
     std::map<std::string, std::string> tagsSeparators_;
+    std::vector<std::string> fallbackTags_;
 
 };
 

@@ -25,6 +25,15 @@ LatticeWriter<std::ostream>* SimpleLatticeWriter::Factory::doCreateLatticeWriter
         }
     }
 
+    std::vector<std::string> fallbackTags;
+    if (options.count("fallback-tags")) {
+        std::vector<std::string> fallbackTagsEscaped
+            = options["fallback-tags"].as< std::vector<std::string> >();
+        BOOST_FOREACH(std::string tag, fallbackTagsEscaped) {
+            fallbackTags.push_back(quoter.unescape(tag));
+        }
+    }
+
     return new SimpleLatticeWriter(
         options.count("linear"),
         options.count("no-alts"),
@@ -32,7 +41,8 @@ LatticeWriter<std::ostream>* SimpleLatticeWriter::Factory::doCreateLatticeWriter
         quoter.unescape(options["tag"].as<std::string>()),
         quoter.unescape(options["sep"].as<std::string>()),
         quoter.unescape(options["alt-sep"].as<std::string>()),
-        tagsSeparators
+        tagsSeparators,
+        fallbackTags
     );
 }
 
@@ -40,19 +50,26 @@ boost::program_options::options_description SimpleLatticeWriter::Factory::doOpti
     boost::program_options::options_description optionsDescription("Allowed options");
 
     optionsDescription.add_options()
-        ("alt-sep", boost::program_options::value<std::string>()->default_value("|"),
+        ("alt-sep",
+            boost::program_options::value<std::string>()->default_value("|"),
             "alternative edges separator")
+        ("fallback-tags",
+            boost::program_options::value< std::vector<std::string> >()->multitoken(),
+            "tags that should be printed out if basic tags not found")
         ("linear",
             "skip cross-edges")
         ("no-alts",
             "skip alternative edges")
         ("with-blank",
             "do not skip edges with whitespace text")
-        ("sep", boost::program_options::value<std::string>()->default_value("\n"),
+        ("sep",
+            boost::program_options::value<std::string>()->default_value("\n"),
             "basic tag separator")
-        ("spec", boost::program_options::value< std::vector<std::string> >()->multitoken(),
+        ("spec",
+            boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "specification of higher-order tags and their separators")
-        ("tag", boost::program_options::value<std::string>()->default_value("token"),
+        ("tag",
+            boost::program_options::value<std::string>()->default_value("token"),
             "basic tag");
 
     return optionsDescription;
