@@ -61,4 +61,48 @@ BOOST_AUTO_TEST_CASE( lattice_iter_writer ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( lattice_iter_writer_fallback_tags ) {
+
+    AnnotationItemManager aim;
+    Lattice lattice(aim);
+    lattice_preparators::prepareAdvancedLattice(lattice);
+
+    std::vector<std::string> handledTags;
+
+    std::vector<std::string> fallbackTags;
+    fallbackTags.push_back("markup");
+    fallbackTags.push_back("html");
+
+    std::ostringstream osstr;
+
+    LiteralTestOutputIterator outputIterator(
+        osstr
+    );
+
+    boost::scoped_ptr<LatticeIterWriter> writer(new LatticeIterWriter(
+        lattice,
+        outputIterator,
+        false, //linear
+        false, //no-alts
+        true, //with-blank
+        "token", //basicTag
+        handledTags,
+        fallbackTags
+    ));
+
+    writer->run();
+
+    std::string line;
+    std::string contents;
+    std::ifstream s(ROOT_DIR "common/t/files/iter_writer_fallback_output.txt");
+    while (getline(s, line)) {
+        contents += line;
+        contents += "\n";
+    }
+
+    BOOST_CHECK_EQUAL(osstr.str(), contents);
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

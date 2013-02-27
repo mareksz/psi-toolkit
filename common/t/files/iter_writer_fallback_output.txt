@@ -1,0 +1,26 @@
+openalt
+[Ala]
+closealt
+openalt
+[ ]
+closealt
+openalt
+[ma]
+closealt
+openalt
+[ ]
+closealt
+openalt
+[]
+closealt
+openalt
+[kta]
+[kota]
+closealt
+openalt
+[]
+closealt
+openalt
+[.]
+closealt
+flush
