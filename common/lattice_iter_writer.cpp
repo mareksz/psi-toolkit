@@ -7,6 +7,13 @@ void LatticeIterWriter::run() {
     Lattice::EdgeDescriptor edge;
     std::queue<Lattice::EdgeDescriptor> basicTagEdges;
 
+    typedef std::pair< std::string, std::queue<Lattice::EdgeDescriptor> > FallbackMapItem;
+    typedef std::map< std::string, std::queue<Lattice::EdgeDescriptor> > FallbackMap;
+    FallbackMap fallbackMap;
+    BOOST_FOREACH(std::string fallbackTag, fallbackTags_) {
+        fallbackMap.insert(FallbackMapItem(fallbackTag, std::queue<Lattice::EdgeDescriptor>()));
+    }
+
     std::map<std::string, Lattice::VertexDescriptor> targets;
 
     std::map<std::string, bool> groupOpened;
@@ -33,10 +40,18 @@ void LatticeIterWriter::run() {
                 = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
             BOOST_FOREACH(std::string tag, tags) {
                 if (
-                    basicTag_ == tag &&
-                    (withBlank_ || !boost::algorithm::trim_copy(lattice_.getEdgeText(edge)).empty())
+                    withBlank_ ||
+                    !boost::algorithm::trim_copy(lattice_.getEdgeText(edge)).empty()
                 ) {
-                    basicTagEdges.push(edge);
+                    if (basicTag_ == tag) {
+                        basicTagEdges.push(edge);
+                    }
+                    if (!fallbackTags_.empty()) {
+                        FallbackMap::iterator fmi = fallbackMap.find(tag);
+                        if (fmi != fallbackMap.end()) {
+                            fmi->second.push(edge);
+                        }
+                    }
                 }
                 if (isHandledTag_(tag) && targets[tag] == vd) {
                     targets[tag] = lattice_.getEdgeTarget(edge);
@@ -58,6 +73,29 @@ void LatticeIterWriter::run() {
                     printElements = true;
                     break;
                 }
+            }
+        }
+
+        // get fallback edges
+        if (!fallbackTags_.empty()) {
+            size_t fallbackLevel = 0;
+            while (basicTagEdges.empty() && fallbackLevel < fallbackTags_.size()) {
+                std::queue<Lattice::EdgeDescriptor> & fallbackQueue
+                    = fallbackMap[fallbackTags_[fallbackLevel]];
+                while (!fallbackQueue.empty()) {
+                    basicTagEdges.push(fallbackQueue.front());
+                    fallbackQueue.pop();
+                }
+                ++fallbackLevel;
+            }
+            // remove edges from other fallback queues
+            while (fallbackLevel < fallbackTags_.size()) {
+                std::queue<Lattice::EdgeDescriptor> & fallbackQueue
+                    = fallbackMap[fallbackTags_[fallbackLevel]];
+                while (!fallbackQueue.empty()) {
+                    fallbackQueue.pop();
+                }
+                ++fallbackLevel;
             }
         }
 
