@@ -9,7 +9,14 @@
 UnumsuntRule::operator std::string() const {
     std::stringstream sstr;
     {
-        std::string comma("if");
+        std::string comma("for");
+        BOOST_FOREACH(std::string word, words) {
+            sstr << comma << " [" << word << "]";
+            comma = " and";
+        }
+    }
+    {
+        std::string comma(" if");
         BOOST_FOREACH(StringPair condition, conditions) {
             sstr << comma << " [" << condition.first << "] == [" << condition.second << "]";
             comma = " and";
@@ -36,39 +43,42 @@ void UnumsuntRule::addCommand(std::string arg, std::string val) {
 }
 
 
+void UnumsuntRule::addWord(std::string word) {
+    words.insert(word);
+}
+
+
 bool UnumsuntRule::apply(AnnotationItemManager & manager, AnnotationItem & item) {
-    bool doesSatisfyAllConditions = true;
+    if (!words.empty() && !words.count(item.getText())) {
+        return false;
+    }
     BOOST_FOREACH(StringPair condition, conditions) {
         if (condition.first == "CAT") {
             if (condition.second != item.getCategory()) {
-                doesSatisfyAllConditions = false;
-                break;
+                return false;
             }
         } else {
             if (manager.getValueAsString(item, condition.first) != condition.second) {
-                doesSatisfyAllConditions = false;
-                break;
+                return false;
             }
         }
     }
-    if (doesSatisfyAllConditions) {
-        BOOST_FOREACH(StringPair command, commands) {
-            if (command.first == "CAT") {
-                if (command.second[0] == '$') {
-                    manager.setCategory(item,
-                        manager.getValueAsString(item, command.second.substr(1)));
-                } else {
-                    manager.setCategory(item, command.second);
-                }
+    BOOST_FOREACH(StringPair command, commands) {
+        if (command.first == "CAT") {
+            if (command.second[0] == '$') {
+                manager.setCategory(item,
+                    manager.getValueAsString(item, command.second.substr(1)));
             } else {
-                if (command.second[0] == '$') {
-                    manager.setValue(item, command.first,
-                        manager.getValue(item, command.second.substr(1)));
-                } else {
-                    manager.setValue(item, command.first, command.second);
-                }
+                manager.setCategory(item, command.second);
+            }
+        } else {
+            if (command.second[0] == '$') {
+                manager.setValue(item, command.first,
+                    manager.getValue(item, command.second.substr(1)));
+            } else {
+                manager.setValue(item, command.first, command.second);
             }
         }
     }
-    return doesSatisfyAllConditions;
+    return true;
 }
