@@ -1,63 +1,59 @@
 ## What is PSI-Toolkit? ##
 
 PSI-Toolkit is an open-source set of linguistic tools for processing text
-written in various formats and various languages. In particular, it deals with:
+written in various formats and languages. In particular, it deals with:
 
 * text pre-processing
 * sentence splitting
 * tokenization
 * lexical and morhological analysis
-* syntactical parsing
+* syntactical/semantic parsing
 * machine translation
 
 The PSI tools process mainly but not exclusively texts written in Polish. At
-this moment supported languages are also: English, French, Turkish, German,
-Russian, Italian and probably some others.
+the moment supported languages are also: English, French, Turkish, German,
+Russian, Italian and Finnish.
 
 
 ## How to use the PSI-Toolkit? ##
 
-The easiest way to use PSI-Toolkit is either use our web-service called
-[PSI-Server](/) or download the [Linux packages](/download.html) and use them
-locally with command-line program `psi-pipe`.
+The easiest way is to use our web-service called [PSI-Server](/).
+You may also download the [Linux packages](/download.html), install them at
+your computer and use locally with the command-line program `psi-pipe`.
 
+<!--
 The installation process is described in the [Installation guide]
 (/help/install.html).
-Note that, after installing PSI-Toolkit from precompiled packages you will
-also get the own instance of PSI-Server (with exactly the same functionalities)
-to run locally by simple typing `psi-server` and typing `http://localhost:3000`
-address in your web browser.
+-->
+
+Note that after installing PSI-Toolkit from the precompiled packages you will
+also get your own instance of PSI-Server (identical to this one). You can
+launch the server locally by simple typing the `psi-server` command. Then, the
+client will be available at `http://localhost:3000` in your web browser.
 
 
 # Usage basics #
 
-Typical usage of PSI-Toolkit consists of choosing input data to process and
-setting appropriate command which let you specify what you want to do, for
-instance, to `tokenize` or to `lemmatize`.
-The basic explanation of writting commands via the PSI-Server with suitable
-screen shots is included in [Getting started](/help/start.html).
-
-The command (we also refers to _command_ by using _pipeline_)usually is a
-sequence of three tasks: read, annotate and write because data have to be
-firstly read, then processed (annotated) and finally displayed.
-Each task is realized with tool so-called reader, processor or writer
-respectively, each separated from each other by `!` sign.
-Hence, a standard pipeline has the following structure:
+A typical use case consists in delivering text for processing and specifying
+what you want to be done e.g. `tokenize` or `lemmatize`.
+The text should be firstly read, then processed (annotated) and finally
+displayed or written to a file. Therefore a typical PSI command  is a sequence
+of three tasks: `read`, `annotate` and `write` separated  by the `!` character:
 
     a reader ! a sequence of processors ! a writer
 
-The list of all available tools is available in [Documentation]
-(/help.documentation.html).
+The list of all available readers, processors and writers is available in
+[Documentation] (/help.documentation.html). You may find exemplary command
+pipelines in [Getting started](/help/start.html).
 
 
 ## Example ##
 
-Lets assume that we need to split the sentence _Piękna gra trwała długo._
-into tokens, i.e. we want to tokenize them. It can be done with command:
+Suppose you need to tokenize the sentence _Piękna gra trwała długo._.
+It can be done with the command:
 
     read-text ! tokenize ! write-simple
 
-As we can see, each task is separated by an exclamation point.
 The sequence of tasks (processors) determine the sequence of text processing
 and should be logically correct (reading at the beginning, writing at the end,
 lemmatization placed after tokenization, etc.).
@@ -69,64 +65,67 @@ The expected result is ([click here to run this example in new window](/pipe.psi
     trwała
     długo
     .
-
-Another example can be lemmatization of the same sentence and displaying
-all lemmas for each word, which is possible with command:
+To lemmatize the same sentence and display all lemmas for each word, the
+following pipeline is used:
 
     read-text ! tokenize ! lemmatize ! write-simple --tag lemma
 
-and the result is ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmatize+!+write-simple&input-text=Piękna+gra+trwała+długo.)):
+The result is: ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmatize+!+write-simple&input-text=Piękna+gra+trwała+długo.)):
 
     piękno|piękny
     gra|grać
     trwać|trwała|trwały
     długo
 
-There we need to precisely say what we want to display by setting the
-`--tag lemma` switches for `write-simple`, otherwise we get output in internal
-PSI-Toolkit format (see section *Working with PSI-lattice* for details).
+Note that in order display information about lemmas you need to set the `--tag
+lemma` switch for the `write-simple` command.
 
 
 ## Processor switches ##
 
-As was pointed in previous example, the use of the PSI processor may be
-customized be means of switches (options). Most of the options requires
+As was shown in the previous example, the use of the PSI processor may be
+customized be means of switches (options). Most of the options require
 a value, as it is in the case of the previously mentioned `--tag` option
 (the value was `lemma`).
 
-All available options for each processor you will find in [Documentation]
+You may find all available options for each processor in [Documentation]
 (/help/documentation.html).
 
 
 ## Auto completion ##
 
-You do not have to specify all processors in your command. If you "forget"
-a processor, the pipeline will be supplemented by the default processor. For
-example, the much simpler command:
+Actually, you do not have to specify all processors in your command. If you
+"forget" a processor, the pipeline will be supplemented by the default
+processor. For example, a simple command:
 
     tokenize
 
-return exactly the same results as previous once ([run example](/pipe.psis?pipe-text=tokenize&input-text=Piękna+gra+trwała+długo.))
+returns exactly the same results as a more sophisticated one:([run example]
+(/pipe.psis?pipe-text=tokenize&input-text=Piękna+gra+trwała+długo.))
 
     read-text ! tokenize ! write-simple
 
-because missing but necessary tasks will be complement automatically.
-Hence, the following pipelines are usually equal for the same input:
+as the missing tasks are complemented automatically with default processors.
+The following two pipelines will produce the same output:
 
 * `read-text ! tokenize ! lemmatize ! write-simple --tag lemma`
-* `lemmatize ! write-simple --tag lemma` - both, the reader and necessary
-processor will be autocomplement.
+* `lemmatize ! write-simple --tag lemma` (a default reader and a default
+tokenizer will be auto-complemented).
 
 
 ## Aliases ##
 
-Most of the tasks can be expressed either as a verb (e.g. `tokenize`), as a
-noun (`tokenizer`) or as a specific tool's name (`tp-tokenizer`). Such
-alternative names are called _aliases_, and are always listed in processor's
-description in [Documentation](/help/documentation.html) or on the
-[List of aliases](/help/aliases.html).
+Most of the tasks can be expressed in a few equivalent ways:
 
-For example the following pipelines are equal:
+* as a verb (e.g. `tokenize`)
+* as a noun (e.g. `tokenizer`)
+* as a name of a specific tool (e.g. `tp-tokenizer`).
+
+Alternative names for processors are called _aliases_. Aliases for each
+processor are listed in [Documentation](/help/documentation.html) and in [List
+of aliases](/help/aliases.html).
+
+For example the following pipelines are equivalent:
 
 * `segment ! write --tag segment`
 * `srx-segmenter ! simple-writer --tag segment`
@@ -134,38 +133,36 @@ For example the following pipelines are equal:
 
 ## More examples ##
 
-More working examples are available with the _random example_ button located
-under _write command_ input field on the main PSI-Server website. Using it you
-can easily run predefined commands.
+You may test more examples of processing pipelines with the _random example_
+button located under _write command_ input field on the main PSI-Server website.
 The same examples can be found in [Documentation](/help/documentation.html)
-within each processor's description.
+along with descriptions of each processor.
 
 
 # Other features #
 
 ## PSI-readers ##
 
-Readers process input either from keyboard or from a file. PSI-Toolkit
-supports such formats as: `txt`, `html`, `doc`, `docx`, `xlsx`, `pptx` and
-`pdf` by many available readers. Instead of specifying reader implicite, you
-may use `guessing-reader` and PSI-Toolkit tries to recognize the input file
-format for you.
+Readers process input either from keyboard or from a file. Respective
+PSI-Toolkit readers process various text formats: `txt`, `html`, `doc`, `docx`,
+`xlsx`, `pptx` and `pdf`, e.g. `reader-pdf` reads pdf files . You may also try
+using `guessing-reader` to automatically recognize the input file format.
 
 
 ## Working with PSI-lattice ##
 
-Processed data are stored into the internal data structure, a so-called
-PSI-lattice. If you want to see how a PSI-lattice looks like in graphical
-format, try this command with quite simple input text:
+Processed data are stored in the internal data structure, a so-called
+PSI-lattice. If you want to see how a PSI-lattice looks like, try this command
+(take a simple input text, otherwise the structure is too big):
 
     tokenize ! graph --format png
 
-You can also display PSI-lattice in textual format with `psi-writer` tool
+You can also display PSI-lattice in a textual format with the `psi-writer` tool
 (alias is `write-psi`):
 
     tokenize ! write-psi
 
-For input _Piękna gra trwała długo._ it returns:
+For the input: _Piękna gra trwała długo._ it returns:
 
     ## beg. len.  text         tags                  annot.text  annotations
     01 0000 07    Piękna       !pl,token             Piękna      T
@@ -179,35 +176,27 @@ For input _Piękna gra trwała długo._ it returns:
     09 0000 27    Piękna...go. !pl,lang-guesser,text Piękna_gra_trwała_długo. TEXT[8]
     10 0026 01    .            !pl,token             .           I
 
-This format is called PSI-format and for detailed description read
-[PSI-format](/help/documentation.html) page.
+For the detailed description of the PSI-format see [PSI-format]
+(/help/documentation.html).
 
-What we only want to stressed right now is the possibility of selective
-extraction from PSI-lattice by given tags using `simple-writer`. Immadietly
-after `--tag` option you can specify a tag that should be written to output.
-For previous example, printing only `token` tags (see fifth column in
-PSI-format) is possible with command ([run example](/pipe.psis?pipe-text=tokenize+!+write-simple+--tag+token&input-text=Piękna+gra+trwała+długo.)):
+Remember that you can filter the display of the PSI-lattice by using the tag
+option of `simple-writer`.
+Here are two examples: ([run example](/pipe.psis?pipe-text=tokenize+!+write-simple+--tag+token&input-text=Piękna+gra+trwała+długo.)):
 
-    tokenize ! write-simple --tag token
-
-It was also presented with the example of lemmatization:
-
-    lemmatize ! write-simple --tag lemma
+* `tokenize ! write-simple --tag token`
+* `lemmatize ! write-simple --tag lemma`
 
 
-## Command-line program ##
+## Command-line usage ##
 
-The command-line program called `psi-pipe` is available after installation of
-PSI-Toolkit package. Using it requires a basic knowledge about console
-commands, but everyone who use a Unix terminal will be familiar.
+After successful installation of the PSI-Toolkit package, you may use a command-line program called `psi-pipe`.
 
-We can pass the pipeline as was described before as arguments for `psi-pipe`
-program. To pass input text to the standard input we need to use `echo` Unix
-command and standard pipeline (i.e. the vertical bar `|`):
+You can pass any command pipeline as an argument for the `psi-pipe`
+program. To pass the input text to the standard input you need to use the `echo`
+command. Apply the vertical bar `|` to pipe `echo` and `psi-pipe`.
 
-    $ echo "Piękna gra trwała długo." | lemmatize ! write-simple --tag lemma
+    $ echo "Piękna gra trwała długo." | psi-pipe lemmatize ! write-simple --tag lemma
 
-If you want to pass a file instead of raw text, you may use `cat` command:
+If you want to pass a file instead of raw text, you may use the `cat` command:
 
-    $ cat ../path-to-your/file.docx | lemmatize ! write-simple --tag lemma
-
+    $ cat ../path-to-your/file.docx | psi-pipe lemmatize ! write-simple --tag lemma
