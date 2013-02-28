@@ -66,7 +66,27 @@
 @val    pant    imiesłów_uprzedni
 @val    pcon    imiesłów_współczesny
 @val    ppas    imiesłów_bierny
-@attr   mode    C
-@val    pot przypuszczający
-@val    impt    rozkazujący
-CAT = rzeczownik -> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak
+#@attr   mode    C
+#@val    pot przypuszczający
+#@val    impt    rozkazujący
+CAT = rzeczownik -> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, O = 3, Składnia = 0, Length = 1, Amb = 1
+Rp = mo, L = 1 -> R = mż, R1 = mż
+CAT = przymiotnik -> Przyim = brak, Length = 1, Amb = 1
+mój twój nasz wasz -> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = po_przymiotnik -> Przyim = brak, Stopień = równy, Length = 1, Amb = 1
+CAT = przysłówek -> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2
+CAT = spójnik, albo -> Typ=albo,Ps1=9,Ps3=0,Ps4=0,Ps5=1,Ps2=0,Length=1,Amb=1
+CAT = spójnik, lub -> spójnik,Ps1=0,Ps3=0,Ps4=0,Ps5=0,Ps2=0,Length=1,Amb=1
+CAT = spójnik, oraz -> spójnik,Ps1=0,Ps3=0,Ps4=0,Ps5=0,Ps2=0,Length=1,Amb=1
+CAT = wykrzyknienie -> Lenght = 1, Amb = 1
+CAT = liczebnik_główny -> R = $Rp, Length = 1, Amb = 1
+CAT = liczebnik_główny, jeden jedna jedno jedni jedne -> Typ = kwant
+CAT = liczebnik_główny, dwa dwie trzy cztery -> Typ = zg
+CAT = liczebnik_główny, pięć sześć siedem osiem dziewięć dziesięć -> Typ = d
+CAT = liczebnik_główny, dwoje troje czworo pięcioro sześcioro siedmioro ośmioro dziewięcioro -> Typ = d, R = zbiorowy
+CAT = czasownik -> Przyim = brak, Przyim1 = brak, Podmiot = 1, Lenght = 1, Amb = 1
+CAT = czasownik, C = teraźniejszy -> R = 0
+CAT = czasownik, C = przeszły -> R = $Rp, R1 = 0
+CAT = czasownik, A = dk, C = teraźniejszy -> C = przyszły
+CAT = czasownik, mode = pot -> C = przypuszczający
+CAT = czasownik, mode = impt -> C = rozkazujący
