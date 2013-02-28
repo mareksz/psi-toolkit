@@ -9,24 +9,24 @@
 UnumsuntRule::operator std::string() const {
     std::stringstream sstr;
     {
-        std::string comma("for");
+        std::string comma(" for ");
         BOOST_FOREACH(std::string word, words) {
-            sstr << comma << " [" << word << "]";
-            comma = " and";
+            sstr << comma << "[" << word << "]";
+            comma = " or ";
         }
     }
     {
-        std::string comma(" if");
+        std::string comma(" if ");
         BOOST_FOREACH(StringPair condition, conditions) {
-            sstr << comma << " [" << condition.first << "] == [" << condition.second << "]";
-            comma = " and";
+            sstr << comma << "[" << condition.first << "] == [" << condition.second << "]";
+            comma = " and ";
         }
     }
     {
-        std::string comma(" then");
+        std::string comma(" then ");
         BOOST_FOREACH(StringPair command, commands) {
-            sstr << comma << " [" << command.first << "] := [" << command.second << "]";
-            comma = ",";
+            sstr << comma << "[" << command.first << "] := [" << command.second << "]";
+            comma = ", ";
         }
     }
     return sstr.str();
