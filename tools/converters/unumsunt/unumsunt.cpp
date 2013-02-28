@@ -172,11 +172,13 @@ Unumsunt::Unumsunt(
                                 boost::algorithm::trim_copy(aItem.val));
                         } else {
                             DEBUG("Condition*: [" << condition << "]");
-                            std::stringstream wordDictSs;
+                            std::stringstream wordDictSs(condition);
                             while (wordDictSs.good()) {
                                 std::string word;
                                 wordDictSs >> word;
-                                aux_rules_.back().addWord(word);
+                                if (!word.empty()) {
+                                    aux_rules_.back().addWord(word);
+                                }
                             }
                         }
                     }
