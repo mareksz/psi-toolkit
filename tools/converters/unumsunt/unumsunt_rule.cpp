@@ -5,6 +5,8 @@
 
 #include <boost/foreach.hpp>
 
+#include "zvalue.hpp"
+
 
 UnumsuntRule::operator std::string() const {
     std::stringstream sstr;
@@ -75,6 +77,10 @@ bool UnumsuntRule::apply(AnnotationItemManager & manager, AnnotationItem & item)
             if (command.second[0] == '$') {
                 manager.setValue(item, command.first,
                     manager.getValue(item, command.second.substr(1)));
+            } else if (command.second == "0") {
+                manager.setValue(item, command.first, manager.any_value());
+            } else if (command.second == "-1") {
+                manager.setValue(item, command.first, manager.false_value());
             } else {
                 manager.setValue(item, command.first, command.second);
             }
