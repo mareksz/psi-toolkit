@@ -163,22 +163,17 @@ const std::string HelpFormatter::ALIASES_HEADER = "Aliases";
 const std::string HelpFormatter::LANGUAGES_HEADER = "Languages";
 
 std::list<std::string> HelpFormatter::getLanguagesHandledForProcessor(
-    std::string /*processorName*/) {
+    std::string processorName) {
 
-    /*
     ProcessorFactory* processorFactory
         = &MainFactoriesKeeper::getInstance().getProcessorFactory(processorName);
 
     AnnotatorFactory* annotatorFactory = dynamic_cast<AnnotatorFactory*>(processorFactory);
 
-    boost::program_options::variables_map fakeOptions;
-    std::list<std::string> langCodes = annotatorFactory->languagesHandled(fakeOptions);
-
-    BOOST_FOREACH(std::string langCode, langCodes) {
-        std::cout << "lang: " << langCode << std::endl;
+    if (annotatorFactory != NULL) {
+        boost::program_options::variables_map fakeOptions;
+        return annotatorFactory->languagesHandled(fakeOptions);
     }
-    */
 
-    //return langCodes;
     return std::list<std::string>();
 }
