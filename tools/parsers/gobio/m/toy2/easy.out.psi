@@ -1,0 +1,5 @@
+01 0000 06    widzę        !pl,gobio                         x,Dop1=bier,Przyim1=brak,Sem1=aaa
+02 0000 06    widzę        gobio,parse                       x,Dop1=bier,Przyim1=brak,Sem1=aaa
+03 0006 01    _            !pl,token                         B
+04 0007 08    komputer     !pl,gobio                         y,P=bier,S=bbb
+05 0007 08    komputer     gobio,parse                       y,P=bier,S=bbb

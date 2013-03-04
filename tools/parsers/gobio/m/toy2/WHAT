@@ -1,0 +1,1 @@
+psi-reader ! gobio --lang pl --rules %ITSDATA%/test/toy2.g ! psi-writer --no-header
