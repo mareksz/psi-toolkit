@@ -885,21 +885,25 @@ bool Lattice::EdgeSequence::Iterator::hasNext() {
 }
 
 Lattice::EdgeDescriptor Lattice::EdgeSequence::Iterator::next() {
+    return nextUsage().getEdge();
+}
+
+Lattice::EdgeUsage Lattice::EdgeSequence::Iterator::nextUsage() {
     if (edgeSequence_.links.empty()) {
         if (si_ >= edgeSequence_.end) {
             throw NoEdgeException("EdgeSequence::Iterator has no next edges.");
         }
         int currentSymbol = si_;
         si_ += lattice_.symbolLength_(si_);
-        return lattice_.firstOutEdge(
-            lattice_.getVertexForRawCharIndex(currentSymbol),
-            lattice_.getLayerTagManager().getMask("symbol")
-        );
+        return Lattice::EdgeUsage(
+            lattice_.firstOutEdge(
+                lattice_.getVertexForRawCharIndex(currentSymbol),
+                lattice_.getLayerTagManager().getMask("symbol")));
     } else {
         if (ei_ == edgeSequence_.links.end()) {
             throw NoEdgeException("EdgeSequence::Iterator has no next edges.");
         }
-        return (ei_++)->getEdge();
+        return *(ei_++);
     }
 }
 
@@ -966,7 +970,8 @@ size_t Lattice::EdgeSequence::size(Lattice & lattice) const {
     }
 }
 
-Lattice::EdgeSequence::Builder& Lattice::EdgeSequence::Builder::addEdge(EdgeDescriptor edge) {
+Lattice::EdgeSequence::Builder& Lattice::EdgeSequence::Builder::addEdge(
+    EdgeDescriptor edge, zvalue role) {
     if (begin <= end && lattice_.isEdgeHidden(edge)) {
         if (links.empty()) {
             begin = lattice_.getEdgeBeginIndex(edge);
@@ -981,7 +986,7 @@ Lattice::EdgeSequence::Builder& Lattice::EdgeSequence::Builder::addEdge(EdgeDesc
         end = 0;
     }
 
-    links.push_back(EdgeUsage(edge));
+    links.push_back(EdgeUsage(edge, role));
 
     return *this;
 }

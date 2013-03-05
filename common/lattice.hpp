@@ -116,6 +116,7 @@ public:
             Iterator(Lattice & lattice, const EdgeSequence & edgeSequence);
             bool hasNext();
             EdgeDescriptor next();
+            EdgeUsage nextUsage();
         private:
             Lattice & lattice_;
             const EdgeSequence & edgeSequence_;
@@ -138,7 +139,7 @@ public:
         class Builder {
         public:
             Builder(Lattice & lattice) : lattice_(lattice), begin(0), end(0) { }
-            Builder& addEdge(EdgeDescriptor edge);
+            Builder& addEdge(EdgeDescriptor edge, zvalue role = NULL_ZVALUE);
             EdgeSequence build();
         private:
             Lattice & lattice_;
@@ -168,6 +169,7 @@ public:
                 : iter_(lattice, partition.getSequence()) { }
             bool hasNext() { return iter_.hasNext(); }
             EdgeDescriptor next() { return iter_.next(); }
+            EdgeUsage nextUsage() { return iter_.nextUsage(); }
         private:
             EdgeSequence::Iterator iter_;
         };
