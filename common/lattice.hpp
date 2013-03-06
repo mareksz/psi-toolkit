@@ -240,7 +240,7 @@ public:
 
     /**
      * Edge used as a contituent in some superconstituent, i.e.
-     * an edge with possibly some "role" (usually null, 
+     * an edge with possibly some "role" (usually null,
      * in a parser ouput can express some syntactic role, e.g.
      * being a subject, an object etc.).
      */

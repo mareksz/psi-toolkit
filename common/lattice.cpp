@@ -1002,7 +1002,7 @@ Lattice::EdgeSequence Lattice::EdgeSequence::Builder::build() {
 Lattice::EdgeSequence::EdgeSequence(const std::vector<EdgeDescriptor>& aLinks) :
     begin(0),
     end(0)
-{ 
+{
     links.reserve(aLinks.size());
     BOOST_FOREACH(EdgeDescriptor edge, aLinks) {
         links.push_back(EdgeUsage(edge));
