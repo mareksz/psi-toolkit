@@ -8,7 +8,7 @@
 08 0004 02    ma           token                             'ma',type=word
 09 0004 02    ma           lemma,poleng-tagset               mieć,pos=C:N,morpho=OP3[8]
 10 0004 02    ma           lemma,poleng-tagset               mój,pos=ZP,morpho=ŻMP[8]
-11 0004 02    ma           gobio,parse                       czasownik,R=any,L=1,C=teraźniejszy,O=3[9]
+11 0004 02    ma           gobio,parse                       czasownik,R=nil,L=1,C=teraźniejszy,O=3[9]
 12 0006 06    &nbsp;       symbol                            '_
 13 0006 06    &nbsp;       token                             '_',type=blank[12]
 14 0012 03    <b>          html,markup                       open[]

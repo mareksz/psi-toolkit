@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), annotationItem.getCategory());
     BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), "noun");
     BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "case"), NULL_ZVALUE);
-    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "NULL_ZVALUE");
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "fail");
     manager.setValue(annotationItem, "case", "nominative");
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "nominative");
     manager.setValue(annotationItem, "case", "genitive");
@@ -33,6 +33,26 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "genitive");
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "number"), "plural");
 };
+
+BOOST_AUTO_TEST_CASE( annotation_special ) {
+    AnnotationItemManager manager;
+    AnnotationItem annotationItem("verb");
+    manager.setValue(annotationItem, "object", "fail");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "fail");
+    manager.setValue(annotationItem, "object", "false");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "fail");
+    manager.setValue(annotationItem, "object", "empty");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "fail");
+    manager.setValue(annotationItem, "object", "nil");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), DEFAULT_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "nil");
+    manager.setValue(annotationItem, "object", "any");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), DEFAULT_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "nil");
+}
 
 BOOST_AUTO_TEST_CASE( annotation_more ) {
     AnnotationItemManager manager;

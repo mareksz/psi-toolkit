@@ -97,7 +97,7 @@ std::string AnnotationItemManager::getValueAsString(
     AnnotationItem & annotationItem,
     std::string attribute
 ) {
-    return zvalueToString(getValue(annotationItem, attribute));
+    return to_string(getValue(annotationItem, attribute));
 }
 
 
@@ -129,7 +129,7 @@ std::list< std::pair<std::string, std::string> > AnnotationItemManager::getValue
     ) {
         result.push_back(std::pair<std::string, std::string>(
             m_.right.at(i),
-            zvalueToString(annotationItem.values_[i])
+            to_string(annotationItem.values_[i])
         ));
     }
     return result;
