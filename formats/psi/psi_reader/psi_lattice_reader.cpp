@@ -243,8 +243,11 @@ void PsiLatticeReader::Worker::doRun() {
                         std::string::const_iterator partBegin = part.begin();
                         std::string::const_iterator partEnd = part.end();
                         if (parse(partBegin, partEnd, partGrammar, partItem)) {
-                            BOOST_FOREACH(int edgeNumber, partItem.edgeNumbers) {
-                                if (edgeNumber < 1) {
+                            BOOST_FOREACH(
+                                PsiLREdgeNumberWithRole edgeNumberWithRole,
+                                partItem.edgeNumbersWithRoles
+                            ) {
+                                if (edgeNumberWithRole.edgeNumber < 1) {
                                     if (currentVertex == to) {
                                         std::stringstream errorSs;
                                         errorSs << "PSI reader: syntax error in line "
@@ -254,7 +257,7 @@ void PsiLatticeReader::Worker::doRun() {
                                         throw FileFormatException(errorSs.str());
                                     }
                                     currentEdge = lattice_.firstOutEdge(currentVertex, rawMask);
-                                } else if (edgeOrdinalMap.find(edgeNumber)
+                                } else if (edgeOrdinalMap.find(edgeNumberWithRole.edgeNumber)
                                            == edgeOrdinalMap.end()) {
                                     std::stringstream errorSs;
                                     errorSs << "PSI reader: syntax error in line "
@@ -262,7 +265,7 @@ void PsiLatticeReader::Worker::doRun() {
                                         << "\n\tWrong partition's notation (unknown sub-edge)";
                                     throw FileFormatException(errorSs.str());
                                 } else {
-                                    currentEdge = edgeOrdinalMap[edgeNumber];
+                                    currentEdge = edgeOrdinalMap[edgeNumberWithRole.edgeNumber];
                                 }
                                 seqBuilder.addEdge(currentEdge);
                                 currentVertex = lattice_.getEdgeTarget(currentEdge);
