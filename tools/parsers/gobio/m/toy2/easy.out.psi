@@ -1,6 +1,6 @@
-01 0000 06    widzę        !pl,gobio                         pkcz,Dop1=bier,Przyim1=brak,Sem1=UNKNOWN\_ZVALUE
-02 0000 06    widzę        gobio,parse                       pkcz,Dop1=bier,Przyim1=brak,Sem1=UNKNOWN\_ZVALUE
+01 0000 06    widzę        !pl,gobio                         pkcz,Dop1=bier,Przyim1=brak,Sem1=nil
+02 0000 06    widzę        gobio,parse                       pkcz,Dop1=bier,Przyim1=brak,Sem1=nil
 03 0006 01    _            !pl,token                         B
-04 0007 08    komputer     !pl,gobio                         szfrz,P=bier,S=UNKNOWN\_ZVALUE
-05 0000 15    widzę_...ter !pl,gobio,parse                   pkcz<2>,Dop1=bier,Przyim1=brak,Sem1=UNKNOWN\_ZVALUE,Neg=oczekiwana,Wyp1=1[1-4(!pl,gobio),1-4<0>]
-06 0007 08    komputer     gobio,parse                       szfrz,P=bier,S=UNKNOWN\_ZVALUE
+04 0007 08    komputer     !pl,gobio                         szfrz,P=bier,S=nil
+05 0000 15    widzę_...ter !pl,gobio,parse                   pkcz<2>,Dop1=bier,Przyim1=brak,Sem1=nil,Neg=oczekiwana,Wyp1=1[1-4(!pl,gobio),1-4<0>]
+06 0007 08    komputer     gobio,parse                       szfrz,P=bier,S=nil
