@@ -286,5 +286,69 @@ BOOST_AUTO_TEST_CASE( psi_lattice_writer_reflexive_not_covered_text ) {
 
 }
 
+BOOST_AUTO_TEST_CASE( psi_lattice_roles ) {
+    AnnotationItemManager aim;
+    Lattice lattice(aim);
+    lattice_preparators::prepareSimpleLattice(lattice);
+
+    LayerTagMask
+        tokenTag = lattice.getLayerTagManager().getMask("token");
+
+    Lattice::VertexDescriptor firstVertex = lattice.getFirstVertex();
+
+    Lattice::EdgeSequence tokenSeq = lattice.getPath(
+        firstVertex, tokenTag);
+
+    AnnotationItem item("xyz");
+
+    LayerTagCollection
+        parseTag = lattice.getLayerTagManager().createSingletonTagCollection("parse");
+
+    Lattice::EdgeSequence::Builder builder(lattice);
+
+    Lattice::EdgeSequence::Iterator iter(lattice, tokenSeq);
+    size_t counter = 0;
+    while (iter.hasNext()) {
+        Lattice::EdgeDescriptor edge = iter.next();
+
+        zvalue role = NULL_ZVALUE;
+
+        if (counter == 1)
+            role = lattice.getAnnotationItemManager().stringToZvalue("foo");
+        else if (counter == 3)
+            role = lattice.getAnnotationItemManager().stringToZvalue("#");
+
+        builder.addEdge(edge, role);
+
+        ++counter;
+    }
+
+    lattice.addEdge(
+        lattice.getFirstVertex(),
+        lattice.getLastVertex(),
+        item,
+        parseTag,
+        builder.build());
+    
+
+    boost::scoped_ptr<LatticeWriter<std::ostream> > writer(new PsiLatticeWriter(
+        false // with header
+    ));
+
+    std::ostringstream osstr;
+    writer->writeLattice(lattice, osstr);   
+
+    std::string line;
+    std::string contents;
+    std::ifstream s(ROOT_DIR "formats/psi/t/files/pl_sample_roles.txt");
+    while (getline(s, line)) {
+        contents += line;
+        contents += "\n";
+    }
+
+    BOOST_CHECK_EQUAL(osstr.str(), contents);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

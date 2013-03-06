@@ -23,6 +23,8 @@
 
 #include "cutter.hpp"
 
+#include "zvalue.hpp"
+
 /*!
   Lattice is used to keep all the information extracted by annotators
   (processors). Language units (tokens, words, phrases etc.)
@@ -105,6 +107,8 @@ public:
         }
     };
 
+    class EdgeUsage;
+
     class EdgeSequence {
     public:
         class Iterator {
@@ -112,10 +116,11 @@ public:
             Iterator(Lattice & lattice, const EdgeSequence & edgeSequence);
             bool hasNext();
             EdgeDescriptor next();
+            EdgeUsage nextUsage();
         private:
             Lattice & lattice_;
             const EdgeSequence & edgeSequence_;
-            std::vector<EdgeDescriptor>::const_iterator ei_;
+            std::vector<EdgeUsage>::const_iterator ei_;
             int si_;
         };
 
@@ -134,11 +139,11 @@ public:
         class Builder {
         public:
             Builder(Lattice & lattice) : lattice_(lattice), begin(0), end(0) { }
-            Builder& addEdge(EdgeDescriptor edge);
+            Builder& addEdge(EdgeDescriptor edge, zvalue role = NULL_ZVALUE);
             EdgeSequence build();
         private:
             Lattice & lattice_;
-            std::vector<EdgeDescriptor> links;
+            std::vector<EdgeUsage> links;
             int begin;
             int end;
         };
@@ -146,11 +151,12 @@ public:
         friend class Iterator;
 
     private:
-        std::vector<EdgeDescriptor> links;
+        std::vector<EdgeUsage> links;
         int begin;
         int end;
 
         EdgeSequence(const std::vector<EdgeDescriptor>& aLinks);
+        EdgeSequence(const std::vector<EdgeUsage>& aLinks);
         EdgeSequence(int aBegin, int aEnd);
     };
 
@@ -163,6 +169,7 @@ public:
                 : iter_(lattice, partition.getSequence()) { }
             bool hasNext() { return iter_.hasNext(); }
             EdgeDescriptor next() { return iter_.next(); }
+            EdgeUsage nextUsage() { return iter_.nextUsage(); }
         private:
             EdgeSequence::Iterator iter_;
         };
@@ -229,6 +236,24 @@ public:
         EdgeDescriptorWrapperToFoolBoost146OrGnu461() {}
         EdgeDescriptorWrapperToFoolBoost146OrGnu461(const Graph::edge_descriptor& ed)
             :Graph::edge_descriptor(ed) {}
+    };
+
+    /**
+     * Edge used as a contituent in some superconstituent, i.e.
+     * an edge with possibly some "role" (usually null,
+     * in a parser ouput can express some syntactic role, e.g.
+     * being a subject, an object etc.).
+     */
+    class EdgeUsage {
+    public:
+        explicit EdgeUsage(EdgeDescriptor edge);
+        EdgeUsage(EdgeDescriptor edge, zvalue role);
+
+        EdgeDescriptor getEdge() const;
+        zvalue getRole() const;
+    private:
+        EdgeDescriptor edge_;
+        zvalue role_;
     };
 
     /**

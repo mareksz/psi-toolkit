@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), annotationItem.getCategory());
     BOOST_CHECK_EQUAL(manager.getCategory(annotationItem), "noun");
     BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "case"), NULL_ZVALUE);
-    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "NULL_ZVALUE");
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "fail");
     manager.setValue(annotationItem, "case", "nominative");
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "nominative");
     manager.setValue(annotationItem, "case", "genitive");
@@ -33,6 +33,26 @@ BOOST_AUTO_TEST_CASE( annotation_simple ) {
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "case"), "genitive");
     BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "number"), "plural");
 };
+
+BOOST_AUTO_TEST_CASE( annotation_special ) {
+    AnnotationItemManager manager;
+    AnnotationItem annotationItem("verb");
+    manager.setValue(annotationItem, "object", "fail");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "fail");
+    manager.setValue(annotationItem, "object", "false");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "fail");
+    manager.setValue(annotationItem, "object", "empty");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), NULL_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "fail");
+    manager.setValue(annotationItem, "object", "nil");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), DEFAULT_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "nil");
+    manager.setValue(annotationItem, "object", "any");
+    BOOST_CHECK_EQUAL(manager.getValue(annotationItem, "object"), DEFAULT_ZVALUE);
+    BOOST_CHECK_EQUAL(manager.getValueAsString(annotationItem, "object"), "nil");
+}
 
 BOOST_AUTO_TEST_CASE( annotation_more ) {
     AnnotationItemManager manager;
@@ -77,7 +97,7 @@ BOOST_AUTO_TEST_CASE( annotation_text_as_string_frag ) {
     BOOST_CHECK_EQUAL(ai.getTextAsStringFrag().str(), "ma");
 };
 
-BOOST_AUTO_TEST_CASE( zvalue_conversion ) {
+BOOST_AUTO_TEST_CASE( zvalue_conversion_text_converter ) {
     AnnotationItemManager manager;
     std::string text("Ala ma kota.");
     zvalue ztext = manager.stringToZvalue(text);
@@ -86,3 +106,52 @@ BOOST_AUTO_TEST_CASE( zvalue_conversion ) {
     zvalue ztext2 = manager.stringToZvalue(text2);
     BOOST_CHECK_EQUAL(ztext2, ztext);
 };
+
+BOOST_AUTO_TEST_CASE( zvalue_conversion_text_master ) {
+    AnnotationItemManager manager;
+    std::string text("Ala ma kota.");
+    zvalue ztext = manager.from_string(text);
+    std::string text2 = manager.to_string(ztext);
+    BOOST_CHECK_EQUAL(text2, text);
+    zvalue ztext2 = manager.from_string(text2);
+    BOOST_CHECK_EQUAL(ztext2, ztext);
+};
+
+BOOST_AUTO_TEST_CASE( zvalue_conversion_special ) {
+    AnnotationItemManager manager;
+    zvalue zany = manager.any_value();
+    zvalue zfalse = manager.false_value();
+    std::string sany = manager.to_string(zany);
+    std::string sfalse = manager.to_string(zfalse);
+    zvalue zany2 = manager.from_string(sany);
+    zvalue zfalse2 = manager.from_string(sfalse);
+    BOOST_CHECK_EQUAL(zany, zany2);
+    BOOST_CHECK_EQUAL(zfalse, zfalse2);
+};
+
+BOOST_AUTO_TEST_CASE( zvalue_conversion_bool ) {
+    AnnotationItemManager manager;
+    zvalue ztrue = manager.from_bool(true);
+    zvalue zfalse = manager.from_bool(false);
+    std::string strue = manager.to_string(ztrue);
+    std::string sfalse = manager.to_string(zfalse);
+    zvalue ztrue2 = manager.from_string(strue);
+    zvalue zfalse2 = manager.from_string(sfalse);
+    BOOST_CHECK_EQUAL(ztrue, ztrue2);
+    BOOST_CHECK_EQUAL(zfalse, zfalse2);
+};
+
+BOOST_AUTO_TEST_CASE( zvalue_conversion_number ) {
+    AnnotationItemManager manager;
+    int inumber = 123;
+    zvalue znumber = manager.from_int(inumber);
+    int inumber2 = manager.to_int(znumber);
+    BOOST_CHECK_EQUAL(inumber, inumber2);
+
+    std::string snumber = manager.to_string(znumber);
+    std::stringstream ssnumber(snumber);
+    int inumber3;
+    ssnumber >> inumber3;
+    BOOST_CHECK_EQUAL(inumber, inumber3);
+};
+

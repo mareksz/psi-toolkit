@@ -228,7 +228,7 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 .help-item > div { margin-bottom:12px; }
 .alias-item { margin-left:24px; }
 
-.help-examples, .help-opts, .help-alias { margin-left:24px; }
+.help-examples, .help-opts, .help-alias, .help-langs { margin-left:24px; }
 .example-desc { margin-top:6px; }
 .help-example { }
 .in-out { margin-bottom:25px; }

@@ -325,25 +325,29 @@ void PsiLatticeWriter::Worker::doRun() {
             partitionBeginning = true;
             Lattice::Partition::Iterator ei(lattice_, partition);
             while (ei.hasNext()) {
-                Lattice::EdgeDescriptor ed = ei.next();
+                Lattice::EdgeUsage ed = ei.nextUsage();
                 if (partitionBeginning) {
                     if (
-                        lattice_.isEdgeHidden(ed)
+                        lattice_.isEdgeHidden(ed.getEdge())
                     ) {
                         isDefaultPartition = true;
                     }
                     partitionBeginning = false;
                 } else {
                     if (
-                        !lattice_.isEdgeHidden(ed)
+                        !lattice_.isEdgeHidden(ed.getEdge())
                     ) {
                         isDefaultPartition = false;
                     }
                     linkSs << "-";
                 }
-                std::map<Lattice::EdgeDescriptor, int>::iterator mi = edgeOrdinalMap.find(ed);
+                std::map<Lattice::EdgeDescriptor, int>::iterator mi = edgeOrdinalMap.find(ed.getEdge());
                 if (mi != edgeOrdinalMap.end()) {
                     linkSs << (*mi).second;
+
+                    if (!NULLP(ed.getRole()))
+                        linkSs << '$' << quoter.escape(
+                            lattice_.getAnnotationItemManager().zvalueToString(ed.getRole())) << '$';
                 }
             }
             partSs << linkSs.str();

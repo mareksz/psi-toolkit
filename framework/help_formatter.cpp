@@ -171,14 +171,11 @@ std::list<std::string> HelpFormatter::getLanguagesHandledForProcessor(
 
     AnnotatorFactory* annotatorFactory = dynamic_cast<AnnotatorFactory*>(processorFactory);
 
-    boost::program_options::variables_map fakeOptions;
-    std::list<std::string> langCodes = annotatorFactory->languagesHandled(fakeOptions);
-
-    BOOST_FOREACH(std::string langCode, langCodes) {
-        std::cout << "lang: " << langCode << std::endl;
+    if (annotatorFactory != NULL) {
+        boost::program_options::variables_map fakeOptions;
+        return annotatorFactory->languagesHandled(fakeOptions);
     }
     */
 
-    //return langCodes;
     return std::list<std::string>();
 }

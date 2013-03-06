@@ -37,6 +37,9 @@ private:
 
     virtual std::list<std::string> doAllLanguagesHandled() const;
 
+    static bool isJustNoLanguage_(
+        const boost::program_options::variables_map& options);
+
     const static std::string GUESS_VALUE_FOR_LANG_OPTION;
 };
 

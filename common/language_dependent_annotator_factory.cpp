@@ -18,13 +18,21 @@ boost::program_options::options_description LanguageDependentAnnotatorFactory::d
 
 AnnotatorFactory::LanguagesHandling LanguageDependentAnnotatorFactory::checkLangOption(
     const boost::program_options::variables_map& options) {
-    std::string lang = options["lang"].as<std::string>();
 
-    return lang == GUESS_VALUE_FOR_LANG_OPTION
+    return isJustNoLanguage_(options)
            ? AnnotatorFactory::LANGUAGE_DEPENDENT
            : AnnotatorFactory::JUST_ONE_LANGUAGE;
 }
 
+bool LanguageDependentAnnotatorFactory::isJustNoLanguage_(
+    const boost::program_options::variables_map& options) {
+
+    if (!options.count("lang"))
+        return true;
+
+    std::string lang = options["lang"].as<std::string>();
+    return (lang == GUESS_VALUE_FOR_LANG_OPTION);
+}
 
 AnnotatorFactory::LanguagesHandling LanguageDependentAnnotatorFactory::doLanguagesHandling(
     const boost::program_options::variables_map& options) const {
@@ -34,11 +42,10 @@ AnnotatorFactory::LanguagesHandling LanguageDependentAnnotatorFactory::doLanguag
 
 std::list<std::string> LanguageDependentAnnotatorFactory::doLanguagesHandled(
     const boost::program_options::variables_map& options) const {
-    std::string lang = options["lang"].as<std::string>();
 
-    return lang == GUESS_VALUE_FOR_LANG_OPTION
+    return isJustNoLanguage_(options)
            ? doAllLanguagesHandled()
-           : boost::assign::list_of(lang);
+           : boost::assign::list_of(options["lang"].as<std::string>());
 }
 
 std::list<std::string> LanguageDependentAnnotatorFactory::doAllLanguagesHandled() const {

@@ -846,6 +846,23 @@ int Lattice::getEdgeTargetInternalIndex_(Lattice::EdgeDescriptor edge) const {
 }
 
 
+Lattice::EdgeUsage::EdgeUsage(EdgeDescriptor edge)
+    :edge_(edge), role_(NULL_ZVALUE) {
+}
+
+
+Lattice::EdgeUsage::EdgeUsage(EdgeDescriptor edge, zvalue role)
+    :edge_(edge), role_(role) {
+}
+
+Lattice::EdgeDescriptor Lattice::EdgeUsage::getEdge() const {
+    return edge_;
+}
+
+zvalue Lattice::EdgeUsage::getRole() const {
+    return role_;
+}
+
 Lattice::EdgeSequence::EdgeSequence() : begin(0), end(0) {
 }
 
@@ -868,16 +885,20 @@ bool Lattice::EdgeSequence::Iterator::hasNext() {
 }
 
 Lattice::EdgeDescriptor Lattice::EdgeSequence::Iterator::next() {
+    return nextUsage().getEdge();
+}
+
+Lattice::EdgeUsage Lattice::EdgeSequence::Iterator::nextUsage() {
     if (edgeSequence_.links.empty()) {
         if (si_ >= edgeSequence_.end) {
             throw NoEdgeException("EdgeSequence::Iterator has no next edges.");
         }
         int currentSymbol = si_;
         si_ += lattice_.symbolLength_(si_);
-        return lattice_.firstOutEdge(
-            lattice_.getVertexForRawCharIndex(currentSymbol),
-            lattice_.getLayerTagManager().getMask("symbol")
-        );
+        return Lattice::EdgeUsage(
+            lattice_.firstOutEdge(
+                lattice_.getVertexForRawCharIndex(currentSymbol),
+                lattice_.getLayerTagManager().getMask("symbol")));
     } else {
         if (ei_ == edgeSequence_.links.end()) {
             throw NoEdgeException("EdgeSequence::Iterator has no next edges.");
@@ -893,7 +914,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::firstEdge(Lattice & lattice) cons
             lattice.getLayerTagManager().getMask("symbol")
         );
     } else {
-        return links.front();
+        return links.front().getEdge();
     }
 }
 
@@ -904,24 +925,24 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::lastEdge(Lattice & lattice) const
             lattice.getLayerTagManager().getMask("symbol")
         );
     } else {
-        return links.back();
+        return links.back().getEdge();
     }
 }
 
 LayerTagCollection Lattice::EdgeSequence::gatherPlaneTags(Lattice& lattice) const {
-    std::vector<EdgeDescriptor>::const_iterator iter = links.begin();
+    std::vector<EdgeUsage>::const_iterator iter = links.begin();
 
     if (iter != links.end()) {
 
         LayerTagCollection tags = lattice.getLayerTagManager().onlyPlaneTags(
-            lattice.getEdgeLayerTags((*iter)));
+            lattice.getEdgeLayerTags(iter->getEdge()));
 
         ++iter;
 
         while (iter != links.end()) {
             LayerTagCollection linkPlaneTags =
                 lattice.getLayerTagManager().onlyPlaneTags(
-                    lattice.getEdgeLayerTags(*iter));
+                    lattice.getEdgeLayerTags(iter->getEdge()));
 
             tags = createUnion(tags, linkPlaneTags);
 
@@ -949,7 +970,8 @@ size_t Lattice::EdgeSequence::size(Lattice & lattice) const {
     }
 }
 
-Lattice::EdgeSequence::Builder& Lattice::EdgeSequence::Builder::addEdge(EdgeDescriptor edge) {
+Lattice::EdgeSequence::Builder& Lattice::EdgeSequence::Builder::addEdge(
+    EdgeDescriptor edge, zvalue role) {
     if (begin <= end && lattice_.isEdgeHidden(edge)) {
         if (links.empty()) {
             begin = lattice_.getEdgeBeginIndex(edge);
@@ -964,7 +986,7 @@ Lattice::EdgeSequence::Builder& Lattice::EdgeSequence::Builder::addEdge(EdgeDesc
         end = 0;
     }
 
-    links.push_back(edge);
+    links.push_back(EdgeUsage(edge, role));
 
     return *this;
 }
@@ -978,10 +1000,21 @@ Lattice::EdgeSequence Lattice::EdgeSequence::Builder::build() {
 }
 
 Lattice::EdgeSequence::EdgeSequence(const std::vector<EdgeDescriptor>& aLinks) :
+    begin(0),
+    end(0)
+{
+    links.reserve(aLinks.size());
+    BOOST_FOREACH(EdgeDescriptor edge, aLinks) {
+        links.push_back(EdgeUsage(edge));
+    }
+}
+
+Lattice::EdgeSequence::EdgeSequence(const std::vector<EdgeUsage>& aLinks) :
     links(aLinks),
     begin(0),
     end(0)
 { }
+
 
 Lattice::EdgeSequence::EdgeSequence(int aBegin, int aEnd) :
     begin(aBegin),
