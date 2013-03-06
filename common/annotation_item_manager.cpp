@@ -47,7 +47,7 @@ void AnnotationItemManager::setValue(
     if (valSs >> intVal && valSs.eof()) {
         setValue(annotationItem, attribute, intVal);
     } else {
-        setStringValue(annotationItem, attribute, value);
+        setValue(annotationItem, attribute, from_string(value));
     }
 }
 
