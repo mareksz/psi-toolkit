@@ -176,7 +176,6 @@ int AnnotationItemManager::to_int(zvalue value) const {
 
 
 std::string AnnotationItemManager::to_string(zvalue value) const {
-    assert(is_string(value));
     if (is_any(value)) {
         return NIL_STRING;
     }
