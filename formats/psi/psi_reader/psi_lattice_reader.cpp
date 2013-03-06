@@ -267,7 +267,14 @@ void PsiLatticeReader::Worker::doRun() {
                                 } else {
                                     currentEdge = edgeOrdinalMap[edgeNumberWithRole.edgeNumber];
                                 }
-                                seqBuilder.addEdge(currentEdge);
+                                zvalue role;
+                                if (edgeNumberWithRole.edgeRole == "") {
+                                    role = NULL_ZVALUE;
+                                } else {
+                                    role = lattice_.getAnnotationItemManager().stringToZvalue(
+                                        edgeNumberWithRole.edgeRole);
+                                }
+                                seqBuilder.addEdge(currentEdge, role);
                                 currentVertex = lattice_.getEdgeTarget(currentEdge);
                             }
                         }
