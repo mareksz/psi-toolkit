@@ -116,6 +116,25 @@ private:
 
     std::string rulesPath_;
 
+    zvalue edge2zsyntree_(
+        Chart& chart,
+        Edge edge,
+        std::vector<Combinator::rule_holder>& local_rules,
+        LangSpec lang_spec,
+        zobjects_holder* holder
+    );
+
+    zvalue edge2zsyntree_with_spec_(
+        Chart& chart,
+        Edge edge,
+        Chart::variant_iterator vit,
+        std::vector<Combinator::rule_holder>& local_rules,
+        boost::shared_ptr<tree_specification<int> > spec,
+        bool is_main,
+        LangSpec lang_spec,
+        zobjects_holder* holder
+    );
+
     void markTree_(
         Lattice & lattice,
         LayerTagMask sourceMask,

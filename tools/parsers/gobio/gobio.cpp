@@ -108,10 +108,163 @@ void Gobio::parse(Lattice & lattice) {
         boost::assign::list_of("gobio")("parse")
     );
 
+    std::vector<zvalue> results;
     BOOST_FOREACH(Edge e, choosen_edges) {
-        markTree_(lattice, maskGobio, tagParse, e);
+        zvalue zv = edge2zsyntree_(
+            ch,
+            e,
+            local_rules,
+            lang_spec,
+            holder);
+        results.push_back(zv);
     }
 
+}
+
+
+zvalue Gobio::edge2zsyntree_(
+    Chart& chart,
+    Edge edge,
+    std::vector<Combinator::rule_holder>& local_rules,
+    LangSpec lang_spec,
+    zobjects_holder* holder)
+{
+    std::pair<
+    t5_chart_type::variant_iterator,
+    t5_chart_type::variant_iterator> vits
+    = chart.edge_variants(edge);
+
+    if(vits.first == vits.second)
+    return NULL_ZVALUE;
+
+    t5_chart_type::partition_iterator pit = chart.variant_partition(vits.first);
+
+    boost::shared_ptr<tree_specification<int> > core_spec
+    = combinator_.tree_spec(chart.partition_rule(pit), local_rules);
+
+    assert(core_spec);
+
+    return edge2zsyntree_with_spec_(
+    chart,
+    edge,
+    vits.first,
+    local_rules,
+    core_spec,
+    true,
+    lang_spec,
+    holder);
+}
+
+
+zvalue Gobio::edge2zsyntree_with_spec_(
+    Chart& chart,
+    Edge edge,
+    Chart::variant_iterator vit,
+    std::vector<Combinator::rule_holder>& local_rules,
+    boost::shared_ptr<tree_specification<int> > spec,
+    bool is_main,
+    LangSpec lang_spec,
+    zobjects_holder* holder)
+{
+std::cerr << "edge2zsyntree_with_spec_" << std::endl;
+    zsyntree* R = zsyntree::generate(holder);
+
+    boost::shared_ptr<tree_branch<int,t5_chart_type,t5_combinator_type::equivalent_type> > tb =
+    extract_tree_branch_with_spec<int,t5_chart_type,t5_combinator_type>(
+        chart,
+        edge,
+        vit,
+        combinator_,
+        local_rules,
+        spec,
+        is_main
+        );
+
+    R->setCategory(
+    sym_fac_->get_symbol(
+        combinator_.get_master().string_representation(tb->root()).c_str()));
+
+    if(tb->is_supported())
+    {
+    int def = combinator_.get_master().false_value();
+
+    {
+        const av_matrix<int, int>& avm = chart.edge_category(tb->supporting_edge());
+
+        for(int ai = 0; ai < avm.nb_attrs(); ++ai)
+        if(combinator_.get_master().is_true(avm.get_attr(ai, def)))
+            R->setAttr(
+            sym_fac_->get_symbol(
+                combinator_.get_attribute_registrar().get_obj(ai).c_str()),
+            t5_value_to_zvalue_(
+                combinator_.get_master(),
+                avm.get_attr(ai, def)));
+    }
+
+    {
+        const bare_av_matrix<int>::type& v_avm
+        = chart.edge_variant_category(tb->supporting_variant());
+
+        for(int v_ai = 0; v_ai < v_avm.nb_attrs(); ++v_ai)
+        if(combinator_.get_master().is_true(v_avm.get_attr(v_ai, def)))
+        {
+            zsymbol* aname_sm =
+            sym_fac_->get_symbol(
+                combinator_.get_extra_attribute_registrar().get_obj(v_ai).c_str());
+
+            if(combinator_.get_master().is_any(
+               v_avm.get_attr(v_ai, def))
+               &&
+               (aname_sm == sm_S ||
+            aname_sm == sm_Sem1 ||
+            aname_sm == sm_Sem2 ||
+            aname_sm == sm_Sem3))
+            R->setAttr(
+                aname_sm,
+                sm_any);
+            else
+            R->setAttr(
+                aname_sm,
+                t5_value_to_zvalue_(
+                combinator_.get_master(),
+                v_avm.get_attr(v_ai, def)));
+        }
+    }
+    }
+
+    for(size_t i = 0; i < tb->nb_children(); ++i)
+    {
+    zvalue sub_zv =
+        edge2zsyntree_with_spec_(
+        chart,
+        tb->child_edge(i),
+        tb->child_variant_it(i),
+        local_rules,
+        tb->child_spec(i),
+        false,
+        lang_spec,
+        holder);
+
+    if(ZSYNTREEP(sub_zv))
+        R->addSubtree(
+        ZSYNTREEC(sub_zv),
+        (combinator_.get_master().is_true(tb->child_label(i))
+         ? sym_fac_->get_symbol(
+             combinator_.get_master().string_representation(tb->child_label(i)).c_str())
+         : NULL));
+    }
+
+    if(tb->equivalent())
+    {
+    R->setEquivTree(
+        get_equiv_tree_(
+        tb->equivalent(),
+        lang_spec,
+        holder));
+
+    }
+
+    return R;
 }
 
 
