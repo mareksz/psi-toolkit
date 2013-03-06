@@ -280,7 +280,10 @@ struct PsiLRPartitionGrammar : public qi::grammar<
 
         edge
             = qi::eps[qi::_val = 0]
-            >> -(qi::int_[qi::_val = qi::_1]);
+            >> -(qi::int_[qi::_val = qi::_1] >> role);
+
+        role
+            = -('$' >> +(qi::char_ - '$') >> '$');
 
         tags
             %= -('(' >> +(qi::char_ - ')' - ' ' - ',') % ',' >> ')');
@@ -292,6 +295,7 @@ struct PsiLRPartitionGrammar : public qi::grammar<
 
     qi::rule<std::string::const_iterator, PsiLRPartitionItem()> start;
     qi::rule<std::string::const_iterator, int()> edge;
+    qi::rule<std::string::const_iterator, qi::unused_type()> role;
     qi::rule<std::string::const_iterator, std::vector<std::string>()> tags;
     qi::rule<std::string::const_iterator, boost::optional<double>()> score;
 
