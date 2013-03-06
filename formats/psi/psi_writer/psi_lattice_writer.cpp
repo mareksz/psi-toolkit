@@ -347,7 +347,7 @@ void PsiLatticeWriter::Worker::doRun() {
 
                     if (!NULLP(ed.getRole()))
                         linkSs << '$' << quoter.escape(
-                            lattice_.getAnnotationItemManager().zvalueToString(ed.getRole()));
+                            lattice_.getAnnotationItemManager().zvalueToString(ed.getRole())) << '$';
                 }
             }
             partSs << linkSs.str();

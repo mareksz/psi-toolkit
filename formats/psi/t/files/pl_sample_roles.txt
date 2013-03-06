@@ -3,4 +3,4 @@
 03 0004 02    ma           token                             word,type=word
 04 0006 01    _            token                             blank
 05 0007 07    słonia       token                             word,type=word
-06 0000 14    Ala_ma_słonia parse                            xyz[1-2$foo-3-4$\#-5]
+06 0000 14    Ala_ma_słonia parse                            xyz[1-2$foo$-3-4$\#$-5]
