@@ -1134,38 +1134,41 @@ bool tgbg_combinator<T, S, M, X, E>::is_lexical(int rule_ix) const
 }
 
 template<class T, class S, class M, class X, class E>
-boost::shared_ptr<tree_specification<T> > tgbg_combinator<T, S, M, X, E>::tree_spec(
-    const rule_type& rule, const std::vector<rule_holder>& local_rules)
-{
-    assert(rule.rule_ix_ < (signed int)rules_.size());
+boost::shared_ptr< tree_specification<T> > tgbg_combinator<T, S, M, X, E>::tree_spec(
+    int rule_ix,
+    int tree_choice,
+    const std::vector<rule_holder> & local_rules
+) {
+    assert(rule_ix < (signed int)rules_.size());
 
-    if (rule.rule_ix_ < 0)
-    {
-    int local_rule_ix = -rule.rule_ix_ - 1;
+    if (rule_ix < 0) {
+        int local_rule_ix = -rule_ix - 1;
 
-    assert(local_rule_ix >= 0);
+        assert(local_rule_ix >= 0);
 
-    if (local_rule_ix >= (signed int)local_rules.size())
-        return empty_tree_spec_;
+        if (local_rule_ix >= (signed int)local_rules.size()) {
+            return empty_tree_spec_;
+        }
 
-    assert(!local_rules[local_rule_ix].tree_specs.empty());
+        assert(!local_rules[local_rule_ix].tree_specs.empty());
 
-    return local_rules[local_rule_ix].tree_specs[0];
+        return local_rules[local_rule_ix].tree_specs[0];
     }
 
-    assert(rule.tree_choice_ < rules_[rule.rule_ix_].tree_specs.size());
-    return rules_[rule.rule_ix_].tree_specs[rule.tree_choice_];
+    assert(tree_choice < rules_[rule_ix].tree_specs.size());
+    return rules_[rule_ix].tree_specs[tree_choice];
 }
 
 template<class T, class S, class M, class X, class E>
 E tgbg_combinator<T, S, M, X, E>::equivalent(
-    const rule_type& rule, const std::vector<rule_holder>& local_rules)
-{
-    assert(rule.rule_ix_ < (signed int)rules_.size());
+    int rule_ix,
+    const std::vector<rule_holder> & local_rules
+) {
+    assert(rule_ix < (signed int)rules_.size());
 
-    if (rule.rule_ix_ < 0)
+    if (rule_ix < 0)
     {
-    int local_rule_ix = -rule.rule_ix_ - 1;
+    int local_rule_ix = -rule_ix - 1;
 
     assert(local_rule_ix >= 0);
 
@@ -1177,7 +1180,7 @@ E tgbg_combinator<T, S, M, X, E>::equivalent(
     return local_rules[local_rule_ix].equivalent;
     }
 
-    return rules_[rule.rule_ix_].equivalent;
+    return rules_[rule_ix].equivalent;
 }
 
 template<class T, class S, class M, class X, class E>

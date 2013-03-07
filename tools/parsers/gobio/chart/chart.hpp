@@ -172,7 +172,9 @@ public:
 
     // rule_type partition_rule(partition_iterator piter);
     int partition_rule_id(partition_iterator piter);
+    int partition_tree_choice(partition_iterator piter);
     // std::vector<edge_descriptor>& partition_links(partition_iterator piter);
+    edge_descriptor partition_link(partition_iterator piter, size_t index);
     size_t partition_links_size(partition_iterator piter);
     Lattice::Partition::Iterator partition_links_iterator(partition_iterator piter);
     // partition_iterator variant_partition(variant_iterator vit);

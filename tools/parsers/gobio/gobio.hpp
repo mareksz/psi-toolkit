@@ -116,23 +116,25 @@ private:
 
     std::string rulesPath_;
 
-    zvalue edge2zsyntree_(
-        Chart& chart,
+    zsymbolfactory * sym_fac_;
+
+    zvalue edgeToZsyntree_(
+        Chart & ch,
+        Combinator & combinator,
         Edge edge,
-        std::vector<Combinator::rule_holder>& local_rules,
-        LangSpec lang_spec,
-        zobjects_holder* holder
+        std::vector<Combinator::rule_holder> & local_rules,
+        zobjects_holder * holder
     );
 
-    zvalue edge2zsyntree_with_spec_(
-        Chart& chart,
+    zvalue edgeToZsyntreeWithSpec_(
+        Chart & ch,
+        Combinator & combinator,
         Edge edge,
-        Chart::variant_iterator vit,
-        std::vector<Combinator::rule_holder>& local_rules,
-        boost::shared_ptr<tree_specification<int> > spec,
+        Chart::partition_iterator pit,
+        std::vector<Combinator::rule_holder> & local_rules,
+        boost::shared_ptr< tree_specification<zvalue> > spec,
         bool is_main,
-        LangSpec lang_spec,
-        zobjects_holder* holder
+        zobjects_holder * holder
     );
 
     void markTree_(

@@ -30,6 +30,7 @@ public:
     int category() const { return rule_no_; }
     double score() const { return 0.0; }
     int rule_no() const { return rule_no_; }
+    int tree_choice() const { return rule_no_; }
 };
 
 

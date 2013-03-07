@@ -30,7 +30,7 @@ template<class T, class Ch, class K>
 boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > extract_tree_branch_with_spec(
     Ch& chart,
     typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator vit,
+    typename Ch::partition_iterator pit,
     K& combinator,
     const std::vector<typename K::rule_holder>& local_rules,
     boost::shared_ptr<tree_specification<T> > spec,
@@ -48,39 +48,40 @@ boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > extract_tree_b
     const std::vector<typename K::rule_holder>& local_rules)
 {
     std::pair<
-    typename Ch::variant_iterator,
-    typename Ch::variant_iterator> vits
-    = chart.edge_variants(edge);
+    typename Ch::partition_iterator,
+    typename Ch::partition_iterator> pits
+    = chart.edge_partitions(edge);
 
-    if(vits.first == vits.second)
+    if(pits.first == pits.second)
     return boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> >();
 
-    typename Ch::partition_iterator pit = chart.variant_partition(vits.first);
+    typename Ch::partition_iterator pit = pits.first;
 
-    boost::shared_ptr<tree_specification<T> > core_spec
-    = combinator.tree_spec(chart.partition_rule(pit), local_rules);
+    boost::shared_ptr< tree_specification<T> > core_spec = combinator.tree_spec(
+        chart.partition_rule_id(pit),
+        chart.partition_tree_choice(pit),
+        local_rules);
 
     return extract_tree_branch_with_spec<T,Ch,K>(
-    chart, edge, vits.first, combinator, local_rules, core_spec, true);
+    chart, edge, pits.first, combinator, local_rules, core_spec, true);
 }
 
-template<class T, class  Ch>
+template<class T, class Ch>
 struct extract_tree_branch_with_spec_stack_element
 {
-    boost::shared_ptr<tree_specification<T> > spec;
+    boost::shared_ptr< tree_specification<T> > spec;
     typename Ch::edge_descriptor edge;
-    typename Ch::variant_iterator variant_it;
+    typename Ch::partition_iterator partition_it;
 
     extract_tree_branch_with_spec_stack_element(
-    boost::shared_ptr<tree_specification<T> > a_spec,
-    typename Ch::edge_descriptor a_edge,
-    typename Ch::variant_iterator a_variant_it):
-    spec(a_spec),
-    edge(a_edge),
-    variant_it(a_variant_it)
-    {
-
-    }
+        boost::shared_ptr< tree_specification<T> > a_spec,
+        typename Ch::edge_descriptor a_edge,
+        typename Ch::partition_iterator a_partition_it
+    ) :
+        spec(a_spec),
+        edge(a_edge),
+        partition_it(a_partition_it)
+    { }
 };
 
 template<class T, class Ch, class K>
@@ -90,7 +91,7 @@ bool add_child_or_contents_to_tree_branch(
     T label,
     boost::shared_ptr<tree_specification<T> > spec,
     typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator variant_it,
+    typename Ch::partition_iterator partition_it,
     K& combinator,
     const std::vector<typename K::rule_holder>& local_rules);
 
@@ -99,7 +100,7 @@ template<class T, class Ch, class K>
 boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > extract_tree_branch_with_spec(
     Ch& chart,
     typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator vit,
+    typename Ch::partition_iterator pit,
     K& combinator,
     const std::vector<typename K::rule_holder>& local_rules,
     boost::shared_ptr<tree_specification<T> > spec,
@@ -109,27 +110,28 @@ boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > extract_tree_b
 #endif //PRINTRULES
     )
 {
-    boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > tb(new tree_branch<T,Ch,typename K::equivalent_type>());
+    boost::shared_ptr< tree_branch<T, Ch, typename K::equivalent_type> >
+        tb(new tree_branch<T, Ch, typename K::equivalent_type>());
 
     bool support_found = false;
 
-    if(is_main)
-    {
-    tb->set_support(edge, vit);
-    support_found = true;
+    if(is_main) {
+        tb->set_support(edge);
+        support_found = true;
     }
 
     typename K::equivalent_type e = combinator.equivalent(
-    chart.partition_rule(chart.variant_partition(vit)), local_rules);
+        chart.partition_rule_id(pit),
+        local_rules);
 
-    if(e)
-    tb->set_equivalent(e);
-
+    if(e) {
+        tb->set_equivalent(e);
+    }
 
     typename Ch::edge_descriptor r_edge = edge;
-    typename Ch::variant_iterator r_vit  = vit;
+    typename Ch::partition_iterator r_pit = pit;
 
-    std::stack<extract_tree_branch_with_spec_stack_element<T, Ch> > r_stack;
+    std::stack< extract_tree_branch_with_spec_stack_element<T, Ch> > r_stack;
 
     while(1)
     {
@@ -164,9 +166,9 @@ if (printrules) {
     // rekurencyjnie funkcji)
     r_stack.push(
         extract_tree_branch_with_spec_stack_element<T, Ch>(
-        spec,
-        r_edge,
-        vit));
+            spec,
+            r_edge,
+            pit));
 
     // dodajemy lewe dzieci
     for(size_t li = 0; li < spec->nb_left_subspecs(); ++li)
@@ -176,7 +178,7 @@ if (printrules) {
            spec->left_subspec_label(li),
            spec->left_subspec(li),
            r_edge,
-           vit,
+           pit,
            combinator,
            local_rules))
         return boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> >();
@@ -190,21 +192,24 @@ if (printrules) {
 
     assert(spec->root()->is_hook());
 
-    r_edge = edge_by_hook_path(chart, vit, spec->root()->get_hook_path());
+    r_edge = edge_by_hook_path(chart, pit, spec->root()->get_hook_path());
 
     spec = combinator.tree_spec(
-        chart.partition_rule(chart.variant_partition(vit)), local_rules);
+        chart.partition_rule_id(pit),
+        chart.partition_tree_choice(pit),
+        local_rules);
 
     if(!support_found)
     {
-        tb->set_support(r_edge, vit);
+        tb->set_support(r_edge);
         support_found = true;
     }
 
     if(!tb->equivalent())
     {
         typename K::equivalent_type e = combinator.equivalent(
-        chart.partition_rule(chart.variant_partition(vit)), local_rules);
+            chart.partition_rule_id(pit),
+            local_rules);
 
         if(e)
         tb->set_equivalent(e);
@@ -222,7 +227,7 @@ if (printrules) {
            r_stack.top().spec->right_subspec_label(ri),
            r_stack.top().spec->right_subspec(ri),
            r_stack.top().edge,
-           r_stack.top().variant_it,
+           r_stack.top().partition_it,
            combinator,
            local_rules))
         return boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> >();
@@ -240,44 +245,47 @@ bool add_child_or_contents_to_tree_branch(
     T label,
     boost::shared_ptr<tree_specification<T> > spec,
     typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator variant_it,
+    typename Ch::partition_iterator partition_it,
     K& combinator,
     const std::vector<typename K::rule_holder>& local_rules)
 {
     if(spec->root()->is_contents_hook())
     {
-    typename Ch::variant_iterator r_vit = variant_it;
+        typename Ch::partition_iterator r_pit = partition_it;
 
-    typename Ch::edge_descriptor r_edge
-        = edge_by_hook_path<Ch>(
-        chart, r_vit, spec->root()->get_hook_path());
+        typename Ch::edge_descriptor r_edge
+            = edge_by_hook_path<Ch>(
+            chart, r_pit, spec->root()->get_hook_path());
 
-    boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > r_tb
-        = extract_tree_branch<T,Ch,K>(
-        chart,
-        r_edge,
-        combinator,
-        local_rules);
+        boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > r_tb
+            = extract_tree_branch<T,Ch,K>(
+            chart,
+            r_edge,
+            combinator,
+            local_rules);
 
-    if(!r_tb)
-        return false;
+        if(!r_tb)
+            return false;
 
-    assert(tb != r_tb);
+        assert(tb != r_tb);
 
-    for(size_t i = 0; i < r_tb->nb_children(); ++i)
-        tb->add_child(
-        r_tb->child_label(i),
-        r_tb->child_spec(i),
-        r_tb->child_edge(i),
-        r_tb->child_variant_it(i));
+        for (size_t i = 0; i < r_tb->nb_children(); ++i) {
+            tb->add_child(
+                r_tb->child_label(i),
+                r_tb->child_spec(i),
+                r_tb->child_edge(i)
+                // , r_tb->child_variant_it(i)
+            );
+        }
     }
     else
     {
-    tb->add_child(
-        label,
-        spec,
-        edge,
-        variant_it);
+        tb->add_child(
+            label,
+            spec,
+            edge
+            // variant_it
+        );
     }
 
     return true;
@@ -287,29 +295,25 @@ bool add_child_or_contents_to_tree_branch(
 template<class Ch>
 typename Ch::edge_descriptor edge_by_hook_path(
     Ch& chart,
-    typename Ch::variant_iterator& vit,
+    typename Ch::partition_iterator& pit,
     const std::vector<size_t>& path)
 {
     assert(!path.empty());
-
-    typename Ch::partition_iterator ppit = chart.variant_partition(vit);
+    return (chart.partition_link(pit, path.back()));
+/*
     typename Ch::edge_descriptor e;
 
-    for(std::vector<size_t>::const_iterator it = path.begin();
-    it != path.end();
-    ++it)
-    {
-    assert(*it < chart.partition_links(ppit).size());
-    assert(chart.partition_links(ppit).size()
-           == chart.variant_links(vit).size());
-
-    e = (chart.partition_links(ppit))[*it];
-    vit = (chart.variant_links(vit))[*it];
-
-    ppit = chart.variant_partition(vit);
+    for(
+        std::vector<size_t>::const_iterator it = path.begin();
+        it != path.end();
+        ++it
+    ) {
+        assert(*it < chart.partition_links(pit).size());
+        e = (chart.partition_links(pit))[*it];
     }
 
     return e;
+*/
 }
 
 template<class T, class Ch, class K>

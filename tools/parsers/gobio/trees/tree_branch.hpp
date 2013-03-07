@@ -32,11 +32,10 @@ public:
     void set_root(T a_root);
 
     typename Ch::edge_descriptor supporting_edge();
-    typename Ch::variant_iterator supporting_variant();
+    // typename Ch::variant_iterator supporting_variant();
     bool is_supported();
-    void set_support(
-    typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator vit);
+
+    void set_support(typename Ch::edge_descriptor edge);
 
     void set_equivalent(E eq);
     E equivalent();
@@ -48,39 +47,41 @@ public:
     //! Zwraca krawedz chartu, z ktorego mozna wygenerowac poddrzewo \a i
     boost::shared_ptr<tree_specification<T> > child_spec(size_t i);
 
-    typename Ch::variant_iterator child_variant_it(size_t i);
+    // typename Ch::variant_iterator child_variant_it(size_t i);
 
     typename Ch::edge_descriptor child_edge(size_t i);
 
     //! Dodaj kolejne poddrzewo
     void add_child(
-    T label,
-    boost::shared_ptr<tree_specification<T> > spec,
-    typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator variant_it);
+        T label,
+        boost::shared_ptr<tree_specification<T> > spec,
+        typename Ch::edge_descriptor edge
+        // , typename Ch::variant_iterator variant_it
+    );
 
 private:
     T root_;
     typename Ch::edge_descriptor edge_;
-    typename Ch::variant_iterator variant_it_;
+    // typename Ch::variant_iterator variant_it_;
     bool is_supported_;
 
-    struct child_link
-    {
-    T label;
-    boost::shared_ptr<tree_specification<T> > spec;
-    typename Ch::edge_descriptor edge;
-    typename Ch::variant_iterator variant_it;
+    struct child_link {
+        T label;
+        boost::shared_ptr< tree_specification<T> > spec;
+        typename Ch::edge_descriptor edge;
+        // typename Ch::variant_iterator variant_it;
 
-    child_link(
-        T a_label,
-        boost::shared_ptr<tree_specification<T> > a_spec,
-        typename Ch::edge_descriptor a_edge,
-        typename Ch::variant_iterator a_variant_it):
-        label(a_label),
-        spec(a_spec),
-        edge(a_edge),
-        variant_it(a_variant_it) {}
+        child_link(
+            T a_label,
+            boost::shared_ptr< tree_specification<T> > a_spec,
+            typename Ch::edge_descriptor a_edge
+            // , typename Ch::variant_iterator a_variant_it
+        ) :
+            label(a_label),
+            spec(a_spec),
+            edge(a_edge)
+            // , variant_it(a_variant_it)
+        { }
     };
 
     std::vector<child_link> children_;
