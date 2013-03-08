@@ -143,6 +143,8 @@ public:
     // bool edge_accommodated(edge_descriptor edge) const;
     // void mark_edge_as_accommodated(edge_descriptor edge);
 
+    bool could_be_final(edge_descriptor edge) const;
+
     std::pair<partition_iterator, partition_iterator> edge_partitions(edge_descriptor edge);
     // std::pair<variant_iterator, variant_iterator> edge_variants(edge_descriptor edge);
     // void remove_duplicate_variants(edge_descriptor edge);

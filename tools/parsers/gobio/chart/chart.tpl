@@ -310,6 +310,14 @@ void chart<C,S,V,R,I>::mark_edge_as_accommodated(edge_descriptor edge)
 */
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
+bool chart<C,S,V,R,I>::could_be_final(edge_descriptor edge) const {
+    return lattice_.getLayerTagManager().isThere("gobio", lattice_.getEdgeLayerTags(edge));
+    // return matches(
+        // lattice_.getEdgeLayerTags(edge),
+        // lattice_.getLayerTagManager().getMask(getGobioTag_()));
+}
+
+template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 std::pair<typename chart<C,S,V,R,I>::partition_iterator,
       typename chart<C,S,V,R,I>::partition_iterator>
 chart<C,S,V,R,I>::edge_partitions(
