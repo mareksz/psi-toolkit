@@ -166,12 +166,10 @@ Unumsunt::Unumsunt(
                         std::string::const_iterator aBegin = condition.begin();
                         std::string::const_iterator aEnd = condition.end();
                         if (parse(aBegin, aEnd, aGrammar, aItem)) {
-                            DEBUG("Condition: [" << aItem.arg << "] == [" << aItem.val << "]");
                             aux_rules_.back().addCondition(
                                 boost::algorithm::trim_copy(aItem.arg),
                                 boost::algorithm::trim_copy(aItem.val));
                         } else {
-                            DEBUG("Condition*: [" << condition << "]");
                             std::stringstream wordDictSs(condition);
                             while (wordDictSs.good()) {
                                 std::string word;
@@ -187,7 +185,6 @@ Unumsunt::Unumsunt(
                         std::string::const_iterator aBegin = command.begin();
                         std::string::const_iterator aEnd = command.end();
                         if (parse(aBegin, aEnd, aGrammar, aItem)) {
-                            DEBUG("Command: [" << aItem.arg << "] := [" << aItem.val << "]");
                             aux_rules_.back().addCommand(
                                 boost::algorithm::trim_copy(aItem.arg),
                                 boost::algorithm::trim_copy(aItem.val));
