@@ -98,7 +98,7 @@ std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::g
 
         last_chance_edge = ej;
 
-        if(combinator.could_be_final(chart.edge_category(*ej)))
+        if (chart.could_be_final(*ej) && combinator.could_be_final(chart.edge_category(*ej))) {
         {
             accommodater.accommodate(*ej);
 /*
@@ -144,8 +144,10 @@ std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::g
             }
             }
 // */
-            candidate_found = true;
-            max_e = ej;
+            if (!candidate_found) {
+                candidate_found = true;
+                max_e = ej;
+            }
         }
         }
 
