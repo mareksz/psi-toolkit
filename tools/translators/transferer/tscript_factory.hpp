@@ -34,8 +34,8 @@ public:
     virtual TScript getScriptForName(const char* name,
                                      zsymbolfactory* a_zsymbolfactory,
                                      zobjects_holder* a_holder) = 0;
+
+    virtual ~ScriptFactory() {}
 };
 
 }; //namespace tmil
-
-#endif //TMIL_SCRIPT_FACTORY_HDR

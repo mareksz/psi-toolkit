@@ -1,0 +1,241 @@
+%option never-interactive
+%option prefix="trlex"
+
+%{
+
+#include <string.h>
+#include "prandseq.h"
+#include <iostream>
+
+namespace tmil {
+    class Expression;
+    class Instruction;
+    typedef Instruction* TScript; 
+};
+
+class zvector;
+
+#include "trparser.tab.h"
+
+extern std::istream* trlex_input_stream;
+
+namespace trlex {
+	bool first_read = true;
+	bool encoded = true;
+	imoa_key key;
+
+	char* set_slot(char* s, int l=0) {
+		char* char_slot = NULL;
+		if (l>0) char_slot = new char[l+1];
+		else char_slot = new char[strlen(s)+1];
+		if (l>0) {
+			strncpy(char_slot,s,l);
+			char_slot[l]=0;
+		}
+		else strcpy(char_slot,s);
+		return char_slot;
+	}
+}
+
+using namespace trlex;
+
+#include "trules_moa_key.h"
+
+#define YY_INPUT(buf,result,max_size) \
+{ \
+	trlex_input_stream->read(buf, max_size); \
+	result = trlex_input_stream->gcount(); \
+	if (first_read) { \
+		key.set(TRULES_MOA_KEY); \
+		if ('#'==buf[0]) encoded = false; \
+		first_read = false; \
+	} \
+	if (encoded) { \
+		imoaxor(buf, result, key); \
+	} \
+}
+
+%}
+
+%s firstnl
+%s remnl
+%s inrule
+%s outrule
+
+%option noyywrap
+%option yylineno
+
+PLUPPER [A-Z¡ÆÊ£ÑÓ¦¬¯]
+PLLOWER [a-z±æê³ñó¶¼¿]
+PLLETTER [a-z±æê³ñó¶¼¿A-Z¡ÆÊ£ÑÓ¦¬¯]
+
+
+%%
+
+	/***********************        keywords             *******************/
+
+("and"|"&&") 	{ trparserlval.s = set_slot("&&"); return TTOKEN_AND; }
+("or"|"||") 	{ trparserlval.s = set_slot("||"); return TTOKEN_OR;}
+("not"|"!") 	{ trparserlval.s = set_slot("!"); return TTOKEN_NOT;}
+"if"	        return TTOKEN_IF;
+"else" 	        return TTOKEN_ELSE;
+"sub"           return TTOKEN_SUB;
+"foreach"       return TTOKEN_FOREACH;
+"return"        return TTOKEN_RETURN;
+"among"         return TTOKEN_AMONG;
+"order"         return TTOKEN_ORDER;
+
+"!="            { trparserlval.s = set_slot(trlextext); return TTOKEN_NOT_EQUAL;}
+"=="            { trparserlval.s = set_slot(trlextext); return TTOKEN_UEQUAL;}
+":="            { trparserlval.s = set_slot(trlextext); return TTOKEN_ASSIGN;}
+"->"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_ARROW;}
+"=>"		return TTOKEN_GREATERE;	
+"::"		return TTOKEN_QUAL;
+"=~"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_BIND; }
+
+"("		return TTOKEN_LEFT_PAREN;
+")"		return TTOKEN_RIGHT_PAREN;
+"{"		return TTOKEN_LEFT_CURLY;
+"}"		return TTOKEN_RIGHT_CURLY;
+"["		return TTOKEN_LEFT_SQUARE;
+"]"		return TTOKEN_RIGHT_SQUARE;
+
+
+","		return TTOKEN_COMMA;
+":"		return TTOKEN_COLON;
+";"		return TTOKEN_SEMICOLON;
+"="		{ trparserlval.s = set_slot(trlextext); return TTOKEN_EQUAL;}
+"^"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_CARET;}
+"."		{ trparserlval.s = set_slot(trlextext); return TTOKEN_DOT;}
+"*"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_STAR;}
+"<"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_LESS;}
+"-"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_MINUS;}
+"+"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_PLUS;}
+"&"		{ trparserlval.s = set_slot(trlextext); return TTOKEN_ET;}
+
+	/***********************     regular expressions     *******************/
+
+\/[^\/]*\/	{ 
+      trparserlval.s = set_slot(trlextext+1, trlexleng-2); 
+      return TTOKEN_REGEXP; 
+    }		
+
+	/***************************       sref          ***********************/
+
+\%{PLLETTER}({PLLETTER}|[_0-9])*  { 
+      trparserlval.s = set_slot(trlextext); 
+      return TTOKEN_SREF; 
+    }	
+
+	/***************************     variable        ***********************/
+
+\$({PLLETTER}({PLLETTER}|[_0-9])*|[0-9])   { 
+      trparserlval.s = set_slot(trlextext+1); 
+      return TTOKEN_VAR; 
+    }	
+
+\$[0-9]  { 
+      trparserlval.s = set_slot(trlextext+1); 
+      return TTOKEN_VAR; 
+    }
+	
+	/* nie wzpierane od 12.04.2003
+
+\%\%{PLLETTER}({PLLETTER}|[_0-9])*  { 
+      trparserlval.s = set_slot(trlextext+2); 
+      return TTOKEN_VAR; 
+    }	
+
+	*/
+
+	/***************************       plref         ***********************/
+
+\@  { 
+      trparserlval.s = set_slot(trlextext); 
+      return TTOKEN_PLREF; 
+    }	
+	  
+	/* wyszlo z uzycia?
+    
+\@{PLLETTER}({PLLETTER}|[_0-9])*  { 
+      trparserlval.s = set_slot(trlextext+1); 
+      return TTOKEN_PLREF; 
+    }
+    
+	*/
+
+	/***************************       atoms         ***********************/
+
+{PLLOWER}({PLLETTER}|[_0-9])*  { 
+      trparserlval.s = set_slot(trlextext); 
+      return TTOKEN_ATOM; 
+    } 
+
+\'[^\'\n\r]*\'  {  
+      trparserlval.s = set_slot(trlextext); 
+      return TTOKEN_ATOM; 
+    }
+
+\"[^\"\n\r]*\"  { 
+      if (2==trlexleng) //empty atom
+          trparserlval.s = set_slot(trlextext+2); 
+      else 
+          trparserlval.s = set_slot(trlextext+1, trlexleng-2); 
+      return TTOKEN_ATOM; 
+    }
+
+{PLUPPER}({PLLETTER}|[_0-9])*  { 
+      trparserlval.s = set_slot(trlextext); 
+      return TTOKEN_ATTRIBUTE; 
+    }
+
+-?[0-9]+  { 
+      trparserlval.i = atoi(trlextext); 
+      return TTOKEN_NUMBER; 
+    } 
+
+	/***************************      comments        ***********************/
+
+#[^\n\r]*
+
+	/***************************    skip & error      ***********************/
+
+<<EOF>>  { yyterminate(); }
+
+[ \t\n\r]+				
+
+.	{ trparserlval.i = trlexlineno; return TTOKEN_ERROR; }	 
+ 
+%%
+
+#ifdef FLEX_MAIN
+
+#include <fstream>
+using namespace std;
+
+	YYSTYPE trparserlval;
+istream* trlex_input_stream = NULL;
+
+int main(int argc, char** argv )
+{
+	ifstream fileStream;
+	if ( argc > 1 ) {
+		//yyin = fopen( argv[0], "r" );
+		fileStream.open(argv[1]);
+		if (!fileStream) {
+			cerr << "Nie dalo sie otworzyc \"" << argv[1] << endl;
+			return 2;
+		} 
+		trlex_input_stream = &fileStream;	
+	} else {
+		trlex_input_stream = &cin;	
+	}
+
+	int a=1;
+	while(a>0) {
+		a=yylex();
+		printf("%i\n%s\n",a, trparserlval.s );
+	}
+	return 0;
+}
+#endif //FLEX_MAIN
