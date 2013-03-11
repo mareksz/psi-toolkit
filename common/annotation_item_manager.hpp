@@ -83,6 +83,7 @@ public:
     bool is_any(zvalue value) const;
 
     zobjects_holder * getZObjectsHolderPtr() const;
+    zsymbolfactory * getSymbolFactory() const;
 
 private:
 

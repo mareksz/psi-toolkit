@@ -240,6 +240,11 @@ zobjects_holder * AnnotationItemManager::getZObjectsHolderPtr() const {
 }
 
 
+zsymbolfactory * AnnotationItemManager::getSymbolFactory() const {
+    return zSymbolFactory_;
+}
+
+
 const std::string AnnotationItemManager::FAIL_STRING = "fail";
 const std::string AnnotationItemManager::FALSE_STRING = "false";
 const std::string AnnotationItemManager::EMPTY_STRING = "empty";
