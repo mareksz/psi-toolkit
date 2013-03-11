@@ -18,7 +18,7 @@
 
 #define XXX {std::cerr << __FILE__ <<  " " << __LINE__ << std::endl; }
 
-#include "trules.h"
+#include "trules.hpp"
 
 
 int trlexlex();
