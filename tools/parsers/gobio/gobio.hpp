@@ -137,11 +137,10 @@ private:
         zobjects_holder * holder
     );
 
-    void markTree_(
+    Lattice::EdgeDescriptor markTree_(
         Lattice & lattice,
-        LayerTagMask sourceMask,
         LayerTagCollection targetTags,
-        Lattice::EdgeDescriptor edge
+        zsyntree * tree
     );
 
     virtual double doGetQualityScore(

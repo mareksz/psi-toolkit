@@ -121,6 +121,14 @@ void Gobio::parse(Lattice & lattice) {
         results.push_back(zv);
     }
 
+    BOOST_FOREACH(zvalue zv, results) {
+        markTree_(
+            lattice,
+            tagParse,
+            ZSYNTREEC(zv)
+        );
+    }
+
 }
 
 
@@ -190,81 +198,19 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
 
     if (tb->is_supported()) {
         Atom def = combinator.get_master().false_value();
-
         const Category & avm = ch.edge_category(tb->supporting_edge());
-
         for (int ai = 0; ai < avm.nb_attrs(); ++ai) {
             if (combinator.get_master().is_true(avm.get_attr(ai, def))) {
                 result->setAttr(
                     sym_fac_->get_symbol(
                         combinator.get_attribute_registrar().get_obj(ai).c_str()),
                         avm.get_attr(ai, def));
+                result->setSegmentInfo(
+                    ch.edge_source(edge),
+                    ch.edge_target(edge) - ch.edge_source(edge));
             }
         }
-/*
-        const bare_av_matrix<int>::type& v_avm
-        = chart.edge_variant_category(tb->supporting_variant());
-
-        for(int v_ai = 0; v_ai < v_avm.nb_attrs(); ++v_ai)
-        if(combinator_.get_master().is_true(v_avm.get_attr(v_ai, def)))
-        {
-            zsymbol* aname_sm =
-            sym_fac_->get_symbol(
-                combinator_.get_extra_attribute_registrar().get_obj(v_ai).c_str());
-
-            if(combinator_.get_master().is_any(
-               v_avm.get_attr(v_ai, def))
-               &&
-               (aname_sm == sm_S ||
-            aname_sm == sm_Sem1 ||
-            aname_sm == sm_Sem2 ||
-            aname_sm == sm_Sem3))
-            result->setAttr(
-                aname_sm,
-                sm_any);
-            else
-            result->setAttr(
-                aname_sm,
-                t5_value_to_zvalue_(
-                combinator_.get_master(),
-                v_avm.get_attr(v_ai, def)));
-        }
-*/
     }
-
-//     ostr << indent << combinator.get_master().string_representation(tb->root());
-
-//     if(combinator.get_master().is_true(label))
-//  ostr << ':' << combinator.get_master().string_representation(label);
-
-//     if(tb->is_supported())
-//     {
-//  const av_matrix<int, T>& avm = chart.edge_category(tb->supporting_edge());
-//  const typename bare_av_matrix<T>::type& v_avm
-//      = chart.edge_variant_category(tb->supporting_variant());
-//  T def = combinator.get_master().false_value();
-
-//  ostr << "\t\t";
-
-//  for(int ai = 0; ai < avm.nb_attrs(); ++ai)
-//      if(combinator.get_master().is_true(avm.get_attr(ai, def)))
-//      ostr << ' '
-//           << combinator.get_attribute_registrar().get_obj(ai)
-//           << '='
-//           << combinator.get_master().string_representation(
-//           avm.get_attr(ai, def));
-
-//  ostr << " || ";
-//  for(int v_ai = 0; v_ai < v_avm.nb_attrs(); ++v_ai)
-//      if(combinator.get_master().is_true(v_avm.get_attr(v_ai, def)))
-//      ostr << ' '
-//           << combinator.get_extra_attribute_registrar().get_obj(v_ai)
-//           << '='
-//           << combinator.get_master().string_representation(
-//           v_avm.get_attr(v_ai, def));
-//     }
-
-//     ostr << std::endl;
 
     for (size_t i = 0; i < tb->nb_children(); ++i) {
         zvalue sub_zv = edgeToZsyntreeWithSpec_(
@@ -276,7 +222,6 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             tb->child_spec(i),
             false,
             holder);
-
         if (ZSYNTREEP(sub_zv)) {
             result->addSubtree(
                 ZSYNTREEC(sub_zv),
@@ -286,69 +231,32 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
                 : NULL));
         }
     }
-/*
- *
- * TODO:
- *
-    if (tb->equivalent()) {
-        result->setEquivTree(
-            get_equiv_tree_(
-                tb->equivalent(),
-                holder));
 
-//  t5_chart_type::partition_iterator pit = chart.variant_partition(tb->supporting_variant());
-//  int rule_ix = chart.partition_rule(pit).rule_ix_;
-
-//  if(rule_ix < 0)
-//  {
-//      rule_ix = -rule_ix - 1;
-
-//      boost::shared_ptr<pe_target_info> peti =
-//      local_rules[rule_ix].equivalent;
-
-//      if(peti)
-//      R->setEquivTree(
-//          get_equiv_tree_(
-//          peti,
-//          lang_spec));
-//  }
-
-    }
-*/
     return result;
 }
 
 
-void Gobio::markTree_(
+Lattice::EdgeDescriptor Gobio::markTree_(
     Lattice & lattice,
-    LayerTagMask sourceMask,
     LayerTagCollection targetTags,
-    Lattice::EdgeDescriptor edge
+    zsyntree * tree
 ) {
-    if (matches(lattice.getEdgeLayerTags(edge), sourceMask)) {
-        const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
-        Lattice::EdgeSequence edgeSequence;
-        if (!partitions.empty()) {
-            Lattice::Partition bestPartition = partitions.front();
-            BOOST_FOREACH(Lattice::Partition partition, partitions) {
-                if (partition.getScore() > bestPartition.getScore()) {
-                    bestPartition = partition;
-                }
-            }
-            Lattice::Partition::Iterator pi(lattice, bestPartition);
-            while (pi.hasNext()) {
-                markTree_(lattice, sourceMask, targetTags, pi.next());
-            }
-            edgeSequence = bestPartition.getSequence();
-        }
-        lattice.addEdge(
-            lattice.getEdgeSource(edge),
-            lattice.getEdgeTarget(edge),
-            lattice.getEdgeAnnotationItem(edge),
+    AnnotationItem annotationItem(tree->getCategory()->get_string());
+    Lattice::EdgeSequence::Builder builder(lattice);
+    for (int i = 0; i <= tree->last_subtree; ++i) {
+        Lattice::EdgeDescriptor subedge = markTree_(
+            lattice,
             targetTags,
-            edgeSequence
-        );
+            tree->getSubtree(i));
+        builder.addEdge(subedge);
     }
+    return lattice.addEdge(
+        lattice.getVertexRawCharIndex(tree->segment_beg),
+        lattice.getVertexRawCharIndex(tree->segment_beg + tree->segment_len),
+        annotationItem,
+        targetTags,
+        builder.build()
+    );
 }
 
 
