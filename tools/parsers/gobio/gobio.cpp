@@ -193,8 +193,28 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
 #endif //PRINTRULES
         );
 
-    result->setCategory(sym_fac_->get_symbol(
-        combinator.get_master().string_representation(tb->root()).c_str()));
+    zsymbol * zcat = sym_fac_->get_symbol(
+        combinator.get_master().string_representation(tb->root()).c_str());
+    if (strcmp(zcat->to_string(), "NULL_ZVALUE")) {
+        result->setCategory(zcat);
+    } else {
+        result->setCategory(
+            sym_fac_->get_symbol(
+                combinator.get_symbol_registrar().get_obj(
+                    ch.edge_category(
+                        tb->supporting_edge()).get_cat()).c_str()));
+    }
+
+    result->setSegmentInfo(
+        ch.edge_source(tb->supporting_edge()),
+        ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
+
+    // result->setAttr(
+        // sym_fac_->get_symbol("srccat"),
+        // combinator.get_master().stringToZvalue(
+            // combinator.get_symbol_registrar().get_obj(
+                // ch.edge_category(
+                    // tb->supporting_edge()).get_cat())));
 
     if (tb->is_supported()) {
         Atom def = combinator.get_master().false_value();
@@ -205,9 +225,6 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
                     sym_fac_->get_symbol(
                         combinator.get_attribute_registrar().get_obj(ai).c_str()),
                         avm.get_attr(ai, def));
-                result->setSegmentInfo(
-                    ch.edge_source(edge),
-                    ch.edge_target(edge) - ch.edge_source(edge));
             }
         }
     }
@@ -242,6 +259,10 @@ Lattice::EdgeDescriptor Gobio::markTree_(
     zsyntree * tree
 ) {
     AnnotationItem annotationItem(tree->getCategory()->get_string());
+    // lattice.getAnnotationItemManager().setValue(
+        // annotationItem,
+        // "srccat",
+        // tree->getAttr(sym_fac_->get_symbol("srccat")));
     Lattice::EdgeSequence::Builder builder(lattice);
     for (int i = 0; i <= tree->last_subtree; ++i) {
         Lattice::EdgeDescriptor subedge = markTree_(
