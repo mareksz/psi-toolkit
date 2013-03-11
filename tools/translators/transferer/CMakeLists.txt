@@ -1,7 +1,24 @@
+add_definitions(-Wno-sign-compare -Wno-unused-function)
+
+find_package(BISON)
+find_package(FLEX)
+
 add_subdirectory(t)
+
+BISON_TARGET(trparser trparser.y ${CMAKE_CURRENT_BINARY_DIR}/trparser.tab.cpp COMPILE_FLAGS "-p trparser")
+FLEX_TARGET(trlexer lex.trlex.lpp ${CMAKE_CURRENT_BINARY_DIR}/lex.trlex.cpp)
+#ADD_FLEX_BISON_DEPENDENCY(trparser trlexer)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(tools-translators-transferer SHARED
     numconversion.cpp
     transferer.cpp
     trules.cpp
-    test_results_recorder.cpp)
+    test_results_recorder.cpp
+    tscript_from_file.cpp
+    ${BISON_trparser_OUTPUTS}
+    ${FLEX_trlexer_OUTPUTS})
+
+target_link_libraries(tools-translators-transferer ${FLEX_LIBRARIES})
