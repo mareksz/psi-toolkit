@@ -69,9 +69,10 @@ std::string Gobio::doInfo() {
     return "gobio parser";
 }
 
-Gobio::Gobio(std::string rulesPath) : rulesPath_(rulesPath) { }
+Gobio::Gobio(std::string rulesPath) : rulesPath_(rulesPath), sym_fac_(NULL) { }
 
 void Gobio::parse(Lattice & lattice) {
+    sym_fac_ = lattice.getAnnotationItemManager().getSymbolFactory();
 
     AnnotationItemManager & aim = lattice.getAnnotationItemManager();
 
@@ -230,7 +231,6 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
         }
 */
     }
-
 
 //     ostr << indent << combinator.get_master().string_representation(tb->root());
 
