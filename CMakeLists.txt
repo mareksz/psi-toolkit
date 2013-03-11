@@ -554,6 +554,9 @@ if(HAVE_CMPH)
 
     set(BASE_TARGETS ${BASE_TARGETS} tools-lexica-bilexicon)
     set(TESTS_TARGETS ${TESTS_TARGETS} tools-lexica-bilexicon-tests)
+
+    set(BASE_TARGETS ${BASE_TARGETS} tools-lemmatizers-lamerlemma)
+    #set(TESTS_TARGETS ${TESTS_TARGETS} tools-lemmatizers-lamerlemma-tests)
 endif(HAVE_CMPH)
 
 if(USE_POSTGRESQL)

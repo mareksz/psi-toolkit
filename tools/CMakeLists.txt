@@ -48,3 +48,9 @@ set(tools_DIRS
     ${tools_DIRS}
     lemmatizers/sfst CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE)
 endif(HAVE_SFST)
+
+if(HAVE_CMPH)
+set(tools_DIRS
+    ${tools_DIRS}
+    lemmatizers/lamerlemma CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE)
+endif(HAVE_CMPH)

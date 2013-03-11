@@ -11,3 +11,7 @@ endif(USE_JAVA)
 if(HAVE_SFST)
   add_subdirectory(sfst)
 endif(HAVE_SFST)
+
+if(HAVE_CMPH)
+  add_subdirectory(lamerlemma)
+endif(HAVE_CMPH)

@@ -51,6 +51,7 @@
 #if HAVE_CMPH
 #include "one_edge_at_a_time_annotator.hpp"
 #include "bilexicon.hpp"
+#include "lamerlemma.hpp"
 #endif
 
 #if HAVE_PERL_BINDINGS
@@ -72,7 +73,6 @@
 #endif
 
 #include "bonsai.hpp"
-
 
 MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addTagBasedIzeAliases("token", "token");
@@ -186,6 +186,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 
 #if HAVE_CMPH
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());
+    keeper_.takeProcessorFactory(new LemmatizerAnnotator<LamerLemma>::Factory());
 #endif
 
 #if HAVE_PERL_BINDINGS
