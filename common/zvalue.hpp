@@ -1110,6 +1110,10 @@ public:
 
     char* zsyntree_to_itf(char* lexeme = NULL, char* equiv=NULL);
 
+    zsyntree * getSubtree(int index) {
+        return ZSYNTREEC(fetch(INTEGER_TO_ZVALUE(index)));
+    }
+
 };
 
 
