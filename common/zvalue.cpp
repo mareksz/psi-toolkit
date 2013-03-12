@@ -1103,8 +1103,7 @@ zvector* zf_put_to_vector(zobjects_holder* holder, zvalue first, zvalue second, 
             int old_vectors_size = old_vector->getSize();
             for (int c=0; c<old_vectors_size; ++c)
                 new_vector->add(old_vector->elementAt(c));
-        } else
-            assert(0); //unsupported zvalue, new implementation needed!
+        }
     }
     return new_vector;
 }
