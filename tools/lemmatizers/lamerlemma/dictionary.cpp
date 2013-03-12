@@ -102,46 +102,46 @@ DictionaryItem Dictionary::look_up(std::string token)
 {
     typedef boost::optional<std::string> OptString;
   
-    boost::shared_ptr<StringGeneralCaseConverter> lowerConverter =
-        StringCaseConverterManager::getInstance().getLowerCaseConverter("en");
+    //boost::shared_ptr<StringGeneralCaseConverter> lowerConverter =
+    //    StringCaseConverterManager::getInstance().getLowerCaseConverter("en");
+    //
+    //std::string token_lowercased =
+    //    simpleConvert(*lowerConverter, token);
     
-    std::string token_lowercased =
-        simpleConvert(*lowerConverter, token);
-    
-    if(token == token_lowercased)
-    {
+    //if(token == token_lowercased)
+    //{
         OptString data = m_store->get(token);
         if(data)
             return DictionaryItem(token, false,
                                   decompress_interpretations(data.get()));
-    }
-    else
-    {
-        //@TODO: Add uc_first check
-      
-        OptString data = m_store->get(token);
-        if(data)
-        {
-            DictionaryItem item(token, false,
-                                decompress_interpretations(data.get()));
-            
-            OptString data_lowercased = m_store->get(token_lowercased);
-            if(data_lowercased)
-                BOOST_FOREACH(Interpretation i,
-                              decompress_interpretations(data_lowercased.get()))
-                    item.get_interpretations().push_back(i);
-            return item;
-        }
-        
-        OptString data_lowercased = m_store->get(token_lowercased);
-        if(data_lowercased)
-        {
-            DictionaryItem item_lowercased(token, false,
-                                           decompress_interpretations(data_lowercased.get()));
-            return item_lowercased;
-        }
-    }
-    
+    //}
+    //else
+    //{
+    //    //@TODO: Add uc_first check
+    //  
+    //    OptString data = m_store->get(token);
+    //    if(data)
+    //    {
+    //        DictionaryItem item(token, false,
+    //                            decompress_interpretations(data.get()));
+    //        
+    //        OptString data_lowercased = m_store->get(token_lowercased);
+    //        if(data_lowercased)
+    //            BOOST_FOREACH(Interpretation i,
+    //                          decompress_interpretations(data_lowercased.get()))
+    //                item.get_interpretations().push_back(i);
+    //        return item;
+    //    }
+    //    
+    //    OptString data_lowercased = m_store->get(token_lowercased);
+    //    if(data_lowercased)
+    //    {
+    //        DictionaryItem item_lowercased(token, false,
+    //                                       decompress_interpretations(data_lowercased.get()));
+    //        return item_lowercased;
+    //    }
+    //}
+    //
     Interpretations interpretations;
     interpretations.push_back(Interpretation(token, "unknown"));
     return DictionaryItem(token, false, interpretations);

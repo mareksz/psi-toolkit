@@ -89,15 +89,16 @@ LamerLemma::morpho_to_features(std::vector<std::string> &morphos) {
     BOOST_FOREACH(std::string morpho, morphos) {
         std::stringstream key;
         key << "m" << c;
-        std::stringstream value;
-        value << morpho;
         
-        //char first[1000], second[1000];
-        //if(sscanf(morpho.c_str(), "%s=%s", first, second) == 2) {
-        //    features.push_back(std::make_pair(first, second));
-        //}
-        //else
-            features.push_back(std::make_pair(key.str(), value.str()));
+        int pos;
+        if((pos = morpho.find("=")) != std::string::npos) {
+            std::string first = morpho.substr(0, pos);
+            std::string second = morpho.substr(pos+1);
+            
+            features.push_back(std::make_pair(first, second));    
+        }
+        else
+            features.push_back(std::make_pair(key.str(), morpho));
         c++;
     }
     return features;
