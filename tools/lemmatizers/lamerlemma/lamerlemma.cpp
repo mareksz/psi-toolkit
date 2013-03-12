@@ -84,22 +84,17 @@ bool LamerLemma::lemmatize(const std::string& token,
 
 std::vector<std::pair<std::string, std::string> > 
 LamerLemma::morpho_to_features(std::vector<std::string> &morphos) {
-    size_t c = 0;
     std::vector<std::pair<std::string, std::string> > features;
     BOOST_FOREACH(std::string morpho, morphos) {
-        std::stringstream key;
-        key << "m" << c;
-        
         int pos;
         if((pos = morpho.find("=")) != std::string::npos) {
-            std::string first = morpho.substr(0, pos);
-            std::string second = morpho.substr(pos+1);
+            std::string key = morpho.substr(0, pos);
+            std::string value = morpho.substr(pos + 1);
             
-            features.push_back(std::make_pair(first, second));    
+            features.push_back(std::make_pair(key, value));    
         }
         else
-            features.push_back(std::make_pair(key.str(), morpho));
-        c++;
+            features.push_back(std::make_pair(morpho, "1"));
     }
     return features;
 }
