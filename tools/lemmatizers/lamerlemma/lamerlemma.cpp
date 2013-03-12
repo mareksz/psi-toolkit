@@ -3,7 +3,7 @@
 #include "logging.hpp"
 
 LamerLemma::LamerLemma(const boost::program_options::variables_map& options)
- : m_dict(options.count("morpho"))
+ : m_dict(options.count("pos") || options.count("morpho"), options.count("morpho"))
 {
     if(options.count("lang")) {
         std::cerr << options["lang"].as<std::string>() << std::endl;
@@ -36,35 +36,83 @@ bool LamerLemma::lemmatize(const std::string& token,
         return false;
         
     Interpretations interpretations = item.get_interpretations();
-    for(Interpretations::iterator it = interpretations.begin();
-        it != interpretations.end(); it++) {
-        
-        std::string lemma = it->get_lemma();
+    
+    typedef std::map<std::string, std::vector<Interpretation> > StringInterMap;
+    StringInterMap lemma_map;
+    BOOST_FOREACH(Interpretation i , interpretations)
+        lemma_map[i.get_lemma()].push_back(i);
+    
+    BOOST_FOREACH(StringInterMap::value_type lem_inter, lemma_map)
+    {
+        std::string lemma = lem_inter.first;
         outputIterator.addLemma(lemma);
         
         if(m_dict.has_pos()) {
-            std::string pos = it->get_pos();
-            AnnotationItem lexeme(pos, StringFrag(lemma));
-    
-            if(m_dict.has_morpho()) {
-                std::string morpho = it->get_morpho();
-                annotationItemManager.setValue(lexeme, "morpho", morpho);
-            }    
-            outputIterator.addLexeme(lexeme);
+            StringInterMap lexeme_map;
+            BOOST_FOREACH(Interpretation i, lem_inter.second)
+            {
+                std::string lemma = i.get_lemma();
+                std::string pos = i.get_pos();
+                std::string lexeme = lemma + "+" + pos;
+                lexeme_map[lexeme].push_back(i);
+            }
+            
+            BOOST_FOREACH(StringInterMap::value_type lex_inter, lexeme_map)
+            {
+                std::string lexeme = lex_inter.first;
+                std::string pos = lex_inter.second[0].get_pos();
+                
+                AnnotationItem ai_lexeme(pos, StringFrag(lexeme));
+                outputIterator.addLexeme(ai_lexeme);
+        
+                BOOST_FOREACH(Interpretation i, lex_inter.second) {
+                    AnnotationItem form(pos, StringFrag(token));
+                    if(m_dict.has_morpho()) {
+                        typedef std::pair<std::string, std::string> StringPair;
+                        std::vector<std::string>& morphologies = i.get_morpho();
+                        BOOST_FOREACH(StringPair kv, morpho_to_features(morphologies)) {
+                            annotationItemManager.setValue(form, kv.first, kv.second);
+                        }
+                    }
+                    outputIterator.addForm(form);
+                }
+            }
         }
     }
-    
     return foundLemma;
+}
+
+std::vector<std::pair<std::string, std::string> > 
+LamerLemma::morpho_to_features(std::vector<std::string> &morphos) {
+    size_t c = 0;
+    std::vector<std::pair<std::string, std::string> > features;
+    BOOST_FOREACH(std::string morpho, morphos) {
+        std::stringstream key;
+        key << "m" << c;
+        std::stringstream value;
+        value << morpho;
+        
+        //char first[1000], second[1000];
+        //if(sscanf(morpho.c_str(), "%s=%s", first, second) == 2) {
+        //    features.push_back(std::make_pair(first, second));
+        //}
+        //else
+            features.push_back(std::make_pair(key.str(), value.str()));
+        c++;
+    }
+    return features;
 }
 
 boost::program_options::options_description LamerLemma::optionsHandled() {
     boost::program_options::options_description desc;
 
     desc.add_options()
+        ("loadbin", boost::program_options::value<std::string>(), "Load binary dictionary file")
         ("loadtxt", boost::program_options::value<std::string>(), "Read text file")
-        ("morpho", "Text file includes morphology")
+        ("pos", "Text file contains part-of-speech information")
+        ("morpho", "Text file contains morphology information (implies --pos)")
         ("savebin", boost::program_options::value<std::string>(), "Save binary dictionary file")
-        ("loadbin", boost::program_options::value<std::string>(), "Load binary dictionary file");
+    ;
     return desc;
 }
 

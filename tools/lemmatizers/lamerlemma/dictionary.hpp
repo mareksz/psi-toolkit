@@ -18,19 +18,19 @@
 class Interpretation
 {
   public:
-    Interpretation(std::string lemma, std::string tag = std::string(), std::string morpho = std::string())
-     : m_lemma(lemma), m_tag(tag), m_morpho(morpho)
+    Interpretation(std::string lemma, std::string pos = std::string(), std::vector<std::string> morpho = std::vector<std::string>())
+     : m_lemma(lemma), m_pos(pos), m_morpho(morpho)
     { }
     
     std::string& get_lemma() { return m_lemma; }
-    std::string& get_pos() { return m_tag; }
-    std::string& get_morpho() { return m_morpho; }
-    bool is_unknown() { return m_tag == "unknown"; }
+    std::string& get_pos() { return m_pos; }
+    std::vector<std::string>& get_morpho() { return m_morpho; }
+    bool is_unknown() { return m_pos == "unknown"; }
     
   private:
     std::string m_lemma;
-    std::string m_tag;
-    std::string m_morpho;
+    std::string m_pos;
+    std::vector<std::string> m_morpho;
 };
 
 typedef std::vector<Interpretation> Interpretations;
@@ -62,7 +62,7 @@ class DictionaryItem
 class Dictionary
 {
   public:
-    Dictionary(bool has_morpho = false);
+    Dictionary(bool has_pos = false, bool has_morpho = false);
     DictionaryItem look_up(std::string);
     
     void read_dictionary(std::string);
