@@ -21,4 +21,10 @@ add_library(tools-translators-transferer SHARED
     ${BISON_trparser_OUTPUTS}
     ${FLEX_trlexer_OUTPUTS})
 
-target_link_libraries(tools-translators-transferer ${FLEX_LIBRARIES})
+add_executable(trunner trunner.cpp)
+
+include_directories("${psi-toolkit_SOURCE_DIR}/utf8case")
+
+target_link_libraries(tools-translators-transferer common ${FLEX_LIBRARIES} utf8case)
+
+target_link_libraries(trunner ${Boost_LIBRARIES} tools-translators-transferer)

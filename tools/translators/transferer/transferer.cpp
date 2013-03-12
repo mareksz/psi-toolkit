@@ -42,6 +42,12 @@ Transferer::Transferer(ScriptFactory* sf
      , sem_hierarchy(r_sem_hierarchy)
      , dsem_hierarchy(r_dsem_hierarchy)
 #endif
+    , lowerCaseConverter_(
+        StringCaseConverterManager::getInstance().
+        getLowerCaseConverter("pl"))
+    , upperCaseConverter_(
+        StringCaseConverterManager::getInstance().
+        getUpperCaseConverter("pl"))
  {
      my_holder_ = zvector::generate(EMPTY_ZOBJECTS_HOLDER, 32000);
      current_holder_ = 0;
@@ -1938,7 +1944,7 @@ BUILDINDEF(is_upper)
     if (ZSYMBOLP(FIRST_ARG))
     {
         const char *s = ZSYMBOLC(FIRST_ARG)->get_string();
-	if (!simpleWillBeTouchedWhenHeadConverted(*upperCaseConverter_, std::string(s)))
+	if (simpleWillBeTouchedWhenHeadConverted(*lowerCaseConverter_, std::string(s)))
             return INTEGER_TO_ZVALUE(1);
     }
 
@@ -2297,7 +2303,7 @@ BUILDINDEF(ucfirst)
     {
         const char* s = ZSYMBOLC(FIRST_ARG)->get_string();
 
-        std::string outputString = simpleConvert(*upperCaseConverter_, std::string(s));
+        std::string outputString = simpleHeadConvert(*upperCaseConverter_, std::string(s));
         char *t = new char[outputString.length()+1];
         strncpy(t, outputString.c_str(), outputString.length()+1);
         zsymbol* zs = z_sym_fac->get_symbol(current_holder_, t, true);
