@@ -1,7 +1,7 @@
 #include "dictionary.hpp"
 
-Dictionary::Dictionary(bool has_morpho)
- : m_has_pos(true), m_has_morpho(has_morpho)
+Dictionary::Dictionary(bool has_pos, bool has_morpho)
+ : m_has_pos(has_pos || has_morpho), m_has_morpho(has_morpho)
 { }
 
 void Dictionary::read_dictionary(std::string filename)
@@ -10,7 +10,8 @@ void Dictionary::read_dictionary(std::string filename)
     in.open(filename.c_str());
     
     std::map<char, size_t> char_map;
-    char zero = '\0';
+    char separator  = 1;
+    char next_inter = 0;
     
     std::map<std::string, std::string> temp_map;
     
@@ -20,20 +21,31 @@ void Dictionary::read_dictionary(std::string filename)
     while(std::getline(in, line))
     {            
         std::stringstream linestream(line);
-        std::string orth, lemma, tag, morpho;
-        linestream >> orth >> lemma >> tag;
+        std::stringstream interpretation;
+        std::string orth, lemma, pos, morpho;
+        linestream >> orth >> lemma;
         
-        std::string interpretation = lemma + zero + tag + zero;
+        interpretation << lemma;
         
-        if(m_has_morpho) {
-            linestream >> morpho;
-            interpretation += morpho + zero;
+        if(m_has_pos) {
+            if(linestream >> pos)
+                interpretation << separator << pos;
+            else {
+                //@TODO throw some exception
+            }
         }
         
-        BOOST_FOREACH(char c, interpretation)
+        if(m_has_morpho) {
+            while(linestream >> morpho)
+                interpretation << separator << morpho;
+        }
+        
+        std::string interpretation_string = interpretation.str();
+        interpretation_string.push_back(next_inter);
+        BOOST_FOREACH(char c, interpretation_string)
           char_map[c]++;
         
-        temp_map[orth] += interpretation;
+        temp_map[orth] += interpretation_string;
     }
     
     std::cerr << "Compressing dictionary data" << std::endl;
@@ -61,6 +73,7 @@ void Dictionary::load(std::string file_name) {
 
 void Dictionary::load(std::FILE* p_file) {
     std::cerr << "Loading dictionary data" << std::endl;
+    std::fread((void*)&m_has_pos, 1, sizeof(bool), p_file);
     std::fread((void*)&m_has_morpho, 1, sizeof(bool), p_file);
     m_huffman = new CanonicalHuffman<char>(p_file);
     m_store = new KeyValueStore();
@@ -78,6 +91,7 @@ void Dictionary::save(std::string file_name) {
 
 void Dictionary::save(std::FILE* p_file) {
     std::cerr << "Saving dictionary data" << std::endl;
+    std::fwrite((void*)&m_has_pos, 1, sizeof(bool), p_file);
     std::fwrite((void*)&m_has_morpho, 1, sizeof(bool), p_file);
     m_huffman->Save(p_file);
     m_store->save(p_file);
@@ -129,7 +143,7 @@ DictionaryItem Dictionary::look_up(std::string token)
     }
     
     Interpretations interpretations;
-    interpretations.push_back(Interpretation(token, "unknown", "unknown"));
+    interpretations.push_back(Interpretation(token, "unknown"));
     return DictionaryItem(token, false, interpretations);
 
 }
@@ -137,48 +151,61 @@ DictionaryItem Dictionary::look_up(std::string token)
 Interpretations Dictionary::decompress_interpretations(std::string compressed) {
     Interpretations interpretations;
 
-    char zero = '\0';
-    enum { Lemma, Tag, Morpho } state = Lemma;
-    std::stringstream lemma, tag, morpho;
+    char separator  = 1;
+    char next_inter = 0;
+    
+    enum { Lemma, Pos, Morpho } state = Lemma;
+    std::stringstream lemma, pos, morpho;
+    std::vector<std::string> morphologies;
     
     BitWrapper<> bit_wrapper(compressed);
     boost::optional<char> c;
     while(c = m_huffman->Read(bit_wrapper)) {
-        if(c.get() != zero) {
+        if(c.get() == separator) {
+            switch(state) {
+                case Lemma:
+                    state = Pos;
+                    break;
+                case Pos:
+                    state = Morpho;
+                    break;
+                case Morpho:
+                    morphologies.push_back(morpho.str());
+                    morpho.str(std::string());
+                    state = Morpho;
+                    break;
+            }
+        }
+        else if (c.get() == next_inter) {
+            state = Lemma;
+            std::string morpho_string = morpho.str();
+            if(morpho_string.size())
+                morphologies.push_back(morpho_string);
+            
+            interpretations.push_back(
+                Interpretation(lemma.str(),
+                               pos.str(),
+                               morphologies));
+            
+            lemma.str(std::string());
+            pos.str(std::string());
+            morpho.str(std::string());
+            morphologies.clear();
+        }
+        else {
             switch(state) {
                 case Lemma:
                     lemma << c.get();
                     break;
-                case Tag:
-                    tag << c.get();
+                case Pos:
+                    pos << c.get();
                     break;
                 case Morpho:
                     morpho << c.get();
                     break;
             }
         }
-        else {
-            if(state == Lemma) {
-                state = Tag;
-            }
-            else if(state == Tag) {
-                if(m_has_morpho)
-                    state = Morpho;
-                else {
-                    state = Lemma;
-                    interpretations.push_back(Interpretation(lemma.str(), tag.str()));
-                    lemma.str(std::string());
-                    tag.str(std::string());
-                }
-            }
-            else if(state == Morpho) {
-                state = Lemma;
-                interpretations.push_back(Interpretation(lemma.str(), tag.str(), morpho.str()));
-                lemma.str(std::string());
-                tag.str(std::string());
-                morpho.str(std::string());
-            }
-        }
     }
+    
     return interpretations;
 }

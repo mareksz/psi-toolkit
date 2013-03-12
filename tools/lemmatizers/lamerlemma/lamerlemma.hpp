@@ -25,7 +25,7 @@ public:
     bool lemmatize(const std::string& token,
                    AnnotationItemManager& annotationItemManager,
                    LemmatizerOutputIterator& outputIterator);
-
+                   
     static std::string getName();
     static boost::filesystem::path getFile();
     std::list<std::string> getLayerTags();
@@ -46,6 +46,8 @@ public:
 private:
     Dictionary m_dict;
     
+    std::vector<std::pair<std::string, std::string> >
+    morpho_to_features(std::vector<std::string> &); 
 };
 
 #endif
