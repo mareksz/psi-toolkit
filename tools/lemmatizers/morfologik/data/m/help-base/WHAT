@@ -1,1 +1,1 @@
-lemmatize --lang pl ! simple-writer --tag lemma
+morfologik ! simple-writer --tag lemma
