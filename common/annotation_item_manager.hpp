@@ -82,6 +82,9 @@ public:
     bool is_true(zvalue value) const;
     bool is_any(zvalue value) const;
 
+    zobjects_holder * getZObjectsHolderPtr() const;
+    zsymbolfactory * getSymbolFactory() const;
+
 private:
 
     typedef boost::bimap<std::string, int> StringBimap;

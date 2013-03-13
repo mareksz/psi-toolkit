@@ -14,6 +14,8 @@
 
 //#include "plstring.h"
 
+#include "utf8/utf8.h"
+
 #include <iostream>
 #define ERROR_MELDER(x)  std::cerr << x ;
 
@@ -1291,7 +1293,8 @@ zsymbolfactory* Transferer::get_zsymbolfactory() {
 // - - - - - -| BUILDIN procedures support |- - - - - -
 
 zsymbol* Transferer::subsymbol_(const char* s, int beg, int len) {
-    const int s_len = strlen(s);
+    const int s_len_in_bytes = strlen(s);
+    const int s_len = utf8::distance(s, s+s_len_in_bytes);
     if (beg<0) {
         beg+=s_len;
         if (beg<0) beg=0;
@@ -1299,9 +1302,17 @@ zsymbol* Transferer::subsymbol_(const char* s, int beg, int len) {
     if (s_len<beg) beg=s_len;
     if (len>(s_len-beg)) len=s_len-beg;
     if (0>len) len=0;
-    char *t = new char[len+1];
-    strncpy(t, s+beg, len);
-    t[len]=0;
+
+    const char *beg_ptr = s;
+    utf8::unchecked::advance(beg_ptr, beg);
+    const char *end_ptr = beg_ptr;
+    utf8::unchecked::advance(end_ptr, len);
+
+    size_t len_in_bytes = end_ptr - beg_ptr;
+
+    char *t = new char[len_in_bytes+1];
+    strncpy(t, beg_ptr, len_in_bytes);
+    t[len_in_bytes]=0;
     zsymbol* zs = z_sym_fac->get_symbol(current_holder_, t, true);
 
     return zs;
@@ -1383,8 +1394,11 @@ zvalue Transferer::strip_quotes_(zvalue sm)
     if (ZSYMBOLP(sm))
     {
         const char *s = ZSYMBOLC(sm)->get_string();
-        int len = strlen(s);
-        if (len>2 && '\''==s[0] && '\''==s[len-1]) return subsymbol_(s, 1, len-2);
+        const size_t len = strlen(s);
+        if (len>2 && '\''==s[0] && '\''==s[len-1]) {
+            const size_t len_in_chars = utf8::distance(s, s+len);
+            return subsymbol_(s, 1, len_in_chars-2);
+        }
         return sm;
     }
 
@@ -1563,7 +1577,10 @@ BUILDINDEF(cut_suffix)
         else
         {
             const char* s = ZSYMBOLC(FIRST_ARG)->get_string();
-            int pos = strlen(s)-ZVALUE_TO_INTEGER(cv);
+            const int s_len_in_bytes = strlen(s);
+            const int s_len = utf8::distance(s, s+s_len_in_bytes);
+            const int pos = s_len-ZVALUE_TO_INTEGER(cv);
+
             return subsymbol_(s, 0, pos);
         }
     }
@@ -2241,15 +2258,16 @@ BUILDINDEF(substring)
 BUILDINDEF(suffix)
 {
     if (!ZSYMBOLP(FIRST_ARG)) {
-        warning_("first argument of cut_suffix should be a string",stat,NULL_ZVALUE);
+        warning_("first argument of suffix should be a string",stat,NULL_ZVALUE);
         return NULL_ZVALUE;
     } else if (!INTEGERP(SECOND_ARG) && ZVALUE_TO_INTEGER(SECOND_ARG)<=0) {
-        warning_("second argument of cut_suffix should be a positive integer",stat,NULL_ZVALUE);
+        warning_("second argument of suffix should be a positive integer",stat,NULL_ZVALUE);
         return NULL_ZVALUE;
     }
     const char* s = ZSYMBOLC(FIRST_ARG)->get_string();
-    int pos = strlen(s)-ZVALUE_TO_INTEGER(SECOND_ARG);
-    return subsymbol_(s, pos, strlen(s));
+    int suffix_len = ZVALUE_TO_INTEGER(SECOND_ARG);
+
+    return subsymbol_(s, -suffix_len, suffix_len);
 }
 
 BUILDINDEF(surface)

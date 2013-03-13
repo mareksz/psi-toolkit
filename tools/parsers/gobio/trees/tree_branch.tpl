@@ -27,11 +27,13 @@ typename Ch::edge_descriptor tree_branch<T,Ch,E>::supporting_edge()
     return edge_;
 }
 
+/*
 template<class T, class Ch, class E>
 typename Ch::variant_iterator tree_branch<T,Ch,E>::supporting_variant()
 {
     return variant_it_;
 }
+*/
 
 template<class T, class Ch, class E>
 bool tree_branch<T,Ch,E>::is_supported()
@@ -42,11 +44,10 @@ bool tree_branch<T,Ch,E>::is_supported()
 
 template<class T, class Ch, class E>
 void tree_branch<T,Ch,E>::set_support(
-    typename Ch::edge_descriptor e,
-    typename Ch::variant_iterator vit)
-{
+    typename Ch::edge_descriptor e
+) {
     edge_ = e;
-    variant_it_ = vit;
+    // variant_it_ = vit;
     is_supported_ = true;
 }
 
@@ -84,6 +85,7 @@ boost::shared_ptr<tree_specification<T> > tree_branch<T,Ch,E>::child_spec(size_t
     return children_[i].spec;
 }
 
+/*
 template<class T, class Ch, class E>
 typename Ch::variant_iterator tree_branch<T,Ch,E>::child_variant_it(size_t i)
 {
@@ -91,6 +93,7 @@ typename Ch::variant_iterator tree_branch<T,Ch,E>::child_variant_it(size_t i)
 
     return children_[i].variant_it;
 }
+*/
 
 template<class T, class Ch, class E>
 typename Ch::edge_descriptor tree_branch<T,Ch,E>::child_edge(size_t i)
@@ -104,10 +107,15 @@ template<class T, class Ch, class E>
 void tree_branch<T,Ch,E>::add_child(
     T label,
     boost::shared_ptr<tree_specification<T> > spec,
-    typename Ch::edge_descriptor edge,
-    typename Ch::variant_iterator variant_it)
-{
-    children_.push_back(child_link(label, spec, edge, variant_it));
+    typename Ch::edge_descriptor edge
+    // , typename Ch::variant_iterator variant_it
+) {
+    children_.push_back(child_link(
+        label,
+        spec,
+        edge
+        // , variant_it
+    ));
 }
 
 #endif

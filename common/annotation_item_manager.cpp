@@ -234,6 +234,17 @@ bool AnnotationItemManager::is_any(zvalue value) const {
     return DEFAULTP(value);
 }
 
+
+zobjects_holder * AnnotationItemManager::getZObjectsHolderPtr() const {
+    return zObjectsHolder_;
+}
+
+
+zsymbolfactory * AnnotationItemManager::getSymbolFactory() const {
+    return zSymbolFactory_;
+}
+
+
 const std::string AnnotationItemManager::FAIL_STRING = "fail";
 const std::string AnnotationItemManager::FALSE_STRING = "false";
 const std::string AnnotationItemManager::EMPTY_STRING = "empty";

@@ -114,7 +114,8 @@ Lattice::EdgeDescriptor Lattice::addEdge(
     LayerTagCollection tags,
     EdgeSequence sequence,
     Score score,
-    int ruleId)
+    int ruleId,
+    int treeChoice)
 {
     // inheriting plane tags
     if (getLayerTagManager().onlyPlaneTags(tags).isEmpty())
@@ -195,7 +196,8 @@ Lattice::EdgeDescriptor Lattice::addEdge(
             if (score > oldScore) {
                 graph_[edge.descriptor].score = score;
             }
-            graph_[edge.descriptor].partitions.push_back(Partition(tags, sequence, score, ruleId));
+            graph_[edge.descriptor].partitions.push_back(
+                Partition(tags, sequence, score, ruleId, treeChoice));
         } else {
             implicitOutEdges_.set(from, false);
             edge.implicitIndex = -1;
@@ -277,7 +279,11 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         result = boost::add_edge(
             boost_from,
             boost_to,
-            EdgeEntry(annotationItem, tags, score, Partition(tags, sequence, score, ruleId)),
+            EdgeEntry(
+                annotationItem,
+                tags, score,
+                Partition(tags, sequence, score, ruleId, treeChoice)
+            ),
             graph_
         );
 
@@ -314,7 +320,8 @@ Lattice::EdgeDescriptor Lattice::addPartitionToEdge(
     LayerTagCollection tags,
     EdgeSequence sequence,
     Score score,
-    int ruleId) {
+    int ruleId,
+    int treeChoice) {
     // FIXME - ineffective! addEdge must be refactored
 
     LayerTagCollection edgePlaneTags =
@@ -326,7 +333,8 @@ Lattice::EdgeDescriptor Lattice::addPartitionToEdge(
                    createUnion(tags, edgePlaneTags),
                    sequence,
                    score,
-                   ruleId);
+                   ruleId,
+                   treeChoice);
 }
 
 void Lattice::discard(EdgeDescriptor edge) {
@@ -929,6 +937,17 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::lastEdge(Lattice & lattice) const
     }
 }
 
+Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t index) const {
+    if (links.empty()) {
+        return lattice.firstOutEdge(
+            lattice.getVertexForRawCharIndex(index),
+            lattice.getLayerTagManager().getMask("symbol")
+        );
+    } else {
+        return links[index].getEdge();
+    }
+}
+
 LayerTagCollection Lattice::EdgeSequence::gatherPlaneTags(Lattice& lattice) const {
     std::vector<EdgeUsage>::const_iterator iter = links.begin();
 
@@ -1022,12 +1041,19 @@ Lattice::EdgeSequence::EdgeSequence(int aBegin, int aEnd) :
 { }
 
 
-Lattice::Partition::Partition(LayerTagCollection aTagList,
-                              EdgeSequence aSequence,
-                              Score aScore,
-                              int aRuleId):
-    sequence_(aSequence), tagList_(aTagList), score_(aScore), ruleId_(aRuleId) {
-}
+Lattice::Partition::Partition(
+    LayerTagCollection aTagList,
+    EdgeSequence aSequence,
+    Score aScore,
+    int aRuleId,
+    int aTreeChoice
+) :
+    sequence_(aSequence),
+    tagList_(aTagList),
+    score_(aScore),
+    ruleId_(aRuleId),
+    treeChoice_(aTreeChoice)
+{ }
 
 
 const Lattice::EdgeSequence& Lattice::Partition::getSequence() const {
@@ -1044,6 +1070,10 @@ const Lattice::Score& Lattice::Partition::getScore() const {
 
 const int& Lattice::Partition::getRuleId() const {
     return ruleId_;
+}
+
+const int& Lattice::Partition::getTreeChoice() const {
+    return treeChoice_;
 }
 
 Lattice::VertexDescriptor Lattice::firstSequenceVertex_(const EdgeSequence& sequence) {
