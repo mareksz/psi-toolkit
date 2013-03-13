@@ -209,13 +209,6 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
         ch.edge_source(tb->supporting_edge()),
         ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
 
-    // result->setAttr(
-        // sym_fac_->get_symbol("srccat"),
-        // combinator.get_master().stringToZvalue(
-            // combinator.get_symbol_registrar().get_obj(
-                // ch.edge_category(
-                    // tb->supporting_edge()).get_cat())));
-
     if (tb->is_supported()) {
         Atom def = combinator.get_master().false_value();
         const Category & avm = ch.edge_category(tb->supporting_edge());
@@ -259,10 +252,20 @@ Lattice::EdgeDescriptor Gobio::markTree_(
     zsyntree * tree
 ) {
     AnnotationItem annotationItem(tree->getCategory()->get_string());
-    // lattice.getAnnotationItemManager().setValue(
-        // annotationItem,
-        // "srccat",
-        // tree->getAttr(sym_fac_->get_symbol("srccat")));
+    int block_size = 0;
+    zvalue * block = tree->getAll(block_size);
+    for (int i = 0; i < block_size; ++i) {
+        if (!NULLP(block[i]) && !DELETEDP(block[i])) {
+            zpair * zp = ZPAIRC(block[i]);
+            if (!ZSYNTREEP(zp->getSecond())) {
+                lattice.getAnnotationItemManager().setValue(
+                    annotationItem,
+                    zvalue_to_string(zp->getFirst()),
+                    zp->getSecond());
+            }
+        }
+    }
+
     Lattice::EdgeSequence::Builder builder(lattice);
     for (int i = 0; i <= tree->last_subtree; ++i) {
         Lattice::EdgeDescriptor subedge = markTree_(
@@ -271,13 +274,13 @@ Lattice::EdgeDescriptor Gobio::markTree_(
             tree->getSubtree(i));
         builder.addEdge(subedge);
     }
+
     return lattice.addEdge(
         tree->segment_beg,
         tree->segment_beg + tree->segment_len,
         annotationItem,
         targetTags,
-        builder.build()
-    );
+        builder.build());
 }
 
 
