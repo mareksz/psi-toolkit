@@ -17,7 +17,7 @@
 17 0000 09    Potężny      !pl,gobio                         ap,Case=voc,Degree=pos,Gender=m1,Negation=aff,Number=sg[8]
 18 0000 09    Potężny      !pl,gobio                         ap,Case=voc,Degree=pos,Gender=m2,Negation=aff,Number=sg[9]
 19 0000 09    Potężny      !pl,gobio                         ap,Case=voc,Degree=pos,Gender=m3,Negation=aff,Number=sg[10]
-20 0000 09    Potężny      gobio,parse                       ap[]
+20 0000 09    Potężny      gobio,parse                       ap,Case=nom,Degree=pos,Gender=m1,Negation=aff,Number=sg[]
 21 0009 01    _            !pl,token             _           B
 22 0010 08    Achilles     !pl,token             Achilles    T
 23 0010 08    Achilles     !pl,lemma,morfologik,morfologik-tagset Achilles word[22]
@@ -27,7 +27,7 @@
 27 0010 08    Achilles     !pl,gobio                         np,Gender=m1[24]
 28 0010 08    Achilles     !pl,gobio                         np,Case=nom,Gender=m1,Number=sg[25]
 29 0000 18    Potężn...les !pl,gobio                         np,Case=nom,Gender=m1,Number=sg[14-28]
-30 0000 18    Potężn...les gobio,parse                       np[20]
+30 0000 18    Potężn...les gobio,parse                       np,Case=nom,Gender=m1,Number=sg[20]
 31 0018 01    _            !pl,token             _           B
 32 0019 07    prędko       !pl,token             prędko      T
 33 0019 07    prędko       !pl,lemma,morfologik,morfologik-tagset prędko word[32]
@@ -71,7 +71,7 @@
 71 0036 09    ospałego     !pl,gobio                         ap,Case=acc,Degree=pos,Gender=m2,Negation=aff,Number=sg[65]
 72 0036 09    ospałego     !pl,gobio                         ap,Case=gen,Degree=pos,Gender=m,Negation=aff,Number=sg[66]
 73 0036 09    ospałego     !pl,gobio                         ap,Case=gen,Degree=pos,Gender=n,Negation=aff,Number=sg[67]
-74 0036 09    ospałego     gobio,parse                       ap[]
+74 0036 09    ospałego     gobio,parse                       ap,Case=acc,Degree=pos,Gender=m2,Negation=aff,Number=sg[]
 75 0045 01    _            !pl,token             _           B
 76 0046 08    ślimaka      !pl,token             ślimaka     T
 77 0046 08    ślimaka      !pl,lemma,morfologik,morfologik-tagset ślimak word[76]
@@ -97,8 +97,8 @@
 97 0000 54    Potężn...aka !pl,gobio                         s,Gender=m2,Number=sg,Aspect=perf,Person=ter,Tense=praet[29-92]
 98 0010 44    Achill...aka !pl,gobio                         s,Gender=m3,Number=sg,Aspect=perf,Person=ter,Tense=praet[28-93]
 99 0000 54    Potężn...aka !pl,gobio                         s,Gender=m3,Number=sg,Aspect=perf,Person=ter,Tense=praet[29-93]
-100 0036 18   ospałe...aka gobio,parse                       np[74]
-101 0000 54   Potężn...aka gobio,parse                       s[30-37-100]
+100 0036 18   ospałe...aka gobio,parse                       np,Case=acc,Gender=m2,Number=sg[74]
+101 0000 54   Potężn...aka gobio,parse                       s,Gender=m1,Number=sg,Aspect=perf,Person=ter,Tense=praet[30-37-100]
 102 0000 55   Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. frag,txt-reader Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. FRAG[]
 103 0000 55   Potężn...ka. !pl,lang-guesser,text Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. TEXT[102]
 104 0054 01   .            !pl,token             .           I
