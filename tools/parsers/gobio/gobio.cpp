@@ -272,8 +272,8 @@ Lattice::EdgeDescriptor Gobio::markTree_(
         builder.addEdge(subedge);
     }
     return lattice.addEdge(
-        lattice.getVertexRawCharIndex(tree->segment_beg),
-        lattice.getVertexRawCharIndex(tree->segment_beg + tree->segment_len),
+        tree->segment_beg,
+        tree->segment_beg + tree->segment_len,
         annotationItem,
         targetTags,
         builder.build()
