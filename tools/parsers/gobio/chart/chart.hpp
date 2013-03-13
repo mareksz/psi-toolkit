@@ -143,6 +143,8 @@ public:
     // bool edge_accommodated(edge_descriptor edge) const;
     // void mark_edge_as_accommodated(edge_descriptor edge);
 
+    bool could_be_final(edge_descriptor edge) const;
+
     std::pair<partition_iterator, partition_iterator> edge_partitions(edge_descriptor edge);
     // std::pair<variant_iterator, variant_iterator> edge_variants(edge_descriptor edge);
     // void remove_duplicate_variants(edge_descriptor edge);
@@ -172,7 +174,9 @@ public:
 
     // rule_type partition_rule(partition_iterator piter);
     int partition_rule_id(partition_iterator piter);
+    int partition_tree_choice(partition_iterator piter);
     // std::vector<edge_descriptor>& partition_links(partition_iterator piter);
+    edge_descriptor partition_link(partition_iterator piter, size_t index);
     size_t partition_links_size(partition_iterator piter);
     Lattice::Partition::Iterator partition_links_iterator(partition_iterator piter);
     // partition_iterator variant_partition(variant_iterator vit);

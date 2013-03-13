@@ -206,7 +206,7 @@ public:
 
     ~rule_holder() { }
 
-    std::string str(registrar<T> symbol_reg) {
+    std::string str(registrar<atom_type> symbol_reg) {
         std::stringstream sstr;
         sstr << symbol_reg.get_obj(lhs_symbol) << " ->";
         for (size_t i = 0; i < rhs_symbols.size(); ++i) {
@@ -249,6 +249,7 @@ public:
     entry_type category()   const { return entry_; }
     S score()               const { return score_; }
     int rule_no() const { return rule_ix_; }
+    int tree_choice() const { return tree_choice_; }
 
     rule_type(int a_rule_ix, unsigned int a_tree_choice, S a_score, const entry_type& a_entry):
         rule_ix_(a_rule_ix),
@@ -276,10 +277,16 @@ public:
     bool could_be_final_variant(const entry_type& entry, const variant_type& variant);
     bool is_lexical(const rule_type& rule) const;
     bool is_lexical(int rule_ix) const;
-    boost::shared_ptr<tree_specification<atom_type> > tree_spec(
-    const rule_type& rule, const std::vector<rule_holder>& local_rules);
+
+    boost::shared_ptr< tree_specification<atom_type> > tree_spec(
+        int rule_ix,
+        int tree_choice,
+        const std::vector<rule_holder> & local_rules);
+
     E equivalent(
-    const rule_type& rule, const std::vector<rule_holder>& local_rules);
+        int rule_ix,
+        const std::vector<rule_holder> & local_rules);
+
     bool is_useful(const entry_type& entry) const;
     void clear_parser_caches();
 

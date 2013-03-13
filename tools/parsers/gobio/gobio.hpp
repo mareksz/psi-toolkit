@@ -116,11 +116,31 @@ private:
 
     std::string rulesPath_;
 
-    void markTree_(
+    zsymbolfactory * sym_fac_;
+
+    zvalue edgeToZsyntree_(
+        Chart & ch,
+        Combinator & combinator,
+        Edge edge,
+        std::vector<Combinator::rule_holder> & local_rules,
+        zobjects_holder * holder
+    );
+
+    zvalue edgeToZsyntreeWithSpec_(
+        Chart & ch,
+        Combinator & combinator,
+        Edge edge,
+        Chart::partition_iterator pit,
+        std::vector<Combinator::rule_holder> & local_rules,
+        boost::shared_ptr< tree_specification<zvalue> > spec,
+        bool is_main,
+        zobjects_holder * holder
+    );
+
+    Lattice::EdgeDescriptor markTree_(
         Lattice & lattice,
-        LayerTagMask sourceMask,
         LayerTagCollection targetTags,
-        Lattice::EdgeDescriptor edge
+        zsyntree * tree
     );
 
     virtual double doGetQualityScore(

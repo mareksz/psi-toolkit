@@ -53,7 +53,8 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
             getGobioTag_(),
             Lattice::EdgeSequence(),
             score,
-            rule.rule_no()
+            rule.rule_no(),
+            rule.tree_choice()
         );
         int num2 = lattice_.countEdges(u, v);
         return std::pair<edge_descriptor,bool>(result, num2 - num1 > 0);
@@ -83,7 +84,8 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
             getGobioTag_(),
             builder.build(),
             score,
-            rule.rule_no()
+            rule.rule_no(),
+            rule.tree_choice()
         );
         int num2 = lattice_.countEdges(u, v);
         return std::pair<edge_descriptor,bool>(result, num2 - num1 > 0);
@@ -115,7 +117,8 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
             getGobioTag_(),
             builder.build(),
             score,
-            rule.rule_no()
+            rule.rule_no(),
+            rule.tree_choice()
         );
         int num2 = lattice_.countEdges(u, v);
         return std::pair<edge_descriptor,bool>(result, num2 - num1 > 0);
@@ -151,7 +154,8 @@ typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::add_partition(
         getGobioTag_(),
         Lattice::EdgeSequence(),
         score,
-        rule.rule_no()
+        rule.rule_no(),
+        rule.tree_choice()
     );
 }
 
@@ -170,7 +174,8 @@ typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::add_partition(
         getGobioTag_(),
         builder.build(),
         score,
-        rule.rule_no()
+        rule.rule_no(),
+        rule.tree_choice()
     );
 }
 
@@ -190,7 +195,8 @@ typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::add_partition(
         getGobioTag_(),
         builder.build(),
         score,
-        rule.rule_no()
+        rule.rule_no(),
+        rule.tree_choice()
     );
 }
 
@@ -302,6 +308,14 @@ void chart<C,S,V,R,I>::mark_edge_as_accommodated(edge_descriptor edge)
     graph_[edge].is_accommodated = true;
 }
 */
+
+template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
+bool chart<C,S,V,R,I>::could_be_final(edge_descriptor edge) const {
+    return lattice_.getLayerTagManager().isThere("gobio", lattice_.getEdgeLayerTags(edge));
+    // return matches(
+        // lattice_.getEdgeLayerTags(edge),
+        // lattice_.getLayerTagManager().getMask(getGobioTag_()));
+}
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 std::pair<typename chart<C,S,V,R,I>::partition_iterator,
@@ -461,6 +475,13 @@ int chart<C,S,V,R,I>::partition_rule_id(
     return (*piter).getRuleId();
 }
 
+template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
+int chart<C,S,V,R,I>::partition_tree_choice(
+    partition_iterator piter)
+{
+    return (*piter).getTreeChoice();
+}
+
 /*
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 std::vector<typename chart<C,S,V,R,I>::edge_descriptor>& chart<C,S,V,R,I>::partition_links(
@@ -469,6 +490,14 @@ std::vector<typename chart<C,S,V,R,I>::edge_descriptor>& chart<C,S,V,R,I>::parti
     return (*piter).links;
 }
 */
+
+template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
+typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::partition_link(
+    partition_iterator piter,
+    size_t index
+) {
+    return (*piter).getSequence().nthEdge(lattice_, index);
+}
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 size_t chart<C,S,V,R,I>::partition_links_size(partition_iterator piter)

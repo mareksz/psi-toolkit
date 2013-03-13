@@ -69,9 +69,10 @@ std::string Gobio::doInfo() {
     return "gobio parser";
 }
 
-Gobio::Gobio(std::string rulesPath) : rulesPath_(rulesPath) { }
+Gobio::Gobio(std::string rulesPath) : rulesPath_(rulesPath), sym_fac_(NULL) { }
 
 void Gobio::parse(Lattice & lattice) {
+    sym_fac_ = lattice.getAnnotationItemManager().getSymbolFactory();
 
     AnnotationItemManager & aim = lattice.getAnnotationItemManager();
 
@@ -108,43 +109,175 @@ void Gobio::parse(Lattice & lattice) {
         boost::assign::list_of("gobio")("parse")
     );
 
-    BOOST_FOREACH(Edge e, choosen_edges) {
-        markTree_(lattice, maskGobio, tagParse, e);
+    std::vector<zvalue> results;
+    BOOST_FOREACH(Edge edge, choosen_edges) {
+        zvalue zv = edgeToZsyntree_(
+            ch,
+            combinator,
+            edge,
+            local_rules,
+            lattice.getAnnotationItemManager().getZObjectsHolderPtr()
+        );
+        results.push_back(zv);
+    }
+
+    BOOST_FOREACH(zvalue zv, results) {
+        markTree_(
+            lattice,
+            tagParse,
+            ZSYNTREEC(zv)
+        );
     }
 
 }
 
 
-void Gobio::markTree_(
-    Lattice & lattice,
-    LayerTagMask sourceMask,
-    LayerTagCollection targetTags,
-    Lattice::EdgeDescriptor edge
+zvalue Gobio::edgeToZsyntree_(
+    Chart & ch,
+    Combinator & combinator,
+    Edge edge,
+    std::vector<Combinator::rule_holder> & local_rules,
+    zobjects_holder * holder
 ) {
-    if (matches(lattice.getEdgeLayerTags(edge), sourceMask)) {
-        const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);
-        Lattice::EdgeSequence edgeSequence;
-        if (!partitions.empty()) {
-            Lattice::Partition bestPartition = partitions.front();
-            BOOST_FOREACH(Lattice::Partition partition, partitions) {
-                if (partition.getScore() > bestPartition.getScore()) {
-                    bestPartition = partition;
-                }
-            }
-            Lattice::Partition::Iterator pi(lattice, bestPartition);
-            while (pi.hasNext()) {
-                markTree_(lattice, sourceMask, targetTags, pi.next());
-            }
-            edgeSequence = bestPartition.getSequence();
-        }
-        lattice.addEdge(
-            lattice.getEdgeSource(edge),
-            lattice.getEdgeTarget(edge),
-            lattice.getEdgeAnnotationItem(edge),
-            targetTags,
-            edgeSequence
-        );
+    std::pair<Chart::partition_iterator, Chart::partition_iterator> pits
+        = ch.edge_partitions(edge);
+
+    if (pits.first == pits.second) {
+        return NULL_ZVALUE;
     }
+
+    Chart::partition_iterator pit = pits.first;
+
+    boost::shared_ptr< tree_specification<Atom> > core_spec = combinator.tree_spec(
+        ch.partition_rule_id(pit),
+        ch.partition_tree_choice(pit),
+        local_rules);
+
+    assert(core_spec);
+
+    return edgeToZsyntreeWithSpec_(
+        ch,
+        combinator,
+        edge,
+        pit,
+        local_rules,
+        core_spec,
+        true,
+        holder);
+}
+
+
+zvalue Gobio::edgeToZsyntreeWithSpec_(
+    Chart & ch,
+    Combinator & combinator,
+    Edge edge,
+    Chart::partition_iterator pit,
+    std::vector<Combinator::rule_holder> & local_rules,
+    boost::shared_ptr< tree_specification<zvalue> > spec,
+    bool is_main,
+    zobjects_holder * holder
+) {
+    zsyntree * result = zsyntree::generate(holder);
+
+    boost::shared_ptr< tree_branch<Atom, Chart, Combinator::equivalent_type> > tb
+        = extract_tree_branch_with_spec<Atom, Chart, Combinator>(
+            ch,
+            edge,
+            pit,
+            combinator,
+            local_rules,
+            spec,
+            is_main
+#if PRINTRULES
+            , true
+#endif //PRINTRULES
+        );
+
+    zsymbol * zcat = sym_fac_->get_symbol(
+        combinator.get_master().string_representation(tb->root()).c_str());
+    if (strcmp(zcat->to_string(), "NULL_ZVALUE")) {
+        result->setCategory(zcat);
+    } else {
+        result->setCategory(
+            sym_fac_->get_symbol(
+                combinator.get_symbol_registrar().get_obj(
+                    ch.edge_category(
+                        tb->supporting_edge()).get_cat()).c_str()));
+    }
+
+    result->setSegmentInfo(
+        ch.edge_source(tb->supporting_edge()),
+        ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
+
+    // result->setAttr(
+        // sym_fac_->get_symbol("srccat"),
+        // combinator.get_master().stringToZvalue(
+            // combinator.get_symbol_registrar().get_obj(
+                // ch.edge_category(
+                    // tb->supporting_edge()).get_cat())));
+
+    if (tb->is_supported()) {
+        Atom def = combinator.get_master().false_value();
+        const Category & avm = ch.edge_category(tb->supporting_edge());
+        for (int ai = 0; ai < avm.nb_attrs(); ++ai) {
+            if (combinator.get_master().is_true(avm.get_attr(ai, def))) {
+                result->setAttr(
+                    sym_fac_->get_symbol(
+                        combinator.get_attribute_registrar().get_obj(ai).c_str()),
+                        avm.get_attr(ai, def));
+            }
+        }
+    }
+
+    for (size_t i = 0; i < tb->nb_children(); ++i) {
+        zvalue sub_zv = edgeToZsyntreeWithSpec_(
+            ch,
+            combinator,
+            tb->child_edge(i),
+            ch.edge_partitions(tb->child_edge(i)).first,
+            local_rules,
+            tb->child_spec(i),
+            false,
+            holder);
+        if (ZSYNTREEP(sub_zv)) {
+            result->addSubtree(
+                ZSYNTREEC(sub_zv),
+                (combinator.get_master().is_true(tb->child_label(i))
+                ? sym_fac_->get_symbol(
+                    combinator.get_master().string_representation(tb->child_label(i)).c_str())
+                : NULL));
+        }
+    }
+
+    return result;
+}
+
+
+Lattice::EdgeDescriptor Gobio::markTree_(
+    Lattice & lattice,
+    LayerTagCollection targetTags,
+    zsyntree * tree
+) {
+    AnnotationItem annotationItem(tree->getCategory()->get_string());
+    // lattice.getAnnotationItemManager().setValue(
+        // annotationItem,
+        // "srccat",
+        // tree->getAttr(sym_fac_->get_symbol("srccat")));
+    Lattice::EdgeSequence::Builder builder(lattice);
+    for (int i = 0; i <= tree->last_subtree; ++i) {
+        Lattice::EdgeDescriptor subedge = markTree_(
+            lattice,
+            targetTags,
+            tree->getSubtree(i));
+        builder.addEdge(subedge);
+    }
+    return lattice.addEdge(
+        tree->segment_beg,
+        tree->segment_beg + tree->segment_len,
+        annotationItem,
+        targetTags,
+        builder.build()
+    );
 }
 
 

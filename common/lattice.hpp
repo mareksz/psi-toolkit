@@ -130,6 +130,8 @@ public:
 
         EdgeDescriptor lastEdge(Lattice & lattice) const;
 
+        EdgeDescriptor nthEdge(Lattice & lattice, size_t index) const;
+
         LayerTagCollection gatherPlaneTags(Lattice& lattice) const;
 
         bool empty() const;
@@ -177,7 +179,8 @@ public:
         Partition(LayerTagCollection aTagList,
                   EdgeSequence aSequence = EdgeSequence(),
                   Score aScore = 0,
-                  int aRuleId = -1);
+                  int aRuleId = -1,
+                  int aTreeChoice = -1);
 
         const EdgeSequence& getSequence() const;
 
@@ -186,6 +189,7 @@ public:
         const Score& getScore() const;
 
         const int& getRuleId() const;
+        const int& getTreeChoice() const;
 
         EdgeDescriptor firstEdge(Lattice & lattice) const { return sequence_.firstEdge(lattice); }
 
@@ -196,6 +200,7 @@ public:
         LayerTagCollection tagList_;
         Score score_;
         int ruleId_;
+        int treeChoice_;
 
     };
 
@@ -441,13 +446,15 @@ public:
                            LayerTagCollection tags,
                            EdgeSequence sequence = EdgeSequence(),
                            Score score = 0.0,
-                           int ruleId = -1);
+                           int ruleId = -1,
+                           int treeChoice = -1);
 
     EdgeDescriptor addPartitionToEdge(EdgeDescriptor edge,
                                       LayerTagCollection tags,
                                       EdgeSequence sequence = EdgeSequence(),
                                       Score score = 0.0,
-                                      int ruleId = -1);
+                                      int ruleId = -1,
+                                      int treeChoice = -1);
 
     /**
      * Discard the given edge.
