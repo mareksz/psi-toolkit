@@ -1,6 +1,6 @@
 01 0000 06    widzę        !pl,gobio                         pkcz,A=ndk,Przyim=brak,Przyim1=brak,Podmiot=1,Lenght=1,Amb=1,Dop1=bier,Sem1=UNKNOWN\_ZVALUE,S=UNKNOWN\_ZVALUE
-02 0000 06    widzę        gobio,parse                       pkcz,A=ndk,Przyim=brak,Przyim1=brak,Podmiot=1,Lenght=1,Amb=1,Dop1=bier,Sem1=UNKNOWN\_ZVALUE,S=UNKNOWN\_ZVALUE
-03 0006 01    _            !pl,token                         B
-04 0007 08    komputer     !pl,gobio                         szfrz,Przyim=brak,Amb=1,Sem1=nil,S=nil,L=1,R=mnż,Rp=mnż,L1=1,R1=mnż,Składnia=nil,Length=1,P=bier
-05 0000 15    widzę_...ter !pl,gobio,parse                   pkcz<3>,A=ndk,Przyim=brak,Przyim1=brak,Podmiot=1,Lenght=1,Amb=1,Dop1=bier,Sem1=nil,S=UNKNOWN\_ZVALUE,Neg=oczekiwana,Wyp1=1[1-4(!pl,gobio),1-4<0>]
-06 0007 08    komputer     gobio,parse                       szfrz,Przyim=brak,Amb=1,Sem1=nil,S=nil,L=1,R=mnż,Rp=mnż,L1=1,R1=mnż,Składnia=nil,Length=1,P=bier
+02 0006 01    _            !pl,token                         B
+03 0007 08    komputer     !pl,gobio                         szfrz,Przyim=brak,Amb=1,Sem1=nil,S=nil,L=1,R=mnż,Rp=mnż,L1=1,R1=mnż,Składnia=nil,Length=1,P=bier
+04 0000 15    widzę_...ter !pl,gobio                         pkcz<3>,A=ndk,Przyim=brak,Przyim1=brak,Podmiot=1,Lenght=1,Amb=1,Dop1=bier,Sem1=nil,S=UNKNOWN\_ZVALUE,Neg=oczekiwana,Wyp1=1[1-3]
+05 0007 08    komputer     gobio,parse                       szfrz[]
+06 0000 15    widzę_...ter gobio,parse                       pkcz[5]
