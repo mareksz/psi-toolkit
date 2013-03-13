@@ -186,7 +186,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 
 #if HAVE_CMPH
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());
-    keeper_.takeProcessorFactory(new LemmatizerAnnotator<LamerLemma>::Factory());
+//    keeper_.takeProcessorFactory(new LemmatizerAnnotator<LamerLemma>::Factory());
 #endif
 
 #if HAVE_PERL_BINDINGS
