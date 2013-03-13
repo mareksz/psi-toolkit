@@ -25,6 +25,6 @@ add_executable(trunner trunner.cpp)
 
 include_directories("${psi-toolkit_SOURCE_DIR}/utf8case")
 
-target_link_libraries(tools-translators-transferer common ${FLEX_LIBRARIES} utf8case)
+target_link_libraries(tools-translators-transferer common ${Boost_LIBRARIES} ${FLEX_LIBRARIES} utf8case)
 
 target_link_libraries(trunner ${Boost_LIBRARIES} tools-translators-transferer)
