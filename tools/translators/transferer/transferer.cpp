@@ -613,9 +613,6 @@ void Transferer::compute_(Statement* S, zvector* DSS,
         // =~ has side-effects
         else if (Sc->subr_name == sm_token_bind)
         {
-#ifdef TRANSFERER_NO_REGEXPS
-            DSS->push(NULL_ZVALUE);
-#else
             GOSUB(Sc->chain_start_expression);
             GOSUB(Sc->chain_start_expression->getNextStatement());
             ttz = symbol_wanted_(DSS->pop());
@@ -626,35 +623,22 @@ void Transferer::compute_(Statement* S, zvector* DSS,
             }
             else
             {
-                int err_code = 0;
+                PerlRegExp preg(ZSYMBOLC(ttz)->get_string());
 
-                regex_t* PREG = new regex_t;
-// \@todo should REG_EXTENDED be used?
-#ifdef WIN_VER
-                if (!(err_code=regcomp(PREG, ZSYMBOLC(ttz)->get_string(), REG_ICASE | REG_EXTENDED)))
-#else
-                if (!(err_code=regcomp(PREG, ZSYMBOLC(ttz)->get_string(), REG_PERL)))
-#endif
+                if (preg.ok())
                 {
-                    assert(PREG != NULL);
                     DSS->push(match_regexp_(DSS->pop(),
-                                            PREG, SE));
+                                            preg, SE));
 
-                    regfree(PREG);
-                    delete PREG;
                 }
                 else
                 {
-                    /* @todo should I free PREG if regcomp fails? */
                     DSS->pop();
                     DSS->push(NULL_ZVALUE);
 
-                    char buf[100]="";
-                    regerror(err_code, PREG, buf, 90);
-                    std::cerr << "ERROR: [" << ZSYMBOLC(ttz)->get_string() << "] " << err_code << ' ' << buf << std::endl;
+                    std::cerr << "ERROR: [" << ZSYMBOLC(ttz)->get_string() << "] " << preg.error() << std::endl;
                 }
             }
-#endif // TRANSFERER_NO_REGEXPS
         }
         else
         {
@@ -1440,20 +1424,29 @@ zvalue Transferer::integer_wanted_(zvalue z)
     return NULL_ZVALUE;
 }
 
-
-#ifndef TRANSFERER_NO_REGEXPS
 zvalue Transferer::match_regexp_(zvalue a,
-                                 regex_t* PREG,
+                                 PerlRegExp& preg,
                                  zenvironment* E)
 {
     a = symbol_wanted_(a);
 
     const char* s = (NULLP(a) ? "" : ZSYMBOLC(a)->get_string());
 
-    regmatch_t RM[10];
+    PerlStringPiece input(s);
 
-    if (regexec(PREG, s, 10, RM, 0) == 0)
-    {
+    int groupSize = preg.NumberOfCapturingGroups();
+    if (groupSize > 10)
+        groupSize = 10;
+
+    std::vector<Arg> argv(groupSize);
+    std::vector<Arg*> args(groupSize);
+    std::vector<PerlStringPiece> ws(groupSize);
+    for (int i = 0; i < groupSize; ++i) {
+        args[i] = &argv[i];
+        argv[i] = &ws[i];
+    }
+
+    if (PerlRegExp::PartialMatchN(input, preg, &(args[0]), groupSize)) {
         int i;
         char vn[2];
         vn[1] = '\0';
@@ -1461,20 +1454,15 @@ zvalue Transferer::match_regexp_(zvalue a,
 
         assert(E != NULL);
 
-        for (i = 0; i < 10; ++i)
+        for (i = 0; i < groupSize; ++i)
         {
-            vn[0] = char(i + '0');
-            if (RM[i].rm_eo != -1)
-            {
-                strncpy(t, s+RM[i].rm_so, RM[i].rm_eo-RM[i].rm_so);
-                t[RM[i].rm_eo-RM[i].rm_so] = '\0';
+            vn[0] = char(i + 1 + '0');
+            E->change(z_sym_fac->get_symbol(current_holder_, vn, false),
+                      z_sym_fac->get_symbol(current_holder_, ws[i].as_string().c_str(), false));
 
-                E->change(z_sym_fac->get_symbol(current_holder_, vn, false),
-                          z_sym_fac->get_symbol(current_holder_, t, false));
-            }
-            else
-                E->change(z_sym_fac->get_symbol(current_holder_, vn, false),
-                          NULL_ZVALUE);
+//            else
+//                E->change(z_sym_fac->get_symbol(current_holder_, vn, false),
+//                          NULL_ZVALUE);
         }
 
         delete [] t;
@@ -1484,7 +1472,6 @@ zvalue Transferer::match_regexp_(zvalue a,
 
     return INTEGER_TO_ZVALUE(0);
 }
-#endif
 
 // - - - - - -| BUILDIN procedures |- - - - - -
 

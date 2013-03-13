@@ -99,8 +99,12 @@ class PCREWrapper : private pcrecpp::RE {
             return ((pcrecpp::RE)(*this)).NumberOfCapturingGroups();
         }
 
+        const string& error() const {
+            return ((pcrecpp::RE)(*this)).error();
+        }
+
         bool ok() const {
-            return true;
+            return ((pcrecpp::RE)(*this)).error().empty();
         }
 
         const string& pattern() const {
