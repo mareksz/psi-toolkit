@@ -7,6 +7,9 @@
 #include <new>
 #include <string>
 
+#include <boost/any.hpp>
+
+
 typedef void* zvalue;
 
 #ifdef __LP64__
@@ -954,6 +957,12 @@ public:
     int segment_len;
 
 
+    /**
+     * The supporting edge of the root.
+     */
+    boost::any origin;
+
+
     void setCategory(zsymbol* a_category)
     {
         category = a_category;
@@ -985,6 +994,16 @@ public:
     {
         segment_beg = a_segment_beg;
         segment_len = a_segment_len;
+    }
+
+    void setOrigin(boost::any a_origin)
+    {
+        origin = a_origin;
+    }
+
+    boost::any getOrigin()
+    {
+        return origin;
     }
 
     int sortByOrder(zhash* a_srefs_hash);
