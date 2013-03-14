@@ -34,7 +34,7 @@
 34 0019 07    prędko       !pl,lexeme,morfologik,morfologik-tagset prędko+adv adv[33]
 35 0019 07    prędko       !pl,form,morfologik,morfologik-tagset prędko adv,degree=pos,negation=aff[34]
 36 0019 07    prędko       !pl,morfologik,morfologik-tagset,normalization prędko term[32]
-37 0019 07    prędko       gobio,parse                       adv[]
+37 0019 07    prędko       !pl,gobio,parse                   adv[34]
 38 0026 01    _            !pl,token             _           B
 39 0027 08    dogonił      !pl,token             dogonił     T
 40 0027 08    dogonił      !pl,lemma,morfologik,morfologik-tagset dogonić word[39]
@@ -92,14 +92,13 @@
 92 0019 35    prędko...aka !pl,gobio                         vp,Gender=m2,Number=sg,Aspect=perf,Person=ter,Tense=praet[52-85,34-88,35-88]
 93 0019 35    prędko...aka !pl,gobio                         vp,Gender=m3,Number=sg,Aspect=perf,Person=ter,Tense=praet[53-85,34-89,35-89]
 94 0010 44    Achill...aka !pl,gobio                         s,Gender=m1,Number=sg,Aspect=perf,Person=ter,Tense=praet[28-91]
-95 0000 54    Potężn...aka !pl,gobio                         s,Gender=m1,Number=sg,Aspect=perf,Person=ter,Tense=praet[29-91]
+95 0000 54    Potężn...aka !pl,gobio,parse                   s,Gender=m1,Number=sg,Aspect=perf,Person=ter,Tense=praet[29-91(!pl,gobio),30-37-]
 96 0010 44    Achill...aka !pl,gobio                         s,Gender=m2,Number=sg,Aspect=perf,Person=ter,Tense=praet[28-92]
 97 0000 54    Potężn...aka !pl,gobio                         s,Gender=m2,Number=sg,Aspect=perf,Person=ter,Tense=praet[29-92]
 98 0010 44    Achill...aka !pl,gobio                         s,Gender=m3,Number=sg,Aspect=perf,Person=ter,Tense=praet[28-93]
 99 0000 54    Potężn...aka !pl,gobio                         s,Gender=m3,Number=sg,Aspect=perf,Person=ter,Tense=praet[29-93]
 100 0036 18   ospałe...aka gobio,parse                       np,Case=acc,Gender=m2,Number=sg[74]
-101 0000 54   Potężn...aka gobio,parse                       s,Gender=m1,Number=sg,Aspect=perf,Person=ter,Tense=praet[30-37-100]
-102 0000 55   Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. frag,txt-reader Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. FRAG[]
-103 0000 55   Potężn...ka. !pl,lang-guesser,text Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. TEXT[102]
-104 0054 01   .            !pl,token             .           I
-105 0054 01   .            gobio,parse                       i[]
+101 0000 55   Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. frag,txt-reader Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. FRAG[]
+102 0000 55   Potężn...ka. !pl,lang-guesser,text Potężny_Achilles_prędko_dogonił_ospałego_ślimaka. TEXT[101]
+103 0054 01   .            !pl,token             .           I
+104 0054 01   .            !pl,gobio,parse                   i[103]
