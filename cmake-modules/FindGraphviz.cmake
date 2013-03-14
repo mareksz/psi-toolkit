@@ -4,6 +4,7 @@
 #  GRAPHVIZ_FOUND - system has Graphviz
 #  GRAPHVIZ_INCLUDE_DIRS - the include directories for Graphviz headers
 #  GRAPHVIZ_LIBRARIES - link these to use Graphviz
+#  GRAPHVIZ_VERSION - version of the Graphviz package
 
 if (GRAPHVIZ_LIBRARIES)
    # in cache already
@@ -13,6 +14,8 @@ endif (GRAPHVIZ_LIBRARIES)
 find_package(PkgConfig)
 
 pkg_check_modules(GRAPHVIZ_PKG libgvc)
+
+set(GRAPHVIZ_VERSION ${GRAPHVIZ_PKG_VERSION})
 
 # Paths
 

@@ -7,6 +7,7 @@
 #cmakedefine01 HAVE_PERL_BINDINGS
 #cmakedefine01 HAVE_CMPH
 #cmakedefine01 HAVE_GRAPHVIZ
+#cmakedefine01 GRAPHVIZ_VERSION_2_30
 #cmakedefine01 HAVE_POPPLER
 #cmakedefine01 HAVE_DJVULIBRE
 #cmakedefine01 USE_DOC_READER
