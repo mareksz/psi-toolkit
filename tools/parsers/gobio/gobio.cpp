@@ -192,11 +192,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             combinator,
             local_rules,
             spec,
-            is_main
-#if PRINTRULES
-            , true
-#endif //PRINTRULES
-        );
+            is_main);
 
     zsymbol * zcat = sym_fac_->get_symbol(
         combinator.get_master().string_representation(tb->root()).c_str());
