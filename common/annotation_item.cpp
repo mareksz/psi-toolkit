@@ -6,6 +6,10 @@ bool AnnotationItem::operator==(const AnnotationItem& other) const {
         && areAttributesTheSame_(other);
 }
 
+bool AnnotationItem::operator!=(const AnnotationItem& other) const {
+    return !operator==(other);
+}
+
 std::string AnnotationItem::getCategory() const {
     return category_;
 }
