@@ -10,6 +10,8 @@
 #include "bi_language_dependent_annotator_factory.hpp"
 #include "its_data.hpp"
 
+#include "edge2zsyntree.hpp"
+
 TransfererRunner::TransfererRunner(const boost::program_options::variables_map& options) {
     std::string lang = options["lang"].as<std::string>();
     langCode_ = lang;
@@ -100,9 +102,11 @@ std::list<std::string> TransfererRunner::tagsToOperateOn() {
 }
 
 void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
-    std::string edgeText = lattice.getAnnotationText(edge);
+    std::cerr << "PROCESSING:";
 
-    std::cerr << "PROCESSING:" << edgeText << std::endl;
+    zsyntree* tree = convertEdgeToZsyntree(lattice, edge);
+
+    std::cerr << "  GOT:" << tree->zsyntree_to_string() << std::endl;
 }
 
 void TransfererRunner::createTags_(const std::string& trg_lang) {
