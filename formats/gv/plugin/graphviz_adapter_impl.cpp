@@ -110,10 +110,11 @@ void GraphvizAdapterImpl::setNodeStyle(int node, std::string style) {
 }
 
 
-int GraphvizAdapterImpl::addEdge(int source, int target, std::string name) {
 #if GRAPHVIZ_CGRAPH
+int GraphvizAdapterImpl::addEdge(int source, int target, std::string name) {
     Agedge_t * e = agedge(g_, nodes_[source], nodes_[target], (char*)(name.c_str()), 0);
 #else
+int GraphvizAdapterImpl::addEdge(int source, int target, std::string /* name */) {
     Agedge_t * e = agedge(g_, nodes_[source], nodes_[target]);
 #endif
     assert(e);
