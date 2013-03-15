@@ -1,6 +1,9 @@
 #include "graphviz_adapter_impl.hpp"
 
 
+#include <cassert>
+
+
 GraphvizAdapterImpl::GraphvizAdapterImpl() :
     gvc_(NULL),
     g_(NULL),
@@ -48,6 +51,7 @@ void GraphvizAdapterImpl::init_context_() {
 
 void GraphvizAdapterImpl::init_graph_() {
     g_ = agopen((char*)"g", AGDIGRAPH);
+    assert(g_);
 }
 
 
@@ -74,6 +78,7 @@ void GraphvizAdapterImpl::setRankDir(std::string dir) {
 
 int GraphvizAdapterImpl::addNode(std::string id) {
     Agnode_t * n = agnode(g_, (char*)(id.c_str()));
+    assert(n);
     ++nCount_;
     nodes_.insert(std::pair<int, Agnode_t*>(nCount_, n));
     return nCount_;
@@ -97,6 +102,7 @@ void GraphvizAdapterImpl::setNodeStyle(int node, std::string style) {
 
 int GraphvizAdapterImpl::addEdge(int source, int target) {
     Agedge_t * e = agedge(g_, nodes_[source], nodes_[target]);
+    assert(e);
     ++eCount_;
     edges_.insert(std::pair<int, Agedge_t*>(eCount_, e));
     return eCount_;
