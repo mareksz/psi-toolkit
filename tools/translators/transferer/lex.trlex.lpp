@@ -50,9 +50,9 @@ using namespace trlex;
 %option noyywrap
 %option yylineno
 
-PLUPPER ([A-Z]|Ą|Ć|Ę|Ł|Ó|Ś|Ź|Ż)
-PLLOWER ([a-z]|ą|ć|ę|ł|ó|ś|ź|ż)
-PLLETTER ([a-zA-Z]|ą|ć|ę|ł|ó|ś|ź|ż|Ą|Ć|Ę|Ł|Ó|Ś|Ź|Ż)
+PLUPPER ([A-Z]|Ą|Ć|Ę|Ł|Ń|Ó|Ś|Ź|Ż)
+PLLOWER ([a-z]|ą|ć|ę|ł|ń|ó|ś|ź|ż)
+PLLETTER ([a-zA-Z]|ą|ć|ę|ł|ń|ó|ś|ź|ż|Ą|Ć|Ę|Ł|Ń|Ó|Ś|Ź|Ż)
 
 
 %%
