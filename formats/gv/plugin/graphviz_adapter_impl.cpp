@@ -1,6 +1,8 @@
 #include "graphviz_adapter_impl.hpp"
 
 
+#include <cassert>
+
 #include "config.hpp"
 
 
@@ -55,6 +57,7 @@ void GraphvizAdapterImpl::init_graph_() {
 #else
     g_ = agopen((char*)"g", AGDIGRAPH);
 #endif
+    assert(g_);
 }
 
 
@@ -85,6 +88,7 @@ int GraphvizAdapterImpl::addNode(std::string id) {
 #else
     Agnode_t * n = agnode(g_, (char*)(id.c_str()));
 #endif
+    assert(n);
     ++nCount_;
     nodes_.insert(std::pair<int, Agnode_t*>(nCount_, n));
     return nCount_;
@@ -112,6 +116,7 @@ int GraphvizAdapterImpl::addEdge(int source, int target, std::string name) {
 #else
     Agedge_t * e = agedge(g_, nodes_[source], nodes_[target]);
 #endif
+    assert(e);
     ++eCount_;
     edges_.insert(std::pair<int, Agedge_t*>(eCount_, e));
     return eCount_;
