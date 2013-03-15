@@ -14,11 +14,13 @@
 #include "nkjp_lattice_reader.hpp"
 #include "tp_tokenizer.hpp"
 #include "srx_segmenter.hpp"
+#include "best_path_annotator.hpp"
 #include "lemmatizer_annotator.hpp"
 #include "lang_guesser.hpp"
 #include "gobio.hpp"
 #include "puddle.hpp"
 #include "unumsunt.hpp"
+#include "transferer_runner.hpp"
 
 #if HAVE_GRAPHVIZ
 #include "gv_lattice_writer.hpp"
@@ -183,6 +185,8 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 #endif
 
     keeper_.takeProcessorFactory(new poleng::bonsai::puddle::Puddle::Factory());
+
+    keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
 
 #if HAVE_CMPH
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());

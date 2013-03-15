@@ -15,6 +15,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_library(tools-translators-transferer SHARED
     numconversion.cpp
     transferer.cpp
+    transferer_runner.cpp
     trules.cpp
     test_results_recorder.cpp
     tscript_from_file.cpp
