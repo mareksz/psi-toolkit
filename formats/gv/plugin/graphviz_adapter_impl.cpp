@@ -1,6 +1,9 @@
 #include "graphviz_adapter_impl.hpp"
 
 
+#include "config.hpp"
+
+
 GraphvizAdapterImpl::GraphvizAdapterImpl() :
     gvc_(NULL),
     g_(NULL),
@@ -47,7 +50,11 @@ void GraphvizAdapterImpl::init_context_() {
 
 
 void GraphvizAdapterImpl::init_graph_() {
+#if GRAPHVIZ_CGRAPH
+    g_ = agopen((char*)"g", Agdirected, 0);
+#else
     g_ = agopen((char*)"g", AGDIGRAPH);
+#endif
 }
 
 
@@ -73,7 +80,11 @@ void GraphvizAdapterImpl::setRankDir(std::string dir) {
 
 
 int GraphvizAdapterImpl::addNode(std::string id) {
+#if GRAPHVIZ_CGRAPH
+    Agnode_t * n = agnode(g_, (char*)(id.c_str()), 0);
+#else
     Agnode_t * n = agnode(g_, (char*)(id.c_str()));
+#endif
     ++nCount_;
     nodes_.insert(std::pair<int, Agnode_t*>(nCount_, n));
     return nCount_;
@@ -95,8 +106,12 @@ void GraphvizAdapterImpl::setNodeStyle(int node, std::string style) {
 }
 
 
-int GraphvizAdapterImpl::addEdge(int source, int target) {
+int GraphvizAdapterImpl::addEdge(int source, int target, std::string name) {
+#if GRAPHVIZ_CGRAPH
+    Agedge_t * e = agedge(g_, nodes_[source], nodes_[target], (char*)(name.c_str()), 0);
+#else
     Agedge_t * e = agedge(g_, nodes_[source], nodes_[target]);
+#endif
     ++eCount_;
     edges_.insert(std::pair<int, Agedge_t*>(eCount_, e));
     return eCount_;
