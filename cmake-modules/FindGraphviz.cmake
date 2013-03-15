@@ -44,7 +44,7 @@ if (NOT GRAPHVIZ_GVC_LIBRARY)
 endif (NOT GRAPHVIZ_GVC_LIBRARY)
 
 find_library(GRAPHVIZ_GRAPH_LIBRARY
-    NAMES cgraph graph
+    NAMES graph cgraph
     HINTS ${GRAPHVIZ_PKG_LIBRARY_DIRS}
     PATHS /usr/lib /usr/local/lib
 )
