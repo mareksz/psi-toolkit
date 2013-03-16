@@ -9,6 +9,7 @@
 
 #include <boost/foreach.hpp>
 
+#include "string_vector.hpp"
 #include "key_value_store.hpp"
 #include "canonical_huffman.hpp"
 
@@ -63,6 +64,8 @@ class Dictionary
 {
   public:
     Dictionary(bool has_pos = false, bool has_morpho = false);
+    ~Dictionary();
+    
     DictionaryItem look_up(std::string);
     
     void read_dictionary(std::string);
@@ -76,14 +79,27 @@ class Dictionary
     bool has_pos() { return m_has_pos; }
     bool has_morpho() { return m_has_morpho; }
     
+    size_t is_empty() { return !m_store; }
+    
   private:
     
+    typedef boost::unordered_map<std::string, unsigned> IdMap;
+    
+    unsigned get_or_add_id(IdMap&, std::string&);
+    void map_to_stringvector(IdMap&, StringVector<>&);
     Interpretations decompress_interpretations(std::string);
     
     bool m_has_pos;
     bool m_has_morpho;
     
-    CanonicalHuffman<char>* m_huffman;
+    CanonicalHuffman<unsigned>* m_lemma_tree;
+    CanonicalHuffman<unsigned>* m_pos_tree;
+    CanonicalHuffman<unsigned>* m_morpho_tree;
+    
+    StringVector<> m_lemmas;
+    StringVector<> m_pos;
+    StringVector<> m_morphos;
+    
     KeyValueStore* m_store;
 };
 

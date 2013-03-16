@@ -45,9 +45,12 @@ public:
 
 private:
     Dictionary m_dict;
+    std::string langCode_;
     
     std::vector<std::pair<std::string, std::string> >
-    morpho_to_features(std::vector<std::string> &); 
+    morpho_to_features(std::vector<std::string> &);
+    
+    static const std::string DEFAULT_LAMERLEMMA_SPEC;
 };
 
 #endif
