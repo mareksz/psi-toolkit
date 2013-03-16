@@ -1,11 +1,14 @@
-#ifndef DFSA_HDR
-#define DFSA_HDR
+#ifndef FSA_DFSA_HDR
+#define FSA_DFSA_HDR
 
-#include "NDFSA.hpp"
+#include <boost/optional.hpp>
+
+#include "fsa_ndfsa.hpp"
 
 namespace psi {
-
-    template <typename ArcT = ArcWeighted<Symbol, State, Weight> >
+  namespace fsa {
+    
+    template <typename ArcT = Arc<Symbol, State> >
     class DFSA : public NDFSA<ArcT> {
       protected:
         typedef typename NDFSA<ArcT>::Arcs Arcs;
@@ -45,9 +48,9 @@ Checks whether given sequence of labels belongs to the language of the automaton
         bool in(InputIterator it, InputIterator end) {
             state_type current_state = 0;
             while (it != end) {
-                state_type next_state = delta(current_state, *it);
-                if (next_state != state_type(-1))
-                    current_state = next_state;
+                boost::optional<state_type> next_state = delta(current_state, *it);
+                if (next_state)
+                    current_state = next_state.get();
                 else
                     return false;
                 it++;
@@ -61,18 +64,21 @@ Checks whether given sequence of labels belongs to the language of the automaton
     state_type delta(state_type p, symbol_type a) const;
     
 *******************************************************************************/
-        state_type delta(state_type p, symbol_type a) const {
+        boost::optional<state_type> delta(state_type p, symbol_type a) const {
             if (NDFSA<ArcT>::m_states.size() < (size_t)p)
-                return state_type(-1);
+                return boost::optional<state_type>();
 
+            //std::cerr << "Looking for: " << p << " " << (int)a << std::endl;
             arc_iterator_type arc = this->find(p, a);
             if (arc == NDFSA<ArcT>::m_states[p]->end())
-                return state_type(-1);
+                return boost::optional<state_type>();
             else
-                return arc->getDest();
+                return boost::optional<state_type>(arc->getDest());
         }
 
     };
+    
+  }
 }
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef MMAPALLOCATOR_H__
-#define MMAPALLOCATOR_H__
+#ifndef FSA_MMAP_ALLOCATOR_HDR
+#define FSA_MMAP_ALLOCATOR_HDR
 
 #include <limits>
 #include <iostream>
@@ -10,7 +10,8 @@
 #include <boost/shared_ptr.hpp>
 
 namespace psi {
-
+  namespace fsa {
+    
     template <class T>
     class MmapAllocator {
       protected:
@@ -184,7 +185,8 @@ namespace psi {
                      const MmapAllocator<T2>& a2) throw() {
         return !(a1 == a2);
     }
-
+    
+  }
 }
 
 #endif

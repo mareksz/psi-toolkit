@@ -1,5 +1,5 @@
-#ifndef HashFSA_HDR
-#define HashFSA_HDR
+#ifndef fsa_hash_fsa_HDR
+#define fsa_hash_fsa_HDR
 
 #include <vector>
 #include <iterator>
@@ -7,7 +7,7 @@
 #include <cassert>
 #include <algorithm>
 
-#include "FSATypes.hpp"
+#include "fsa_types.hpp"
 
 /*******************************************************************************
 # HashFSA
@@ -88,7 +88,8 @@ undefined and can (and will!) lead to errors.
 *******************************************************************************/
 
 namespace psi {
-
+  namespace fsa {
+    
   template <class FSA>
   class HashFSA {
     private:
@@ -374,7 +375,8 @@ or std::cout
     unhash(index, outIt);
     return output;
   }
-
+  
+  }
 }
 
 #endif

@@ -1,15 +1,15 @@
 #include <string>
 
 #include "tests.hpp"
-#include "NDFSA.hpp"
-#include "Algorithms.hpp"
-#include "QueryGrammars.hpp"
+#include "fsa_ndfsa.hpp"
+#include "fsa_algorithms.hpp"
+#include "fsa_query_grammers.hpp"
 
 BOOST_AUTO_TEST_SUITE( psi_query )
 
 BOOST_AUTO_TEST_CASE(parser_test)
 {
-    typedef psi::CharGrammar<std::string::const_iterator, psi::NDFSA<> > Grammar;
+    typedef psi::fsa::CharGrammar<std::string::const_iterator, psi::fsa::NDFSA<> > Grammar;
 
     std::string regex = "(będę|będziemy|będą) w ab+";
     std::string::const_iterator iter = regex.begin();
@@ -21,11 +21,11 @@ BOOST_AUTO_TEST_CASE(parser_test)
     std::string test4 = "będziemy bbbbbbbb";
 
     Grammar g;
-    psi::NDFSA<> a;
+    psi::fsa::NDFSA<> a;
 
     bool r = parse(iter, end, g, a);
     if (r && iter == end) {
-        psi::minimize(a);
+        psi::fsa::minimize(a);
 
         a.print();
 
