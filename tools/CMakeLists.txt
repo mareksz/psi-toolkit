@@ -39,6 +39,7 @@ set(tools_DIRS
     translators/bonsai/irstlm
     translators/bonsai/rules
     translators/bonsai/translator
+    translators/transferer
     CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE
 )
 

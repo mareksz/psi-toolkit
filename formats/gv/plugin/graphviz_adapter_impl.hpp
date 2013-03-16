@@ -44,7 +44,7 @@ public:
     virtual void setNodeColor(int node, std::string color);
     virtual void setNodeStyle(int node, std::string style);
 
-    virtual int addEdge(int source, int target);
+    virtual int addEdge(int source, int target, std::string name = std::string(""));
     virtual void setEdgeLabel(int node, std::string label);
     virtual void setEdgeColor(int node, std::string color);
     virtual void setEdgeStyle(int node, std::string style);

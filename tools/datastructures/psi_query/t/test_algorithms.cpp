@@ -1,35 +1,35 @@
 #include "tests.hpp"
-#include "DFSA.hpp"
-#include "Algorithms.hpp"
+#include "fsa_dfsa.hpp"
+#include "fsa_algorithms.hpp"
 
 BOOST_AUTO_TEST_CASE(algorithms_test)
 {
-    psi::DFSA<> fsa;
-    psi::State q0 = fsa.addState();
-    psi::State q1 = fsa.addState();
-    psi::State q2 = fsa.addState();
-    psi::State q3 = fsa.addState();
+    psi::fsa::DFSA<> fsa;
+    psi::fsa::State q0 = fsa.addState();
+    psi::fsa::State q1 = fsa.addState();
+    psi::fsa::State q2 = fsa.addState();
+    psi::fsa::State q3 = fsa.addState();
 
     fsa.setStartState(q0);
     fsa.setEndState(q3);
 
-    fsa.addArc(q0, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q0, psi::ArcWeighted<>('b', q1));
-    fsa.addArc(q0, psi::ArcWeighted<>('c', q1));
+    fsa.addArc(q0, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q0, psi::fsa::ArcWeighted<>('b', q1));
+    fsa.addArc(q0, psi::fsa::ArcWeighted<>('c', q1));
 
-    fsa.addArc(q1, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q1, psi::ArcWeighted<>('b', q2));
-    fsa.addArc(q1, psi::ArcWeighted<>('c', q3));
+    fsa.addArc(q1, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q1, psi::fsa::ArcWeighted<>('b', q2));
+    fsa.addArc(q1, psi::fsa::ArcWeighted<>('c', q3));
 
-    fsa.addArc(q2, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q2, psi::ArcWeighted<>('b', q3));
-    fsa.addArc(q2, psi::ArcWeighted<>('c', q3));
+    fsa.addArc(q2, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q2, psi::fsa::ArcWeighted<>('b', q3));
+    fsa.addArc(q2, psi::fsa::ArcWeighted<>('c', q3));
 
-    fsa.addArc(q3, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q3, psi::ArcWeighted<>('b', q3));
-    fsa.addArc(q3, psi::ArcWeighted<>('c', q3));
+    fsa.addArc(q3, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q3, psi::fsa::ArcWeighted<>('b', q3));
+    fsa.addArc(q3, psi::fsa::ArcWeighted<>('c', q3));
 
-    psi::Reverser<psi::DFSA<> > reverser(fsa); //Warning signed and unsigned
+    psi::fsa::Reverser<psi::fsa::DFSA<> > reverser(fsa); //Warning signed and unsigned
 
     //Check the size of sets////////////////////////////////////////////
     BOOST_CHECK_EQUAL(fsa.getEndStates().size(), reverser.startFn().size());
@@ -37,10 +37,10 @@ BOOST_AUTO_TEST_CASE(algorithms_test)
     ////////////////////////////////////////////////////////////////////
 
     //Checking reverser start-end states////////////////////////////////
-    std::set< psi::DFSA<>::state_type >::iterator reverserIt;
-    std::set< psi::DFSA<>::state_type >::iterator fsaIt;
+    std::set< psi::fsa::DFSA<>::state_type >::iterator reverserIt;
+    std::set< psi::fsa::DFSA<>::state_type >::iterator fsaIt;
 
-    std::set< psi::DFSA<>::state_type > startfn = reverser.startFn();
+    std::set< psi::fsa::DFSA<>::state_type > startfn = reverser.startFn();
     for (reverserIt = startfn.begin(); reverserIt != startfn.end(); ++reverserIt) {
         BOOST_CHECK_EQUAL(fsa.isEndState( *reverserIt ), true);
     }

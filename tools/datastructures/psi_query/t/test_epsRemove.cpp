@@ -1,7 +1,7 @@
 #include "tests.hpp"
 
-#include "NDFSA.hpp"
-#include "Algorithms.hpp"
+#include "fsa_ndfsa.hpp"
+#include "fsa_algorithms.hpp"
 
 BOOST_AUTO_TEST_SUITE( psi_query )
 
@@ -9,20 +9,20 @@ BOOST_AUTO_TEST_CASE(epsremove_test)
 {
     // create automaton for (a+b+)?
 
-    psi::NDFSA<> a(psi::Symbol('a'));
-    psi::NDFSA<> b(psi::Symbol('b'));
+    psi::fsa::NDFSA<> a(psi::fsa::Symbol('a'));
+    psi::fsa::NDFSA<> b(psi::fsa::Symbol('b'));
 
-    psi::kleene_plus(a);
-    psi::kleene_plus(b);
-    psi::concatenate(a, b);
-    psi::kleene_option(a);
+    psi::fsa::kleene_plus(a);
+    psi::fsa::kleene_plus(b);
+    psi::fsa::concatenate(a, b);
+    psi::fsa::kleene_option(a);
 
     // remove epsilon transitions
 
     a.print();
     std::cout << std::endl;
 
-    psi::epsRemove(a);
+    psi::fsa::epsRemove(a);
 
     a.print();
 

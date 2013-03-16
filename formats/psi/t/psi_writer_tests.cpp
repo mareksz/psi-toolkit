@@ -329,14 +329,14 @@ BOOST_AUTO_TEST_CASE( psi_lattice_roles ) {
         item,
         parseTag,
         builder.build());
-    
+
 
     boost::scoped_ptr<LatticeWriter<std::ostream> > writer(new PsiLatticeWriter(
         false // with header
     ));
 
     std::ostringstream osstr;
-    writer->writeLattice(lattice, osstr);   
+    writer->writeLattice(lattice, osstr);
 
     std::string line;
     std::string contents;

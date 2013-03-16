@@ -154,4 +154,3 @@ BOOST_AUTO_TEST_CASE( zvalue_conversion_number ) {
     ssnumber >> inumber3;
     BOOST_CHECK_EQUAL(inumber, inumber3);
 };
-

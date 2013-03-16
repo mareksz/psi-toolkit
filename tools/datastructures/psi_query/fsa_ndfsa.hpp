@@ -1,5 +1,5 @@
-#ifndef NDFSA_HDR
-#define NDFSA_HDR
+#ifndef FSA_NDFSA_HDR
+#define FSA_NDFSA_HDR
 
 #include <vector>
 #include <map>
@@ -8,12 +8,13 @@
 #include <iostream>
 #include <boost/foreach.hpp>
 
-#include "FSATypes.hpp"
-#include "MmapAllocator.hpp"
+#include "fsa_types.hpp"
+#include "fsa_mmap_allocator.hpp"
 
 namespace psi {
-
-    template <typename ArcT = ArcWeighted<Symbol, State, Weight> >
+  namespace fsa {
+    
+    template <typename ArcT = Arc<Symbol, State> >
     class NDFSA {
       protected:
         typedef std::vector<ArcT> Arcs;
@@ -144,6 +145,7 @@ The state identifier is returned.
 *******************************************************************************/
         state_type addState(bool = false);
 
+        void deleteLastState();
 /*******************************************************************************
 ## Get set of start states
 
@@ -334,8 +336,12 @@ pointers, iterators to states and transitions will be invalidated.
     NDFSA<ArcT>::find(typename ArcT::state_type p, typename ArcT::symbol_type a) const {
         ArcRange<arc_iterator_type> r = getArcs(p);
 
-        ArcT test(a, -1);
-        return std::lower_bound(r.first, r.second, test, ArcSorter());
+        ArcT test(a, 0);
+        arc_iterator_type result = std::lower_bound(r.first, r.second, test, ArcSorter());
+        
+        //std::cerr << "Arc find: " << (int)a << " " << std::distance(r.first, result) << std::endl;
+        //std::cerr << "Check: " << (result != r.second && a == result->getSymbol()) << std::endl;
+        return (result != r.second && a == result->getSymbol()) ? result : r.second;
     }
 
     template <typename ArcT>
@@ -364,6 +370,15 @@ pointers, iterators to states and transitions will be invalidated.
             m_startStates.insert(state_type(m_states.size()-1));
 
         return m_states.size()-1;
+    }
+    
+    template <typename ArcT>
+    void NDFSA<ArcT>::deleteLastState() {
+        State state = m_states.size() - 1;
+        delete m_states.back();
+        m_states.pop_back();
+        m_startStates.erase(state);
+        m_endStates.erase(state);
     }
 
     template <typename ArcT>
@@ -408,6 +423,7 @@ pointers, iterators to states and transitions will be invalidated.
 
     template <typename ArcT>
     void NDFSA<ArcT>::addArc(typename ArcT::state_type state, ArcT arc) {
+        //std::cerr << "Adding: " << state << " " << arc.getSymbol() << " " << arc.getDest() << std::endl;
         m_states[state]->push_back(arc);
         std::sort(m_states[state]->begin(), m_states[state]->end(), ArcSorter());
     }
@@ -438,7 +454,7 @@ pointers, iterators to states and transitions will be invalidated.
         for (size_t i = 0; i < m_states.size(); i++) {
             ArcRange<arc_iterator_type> r = getArcs(i);
             for (arc_iterator_type it = r.first; it != r.second; it++) {
-                std::cout << i << "\t" << it->getDest() << "\t" << (long)it->getSymbol()
+                std::cout << i << "\t" << it->getDest() << "\t" << (char)it->getSymbol()
                     << std::endl;
             }
             //if (isStartState(i)) {
@@ -483,7 +499,10 @@ pointers, iterators to states and transitions will be invalidated.
 
         return *this;
     }
-
+    
+    typedef NDFSA<Arc<unsigned char, unsigned> > StringFSA;
+    
+  }
 }
 
 #endif

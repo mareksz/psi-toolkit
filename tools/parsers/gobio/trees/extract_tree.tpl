@@ -129,7 +129,6 @@ boost::shared_ptr<tree_branch<T,Ch,typename K::equivalent_type> > extract_tree_b
     }
 
     typename Ch::edge_descriptor r_edge = edge;
-    typename Ch::partition_iterator r_pit = pit;
 
     std::stack< extract_tree_branch_with_spec_stack_element<T, Ch> > r_stack;
 

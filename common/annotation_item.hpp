@@ -59,6 +59,7 @@ public:
     long getHash() const;
 
     bool operator==(const AnnotationItem& other) const;
+    bool operator!=(const AnnotationItem& other) const;
 
     friend class AnnotationItemManager;
 

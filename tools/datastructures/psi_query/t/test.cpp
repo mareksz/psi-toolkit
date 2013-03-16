@@ -1,33 +1,33 @@
 #include "tests.hpp"
 
-#include "DFSA.hpp"
-#include "Algorithms.hpp"
+#include "fsa_dfsa.hpp"
+#include "fsa_algorithms.hpp"
 
 BOOST_AUTO_TEST_SUITE( psi_query )
 
 BOOST_AUTO_TEST_CASE(DFSA_test)
 {
-    psi::DFSA<> fsa;
-    psi::State q0 = fsa.addState();
-    psi::State q1 = fsa.addState();
-    psi::State q2 = fsa.addState();
-    psi::State q3 = fsa.addState();
+    psi::fsa::DFSA<> fsa;
+    psi::fsa::State q0 = fsa.addState();
+    psi::fsa::State q1 = fsa.addState();
+    psi::fsa::State q2 = fsa.addState();
+    psi::fsa::State q3 = fsa.addState();
 
-    fsa.addArc(q0, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q0, psi::ArcWeighted<>('b', q1));
-    fsa.addArc(q0, psi::ArcWeighted<>('c', q1));
+    fsa.addArc(q0, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q0, psi::fsa::ArcWeighted<>('b', q1));
+    fsa.addArc(q0, psi::fsa::ArcWeighted<>('c', q1));
 
-    fsa.addArc(q1, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q1, psi::ArcWeighted<>('b', q2));
-    fsa.addArc(q1, psi::ArcWeighted<>('c', q3));
+    fsa.addArc(q1, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q1, psi::fsa::ArcWeighted<>('b', q2));
+    fsa.addArc(q1, psi::fsa::ArcWeighted<>('c', q3));
 
-    fsa.addArc(q2, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q2, psi::ArcWeighted<>('b', q3));
-    fsa.addArc(q2, psi::ArcWeighted<>('c', q3));
+    fsa.addArc(q2, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q2, psi::fsa::ArcWeighted<>('b', q3));
+    fsa.addArc(q2, psi::fsa::ArcWeighted<>('c', q3));
 
-    fsa.addArc(q3, psi::ArcWeighted<>('a', q1));
-    fsa.addArc(q3, psi::ArcWeighted<>('b', q3));
-    fsa.addArc(q3, psi::ArcWeighted<>('c', q3));
+    fsa.addArc(q3, psi::fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q3, psi::fsa::ArcWeighted<>('b', q3));
+    fsa.addArc(q3, psi::fsa::ArcWeighted<>('c', q3));
 
 
     fsa.setStartState(q0);
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(DFSA_test)
     BOOST_CHECK_EQUAL(fsa.in(test2.begin(), test2.end()), 0);
     BOOST_CHECK_EQUAL(fsa.in(test3.begin(), test3.end()), 1);
     BOOST_CHECK_EQUAL(fsa.in(test4.begin(), test4.end()), 1);
-    psi::reverse(fsa);
+    psi::fsa::reverse(fsa);
 
     BOOST_CHECK_EQUAL(fsa.in(test1.begin(), test1.end()), 0);
     BOOST_CHECK_EQUAL(fsa.in(test2.begin(), test2.end()), 0);

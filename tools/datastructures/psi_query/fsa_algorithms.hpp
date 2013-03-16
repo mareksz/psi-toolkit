@@ -5,8 +5,10 @@
 #include <vector>
 #include <set>
 #include <boost/foreach.hpp>
+#include <boost/optional.hpp>
+#include <boost/unordered_set.hpp>
 
-#include "FSATypes.hpp"
+#include "fsa_types.hpp"
 
 /*******************************************************************************
 # Algorithms
@@ -51,7 +53,8 @@ Creating an automaton that accepts the following regular expression: `(a|b|c)+aa
 *******************************************************************************/
 
 namespace psi {
-
+  namespace fsa {
+    
 /*******************************************************************************
 ## Traverse
 
@@ -216,7 +219,8 @@ The public members and types of this wrapper object are common for all wrappers.
         typedef std::pair<typename FSA1::state_type, typename FSA2::state_type> state_type;
         typedef Arc<typename FSA1::arc_type::symbol_type, state_type> arc_type;
 
-        Intersector(const FSA1 &fsa1, const FSA2 &fsa2) : m_fsa1(fsa1), m_fsa2(fsa2) {}
+        Intersector(const FSA1 &fsa1, const FSA2 &fsa2, bool allowAny = false)
+          : m_fsa1(fsa1), m_fsa2(fsa2), m_allowAny(allowAny) {}
 
         std::set<state_type> startFn() const {
             std::set<state_type> starts;
@@ -233,30 +237,54 @@ The public members and types of this wrapper object are common for all wrappers.
 
         std::set<arc_type, ArcSorter> arcFn(state_type p) const {
             std::set<arc_type, ArcSorter> arcs;
-
-            ArcRange<typename FSA1::arc_iterator_type> arcRange1 = m_fsa1.getArcs(p.first);
-            ArcRange<typename FSA2::arc_iterator_type> arcRange2 = m_fsa2.getArcs(p.second);
-
-            for (typename FSA1::arc_iterator_type ait1 = arcRange1.first;
-                ait1 != arcRange1.second;
-                ait1++)
-                for (typename FSA2::arc_iterator_type ait2 = arcRange2.first;
-                    ait2 != arcRange2.second;
-                    ait2++)
-                    if (ait1->getSymbol() == ait2->getSymbol())
-                       arcs.insert(
-                           arc_type(
-                               ait1->getSymbol(),
-                               state_type(ait1->getDest(), ait2->getDest())
-                           )
-                       );
-
+            
+            BOOST_FOREACH(typename FSA1::state_type p1, m_fsa1.epsClosure(p.first)) {
+                BOOST_FOREACH(typename FSA2::state_type p2, m_fsa2.epsClosure(p.second)) {
+                    ArcRange<typename FSA1::arc_iterator_type> arcRange1 = m_fsa1.getArcs(p1);
+                    ArcRange<typename FSA2::arc_iterator_type> arcRange2 = m_fsa2.getArcs(p2);
+        
+                    for (typename FSA1::arc_iterator_type ait1 = arcRange1.first;
+                        ait1 != arcRange1.second; ait1++) {
+                        for (typename FSA2::arc_iterator_type ait2 = arcRange2.first;
+                            ait2 != arcRange2.second; ait2++) {
+                            if (ait1->getSymbol() == ait2->getSymbol()) {
+                               arcs.insert(
+                                   arc_type(
+                                       ait1->getSymbol(),
+                                       state_type(ait1->getDest(), ait2->getDest())
+                                   )
+                               );
+                            }
+                            
+                            if(m_allowAny) {
+                                if (ait1->getSymbol() == ANY) {
+                                    arcs.insert(
+                                        arc_type(
+                                            ait2->getSymbol(),
+                                            state_type(ait1->getDest(), ait2->getDest())
+                                        )
+                                    );
+                                }
+                                else if (ait2->getSymbol() == ANY) {
+                                    arcs.insert(
+                                        arc_type(
+                                            ait1->getSymbol(),
+                                            state_type(ait1->getDest(), ait2->getDest())
+                                        )
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return arcs;
         }
 
       private:
         const FSA1 &m_fsa1;
         const FSA2 &m_fsa2;
+        bool m_allowAny;
     };
 
 /*******************************************************************************
@@ -390,7 +418,8 @@ Keeps only reachable states.
     template <typename FSA>
     void reachable(FSA &fsa) {
         FSA temp;
-        traverse(Copier<FSA>(fsa), temp);
+        Copier<FSA> copier(fsa);
+        traverse(copier, temp);
         fsa.swap(temp);
     }
 
@@ -488,9 +517,9 @@ the first argument.
 
 *******************************************************************************/
     template <typename FSA1, typename FSA2>
-    void intersect(FSA1 &dst, FSA2 &src) {
+    void intersect(FSA1 &dst, FSA2 &src, bool allowAny = false) {
         FSA1 temp;
-        Intersector<FSA1, FSA2> intersector(dst, src);
+        Intersector<FSA1, FSA2> intersector(dst, src, allowAny);
         traverse(intersector, temp);
         dst.swap(temp);
     }
@@ -595,6 +624,209 @@ automaton with epsilon transtions.
         kleene_option(fsa);
         kleene_plus(fsa);
     }
+    
+/*******************************************************************************
+## Add incremental
+
+    template <typename DFSA,
+        template <typename> class Collection,
+        typename Word>
+    void add_incremental(DFSA &dst, Collection<Word> &words)
+
+Create inrementally minimal DFSA from collection of words. Implementation of
+Jan Daciuk's algorithm.
+
+*******************************************************************************/
+    
+    template <typename DFSA> class Register;
+    
+    template <typename DFSA, typename Iterator>
+    void minimize_incremental(DFSA &dst, Iterator current, Iterator end) {
+        typedef typename DFSA::state_type State;
+        typedef typename DFSA::symbol_type Symbol;
+        typedef typename DFSA::arc_type Arc;
+        typedef typename DFSA::arc_iterator_type ArcIt;
+        
+        typedef typename boost::optional<State> OptState;
+        
+        DFSA fsa;
+        State q0 = fsa.addState(1);
+        
+        Register<DFSA> state_register(fsa);
+        
+        while(current != end) {            
+            typename Iterator::value_type::const_iterator
+                curr_symbol_it = current->begin();
+                
+            OptState curr_state(q0), next_state;
+            while(curr_symbol_it != current->end() &&
+                  (next_state = fsa.delta(curr_state.get(), *curr_symbol_it))) {
+                //std::cerr << "curr symbol: " << (int)*curr_symbol_it << std::endl;
+                curr_state = next_state;
+                curr_symbol_it++;
+            }
+            
+            State last_state = curr_state.get();
+            ArcRange<ArcIt> range = fsa.getArcs(last_state);
+            if(range.first != range.second)
+                replace_or_register(fsa, state_register, last_state);
+            
+            while(curr_symbol_it != current->end()) {
+                State dst_state = fsa.addState();
+                fsa.addArc(last_state, Arc(*curr_symbol_it, dst_state));
+                last_state = dst_state;
+                curr_symbol_it++;
+            }
+            fsa.setEndState(last_state);
+            current++;
+        }
+        replace_or_register(fsa, state_register, q0);
+        dst.swap(fsa);
+    }
+    
+    template <typename DFSA, typename Register>
+    void replace_or_register(DFSA &fsa,
+                             Register &state_register,
+                             typename DFSA::state_type state) {
+        
+        typedef typename DFSA::state_type State;
+        typedef typename DFSA::symbol_type Symbol;
+        typedef typename DFSA::arc_type Arc;
+        typedef typename DFSA::arc_iterator_type ArcIt;
+        
+        //std::cerr << "replace or register: " << state << std::endl;
+        
+        ArcIt last_arc = fsa.getArcs(state).second-1; 
+        State last_child = last_arc->getDest();
+        ArcRange<ArcIt> range = fsa.getArcs(last_child);
+        if(range.first != range.second)
+            replace_or_register(fsa, state_register, last_child);
+        
+        //std::cerr << "Checking: " << last_child << std::endl;
+        //std::cerr << "Size: " << state_register.size() << std::endl;
+        typename Register::iterator q = state_register.find(last_child);
+        if(q != state_register.end()) {
+            //std::cerr << "Found: " << *q << std::endl;
+            const_cast<Arc&>(*last_arc).setDest(*q);
+            fsa.deleteLastState();
+        }
+        else
+            state_register.insert(last_child);
+    }
+    
+    template <typename DFSA>
+    class StateHash : std::unary_function<typename DFSA::state_type, size_t>
+    {
+      public:
+        StateHash(DFSA &fsa)
+          : fsa_(fsa)
+        { }
+
+        size_t operator()(typename DFSA::state_type const& s) const {
+            std::size_t seed = 0;
+        
+            boost::hash_combine(seed, fsa_.isEndState(s));
+            ArcRange<typename DFSA::arc_iterator_type> range = fsa_.getArcs(s);
+            while(range.first != range.second) {
+                boost::hash_combine(seed, range.first->getSymbol());
+                boost::hash_combine(seed, range.first->getDest());
+                range.first++;
+            }
+        
+            return seed;
+        }
+    
+      private:
+        DFSA& fsa_; 
+        
+    };
+    
+    template <typename DFSA>
+    class StateEquiv : std::binary_function<typename DFSA::state_type,
+                                             typename DFSA::state_type, bool>
+    {  
+      public:
+        
+        StateEquiv(DFSA &fsa)
+          : fsa_(fsa)
+        { }
+
+        bool operator()(typename DFSA::state_type const& s1,
+                   typename DFSA::state_type const& s2) const {
+             
+            //std::cerr << "Comparing " << s1 << " " << s2 << std::endl;
+            bool es1 = fsa_.isEndState(s1);
+            bool es2 = fsa_.isEndState(s2);
+            //std::cerr << "End states: " << es1 << " " << es2 << std::endl;
+            if(es1 != es2) {
+                //std::cerr << "Return " << false << std::endl;
+                return false;
+            }
+            
+            ArcRange<typename DFSA::arc_iterator_type>
+            range1 = fsa_.getArcs(s1);
+            
+            ArcRange<typename DFSA::arc_iterator_type>
+            range2 = fsa_.getArcs(s2);
+            
+            ArcSorter arc_cmp;
+            bool result1 = std::lexicographical_compare(range1.first, range1.second,
+                range2.first, range2.second, arc_cmp);
+            bool result2 = std::lexicographical_compare(range2.first, range2.second,
+                range1.first, range1.second, arc_cmp);
+            
+            //std::cerr << "Less: " << result1 << " " << result2 << std::endl;
+            bool result = (!result1 && !result2);
+            //std::cerr << "Return " << result << std::endl;
+            return result;
+        }
+    
+      private:
+        DFSA& fsa_;   
+    };
+    
+    template <typename DFSA>
+    class Register : public boost::unordered_set<typename DFSA::state_type,
+            StateHash<DFSA>, StateEquiv<DFSA> >
+    {
+      private:
+        DFSA &fsa_;
+        
+      public:
+        Register(DFSA &fsa) : fsa_(fsa),
+          boost::unordered_set<typename DFSA::state_type,
+          StateHash<DFSA>, StateEquiv<DFSA> >(100, StateHash<DFSA>(fsa),
+          StateEquiv<DFSA>(fsa)) { }
+    };
+    
+    
+    template <typename FSA, typename Iterator>
+    void language_rec(FSA &fsa, typename FSA::state_type state,
+                      typename Iterator::container_type::value_type word,
+                      Iterator it, size_t maxDepth) {
+        if(word.size() > maxDepth)
+            return;
+        
+        if(fsa.isEndState(state))
+            *it = word;
+        
+        ArcRange<typename FSA::arc_iterator_type> r = fsa.getArcs(state);
+        while(r.first != r.second) {
+            typename Iterator::container_type::value_type temp_word = word;
+            temp_word.push_back(r.first->getSymbol());
+            language_rec(fsa, r.first->getDest(), temp_word, it, maxDepth);
+            r.first++;
+        }
+    }
+    
+    template <typename FSA, typename Iterator>
+    void language(FSA &fsa, Iterator it, size_t maxDepth = 10000) {
+        typename Iterator::container_type::value_type word;
+        BOOST_FOREACH(typename FSA::state_type state, fsa.getStartStates())
+            language_rec(fsa, state, word, it, maxDepth);    
+    }
+    
+  }
 }
 
 #endif

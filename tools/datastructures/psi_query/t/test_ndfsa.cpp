@@ -1,9 +1,9 @@
 #include "tests/tests.hpp"
-#include "NDFSA.hpp"
-#include "Algorithms.hpp"
+#include "fsa_ndfsa.hpp"
+#include "fsa_algorithms.hpp"
 
 struct Tescik {
-    psi::NDFSA<> ndfsa;
+    psi::fsa::NDFSA<> ndfsa;
 
     int poprawneSize;
     std::string* poprawne;
@@ -28,22 +28,22 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
     //Automat powinien akceptowac język w postaci:
     //{a + b}* b {a + b} b {a + b}*
     Tescik a(8, 7);
-    psi::State q0 = a.ndfsa.addState();
-    psi::State q1 = a.ndfsa.addState();
-    psi::State q2 = a.ndfsa.addState();
-    psi::State q3 = a.ndfsa.addState();
+    psi::fsa::State q0 = a.ndfsa.addState();
+    psi::fsa::State q1 = a.ndfsa.addState();
+    psi::fsa::State q2 = a.ndfsa.addState();
+    psi::fsa::State q3 = a.ndfsa.addState();
 
-    a.ndfsa.addArc(q0, psi::ArcWeighted<>('a', q0));
-    a.ndfsa.addArc(q0, psi::ArcWeighted<>('b', q0));
-    a.ndfsa.addArc(q0, psi::ArcWeighted<>('b', q1));
+    a.ndfsa.addArc(q0, psi::fsa::ArcWeighted<>('a', q0));
+    a.ndfsa.addArc(q0, psi::fsa::ArcWeighted<>('b', q0));
+    a.ndfsa.addArc(q0, psi::fsa::ArcWeighted<>('b', q1));
 
-    a.ndfsa.addArc(q1, psi::ArcWeighted<>('a', q2));
-    a.ndfsa.addArc(q1, psi::ArcWeighted<>('b', q2));
+    a.ndfsa.addArc(q1, psi::fsa::ArcWeighted<>('a', q2));
+    a.ndfsa.addArc(q1, psi::fsa::ArcWeighted<>('b', q2));
 
-    a.ndfsa.addArc(q2, psi::ArcWeighted<>('b', q3));
+    a.ndfsa.addArc(q2, psi::fsa::ArcWeighted<>('b', q3));
 
-    a.ndfsa.addArc(q3, psi::ArcWeighted<>('a', q3));
-    a.ndfsa.addArc(q3, psi::ArcWeighted<>('b', q3));
+    a.ndfsa.addArc(q3, psi::fsa::ArcWeighted<>('a', q3));
+    a.ndfsa.addArc(q3, psi::fsa::ArcWeighted<>('b', q3));
 
 
     a.ndfsa.setStartState(q0);
@@ -82,12 +82,12 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
     //Automat powinien akceptowac język w postaci:
     //{a + b}* c
     Tescik b(8, 7);
-    psi::State g0 = b.ndfsa.addState();
-    psi::State g1 = b.ndfsa.addState();
+    psi::fsa::State g0 = b.ndfsa.addState();
+    psi::fsa::State g1 = b.ndfsa.addState();
 
-    b.ndfsa.addArc(g0, psi::ArcWeighted<>('a', g0));
-    b.ndfsa.addArc(g0, psi::ArcWeighted<>('b', g0));
-    b.ndfsa.addArc(g0, psi::ArcWeighted<>('c', g1));
+    b.ndfsa.addArc(g0, psi::fsa::ArcWeighted<>('a', g0));
+    b.ndfsa.addArc(g0, psi::fsa::ArcWeighted<>('b', g0));
+    b.ndfsa.addArc(g0, psi::fsa::ArcWeighted<>('c', g1));
 
     b.ndfsa.setStartState(g0);
     b.ndfsa.setEndState(g1);
@@ -124,11 +124,11 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
     //Automat powinien akceptowac język w postaci:
     //{a + b + c}*
     Tescik c(12, 7);
-    psi::State d0 = c.ndfsa.addState();
+    psi::fsa::State d0 = c.ndfsa.addState();
 
-    c.ndfsa.addArc(d0, psi::ArcWeighted<>('a', d0));
-    c.ndfsa.addArc(d0, psi::ArcWeighted<>('b', d0));
-    c.ndfsa.addArc(d0, psi::ArcWeighted<>('c', d0));
+    c.ndfsa.addArc(d0, psi::fsa::ArcWeighted<>('a', d0));
+    c.ndfsa.addArc(d0, psi::fsa::ArcWeighted<>('b', d0));
+    c.ndfsa.addArc(d0, psi::fsa::ArcWeighted<>('c', d0));
 
     c.ndfsa.setStartState(d0);
     c.ndfsa.setEndState(d0);
@@ -170,17 +170,17 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
     //Automat powinien akceptowac język w postaci:
     //... MJD: wedlug mnie to b*ab*a(bb*ab*a)*
     Tescik d(3, 7);
-    psi::State e0 = d.ndfsa.addState();
-    psi::State e1 = d.ndfsa.addState();
-    psi::State e2 = d.ndfsa.addState();
+    psi::fsa::State e0 = d.ndfsa.addState();
+    psi::fsa::State e1 = d.ndfsa.addState();
+    psi::fsa::State e2 = d.ndfsa.addState();
 
-    d.ndfsa.addArc(e0, psi::ArcWeighted<>('a', e1));
-    d.ndfsa.addArc(e0, psi::ArcWeighted<>('b', e0));
+    d.ndfsa.addArc(e0, psi::fsa::ArcWeighted<>('a', e1));
+    d.ndfsa.addArc(e0, psi::fsa::ArcWeighted<>('b', e0));
 
-    d.ndfsa.addArc(e1, psi::ArcWeighted<>('b', e1));
-    d.ndfsa.addArc(e1, psi::ArcWeighted<>('a', e2));
+    d.ndfsa.addArc(e1, psi::fsa::ArcWeighted<>('b', e1));
+    d.ndfsa.addArc(e1, psi::fsa::ArcWeighted<>('a', e2));
 
-    d.ndfsa.addArc(e2, psi::ArcWeighted<>('b', e0));
+    d.ndfsa.addArc(e2, psi::fsa::ArcWeighted<>('b', e0));
 
     d.ndfsa.setStartState(e0);
     d.ndfsa.setEndState(e2);

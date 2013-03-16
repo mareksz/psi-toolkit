@@ -1,5 +1,5 @@
-#ifndef QUERYGRAMMARS_HDR
-#define QUERYGRAMMARS_HDR
+#ifndef FSA_QUERY_GRAMMARS_HDR
+#define FSA_QUERY_GRAMMARS_HDR
 
 #include <string>
 
@@ -12,11 +12,12 @@
 #include <boost/spirit/home/phoenix/bind/bind_member_function.hpp>
 #include <boost/spirit/home/phoenix/stl/container.hpp>
 
-#include "NDFSA.hpp"
-#include "Algorithms.hpp"
+#include "fsa_ndfsa.hpp"
+#include "fsa_algorithms.hpp"
 
 namespace psi {
-
+  namespace fsa {
+    
     namespace phoenix = boost::phoenix;
     namespace qi = boost::spirit::qi;
     namespace unicode = boost::spirit::standard;
@@ -56,8 +57,8 @@ namespace psi {
         qi::rule<Iterator, std::string()> symbol;
 
     };
-
-
+    
+  }
 }
 
 #endif

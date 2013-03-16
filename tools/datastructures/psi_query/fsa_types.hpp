@@ -1,10 +1,11 @@
-#ifndef FSATYPES_HDR
-#define FSATYPES_HDR
+#ifndef FSA_TYPES_HDR
+#define FSA_TYPES_HDR
 
 namespace psi {
-
+  namespace fsa {
+    
     typedef int State;
-    typedef char Symbol;
+    typedef unsigned char Symbol;
     typedef unsigned int Weight;
 
     const Symbol EPS = -1;
@@ -68,13 +69,13 @@ namespace psi {
         ArcRange(ArcIteratorT begin, ArcIteratorT end)
           : std::pair<ArcIteratorT, ArcIteratorT>(begin, end) {};
     };
-    
+  }
 }
 
-template <class OStream, typename SymbolT, typename StateT>
-OStream& operator<<(OStream &o, psi::Arc<SymbolT, StateT> a) {
-  o << a.getDest() << " " << (long)a.getSymbol() << std::endl;
-  return o;
-}
+//template <class OStream, typename SymbolT, typename StateT>
+//OStream& operator<<(OStream &o, psi::fsa::Arc<SymbolT, StateT> a) {
+//  o << a.getDest() << " " << (long)a.getSymbol() << std::endl;
+//  return o;
+//}
 
 #endif

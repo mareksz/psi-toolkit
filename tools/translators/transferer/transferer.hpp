@@ -20,10 +20,7 @@
 #include "dhierarchy.h"
 #endif
 
-#define TRANSFERER_NO_REGEXPS
-#ifndef TRANSFERER_NO_REGEXPS
-#include <regex.h>
-#endif
+#include "regexp.hpp"
 
 #ifdef USE_LOG4CPLUS
 #include <log4cplus/logger.h>
@@ -346,11 +343,9 @@ class Transferer
         zvalue symbol_wanted_(zvalue z);
         zvalue integer_wanted_(zvalue z);
 
-#ifndef TRANSFERER_NO_REGEXPS
         zvalue match_regexp_(zvalue a,
-                             regex_t* PREG,
+                             PerlRegExp& PREG,
                              zenvironment* E);
-#endif
 
 #define BUILDINDECL(S) zvalue S##I(zvector*, zsyntree*, Statement*, int)
 

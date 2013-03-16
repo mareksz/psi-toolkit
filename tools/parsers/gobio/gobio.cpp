@@ -1,6 +1,11 @@
 #include "gobio.hpp"
 
 
+#include <sstream>
+
+#include "exceptions.hpp"
+
+
 Annotator* Gobio::Factory::doCreateAnnotator(
     const boost::program_options::variables_map & options
 ) {
@@ -187,11 +192,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             combinator,
             local_rules,
             spec,
-            is_main
-#if PRINTRULES
-            , true
-#endif //PRINTRULES
-        );
+            is_main);
 
     zsymbol * zcat = sym_fac_->get_symbol(
         combinator.get_master().string_representation(tb->root()).c_str());
@@ -208,6 +209,8 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
     result->setSegmentInfo(
         ch.edge_source(tb->supporting_edge()),
         ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
+
+    result->setOrigin(tb->supporting_edge());
 
     if (tb->is_supported()) {
         Atom def = combinator.get_master().false_value();
@@ -273,6 +276,21 @@ Lattice::EdgeDescriptor Gobio::markTree_(
             targetTags,
             tree->getSubtree(i));
         builder.addEdge(subedge);
+    }
+
+    if (tree->last_subtree < 0) {
+        try {
+            Lattice::EdgeDescriptor originalEdge
+                = boost::any_cast<Lattice::EdgeDescriptor>(tree->getOrigin());
+            if (lattice.getEdgeAnnotationItem(originalEdge) != annotationItem) {
+                builder.addEdge(originalEdge);
+            }
+        } catch (const boost::bad_any_cast &) {
+            std::stringstream errorSs;
+            errorSs << "Parser error: tree origin is not an edge (in tree of "
+                << tree->getCategory()->get_string() << ")";
+            throw ParserException(errorSs.str());
+        }
     }
 
     return lattice.addEdge(

@@ -341,13 +341,16 @@ void PsiLatticeWriter::Worker::doRun() {
                     }
                     linkSs << "-";
                 }
-                std::map<Lattice::EdgeDescriptor, int>::iterator mi = edgeOrdinalMap.find(ed.getEdge());
+                std::map<Lattice::EdgeDescriptor, int>::iterator mi
+                    = edgeOrdinalMap.find(ed.getEdge());
                 if (mi != edgeOrdinalMap.end()) {
                     linkSs << (*mi).second;
 
                     if (!NULLP(ed.getRole()))
-                        linkSs << '$' << quoter.escape(
-                            lattice_.getAnnotationItemManager().zvalueToString(ed.getRole())) << '$';
+                        linkSs << '$'
+                            << quoter.escape(
+                                lattice_.getAnnotationItemManager().zvalueToString(ed.getRole()))
+                            << '$';
                 }
             }
             partSs << linkSs.str();

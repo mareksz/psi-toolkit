@@ -6,13 +6,21 @@
 #include <set>
 #include <algorithm>
 #include <iostream>
-#include <boost/foreach.hpp>
+#include <fstream>
 
-#include "FSATypes.hpp"
+#include <boost/foreach.hpp>
+#include <boost/optional.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+
+#include "fsa_types.hpp"
+#include "fsa_mmap_allocator.hpp"
 
 namespace psi {
+  namespace fsa {
 
-    template <typename ArcT = ArcWeighted<Symbol, State, Weight>, typename PosT = size_t,
+    template <typename ArcT = Arc<Symbol, State>, typename PosT = size_t,
     template <typename> class Allocator = std::allocator>
     class BinDFSA {
       protected:
@@ -36,8 +44,18 @@ namespace psi {
 
       public:
         BinDFSA();
+        BinDFSA(std::string);
 
-        size_t delta(size_t, symbol_type) const;
+        boost::optional<state_type> delta(state_type p, symbol_type a) const {
+           if(m_states.size() < p)
+               return boost::optional<state_type>();
+   
+           arc_iterator_type arc = find(p, a);
+           if (arc == m_arcs.end())
+               return boost::optional<state_type>();
+           else
+               return boost::optional<state_type>(arc->getDest());
+       }
 
         template <typename InputIterator>
         bool in(InputIterator, InputIterator);
@@ -58,6 +76,8 @@ namespace psi {
 
         size_t addState(bool = false);
         void addArc(size_t, arc_type);
+        
+        void deleteLastState();
 
         std::set<size_t> epsClosure(size_t p) const;
 
@@ -67,12 +87,22 @@ namespace psi {
 
         template <class IStream>
         void load(IStream& istream);
+        void load(std::string);
 
         template <class OStream>
         void save(OStream& ostream);
+        void save(std::string);
 
     };
 
+    template <typename ArcT, typename PosT, template <typename> class Allocator>
+    BinDFSA<ArcT, PosT, Allocator>::BinDFSA() { }
+    
+    template <typename ArcT, typename PosT, template <typename> class Allocator>
+    BinDFSA<ArcT, PosT, Allocator>::BinDFSA(std::string filename) {
+        load(filename);
+    }
+    
     template <typename ArcT, typename PosT, template <typename> class Allocator>
     const std::set<size_t> BinDFSA<ArcT, PosT, Allocator>::getStartStates() const {
         std::set<size_t> startStates;
@@ -111,6 +141,8 @@ namespace psi {
 
     template <typename ArcT, typename PosT, template <typename> class Allocator>
     void BinDFSA<ArcT, PosT, Allocator>::addArc(size_t p, ArcT a) {
+        //std::cerr << "Adding " << p << " " << a.getDest() << " " << (int)a.getSymbol() << std::endl;
+      
         ArcSorter cmp;
         if (p < m_states.size()) {
             PosT pos = unsetLastBit(m_states[p]);
@@ -134,22 +166,15 @@ namespace psi {
                     m_states[q]++;
         }
     }
-
+    
     template <typename ArcT, typename PosT, template <typename> class Allocator>
-    BinDFSA<ArcT, PosT, Allocator>::BinDFSA() { }
-
-    template <typename ArcT, typename PosT, template <typename> class Allocator>
-    inline size_t BinDFSA<ArcT, PosT, Allocator>::delta(size_t p, typename ArcT::symbol_type a)
-        const {
-
-        if (BinDFSA<ArcT, PosT, Allocator>::m_states.size() < p)
-            return size_t(-1);
-
-        arc_iterator_type arc = find(p, a);
-        if (arc == BinDFSA<ArcT, PosT, Allocator>::m_arcs->end())
-            return size_t(-1);
-        else
-            return arc->getDest();
+    void BinDFSA<ArcT, PosT, Allocator>::deleteLastState() {
+      size_t last_size = unsetLastBit(m_states.back());
+      
+      //std::cerr << m_states.size() << " " << last_size << " " << m_arcs.size() << std::endl;
+      
+      m_states.pop_back();
+      m_arcs.resize(last_size);
     }
 
     template <typename ArcT, typename PosT, template <typename> class Allocator>
@@ -157,18 +182,22 @@ namespace psi {
     BinDFSA<ArcT, PosT, Allocator>::find(size_t p, typename ArcT::symbol_type a) const {
         ArcRange<arc_iterator_type> r = getArcs(p);
 
-        ArcT test(a, -1);
-        return std::lower_bound(r.first, r.second, test, ArcSorter());
+        ArcT test(a, 0);
+        arc_iterator_type result = std::lower_bound(r.first, r.second, test, ArcSorter());
+        
+        //std::cerr << "Arc find: " << (int)a << " " << std::distance(r.first, result) << std::endl;
+        //std::cerr << "Check: " << (result != r.second && a == result->getSymbol()) << std::endl;
+        return (result != r.second && a == result->getSymbol()) ? result : m_arcs.end();
     }
 
     template <typename ArcT, typename PosT, template <typename> class Allocator>
     template <typename InputIterator>
     bool BinDFSA<ArcT, PosT, Allocator>::in(InputIterator it, InputIterator end) {
-        size_t current_state = 0;
+        state_type current_state = 0;
         while (it != end) {
-            size_t next_state = delta(current_state, *it);
-            if (next_state != size_t(-1))
-                current_state = next_state;
+            boost::optional<state_type> next_state = delta(current_state, *it);
+            if (next_state)
+                current_state = next_state.get();
             else
                 return false;
             it++;
@@ -288,8 +317,18 @@ namespace psi {
     }
 
     template <typename ArcT, typename PosT, template <typename> class Allocator>
+    void BinDFSA<ArcT, PosT, Allocator>::load(std::string filename) {
+        std::ifstream in(filename.c_str(), std::ios_base::in|std::ios_base::binary);
+        load(in);
+    }
+    
+    template <typename ArcT, typename PosT, template <typename> class Allocator>
     template <class IStream>
-    void BinDFSA<ArcT, PosT, Allocator>::load(IStream& istream) {
+    void BinDFSA<ArcT, PosT, Allocator>::load(IStream& in) {
+      boost::iostreams::filtering_istream istream;
+      istream.push(boost::iostreams::gzip_decompressor());
+      istream.push(in);
+      
       size_t statesNum;
       istream.read((char*)&statesNum, sizeof(size_t));
       m_states.resize(statesNum);
@@ -302,20 +341,33 @@ namespace psi {
     }
 
     template <typename ArcT, typename PosT, template <typename> class Allocator>
+    void BinDFSA<ArcT, PosT, Allocator>::save(std::string filename) {
+        std::ofstream out(filename.c_str(), std::ios_base::out|std::ios_base::binary);
+        save(out);
+    }
+    
+    template <typename ArcT, typename PosT, template <typename> class Allocator>
     template <class OStream>
-    void BinDFSA<ArcT, PosT, Allocator>::save(OStream& istream) {
+    void BinDFSA<ArcT, PosT, Allocator>::save(OStream& out) {
+      boost::iostreams::filtering_ostream ostream;
+      ostream.push(boost::iostreams::gzip_compressor());
+      ostream.push(out);
+      
       size_t statesNum = m_states.size();
-      istream.write((char*)&statesNum, sizeof(size_t));
-      istream.write((char*)&m_states[0], statesNum * sizeof(PosT));
+      ostream.write((char*)&statesNum, sizeof(size_t));
+      ostream.write((char*)&m_states[0], statesNum * sizeof(PosT));
 
       size_t arcsNum = m_arcs.size();
-      istream.write((char*)&arcsNum, sizeof(size_t));
-      istream.write((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
+      ostream.write((char*)&arcsNum, sizeof(size_t));
+      ostream.write((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
     }
 
-    typedef BinDFSA<Arc<Symbol, size_t>, size_t, std::allocator> MemBinDFSA;
-    typedef BinDFSA<Arc<Symbol, size_t>, size_t, MmapAllocator>  MapBinDFSA;
+    typedef BinDFSA<Arc<Symbol, unsigned>, unsigned, std::allocator> MemBinDFSA;
+    typedef BinDFSA<Arc<Symbol, unsigned>, unsigned, MmapAllocator>  MapBinDFSA;
+    
+    typedef BinDFSA<Arc<unsigned char, unsigned>, unsigned> StringBinFSA;
 
+  }
 }
 
 #endif
