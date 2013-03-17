@@ -18,32 +18,18 @@ void Dictionary::readDictionary(const std::string& filename)
 {
     INFO("Reading text dictionary data");
     std::ifstream in;
-    in.exceptions(std::ifstream::failbit|std::ifstream::badbit);
-    try {
-        in.open(filename.c_str());
-        psi::fsa::FSAMultiStore::Builder builder("\t");
-        builder.createFromSeparatedLines(LineIterator(in), LineIterator());
-        store_ = builder.build();
-    }
-    catch(std::ifstream::failure e) {
-        WARN("An error occured when trying to read the lemmatizer text file: "
-             << e.what());
-    }
+    in.open(filename.c_str());
+    psi::fsa::FSAMultiStore::Builder builder("\t");
+    builder.createFromSeparatedLines(LineIterator(in), LineIterator());
+    store_ = builder.build();
     in.close();
     INFO("Done");
 }
 
 void Dictionary::load(std::string file_name) {
     std::ifstream in;
-    in.exceptions(std::ifstream::failbit|std::ifstream::badbit);
-    try {
-        in.open(file_name.c_str(), std::ios::in|std::ios::binary);
-        load(in);
-    }
-    catch(std::exception e) {
-        WARN("An error occured when trying to load the lemmatizer file: "
-             << e.what());
-    }
+    in.open(file_name.c_str(), std::ios::in|std::ios::binary);
+    load(in);
     in.close();
 }
 
@@ -53,14 +39,8 @@ void Dictionary::load(std::ifstream &in) {
         delete store_;
     store_ = new fsa::FSAMultiStore();
     store_->load(in);
-    char buffer[sizeof("Additional metadata")];
-    DEBUG(in.tellg());
-    in.read(buffer, sizeof("Additional metadata"));
-    DEBUG(in.tellg());
     in.read((char*) &hasPos_, sizeof(bool));
-    DEBUG(in.tellg());
     in.read((char*) &hasMorpho_, sizeof(bool));
-    DEBUG(in.tellg());
     INFO("Done");
 }
 
@@ -73,13 +53,8 @@ void Dictionary::save(std::string file_name) {
 void Dictionary::save(std::ofstream &out) {
     INFO("Saving dictionary data");
     store_->save(out);
-    DEBUG(out.tellp());
-    out.write("Additional metadata", sizeof("Additional metadata"));
-    DEBUG(out.tellp());
     out.write((char*) &hasPos_, sizeof(bool));
-    DEBUG(out.tellp());
     out.write((char*) &hasMorpho_, sizeof(bool));
-    DEBUG(out.tellp());
     INFO("Done");
 }
     

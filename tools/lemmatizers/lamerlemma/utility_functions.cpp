@@ -13,9 +13,9 @@ namespace psi {
         std::stringstream inputStream(input);
         std::string form, lemma, pos, morpho;
         if(!(inputStream >> form))
-            throw new PsiException("Missing form: " + input);
+            throw PsiException("Missing form: " + input);
         if(!(inputStream >> lemma))
-            throw new PsiException("Missing lemma code " + input);
+            throw PsiException("Missing lemma code " + input);
         
         std::stringstream output;
         output << form << separator;
@@ -27,7 +27,7 @@ namespace psi {
         
         if(parseTag || parseMorpho) {
             if(!(inputStream >> pos))
-                throw new PsiException("Missing part-of-speech tag: " + input);
+                throw PsiException("Missing part-of-speech tag: " + input);
             
             output << separator << pos;
             if(parseMorpho)
@@ -42,9 +42,9 @@ namespace psi {
         std::stringstream resultStream(result);
         std::string form, code, tag, morpho;
         if(!(resultStream >> form))
-            throw new PsiException("Missing form: " + result);
+            throw PsiException("Missing form: " + result);
         if(!(resultStream >> code))
-            throw new PsiException("Missing lemma code: " + result);
+            throw PsiException("Missing lemma code: " + result);
         
         std::string lemma = KLEndDecode(form, code);
                 
@@ -53,7 +53,7 @@ namespace psi {
         
         if(parseTag || parseMorpho) {
             if(!(resultStream >> tag))
-                throw new PsiException("Missing tag: " + result);
+                throw PsiException("Missing tag: " + result);
             
             if(!lemmaMap[lemma].count(tag))
                 lemmaMap[lemma][tag] = FeatureMapSet();
