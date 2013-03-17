@@ -320,46 +320,63 @@ namespace psi {
     void BinDFSA<ArcT, PosT, Allocator>::load(std::string filename) {
         std::ifstream in(filename.c_str(), std::ios_base::in|std::ios_base::binary);
         load(in);
+        in.close();
     }
     
     template <typename ArcT, typename PosT, template <typename> class Allocator>
     template <class IStream>
     void BinDFSA<ArcT, PosT, Allocator>::load(IStream& in) {
-      boost::iostreams::filtering_istream istream;
-      istream.push(boost::iostreams::gzip_decompressor());
-      istream.push(in);
-      
-      size_t statesNum;
-      istream.read((char*)&statesNum, sizeof(size_t));
-      m_states.resize(statesNum);
-      istream.read((char*)&m_states[0], statesNum * sizeof(PosT));
-
-      size_t arcsNum;
-      istream.read((char*)&arcsNum, sizeof(size_t));
-      m_arcs.resize(arcsNum);
-      istream.read((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
+      std::streampos end;
+      in.read((char*) &end, sizeof(std::streampos));
+      {
+          boost::iostreams::filtering_istream istream;
+          istream.push(boost::iostreams::gzip_decompressor());
+          istream.push(in);    
+          
+          size_t statesNum;
+          istream.read((char*)&statesNum, sizeof(size_t));
+          m_states.resize(statesNum);
+          istream.read((char*)&m_states[0], statesNum * sizeof(PosT));
+    
+          size_t arcsNum;
+          istream.read((char*)&arcsNum, sizeof(size_t));
+          m_arcs.resize(arcsNum);
+          istream.read((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
+      }
+      in.seekg(end);
     }
 
     template <typename ArcT, typename PosT, template <typename> class Allocator>
     void BinDFSA<ArcT, PosT, Allocator>::save(std::string filename) {
         std::ofstream out(filename.c_str(), std::ios_base::out|std::ios_base::binary);
         save(out);
+        out.close();
     }
     
     template <typename ArcT, typename PosT, template <typename> class Allocator>
     template <class OStream>
     void BinDFSA<ArcT, PosT, Allocator>::save(OStream& out) {
-      boost::iostreams::filtering_ostream ostream;
-      ostream.push(boost::iostreams::gzip_compressor());
-      ostream.push(out);
       
-      size_t statesNum = m_states.size();
-      ostream.write((char*)&statesNum, sizeof(size_t));
-      ostream.write((char*)&m_states[0], statesNum * sizeof(PosT));
-
-      size_t arcsNum = m_arcs.size();
-      ostream.write((char*)&arcsNum, sizeof(size_t));
-      ostream.write((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
+      std::streampos start = out.tellp();
+      out.write((char*) &start, sizeof(std::streampos)); //make some space;
+      {
+          boost::iostreams::filtering_ostream ostream;
+          ostream.push(boost::iostreams::gzip_compressor());
+          ostream.push(out);
+          
+          size_t statesNum = m_states.size();
+          ostream.write((char*)&statesNum, sizeof(size_t));
+          ostream.write((char*)&m_states[0], statesNum * sizeof(PosT));
+    
+          size_t arcsNum = m_arcs.size();
+          ostream.write((char*)&arcsNum, sizeof(size_t));
+          ostream.write((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
+      }
+      // Some magic to remember the exact gzip stream end:
+      std::streampos end = out.tellp();
+      out.seekp(start); //jump to start;
+      out.write((char*) &end, sizeof(std::streampos)); //save end position;
+      out.seekp(end); //jump to end;
     }
 
     typedef BinDFSA<Arc<Symbol, unsigned>, unsigned, std::allocator> MemBinDFSA;

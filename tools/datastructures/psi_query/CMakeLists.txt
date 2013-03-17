@@ -1,9 +1,9 @@
-add_library(tools-datastructures-fsa SHARED
+add_library(tools-datastructures-psi_query SHARED
     fsa_multi_store.cpp
 )
 
-target_link_libraries(tools-datastructures-fsa)
+target_link_libraries(tools-datastructures-psi_query z boost_iostreams)
 
 add_subdirectory(t)
 
-install(TARGETS tools-datastructures-fsa DESTINATION lib/)
+install(TARGETS tools-datastructures-psi_query DESTINATION lib/)

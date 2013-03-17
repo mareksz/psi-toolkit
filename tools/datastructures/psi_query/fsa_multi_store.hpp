@@ -3,6 +3,9 @@
 
 #include <iterator>
 #include <string>
+#include <boost/lexical_cast.hpp>
+
+#include "logging.hpp"
 
 #include "fsa_bindfsa.hpp"
 #include "fsa_ndfsa.hpp"
@@ -27,7 +30,10 @@ namespace psi {
         std::vector<std::string> get(const std::string& key) const;
         
         void load(const std::string& filename);
-        void save(const std::string& filename);
+        void load(std::istream&);
+
+        void save(const std::string& filename);        
+        void save(std::ostream&);
         
         class Builder {
           public:
@@ -41,6 +47,7 @@ namespace psi {
             void createFromSeparatedLines(InputIterator it, InputIterator end)
             {
                 std::vector<std::string> lines(it, end);
+                INFO("Sorting " << lines.size() << " input lines");
                 std::sort(lines.begin(), lines.end());
                 createFromSeparatedSortedLines(lines.begin(), lines.end());
             }

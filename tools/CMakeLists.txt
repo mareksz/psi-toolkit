@@ -32,6 +32,7 @@ set(tools_DIRS
     recognizers/langguesser
     lexica/bilexicon
     datastructures/lexica
+    datastructures/psi_query
     taggers/metagger
     spellcheckers/aspell
     converters/unumsunt
@@ -40,6 +41,7 @@ set(tools_DIRS
     translators/bonsai/rules
     translators/bonsai/translator
     translators/transferer
+    lemmatizers/lamerlemma 
     CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE
 )
 
@@ -49,9 +51,3 @@ set(tools_DIRS
     ${tools_DIRS}
     lemmatizers/sfst CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE)
 endif(HAVE_SFST)
-
-if(HAVE_CMPH)
-set(tools_DIRS
-    ${tools_DIRS}
-    lemmatizers/lamerlemma CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE)
-endif(HAVE_CMPH)

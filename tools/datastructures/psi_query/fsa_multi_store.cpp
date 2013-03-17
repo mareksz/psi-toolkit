@@ -48,22 +48,32 @@ namespace psi {
     void FSAMultiStore::load(const std::string& filename)
     {
         std::ifstream in(filename.c_str(), std::ios::in|std::ios::binary);
+        load(in);
+        in.close();
+    }
+    
+    void FSAMultiStore::load(std::istream &in)
+    {
         size_t separatorSize;
         in.read((char*)&separatorSize, sizeof(size_t));
         separator_.resize(separatorSize);
         in.read(&separator_[0], separatorSize);
         storeFSA_.load(in);
-        in.close();
     }
     
     void FSAMultiStore::save(const std::string& filename)
     {
         std::ofstream out(filename.c_str(), std::ios::out|std::ios::binary);
+        save(out);
+        out.close();
+    }
+    
+    void FSAMultiStore::save(std::ostream &out)
+    {
         size_t separatorSize = separator_.size();
         out.write((char*)&separatorSize, sizeof(size_t));
         out.write(separator_.c_str(), separatorSize);
         storeFSA_.save(out);
-        out.close();
     }
     
     void FSAMultiStore::buildSearchSuffix()

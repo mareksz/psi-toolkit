@@ -8,6 +8,8 @@
 #include <boost/optional.hpp>
 #include <boost/unordered_set.hpp>
 
+#include "logging.hpp"
+
 #include "fsa_types.hpp"
 
 /*******************************************************************************
@@ -649,11 +651,14 @@ Jan Daciuk's algorithm.
         
         typedef typename boost::optional<State> OptState;
         
+        INFO("Building minimial finite state automaton");
+        
         DFSA fsa;
         State q0 = fsa.addState(1);
         
         Register<DFSA> state_register(fsa);
         
+        size_t count = 0;
         while(current != end) {            
             typename Iterator::value_type::const_iterator
                 curr_symbol_it = current->begin();
@@ -679,9 +684,14 @@ Jan Daciuk's algorithm.
             }
             fsa.setEndState(last_state);
             current++;
+            count++;
+            if(count % 1000000 == 0)
+                INFO("[" << count << "]");
         }
         replace_or_register(fsa, state_register, q0);
         dst.swap(fsa);
+        
+        INFO("Done");
     }
     
     template <typename DFSA, typename Register>
