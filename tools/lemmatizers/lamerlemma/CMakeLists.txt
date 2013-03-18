@@ -7,4 +7,6 @@ add_library(tools-lemmatizers-lamerlemma SHARED
 )
 
 target_link_libraries(tools-lemmatizers-lamerlemma tools-datastructures-psi_query common z boost_iostreams)
+
 install(TARGETS tools-lemmatizers-lamerlemma DESTINATION lib/)
+install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/lamerlemma)
