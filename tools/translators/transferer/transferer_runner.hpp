@@ -8,6 +8,8 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include "transferer.hpp"
+
 class TransfererRunner {
 
 public:
@@ -42,6 +44,8 @@ private:
 
     std::string langCode_;
     std::list<std::string> tags_;
+
+    boost::filesystem::path rulesFile_;
 
     static const std::string DEFAULT_RULE_FILE;
 };

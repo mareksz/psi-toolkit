@@ -11,6 +11,8 @@
 #include "its_data.hpp"
 
 #include "edge2zsyntree.hpp"
+#include "transferer.hpp"
+#include "tscript_from_file.hpp"
 
 TransfererRunner::TransfererRunner(const boost::program_options::variables_map& options) {
     std::string lang = options["lang"].as<std::string>();
@@ -21,6 +23,10 @@ TransfererRunner::TransfererRunner(const boost::program_options::variables_map& 
     createTags_(trg_lang);
 
     BiLangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang, trg_lang);
+
+    rulesFile_ =
+        fileFetcher.getOneFile(
+            options["rules"].as<std::string>());
 }
 
 std::string TransfererRunner::getName() {
@@ -44,7 +50,10 @@ std::list<std::string> TransfererRunner::languagesHandled(
         == AnnotatorFactory::JUST_ONE_LANGUAGE)
         return boost::assign::list_of(options["lang"].as<std::string>());
 
-    std::string trgLang = options["trg-lang"].as<std::string>();
+    std::string trgLang =
+        options.count("trg-lang")
+        ? options["trg-lang"].as<std::string>()
+        : "";
 
     std::string fileSuffix = trgLang + ".mti";
 
@@ -56,15 +65,22 @@ std::list<std::string> TransfererRunner::languagesHandled(
     for (boost::filesystem::directory_iterator fiter(dataDirectory);
          fiter != end_iter;
          ++fiter) {
-            boost::filesystem::path seg(fiter->path().filename());
-            std::string lexiconFileName = seg.string();
+        boost::filesystem::path seg(fiter->path().filename());
+        std::string lexiconFileName = seg.string();
 
-            if (lexiconFileName.length() > fileSuffix.length()
-                && lexiconFileName.substr(
-                    lexiconFileName.length() - fileSuffix.length())
-                == fileSuffix)
+        if (lexiconFileName.length() > fileSuffix.length()
+            && lexiconFileName.substr(
+                lexiconFileName.length() - fileSuffix.length())
+            == fileSuffix) {
+            if (trgLang.empty()) {
+                if (lexiconFileName.length() == 4 + fileSuffix.length())
+                    langs.push_back(lexiconFileName.substr(0, 2));
+            } else {
                 langs.push_back(lexiconFileName.substr(
                                     0, lexiconFileName.length() - fileSuffix.length()));
+
+            }
+        }
     }
 
     std::sort(langs.begin(), langs.end());
@@ -104,9 +120,25 @@ std::list<std::string> TransfererRunner::tagsToOperateOn() {
 void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
     std::cerr << "PROCESSING:";
 
+    tmil::FileParsingScriptFactory* scriptFactory = new tmil::FileParsingScriptFactory;
+
+    boost::shared_ptr<tmil::Transferer> transferer_;
+
+    transferer_.reset(
+        new tmil::Transferer(
+            scriptFactory,
+            lattice.getAnnotationItemManager().getZObjectsHolderPtr(),
+            lattice.getAnnotationItemManager().getSymbolFactory()));
+
+    transferer_->include(rulesFile_.string().c_str());
+
     zsyntree* tree = convertEdgeToZsyntree(lattice, edge);
 
-    std::cerr << "  GOT:" << tree->zsyntree_to_string() << std::endl;
+    std::cerr << "  GOT SOURCE:" << tree->zsyntree_to_string() << std::endl;
+
+    zsyntree* target_tree = transferer_->doTranslate(tree, NULL, NULL);
+
+    std::cerr << "  GOT TARGET:" << target_tree->zsyntree_to_string() << std::endl;
 }
 
 void TransfererRunner::createTags_(const std::string& trg_lang) {

@@ -71,7 +71,10 @@ std::list<std::string> BiLexicon::languagesHandled(
         == AnnotatorFactory::JUST_ONE_LANGUAGE)
         return boost::assign::list_of(options["lang"].as<std::string>());
 
-    std::string trgLang = options["trg-lang"].as<std::string>();
+    std::string trgLang =
+        options.count("trg-lang")
+        ? options["trg-lang"].as<std::string>()
+        : "";
 
     std::string fileSuffix = trgLang + ".bin";
 
@@ -83,15 +86,23 @@ std::list<std::string> BiLexicon::languagesHandled(
     for (boost::filesystem::directory_iterator fiter(dataDirectory);
          fiter != end_iter;
          ++fiter) {
-            boost::filesystem::path seg(fiter->path().filename());
-            std::string lexiconFileName = seg.string();
+        boost::filesystem::path seg(fiter->path().filename());
+        std::string lexiconFileName = seg.string();
 
-            if (lexiconFileName.length() > fileSuffix.length()
-                && lexiconFileName.substr(
-                    lexiconFileName.length() - fileSuffix.length())
-                == fileSuffix)
+        if (lexiconFileName.length() > fileSuffix.length()
+            && lexiconFileName.substr(
+                lexiconFileName.length() - fileSuffix.length())
+            == fileSuffix) {
+
+            if (trgLang.empty()) {
+                if (lexiconFileName.length() == 4 + fileSuffix.length())
+                    langs.push_back(lexiconFileName.substr(0, 2));
+            } else {
                 langs.push_back(lexiconFileName.substr(
                                     0, lexiconFileName.length() - fileSuffix.length()));
+
+            }
+        }
     }
 
     std::sort(langs.begin(), langs.end());
