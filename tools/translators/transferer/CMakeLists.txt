@@ -32,4 +32,4 @@ target_link_libraries(tools-translators-transferer common ${Boost_LIBRARIES} ${F
 target_link_libraries(trunner ${Boost_LIBRARIES} tools-translators-transferer)
 
 install(TARGETS tools-translators-transferer DESTINATION lib/)
-install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/transferer)
+install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/transferer-runner)
