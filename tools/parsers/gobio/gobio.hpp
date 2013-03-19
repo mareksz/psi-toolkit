@@ -143,6 +143,9 @@ private:
         zsyntree * tree
     );
 
+    std::string leafSymbolToCategory_(
+        const std::string& symbol);
+
     virtual double doGetQualityScore(
         const boost::program_options::variables_map& options) const;
 };

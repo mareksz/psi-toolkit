@@ -23,6 +23,7 @@ zsyntree* convertEdgeToZsyntree(
     zobjects_holder* holder = lattice.getAnnotationItemManager().getZObjectsHolderPtr();
 
     Lattice::EdgeDescriptor edge = start_edge;
+    zvalue role = NULL_ZVALUE;
 
     size_t partition_size = 0;
 
@@ -31,6 +32,7 @@ zsyntree* convertEdgeToZsyntree(
     zsyntree* pR = NULL;
 
     std::stack<Lattice::EdgeDescriptor> edgeStack;
+    std::stack<zvalue> roleStack;
     std::stack<zsyntree*> nodeStack;
     std::stack<size_t> iStack;
 
@@ -228,8 +230,13 @@ backtracking:
         Lattice::EdgeDescriptor ppnode = edgeStack.top();
         edgeStack.pop();
 
+        zvalue prole = roleStack.top();
+        roleStack.pop();
+
         if (pR != NULL && R != NULL)
-            pR->addSubtree(R, NULL);
+            pR->addSubtree(
+                R,
+                ZSYMBOLP(prole) ? ZSYMBOLC(prole) : NULL);
 
                 // ( (ppnode->subnode_infos == NULL ||
                 //    a_labels.getKey(
@@ -245,16 +252,19 @@ backtracking:
         R = pR;
         i = pi;
         edge = ppnode;
+        role = prole;
 
         goto backtracking;
     }
     else {
         edgeStack.push(edge);
+        roleStack.push(role);
         iStack.push(i+1);
         nodeStack.push(R);
 
         const Lattice::Partition& partition = lattice.getEdgePartitions(edge).front();
         edge = partition.getSequence().nthEdge(lattice, i);
+        role = partition.getSequence().nthRole(lattice, i);
         goto mloop;
     }
 

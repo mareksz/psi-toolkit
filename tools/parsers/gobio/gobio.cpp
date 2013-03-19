@@ -201,9 +201,10 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
     } else {
         result->setCategory(
             sym_fac_->get_symbol(
-                combinator.get_symbol_registrar().get_obj(
-                    ch.edge_category(
-                        tb->supporting_edge()).get_cat()).c_str()));
+                leafSymbolToCategory_(
+                    combinator.get_symbol_registrar().get_obj(
+                        ch.edge_category(
+                            tb->supporting_edge()).get_cat())).c_str()));
     }
 
     result->setSegmentInfo(
@@ -300,6 +301,20 @@ Lattice::EdgeDescriptor Gobio::markTree_(
         targetTags,
         builder.build());
 }
+
+std::string Gobio::leafSymbolToCategory_(
+    const std::string& symbol) {
+
+    if (symbol == "rzeczownik")  return "R";
+    if (symbol == "czasownik")   return "C";
+    if (symbol == "przymiotnik") return "P";
+    if (symbol == "przysłówek")  return "PS";
+    if (symbol == "przyimek")    return "PR";
+    if (symbol == "spójnik")     return "S";
+
+    return symbol;
+}
+
 
 
 double Gobio::doGetQualityScore(

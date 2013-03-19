@@ -948,6 +948,14 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t
     }
 }
 
+zvalue Lattice::EdgeSequence::nthRole(Lattice & lattice, size_t index) const {
+    if (links.empty()) {
+        return NULL_ZVALUE;
+    } else {
+        return links[index].getRole();
+    }
+}
+
 LayerTagCollection Lattice::EdgeSequence::gatherPlaneTags(Lattice& lattice) const {
     std::vector<EdgeUsage>::const_iterator iter = links.begin();
 
