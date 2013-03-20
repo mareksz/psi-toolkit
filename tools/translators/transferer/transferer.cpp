@@ -954,6 +954,7 @@ zsyntree* Transferer::doTransfer(zsyntree* a_source_tree
     if ( NULL==(a_target_tree=a_source_tree->equiv_tree) ) {
         a_target_tree = a_source_tree->equiv_tree = zsyntree::generate(current_holder_);
         a_target_tree->equiv_tree = a_source_tree;
+        a_target_tree->setOrigin(a_source_tree->getOrigin());
     }
 
     a_target_tree->is_variant = a_source_tree->is_variant;

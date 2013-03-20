@@ -5,7 +5,8 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
     LayerTagCollection targetTags,
     zsyntree* tree) {
 
-    AnnotationItem annotationItem(tree->getCategory()->get_string());
+    AnnotationItem annotationItem(
+        tree->getCategory() ? tree->getCategory()->get_string() : "");
     int block_size = 0;
     zvalue * block = tree->getAll(block_size);
     for (int i = 0; i < block_size; ++i) {
@@ -39,7 +40,7 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
         } catch (const boost::bad_any_cast &) {
             std::stringstream errorSs;
             errorSs << "Parser error: tree origin is not an edge (in tree of "
-                << tree->getCategory()->get_string() << ")";
+                    << (tree->getCategory() ? tree->getCategory()->get_string() : "(null)") << ")";
             throw ParserException(errorSs.str());
         }
     }
