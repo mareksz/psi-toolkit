@@ -6,6 +6,10 @@
 
 #include "chart.hpp"
 
+#include <sstream>
+
+#include <boost/foreach.hpp>
+
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 chart<C,S,V,R,I>::chart(
@@ -291,12 +295,69 @@ typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
 {
     AnnotationItem annotationItem = lattice_.getEdgeAnnotationItem(edge);
     LayerTagCollection tags = lattice_.getEdgeLayerTags(edge);
+
     if (
         lattice_.getLayerTagManager().isThere("normalization", tags) ||
-        lattice_.getLayerTagManager().isThere("term", tags)
+        lattice_.getLayerTagManager().isThere("term", tags) ||
+        lattice_.getLayerTagManager().isThere("token", tags)
     ) {
-        annotationItem = AnnotationItem(annotationItem, annotationItem.getText());
+
+        std::stringstream categorySs;
+        categorySs << "'" << annotationItem.getText() << "'";
+        annotationItem = AnnotationItem(annotationItem, categorySs.str());
+
+    } else if (lattice_.getLayerTagManager().isThere("form", tags)) {
+
+        bool edgeLexemeFound = false;
+        Lattice::EdgeDescriptor edgeLexeme;
+        const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edge);
+        BOOST_FOREACH(Lattice::Partition partition, partitions) {
+            Lattice::Partition::Iterator pi(lattice_, partition);
+            while (pi.hasNext()) {
+                edgeLexeme = pi.next();
+                if (
+                    lattice_.getLayerTagManager().isThere(
+                        "lexeme", lattice_.getEdgeLayerTags(edgeLexeme))
+                ) {
+                    edgeLexemeFound = true;
+                    break;
+                }
+            }
+            if (edgeLexemeFound) {
+                break;
+            }
+        }
+        if (edgeLexemeFound) {
+
+            bool edgeLemmaFound = false;
+            Lattice::EdgeDescriptor edgeLemma;
+            const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edgeLexeme);
+            BOOST_FOREACH(Lattice::Partition partition, partitions) {
+                Lattice::Partition::Iterator pi(lattice_, partition);
+                while (pi.hasNext()) {
+                    edgeLemma = pi.next();
+                    if (
+                        lattice_.getLayerTagManager().isThere(
+                            "lemma", lattice_.getEdgeLayerTags(edgeLemma))
+                    ) {
+                        edgeLemmaFound = true;
+                        break;
+                    }
+                }
+                if (edgeLemmaFound) {
+                    break;
+                }
+            }
+            if (edgeLemmaFound) {
+
+                std::stringstream categorySs;
+                categorySs << "'$" << lattice_.getAnnotationText(edgeLemma) << "'";
+                annotationItem = AnnotationItem(annotationItem, categorySs.str());
+
+            }
+        }
     }
+
     return av_ai_converter_.toAVMatrix<category_type>(annotationItem);
 }
 
