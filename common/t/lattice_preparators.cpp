@@ -443,7 +443,11 @@ void lattice_preparators::prepareRegularLattice(Lattice & lattice) {
 }
 
 
-void lattice_preparators::prepareLatticeWithOneSymbolTokens(Lattice & lattice, std::string text) {
+void lattice_preparators::prepareLatticeWithOneSymbolTokens(
+    Lattice & lattice,
+    std::string text,
+    std::string tagName
+) {
 
     lattice.appendString(text);
     lattice.addSymbols(lattice.getFirstVertex(), lattice.getLastVertex());
@@ -456,7 +460,7 @@ void lattice_preparators::prepareLatticeWithOneSymbolTokens(Lattice & lattice, s
     LayerTagCollection
         tagRaw = lattice.getLayerTagManager().createSingletonTagCollection("symbol");
     LayerTagCollection
-        tagToken = lattice.getLayerTagManager().createSingletonTagCollection("token");
+        tagToken = lattice.getLayerTagManager().createSingletonTagCollection(tagName);
 
     LayerTagMask maskRaw = lattice.getLayerTagManager().getMask(tagRaw);
 
