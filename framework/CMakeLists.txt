@@ -13,6 +13,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/git_info.cpp.in"
 add_library(framework SHARED
     aliaser.cpp
     auto_completer.cpp
+    configuration_finder.cpp
     factories_keeper.cpp
     from_configuration_annotator_factory.cpp
     main_factories_keeper.cpp
