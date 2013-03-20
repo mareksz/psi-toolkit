@@ -289,7 +289,15 @@ template<typename C, typename S, typename V, typename R, template<typename, type
 typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
     edge_descriptor edge)
 {
-    return av_ai_converter_.toAVMatrix<category_type>(lattice_.getEdgeAnnotationItem(edge));
+    AnnotationItem annotationItem = lattice_.getEdgeAnnotationItem(edge);
+    LayerTagCollection tags = lattice_.getEdgeLayerTags(edge);
+    if (
+        lattice_.getLayerTagManager().isThere("normalization", tags) ||
+        lattice_.getLayerTagManager().isThere("term", tags)
+    ) {
+        annotationItem = AnnotationItem(annotationItem, annotationItem.getText());
+    }
+    return av_ai_converter_.toAVMatrix<category_type>(annotationItem);
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
