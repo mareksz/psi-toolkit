@@ -45,6 +45,7 @@ add_library(common SHARED
     processor_promise.cpp
     psi_exception.cpp
     psi_quoter.cpp
+    put_zsyntree_into_lattice.cpp
     quoter.cpp
     regexp.cpp
     segment_glob.cpp
