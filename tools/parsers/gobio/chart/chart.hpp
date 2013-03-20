@@ -191,8 +191,6 @@ public:
     // zwraca rozmiar wektora wierzcholkow
     size_t topological_count() const;
 
-    void setTagMask(LayerTagMask layerTagMask);
-
     vertex_descriptor getFirstVertex() const;
     vertex_descriptor getLastVertex() const;
 

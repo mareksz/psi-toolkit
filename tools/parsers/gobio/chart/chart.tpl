@@ -25,7 +25,7 @@ chart<C,S,V,R,I>::chart(
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("term"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("token"));
-    setTagMask(lattice.getLayerTagManager().getAlternativeMask(altTags));
+    inputTagMask_ = lattice.getLayerTagManager().getAlternativeMask(altTags);
 }
 
 
@@ -570,11 +570,6 @@ template<typename C, typename S, typename V, typename R, template<typename, type
 size_t chart<C,S,V,R,I>::topological_count() const
 {
     return sorted_vertices_.size();
-}
-
-template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
-void chart<C,S,V,R,I>::setTagMask(LayerTagMask layerTagMask) {
-    inputTagMask_ = layerTagMask;
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
