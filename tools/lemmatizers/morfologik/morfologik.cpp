@@ -276,7 +276,7 @@ void Morfologik::stemsOnFormLevel_(const std::string & word,
 AnnotationItem Morfologik::createFormAnnotation_(AnnotationItem & lexemeItem,
     const std::string& word, std::map<std::string, std::string> & attributes) {
 
-    AnnotationItem formItem(lexemeItem, word);
+    AnnotationItem formItem(lexemeItem, StringFrag(word));
 
     std::map<std::string, std::string>::iterator atr;
     for (atr = attributes.begin(); atr != attributes.end(); ++atr) {
