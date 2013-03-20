@@ -184,7 +184,7 @@ void Cutter::fragmentSegment_(
         else
             cutPoint = positionInText + segmentLength;
 
-        AnnotationItem fragmentItem(item, text.substr(prevCutPoint, cutPoint - prevCutPoint));
+        AnnotationItem fragmentItem(item, StringFrag(text, prevCutPoint, cutPoint - prevCutPoint));
 
         fragmentedSegmentsQueue_.push(fragmentItem);
     }
