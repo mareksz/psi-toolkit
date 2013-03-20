@@ -1,0 +1,13 @@
+## beg. len.  text         tags                  annot.text  annotations
+01 0000 12    niebieskiego frag,txt-reader       niebieskiego FRAG[]
+02 0000 12    niebieskiego !pl,lang-guesser,text niebieskiego TEXT[1]
+03 0000 12    niebieskiego !pl,token             niebieskiego T
+04 0000 12    niebieskiego !pl,gobio-tagset,lemma,morfologik,morfologik-tagset,tagset-converter niebieski word[3(!pl,lemma,morfologik,morfologik-tagset),3]
+05 0000 12    niebieskiego !pl,lexeme,morfologik,morfologik-tagset niebieski+adj adj[4]
+06 0000 12    niebieskiego !pl,form,morfologik,morfologik-tagset niebieskiego adj,case=acc,degree=pos,gender=m1,negation=aff,number=sg[5]
+07 0000 12    niebieskiego !pl,gobio-tagset,morfologik,morfologik-tagset,normalization,term,tagset-converter niebieskiego term[3(!pl,morfologik,morfologik-tagset,normalization),3]
+08 0000 12    niebieskiego !pl,gobio-tagset,lexeme,tagset-converter niebieski+adj przymiotnik,Przyim=brak,Length=1,Amb=1,R=fail,Sem1=nil,S=nil[4]
+09 0000 12    niebieskiego !pl,form,gobio-tagset,tagset-converter niebieskiego przymiotnik,negation=aff,Przyim=brak,Length=1,Amb=1,R=mo,Sem1=nil,S=nil,P=bier,Stopień=równy,Rp=mo,L=1,R1=mż[8]
+10 0000 12    niebieskiego !pl,gobio,parse-aux               kprz0,Przyim=brak,Length=1,Amb=1,Sem1=nil,S=nil[8]
+11 0000 12    niebieskiego !pl,gobio,parse                   przymiotnik,Przyim=brak,Length=1,Amb=1,Sem1=nil,S=nil[8]
+12 0000 12    niebieskiego !pl,gobio,parse                   FP,Przyim=brak,Length=1,Amb=1,Sem1=nil,S=nil[11$\#$]

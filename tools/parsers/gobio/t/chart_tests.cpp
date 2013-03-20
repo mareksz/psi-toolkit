@@ -8,6 +8,7 @@
 #include "chart.tpl"
 #include "lattice.hpp"
 #include "lattice_preparators.hpp"
+#include "psi_lattice_reader.hpp"
 #include "psi_lattice_writer.hpp"
 #include "registrar.tpl"
 #include "test_helpers.hpp"
@@ -407,6 +408,43 @@ BOOST_AUTO_TEST_CASE( chart_partitions ) {
         contents += "\n";
     }
     BOOST_CHECK_EQUAL(osstr.str(), contents);
+
+}
+
+
+BOOST_AUTO_TEST_CASE( chart_categories ) {
+
+    AnnotationItemManager aim;
+    Lattice lattice(aim, "");
+    boost::scoped_ptr<StreamLatticeReader> reader(new PsiLatticeReader());
+    reader->readIntoLattice(ROOT_DIR "tools/parsers/gobio/t/files/categories.psi", lattice);
+
+    SIMPLE_CHART(ch, lattice);
+
+    BOOST_CHECK_EQUAL(count_out_edges(ch), 10);
+    BOOST_CHECK_EQUAL(count_in_edges(ch), 10);
+    BOOST_CHECK_EQUAL(count_vertices(ch), 13);
+
+    BOOST_CHECK_EQUAL(
+        ch.edge_category(
+            lattice.firstOutEdge(lattice.getFirstVertex(),
+            lattice.getLayerTagManager().getMask("normalization"))),
+        "'niebieskiego'");
+    BOOST_CHECK_EQUAL(
+        ch.edge_category(
+            lattice.firstOutEdge(lattice.getFirstVertex(),
+            lattice.getLayerTagManager().getMask("term"))),
+        "'niebieskiego'");
+    BOOST_CHECK_EQUAL(
+        ch.edge_category(
+            lattice.firstOutEdge(lattice.getFirstVertex(),
+            lattice.getLayerTagManager().getMask("token"))),
+        "'niebieskiego'");
+    BOOST_CHECK_EQUAL(
+        ch.edge_category(
+            lattice.firstOutEdge(lattice.getFirstVertex(),
+            lattice.getLayerTagManager().getMask("form"))),
+        "'$niebieskiego'");
 
 }
 
