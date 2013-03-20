@@ -137,12 +137,6 @@ private:
         zobjects_holder * holder
     );
 
-    Lattice::EdgeDescriptor markTree_(
-        Lattice & lattice,
-        LayerTagCollection targetTags,
-        zsyntree * tree
-    );
-
     virtual double doGetQualityScore(
         const boost::program_options::variables_map& options) const;
 };
