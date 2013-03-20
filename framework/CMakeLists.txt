@@ -14,6 +14,7 @@ add_library(framework SHARED
     aliaser.cpp
     auto_completer.cpp
     factories_keeper.cpp
+    from_configuration_annotator_factory.cpp
     main_factories_keeper.cpp
     help_formatter.cpp
     console_help_formatter.cpp
