@@ -14,7 +14,8 @@ chart<C,S,V,R,I>::chart(
 ) :
     lattice_(lattice),
     av_ai_converter_(av_ai_converter),
-    outputTags_(lattice.getLayerTagManager().createSingletonTagCollection("gobio")),
+    outputTags_(lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")("parse-aux"))),
     inputTagMask_(lattice.getLayerTagManager().anyTag())
 {
     std::vector<LayerTagCollection> altTags;
