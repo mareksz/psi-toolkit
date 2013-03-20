@@ -444,7 +444,7 @@ BOOST_AUTO_TEST_CASE( chart_categories ) {
         ch.edge_category(
             lattice.firstOutEdge(lattice.getFirstVertex(),
             lattice.getLayerTagManager().getMask("form"))),
-        "'$niebieskiego'");
+        "'$niebieski'");
 
 }
 
