@@ -6,6 +6,10 @@
 
 #include "chart.hpp"
 
+#include <sstream>
+
+#include <boost/foreach.hpp>
+
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 chart<C,S,V,R,I>::chart(
@@ -14,16 +18,19 @@ chart<C,S,V,R,I>::chart(
 ) :
     lattice_(lattice),
     av_ai_converter_(av_ai_converter),
-    gobioTag_(lattice.getLayerTagManager().createSingletonTagCollection("gobio")),
-    tagMask_(lattice.getLayerTagManager().anyTag())
+    outputTags_(lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")("parse-aux"))),
+    inputTagMask_(lattice.getLayerTagManager().anyTag())
 {
     std::vector<LayerTagCollection> altTags;
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("form"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lemma"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lexeme"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("term"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("token"));
-    setTagMask(lattice.getLayerTagManager().getAlternativeMask(altTags));
+    inputTagMask_ = lattice.getLayerTagManager().getAlternativeMask(altTags);
 }
 
 
@@ -50,7 +57,7 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
             u,
             v,
             ai,
-            getGobioTag_(),
+            getChartOutputTags_(),
             Lattice::EdgeSequence(),
             score,
             rule.rule_no(),
@@ -81,7 +88,7 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
             u,
             v,
             ai,
-            getGobioTag_(),
+            getChartOutputTags_(),
             builder.build(),
             score,
             rule.rule_no(),
@@ -114,7 +121,7 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
             u,
             v,
             ai,
-            getGobioTag_(),
+            getChartOutputTags_(),
             builder.build(),
             score,
             rule.rule_no(),
@@ -151,7 +158,7 @@ typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::add_partition(
 {
     return lattice_.addPartitionToEdge(
         edge,
-        getGobioTag_(),
+        getChartOutputTags_(),
         Lattice::EdgeSequence(),
         score,
         rule.rule_no(),
@@ -171,7 +178,7 @@ typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::add_partition(
     builder.addEdge(link);
     return lattice_.addPartitionToEdge(
         edge,
-        getGobioTag_(),
+        getChartOutputTags_(),
         builder.build(),
         score,
         rule.rule_no(),
@@ -192,7 +199,7 @@ typename chart<C,S,V,R,I>::edge_descriptor chart<C,S,V,R,I>::add_partition(
     builder.addEdge(right_link);
     return lattice_.addPartitionToEdge(
         edge,
-        getGobioTag_(),
+        getChartOutputTags_(),
         builder.build(),
         score,
         rule.rule_no(),
@@ -227,14 +234,14 @@ template<typename C, typename S, typename V, typename R, template<typename, type
 typename chart<C,S,V,R,I>::out_edge_iterator
 chart<C,S,V,R,I>::out_edges(vertex_descriptor vertex)
 {
-    return lattice_.outEdges(vertex, getTagMask_());
+    return lattice_.outEdges(vertex, getChartInputTagMask_());
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 typename chart<C,S,V,R,I>::in_edge_iterator
 chart<C,S,V,R,I>::in_edges(vertex_descriptor vertex)
 {
-    return lattice_.inEdges(vertex, getTagMask_());
+    return lattice_.inEdges(vertex, getChartInputTagMask_());
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
@@ -286,7 +293,72 @@ template<typename C, typename S, typename V, typename R, template<typename, type
 typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
     edge_descriptor edge)
 {
-    return av_ai_converter_.toAVMatrix<category_type>(lattice_.getEdgeAnnotationItem(edge));
+    AnnotationItem annotationItem = lattice_.getEdgeAnnotationItem(edge);
+    LayerTagCollection tags = lattice_.getEdgeLayerTags(edge);
+
+    if (
+        lattice_.getLayerTagManager().isThere("normalization", tags) ||
+        lattice_.getLayerTagManager().isThere("term", tags) ||
+        lattice_.getLayerTagManager().isThere("token", tags)
+    ) {
+
+        std::stringstream categorySs;
+        categorySs << "'" << annotationItem.getText() << "'";
+        annotationItem = AnnotationItem(annotationItem, categorySs.str());
+
+    } else if (lattice_.getLayerTagManager().isThere("form", tags)) {
+
+        bool edgeLexemeFound = false;
+        Lattice::EdgeDescriptor edgeLexeme;
+        const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edge);
+        BOOST_FOREACH(Lattice::Partition partition, partitions) {
+            Lattice::Partition::Iterator pi(lattice_, partition);
+            while (pi.hasNext()) {
+                edgeLexeme = pi.next();
+                if (
+                    lattice_.getLayerTagManager().isThere(
+                        "lexeme", lattice_.getEdgeLayerTags(edgeLexeme))
+                ) {
+                    edgeLexemeFound = true;
+                    break;
+                }
+            }
+            if (edgeLexemeFound) {
+                break;
+            }
+        }
+        if (edgeLexemeFound) {
+
+            bool edgeLemmaFound = false;
+            Lattice::EdgeDescriptor edgeLemma;
+            const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edgeLexeme);
+            BOOST_FOREACH(Lattice::Partition partition, partitions) {
+                Lattice::Partition::Iterator pi(lattice_, partition);
+                while (pi.hasNext()) {
+                    edgeLemma = pi.next();
+                    if (
+                        lattice_.getLayerTagManager().isThere(
+                            "lemma", lattice_.getEdgeLayerTags(edgeLemma))
+                    ) {
+                        edgeLemmaFound = true;
+                        break;
+                    }
+                }
+                if (edgeLemmaFound) {
+                    break;
+                }
+            }
+            if (edgeLemmaFound) {
+
+                std::stringstream categorySs;
+                categorySs << "'$" << lattice_.getAnnotationText(edgeLemma) << "'";
+                annotationItem = AnnotationItem(annotationItem, categorySs.str());
+
+            }
+        }
+    }
+
+    return av_ai_converter_.toAVMatrix<category_type>(annotationItem);
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
@@ -312,9 +384,6 @@ void chart<C,S,V,R,I>::mark_edge_as_accommodated(edge_descriptor edge)
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 bool chart<C,S,V,R,I>::could_be_final(edge_descriptor edge) const {
     return lattice_.getLayerTagManager().isThere("gobio", lattice_.getEdgeLayerTags(edge));
-    // return matches(
-        // lattice_.getEdgeLayerTags(edge),
-        // lattice_.getLayerTagManager().getMask(getGobioTag_()));
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
@@ -574,11 +643,6 @@ size_t chart<C,S,V,R,I>::topological_count() const
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
-void chart<C,S,V,R,I>::setTagMask(LayerTagMask layerTagMask) {
-    tagMask_ = layerTagMask;
-}
-
-template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>:: getFirstVertex() const {
     return lattice_.getFirstVertex();
 }
@@ -589,13 +653,13 @@ typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>:: getLastVertex() 
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
-const LayerTagCollection& chart<C,S,V,R,I>::getGobioTag_() const {
-    return gobioTag_;
+const LayerTagCollection& chart<C,S,V,R,I>::getChartOutputTags_() const {
+    return outputTags_;
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
-const LayerTagMask& chart<C,S,V,R,I>::getTagMask_() const {
-    return tagMask_;
+const LayerTagMask& chart<C,S,V,R,I>::getChartInputTagMask_() const {
+    return inputTagMask_;
 }
 
 

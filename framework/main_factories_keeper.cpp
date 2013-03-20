@@ -76,6 +76,8 @@
 
 #include "bonsai.hpp"
 
+#include "from_configuration_annotator_factory.hpp"
+
 MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addTagBasedIzeAliases("token", "token");
     keeper_.addTagBasedAlias("segment", "segment");

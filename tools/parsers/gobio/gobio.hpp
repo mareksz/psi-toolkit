@@ -137,12 +137,6 @@ private:
         zobjects_holder * holder
     );
 
-    Lattice::EdgeDescriptor markTree_(
-        Lattice & lattice,
-        LayerTagCollection targetTags,
-        zsyntree * tree
-    );
-
     std::string leafSymbolToCategory_(
         const std::string& symbol);
 

@@ -1,10 +1,10 @@
 
 <edge tags="!pl,lang-guesser,text" category="TEXT" attrs="">
 <edge tags="frag,txt-reader" category="FRAG" attrs="">
-<edge tags="!pl,form,morfologik,morfologik-tagset" category="verb" attrs="aspect:perf;gender:m1;number:pl;person:ter;tense:praet">
-<edge tags="!pl,lemma,morfologik,morfologik-tagset" category="word" attrs="">
-<edge tags="!pl,lexeme,morfologik,morfologik-tagset" category="verb" attrs="aspect:perf">
-<edge tags="!pl,morfologik,morfologik-tagset,normalization" category="term" attrs="">
+<edge tags="!pl,form,lamerlemma" category="verb" attrs="aspect:perf;gender:m1;number:pl;person:ter;tense:praet">
+<edge tags="!pl,lamerlemma,lemma" category="word" attrs="">
+<edge tags="!pl,lamerlemma,lexeme" category="verb" attrs="">
+<edge tags="!pl,lamerlemma,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">Zanucili</edge>
 </edge>
 </edge>
@@ -13,11 +13,11 @@
 
 <edge tags="!pl,token" category="B" attrs=""> </edge>
 
-<edge tags="!pl,form,morfologik,morfologik-tagset" category="adj" attrs="case:acc;degree:pos;gender:f;negation:aff;number:sg">
-<edge tags="!pl,form,morfologik,morfologik-tagset" category="adj" attrs="case:inst;degree:pos;gender:f;negation:aff;number:sg">
-<edge tags="!pl,lemma,morfologik,morfologik-tagset" category="word" attrs="">
-<edge tags="!pl,lexeme,morfologik,morfologik-tagset" category="adj" attrs="">
-<edge tags="!pl,morfologik,morfologik-tagset,normalization" category="term" attrs="">
+<edge tags="!pl,form,lamerlemma" category="adj" attrs="case:acc;degree:pos;gender:f;number:sg">
+<edge tags="!pl,form,lamerlemma" category="adj" attrs="case:inst;degree:pos;gender:f;number:sg">
+<edge tags="!pl,lamerlemma,lemma" category="word" attrs="">
+<edge tags="!pl,lamerlemma,lexeme" category="adj" attrs="">
+<edge tags="!pl,lamerlemma,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">rzewną</edge>
 </edge>
 </edge>
@@ -27,10 +27,10 @@
 
 <edge tags="!pl,token" category="B" attrs=""> </edge>
 
-<edge tags="!pl,form,morfologik,morfologik-tagset" category="subst" attrs="case:acc;gender:f;number:sg">
-<edge tags="!pl,lemma,morfologik,morfologik-tagset" category="word" attrs="">
-<edge tags="!pl,lexeme,morfologik,morfologik-tagset" category="subst" attrs="gender:f">
-<edge tags="!pl,morfologik,morfologik-tagset,normalization" category="term" attrs="">
+<edge tags="!pl,form,lamerlemma" category="subst" attrs="case:acc;gender:f;number:sg">
+<edge tags="!pl,lamerlemma,lemma" category="word" attrs="">
+<edge tags="!pl,lamerlemma,lexeme" category="subst" attrs="">
+<edge tags="!pl,lamerlemma,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">melodię</edge>
 </edge>
 </edge>

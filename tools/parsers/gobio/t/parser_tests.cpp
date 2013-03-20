@@ -40,7 +40,7 @@
     > Parser; \
     AnnotationItemManager aim; \
     Lattice lattice(aim); \
-    lattice_preparators::prepareLatticeWithOneSymbolTokens(lattice, (input_string)); \
+    lattice_preparators::prepareLatticeWithOneSymbolTokens(lattice, (input_string), "parse-aux"); \
     Agenda agenda; \
     Combinator combinator; \
     registrar<std::string> reg; \
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE( helpers ) {
 
     AnnotationItemManager aim;
     Lattice lattice(aim);
-    lattice_preparators::prepareLatticeWithOneSymbolTokens(lattice, "baaaaa");
+    lattice_preparators::prepareLatticeWithOneSymbolTokens(lattice, "baaaaa", "parse-aux");
 
     Agenda agenda;
     Combinator combinator;
