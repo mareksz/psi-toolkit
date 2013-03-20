@@ -26,7 +26,7 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
             lattice,
             targetTags,
             tree->getSubtree(i));
-        builder.addEdge(subedge);
+        builder.addEdge(subedge, tree->getSubtree(i)->label);
     }
 
     if (tree->last_subtree < 0) {
