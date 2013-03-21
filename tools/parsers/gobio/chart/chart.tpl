@@ -306,6 +306,8 @@ typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
         categorySs << "'" << annotationItem.getText() << "'";
         annotationItem = AnnotationItem(annotationItem, categorySs.str());
 
+// TODO odkomentowac ponizsze po zrobieniu walencji:
+/*
     } else if (lattice_.getLayerTagManager().isThere("form", tags)) {
 
         bool edgeLexemeFound = false;
@@ -356,6 +358,7 @@ typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
 
             }
         }
+*/
     }
 
     return av_ai_converter_.toAVMatrix<category_type>(annotationItem);
