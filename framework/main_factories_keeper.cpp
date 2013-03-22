@@ -21,7 +21,6 @@
 #include "puddle.hpp"
 #include "unumsunt.hpp"
 #include "transferer_runner.hpp"
-#include "lamerlemma.hpp"
 
 #if HAVE_GRAPHVIZ
 #include "gv_lattice_writer.hpp"
@@ -54,6 +53,7 @@
 #if HAVE_CMPH
 #include "one_edge_at_a_time_annotator.hpp"
 #include "bilexicon.hpp"
+#include "lamerlemma.hpp"
 #endif
 
 #if HAVE_PERL_BINDINGS
@@ -175,8 +175,6 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new DocLatticeReader::Factory());
 #endif
 
-    keeper_.takeProcessorFactory(new LemmatizerAnnotator<psi::LamerLemma>::Factory());
-
 #if HAVE_POSTGRESQL
     keeper_.takeProcessorFactory(new LemmatizerAnnotator<LexDbLemmatizer>::Factory());
 #endif
@@ -193,12 +191,14 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
 
 #if HAVE_CMPH
+    keeper_.takeProcessorFactory(new LemmatizerAnnotator<psi::LamerLemma>::Factory());
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());
 #endif
 
 #if HAVE_PERL_BINDINGS
     keeper_.takeProcessorFactory(new PerlSimpleLatticeWriter::Factory());
 #endif
+
     keeper_.takeProcessorFactory(new MeTagger::Factory());
 
 #if HAVE_ASPELL
