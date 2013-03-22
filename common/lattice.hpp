@@ -131,6 +131,7 @@ public:
         EdgeDescriptor lastEdge(Lattice & lattice) const;
 
         EdgeDescriptor nthEdge(Lattice & lattice, size_t index) const;
+        zvalue nthRole(Lattice & lattice, size_t index) const;
 
         LayerTagCollection gatherPlaneTags(Lattice& lattice) const;
 

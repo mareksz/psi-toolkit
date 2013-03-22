@@ -77,6 +77,18 @@ BOOST_AUTO_TEST_CASE( annotation_compare ) {
     BOOST_CHECK(ai1 == ai2);
 };
 
+BOOST_AUTO_TEST_CASE( annotation_copy ) {
+    AnnotationItem ai("noun", StringFrag("ala"));
+    AnnotationItem ai_c(ai, "verb");
+    AnnotationItem ai_t(ai, StringFrag("ola"));
+    BOOST_CHECK_EQUAL(ai.getCategory(), "noun");
+    BOOST_CHECK_EQUAL(ai.getText(), "ala");
+    BOOST_CHECK_EQUAL(ai_c.getCategory(), "verb");
+    BOOST_CHECK_EQUAL(ai_c.getText(), "ala");
+    BOOST_CHECK_EQUAL(ai_t.getCategory(), "noun");
+    BOOST_CHECK_EQUAL(ai_t.getText(), "ola");
+};
+
 BOOST_AUTO_TEST_CASE( annotation_text ) {
     AnnotationItemManager manager;
     AnnotationItem ai("noun", StringFrag("ala"));

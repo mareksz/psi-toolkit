@@ -13,6 +13,7 @@
 #include "edge2zsyntree.hpp"
 #include "transferer.hpp"
 #include "tscript_from_file.hpp"
+#include "put_zsyntree_into_lattice.hpp"
 
 TransfererRunner::TransfererRunner(const boost::program_options::variables_map& options) {
     std::string lang = options["lang"].as<std::string>();
@@ -136,9 +137,14 @@ void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edg
 
     std::cerr << "  GOT SOURCE:" << tree->zsyntree_to_string() << std::endl;
 
-    zsyntree* target_tree = transferer_->doTranslate(tree, NULL, NULL);
+    zsyntree* targetTree = transferer_->doTranslate(tree, NULL, NULL);
 
-    std::cerr << "  GOT TARGET:" << target_tree->zsyntree_to_string() << std::endl;
+    std::cerr << "  GOT TARGET:" << targetTree->zsyntree_to_string() << std::endl;
+
+    putZsyntreeIntoLattice(
+        lattice,
+        lattice.getLayerTagManager().createTagCollection(tags_),
+        targetTree);
 }
 
 void TransfererRunner::createTags_(const std::string& trg_lang) {

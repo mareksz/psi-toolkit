@@ -34,6 +34,7 @@ void GraphvizAdapterImpl::init(std::string arg0, std::string arg1, std::string a
         arg2.c_str()
     };
     gvParseArgs(gvc_, sizeof(args)/sizeof(char*), (char**)args);
+    assert(gvc_);
 }
 
 
@@ -53,7 +54,7 @@ void GraphvizAdapterImpl::init_context_() {
 
 void GraphvizAdapterImpl::init_graph_() {
 #if GRAPHVIZ_CGRAPH
-    g_ = agopen((char*)"g", Agdirected, 0);
+    g_ = agopen((char*)"g", Agdirected, NULL);
 #else
     g_ = agopen((char*)"g", AGDIGRAPH);
 #endif
@@ -84,7 +85,7 @@ void GraphvizAdapterImpl::setRankDir(std::string dir) {
 
 int GraphvizAdapterImpl::addNode(std::string id) {
 #if GRAPHVIZ_CGRAPH
-    Agnode_t * n = agnode(g_, (char*)(id.c_str()), 0);
+    Agnode_t * n = agnode(g_, (char*)(id.c_str()), 1);
 #else
     Agnode_t * n = agnode(g_, (char*)(id.c_str()));
 #endif
@@ -112,7 +113,7 @@ void GraphvizAdapterImpl::setNodeStyle(int node, std::string style) {
 
 #if GRAPHVIZ_CGRAPH
 int GraphvizAdapterImpl::addEdge(int source, int target, std::string name) {
-    Agedge_t * e = agedge(g_, nodes_[source], nodes_[target], (char*)(name.c_str()), 0);
+    Agedge_t * e = agedge(g_, nodes_[source], nodes_[target], (char*)(name.c_str()), 1);
 #else
 int GraphvizAdapterImpl::addEdge(int source, int target, std::string /* name */) {
     Agedge_t * e = agedge(g_, nodes_[source], nodes_[target]);

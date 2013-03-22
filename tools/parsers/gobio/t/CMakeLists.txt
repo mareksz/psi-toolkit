@@ -8,6 +8,7 @@ include_directories("${PARENT_DIR}/translator")
 include_directories("${PARENT_DIR}/trees")
 include_directories("${psi-toolkit_SOURCE_DIR}/common/t")
 include_directories("${psi-toolkit_SOURCE_DIR}/formats/psi/psi_writer")
+include_directories("${psi-toolkit_SOURCE_DIR}/formats/psi/psi_reader")
 
 add_library(tools-parsers-gobio-tests
     av_ai_converter_tests.cpp

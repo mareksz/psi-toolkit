@@ -191,8 +191,6 @@ public:
     // zwraca rozmiar wektora wierzcholkow
     size_t topological_count() const;
 
-    void setTagMask(LayerTagMask layerTagMask);
-
     vertex_descriptor getFirstVertex() const;
     vertex_descriptor getLastVertex() const;
 
@@ -209,11 +207,11 @@ private:
     Lattice & lattice_;
     AV_AI_Converter av_ai_converter_;
 
-    LayerTagCollection gobioTag_;
-    LayerTagMask tagMask_;
+    LayerTagCollection outputTags_;
+    LayerTagMask inputTagMask_;
 
-    const LayerTagCollection& getGobioTag_() const;
-    const LayerTagMask& getTagMask_() const;
+    const LayerTagCollection& getChartOutputTags_() const;
+    const LayerTagMask& getChartInputTagMask_() const;
 
     typedef Lattice::HashFun hash_fun;
     typedef Lattice::VertexPairHashFun vertex_pair_hash_fun;
