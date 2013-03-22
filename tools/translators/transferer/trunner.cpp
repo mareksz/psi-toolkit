@@ -18,6 +18,7 @@ namespace po = boost::program_options;
 #include <stdio.h>
 #include <unistd.h>
 #include <fstream>
+#include <iostream>
 
 #include "transferer.hpp"
 #include "zvalue.hpp"
