@@ -9,6 +9,7 @@ public:
         const std::string& name,
         AnnotatorFactory& annotatorFactory);
 
+    void setOptions(const std::string& optionsAsString);
     void setContinuation(const std::string& continuation);
     void setQualityScore(double qualityScore);
     void setEstimatedTime(double estimatedTime);
@@ -30,6 +31,7 @@ private:
     std::string name_;
     AnnotatorFactory& annotatorFactory_;
 
+    std::string optionsAsString_;
     boost::program_options::variables_map options_;
 
     boost::optional<std::string> continuation_;

@@ -78,8 +78,6 @@ private:
         const boost::program_options::options_description& optionsDescription,
         const std::list<std::string>& processorArgs);
 
-    std::vector<std::string> splitPipeline_(const std::string& pipeline);
-
     static const std::string PIPELINE_SEPARATOR;
     static const std::string PIPELINE_STANDARD_INPUT_OR_OUTPUT_FILE_NAME;
 

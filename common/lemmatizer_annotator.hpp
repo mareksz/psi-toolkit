@@ -74,10 +74,13 @@ public:
         }
 
         virtual std::list<std::string> doProvidedLayerTags() {
-            return boost::assign::list_of
-                (std::string("lemma"))
-                (std::string("lexeme"))
-                (std::string("form"));
+            std::list<std::string> providedTags = L::getLayerTags();
+
+            providedTags.push_back("lemma");
+            providedTags.push_back("lexeme");
+            providedTags.push_back("form");
+
+            return providedTags;
         }
 
         virtual bool doCheckRequirements(
@@ -258,7 +261,7 @@ public:
         virtual void doRun() {
             L& lemmatizer = dynamic_cast<LemmatizerAnnotator&>(processor_).lemmatizer_;
             LayerTagCollection layerTags =
-                lattice_.getLayerTagManager().createTagCollection(lemmatizer.getLayerTags());
+                lattice_.getLayerTagManager().createTagCollection(L::getLayerTags());
 
             Lattice::EdgesSortedByTargetIterator edgeIterator
                 = lattice_.edgesSortedByTarget(tokenMask_);

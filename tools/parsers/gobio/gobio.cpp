@@ -42,7 +42,8 @@ boost::filesystem::path Gobio::Factory::doGetFile() const {
 }
 
 std::list<std::list<std::string> > Gobio::Factory::doRequiredLayerTags() {
-    return std::list<std::list<std::string> >();
+    return boost::assign::list_of(
+        boost::assign::list_of(std::string("gobio-tagset")));
 }
 
 std::list<std::list<std::string> > Gobio::Factory::doOptionalLayerTags() {

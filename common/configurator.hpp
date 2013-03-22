@@ -12,6 +12,8 @@ public:
 
     boost::filesystem::path getDataDir() const;
 
+    boost::filesystem::path getMainDir() const;
+
     boost::filesystem::path getFinalPath(
         const boost::filesystem::path& componentName,
         const boost::filesystem::path& sourcePath,

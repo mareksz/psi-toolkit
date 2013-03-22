@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+  <configuration
+      name="morfologik-to-gobio-converter"
+      annotator="tagset-converter"
+      options="--lang pl">
+    <provided>
+      <tag>gobio-tagset</tag>
+    </provided>
+    <required>
+      <tags>
+        <tag>morfologik-tagset</tag>
+      </tags>
+    </required>
+  </configuration>
+</configurations>

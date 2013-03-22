@@ -25,7 +25,7 @@ public:
 
     static std::string getName();
     static boost::filesystem::path getFile();
-    std::list<std::string> getLayerTags();
+    static std::list<std::string> getLayerTags();
     std::string getLanguage() const;
 
     static AnnotatorFactory::LanguagesHandling languagesHandling(

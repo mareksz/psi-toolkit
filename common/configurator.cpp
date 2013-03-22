@@ -29,6 +29,13 @@ boost::filesystem::path Configurator::getDataDir() const {
     return boost::filesystem::path(INSTALL_DATA_DIR);
 }
 
+boost::filesystem::path Configurator::getMainDir() const {
+    return
+        isRunAsInstalled()
+        ? getDataDir()
+        : boost::filesystem::path("..");
+}
+
 boost::filesystem::path Configurator::getFinalPath(
     const boost::filesystem::path& componentName,
     const boost::filesystem::path& sourcePath,

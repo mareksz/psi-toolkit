@@ -1,6 +1,7 @@
 #include "main_factories_keeper.hpp"
 
 #include "config.hpp"
+#include "configurator.hpp"
 
 #include "txt_lattice_reader.hpp"
 #include "utt_lattice_reader.hpp"
@@ -77,6 +78,7 @@
 #include "bonsai.hpp"
 
 #include "from_configuration_annotator_factory.hpp"
+#include "configuration_finder.hpp"
 
 MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addTagBasedIzeAliases("token", "token");
@@ -214,6 +216,12 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 #endif
 
     keeper_.takeProcessorFactory(new Bonsai::Factory());
+
+    ConfigurationFinder configurationFinder(
+        Configurator::getInstance().getMainDir(),
+        keeper_);
+
+    configurationFinder.run();
 }
 
 ProcessorFactory& MainFactoriesKeeper::getProcessorFactory(std::string processorName) {

@@ -12,6 +12,7 @@
 
 #include "main_factories_keeper.hpp"
 #include "console_help_formatter.hpp"
+#include "split_pipeline.hpp"
 
 #include "annotator_promise.hpp"
 #include "non_annotator_promise.hpp"
@@ -24,7 +25,7 @@ PipeRunner::PipeRunner(const std::string& pipeline)
     lineByLine_(false),
     runnerOptionsDescription_("PipeRunner options") {
 
-    parseIntoFinalPipeline_<std::istream, std::ostream>(splitPipeline_(pipeline), false);
+    parseIntoFinalPipeline_<std::istream, std::ostream>(splitPipeline(pipeline), false);
 }
 
 PipeRunner::PipeRunner(int argc, char* argv[])
@@ -331,7 +332,7 @@ void PipeRunner::checkWriter_() {
 
 void PipeRunner::prepend_(const std::string& pipeline) {
     PipelineSpecification prependedSpec;
-    parseIntoPipelineSpecification_(splitPipeline_(pipeline), false, prependedSpec);
+    parseIntoPipelineSpecification_(splitPipeline(pipeline), false, prependedSpec);
 
     ProcessorPromiseAlternativeSequence newSequence
         = pipelineSpecification2PromiseAlternativeSequence_(prependedSpec);
@@ -342,7 +343,7 @@ void PipeRunner::prepend_(const std::string& pipeline) {
 
 void PipeRunner::insertAfterReader_(const std::string& pipeline) {
     PipelineSpecification insertedSpec;
-    parseIntoPipelineSpecification_(splitPipeline_(pipeline), false, insertedSpec);
+    parseIntoPipelineSpecification_(splitPipeline(pipeline), false, insertedSpec);
 
     ProcessorPromiseAlternativeSequence newSequence
         = pipelineSpecification2PromiseAlternativeSequence_(insertedSpec);
@@ -355,7 +356,7 @@ void PipeRunner::insertAfterReader_(const std::string& pipeline) {
 
 void PipeRunner::append_(const std::string& pipeline) {
     PipelineSpecification appendedSpec;
-    parseIntoPipelineSpecification_(splitPipeline_(pipeline), false, appendedSpec);
+    parseIntoPipelineSpecification_(splitPipeline(pipeline), false, appendedSpec);
 
     ProcessorPromiseAlternativeSequence newSequence
         = pipelineSpecification2PromiseAlternativeSequence_(appendedSpec);
@@ -650,13 +651,6 @@ boost::program_options::variables_map PipeRunner::parseOptions_(
     boost::program_options::notify(options);
 
     return options;
-}
-
-std::vector<std::string> PipeRunner::splitPipeline_(const std::string& pipeline) {
-    std::vector<std::string> strs;
-    // the first element should be the name of the program
-    boost::split(strs, pipeline, boost::is_any_of(" "));
-    return strs;
 }
 
 const std::string PipeRunner::PIPELINE_STANDARD_INPUT_OR_OUTPUT_FILE_NAME = "-";
