@@ -35,19 +35,15 @@ void ConsoleHelpFormatter::doFormatOneProcessorHelp(
 
 void ConsoleHelpFormatter::formatLanguagesHandled_(std::list<std::string> langCodes,
                                                    std::ostream& output) {
-    output << LANGUAGES_HEADER << ": ";
-    BOOST_FOREACH(std::string langCode, langCodes) {
-        output << langCode << ", ";
-    }
-    output << std::endl;
+    output << LANGUAGES_HEADER << ": "
+        << boost::algorithm::join(langCodes, ", ")
+        << std::endl;
 }
 
 void ConsoleHelpFormatter::formatAliases_(std::list<std::string> aliases, std::ostream& output) {
-    output << ALIASES_HEADER << ": ";
-    BOOST_FOREACH(std::string alias, aliases) {
-        output << alias << ", ";
-    }
-    output << std::endl;
+    output << ALIASES_HEADER << ": "
+        << boost::algorithm::join(aliases, ", ")
+        << std::endl;
 }
 
 void ConsoleHelpFormatter::doFormatOneAlias(

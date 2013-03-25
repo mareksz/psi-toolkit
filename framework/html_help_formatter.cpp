@@ -46,24 +46,16 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
 void HtmlHelpFormatter::formatLanguagesHandled_(std::list<std::string> langCodes,
                                                 std::ostream& output) {
     output << "<div class=\"help-langs\">" << std::endl
-           << "<h3>" << LANGUAGES_HEADER << "</h3>" << std::endl;
-
-    BOOST_FOREACH(std::string langCode, langCodes) {
-        output << "<span>" << langCode << ", </span>";
-    };
-
-    output << "</div>" << std::endl;
+        << "<h3>" << LANGUAGES_HEADER << "</h3>" << std::endl
+        << "<span>" << boost::algorithm::join(langCodes, ", </span><span>") << "</span>"
+        << "</div>" << std::endl;
 }
 
 void HtmlHelpFormatter::formatAliases_(std::list<std::string> aliases, std::ostream& output) {
     output << "<div class=\"help-alias\">"
-        << "<h3>" << ALIASES_HEADER << "</h3>";
-
-    BOOST_FOREACH(std::string alias, aliases) {
-        output << alias << ", ";
-    }
-
-    output << "</div>" << std::endl;
+        << "<h3>" << ALIASES_HEADER << "</h3>"
+        << boost::algorithm::join(aliases, ", ")
+        << "</div>" << std::endl;
 }
 
 void HtmlHelpFormatter::formatUsingExamples_(std::vector<TestBatch> batches, std::ostream& output) {
