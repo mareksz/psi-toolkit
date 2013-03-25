@@ -131,11 +131,6 @@ boost::program_options::options_description Morfologik::optionsHandled() {
     return desc;
 }
 
-void Morfologik::normalizeWord_(const std::string & word,
-                               LemmatizerOutputIterator& outputIterator) {
-    outputIterator.addNormalization(word);
-}
-
 void Morfologik::stemsOnLemmaLevel_(const std::string & word,
                                     LemmatizerOutputIterator & outputIterator) {
 
@@ -151,6 +146,8 @@ void Morfologik::stemsOnLemmaLevel_(const std::string & word,
 
     for (i = stems.begin(); i != stems.end(); ++i) {
         std::string stem = *i;
+
+        if (!foundLemma_) outputIterator.addNormalization(word);
         outputIterator.addLemma(stem);
         foundLemma_ = true;
     }
@@ -168,6 +165,7 @@ void Morfologik::stemsOnLexemeLevel_(const std::string & word,
         << boost::algorithm::join(lemmas, ", ") << "]");
 
     for (lem = lemmas.begin(); lem != lemmas.end(); ++lem) {
+        if (!foundLemma_) outputIterator.addNormalization(word);
         outputIterator.addLemma(*lem);
         foundLemma_ = true;
 
@@ -243,6 +241,7 @@ void Morfologik::stemsOnFormLevel_(const std::string & word,
         << boost::algorithm::join(lemmas, ", ") << "]");
 
     for (lem = lemmas.begin(); lem != lemmas.end(); ++lem) {
+        if (!foundLemma_) outputIterator.addNormalization(word);
         outputIterator.addLemma(*lem);
         foundLemma_ = true;
 

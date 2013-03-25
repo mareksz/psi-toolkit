@@ -185,7 +185,6 @@ public:
                         seqBuilder.build(),
                         score,
                         ruleId);
-
             }
 
             virtual void doAddLemma(
@@ -259,7 +258,6 @@ public:
 
    private:
         virtual void doRun() {
-            L& lemmatizer = dynamic_cast<LemmatizerAnnotator&>(processor_).lemmatizer_;
             LayerTagCollection layerTags =
                 lattice_.getLayerTagManager().createTagCollection(L::getLayerTags());
 
@@ -285,24 +283,18 @@ public:
 
             std::string w = word;
 
-            if (lemmatizer.lemmatize(w, lattice_.getAnnotationItemManager(), outputIterator)) {
-                outputIterator.addNormalization(w);
-            }
+            lemmatizer.lemmatize(w, lattice_.getAnnotationItemManager(), outputIterator);
 
             if (simpleWillBeTouchedWhenTailConverted(lowerCaseConverter, w)) {
-                w = simpleTailConvert(lowerCaseConverter, w);
-
-                if (lemmatizer.lemmatize(w, lattice_.getAnnotationItemManager(), outputIterator)) {
-                    outputIterator.addNormalization(w);
-                }
+                lemmatizer.lemmatize(simpleTailConvert(lowerCaseConverter, w),
+                                     lattice_.getAnnotationItemManager(),
+                                     outputIterator);
             }
 
             if (simpleWillBeTouchedWhenHeadConverted(lowerCaseConverter, w)) {
-                w = simpleHeadConvert(lowerCaseConverter, w);
-
-                if (lemmatizer.lemmatize(w, lattice_.getAnnotationItemManager(), outputIterator)) {
-                    outputIterator.addNormalization(w);
-                }
+                lemmatizer.lemmatize(simpleHeadConvert(lowerCaseConverter, w),
+                                     lattice_.getAnnotationItemManager(),
+                                     outputIterator);
             }
         }
 
