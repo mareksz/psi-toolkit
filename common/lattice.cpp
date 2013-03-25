@@ -48,7 +48,7 @@ void Lattice::addSymbols(VertexDescriptor startVertex, VertexDescriptor endVerte
             vd,
             vd + symbol.length(),
             AnnotationItem("'" + symbol),
-            getSymbolTag_());
+            getSymbolTag());
         vd += symbol.length();
     }
 }
@@ -215,11 +215,11 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         }
 
         // updating hidden edges, where applicable
-        if (tags == getSymbolTag_()) {
+        if (tags == getSymbolTag()) {
             try {
-                firstOutEdge(from, getLayerTagManager().getMask(getSymbolTag_()));
+                firstOutEdge(from, getLayerTagManager().getMask(getSymbolTag()));
                 visibleImplicitOutEdges_[from] = true;
-                EdgeDescriptor ed = firstInEdge(to, getLayerTagManager().getMask(getSymbolTag_()));
+                EdgeDescriptor ed = firstInEdge(to, getLayerTagManager().getMask(getSymbolTag()));
                 visibleImplicitOutEdges_[getEdgeSource(ed)] = true;
             } catch (NoEdgeException) {
             }
@@ -229,7 +229,7 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         if (
             !isLooseVertex(from)
             && !isLooseVertex(to)
-            && tags == getSymbolTag_()
+            && tags == getSymbolTag()
             && from + (int) symbolLength_(from) == to
             && !implicitOutEdges_[from]
         ) {
@@ -517,7 +517,7 @@ const LayerTagCollection& Lattice::getEdgeLayerTags(Lattice::EdgeDescriptor edge
     if (edge.isExplicit()) {
         return graph_[edge.descriptor].tagList;
     }
-    return getSymbolTag_();
+    return getSymbolTag();
 }
 
 Lattice::VertexDescriptor Lattice::getEdgeSource(EdgeDescriptor edge) const {
@@ -704,14 +704,14 @@ void Lattice::correctionInsert(VertexDescriptor here, std::string text) {
             from,
             to,
             AnnotationItem("'"+symbol, StringFrag(symbol)),
-            getSymbolTag_()
+            getSymbolTag()
         );
         from = to;
     }
     try {
         EdgeDescriptor nextEdge
-            = firstOutEdge(here, getLayerTagManager().getMask(getSymbolTag_()));
-        addEdge(to, getEdgeTarget(nextEdge), getEdgeAnnotationItem(nextEdge), getSymbolTag_());
+            = firstOutEdge(here, getLayerTagManager().getMask(getSymbolTag()));
+        addEdge(to, getEdgeTarget(nextEdge), getEdgeAnnotationItem(nextEdge), getSymbolTag());
     } catch (NoEdgeException) {
     }
 }
@@ -720,22 +720,22 @@ void Lattice::correctionErase(VertexDescriptor from, VertexDescriptor to) {
     if (from != to) {
         try {
             EdgeDescriptor nextEdge
-                = firstOutEdge(to, getLayerTagManager().getMask(getSymbolTag_()));
+                = firstOutEdge(to, getLayerTagManager().getMask(getSymbolTag()));
             addEdge(
                 from,
                 getEdgeTarget(nextEdge),
                 getEdgeAnnotationItem(nextEdge),
-                getSymbolTag_()
+                getSymbolTag()
             );
         } catch (NoEdgeException) {
             try {
                 EdgeDescriptor prevEdge
-                    = firstOutEdge(to, getLayerTagManager().getMask(getSymbolTag_()));
+                    = firstOutEdge(to, getLayerTagManager().getMask(getSymbolTag()));
                 addEdge(
                     getEdgeSource(prevEdge),
                     to,
                     getEdgeAnnotationItem(prevEdge),
-                    getSymbolTag_()
+                    getSymbolTag()
                 );
             } catch (NoEdgeException) {
                 throw WrongVertexException("Cannot erase the selected text range.");
@@ -755,14 +755,14 @@ void Lattice::correctionReplace(VertexDescriptor from, VertexDescriptor to, std:
             std::string symbol;
             utf8::append(utf8::next(iter, end), std::back_inserter(symbol));
             EdgeDescriptor edge
-                = firstOutEdge(from, getLayerTagManager().getMask(getSymbolTag_()));
+                = firstOutEdge(from, getLayerTagManager().getMask(getSymbolTag()));
             VertexDescriptor vertex = getEdgeTarget(edge);
             if (symbol != getAnnotationText(edge)) {
                 addEdge(
                     from,
                     vertex,
                     AnnotationItem("'"+symbol, StringFrag(symbol)),
-                    getSymbolTag_()
+                    getSymbolTag()
                 );
             }
             from = vertex;
@@ -835,7 +835,7 @@ size_t Lattice::symbolLength_(int ix) const {
     return symbolLength(allText_, ix);
 }
 
-const LayerTagCollection& Lattice::getSymbolTag_() const {
+const LayerTagCollection& Lattice::getSymbolTag() const {
     return symbolTag_;
 }
 

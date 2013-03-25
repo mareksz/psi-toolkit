@@ -19,6 +19,8 @@ zsyntree* convertEdgeToZsyntree(
     Lattice& lattice,
     Lattice::EdgeDescriptor start_edge)
 {
+    LayerTagCollection unwantedTags = lattice.getSymbolTag();
+
     zsymbolfactory* sym_fac = lattice.getAnnotationItemManager().getSymbolFactory();
     zobjects_holder* holder = lattice.getAnnotationItemManager().getZObjectsHolderPtr();
 
@@ -57,6 +59,9 @@ mloop:
 
     (*R).setCategory(
         GETSYMBOL4STRING(lattice.getAnnotationCategory(edge)));
+
+    (*R).setOrigin(edge);
+
 
 //    (*R).setSegmentInfo(a_pnode->segment_beg,
 //                        a_pnode->segment_length);
@@ -218,7 +223,7 @@ backtracking:
             lattice.getEdgePartitions(edge).front().getSequence().size(lattice);
 
     if (i >= partition_size) {
-        if(edgeStack.empty())
+        if (edgeStack.empty())
             goto finish;
 
         pR = nodeStack.top();
@@ -233,10 +238,19 @@ backtracking:
         zvalue prole = roleStack.top();
         roleStack.pop();
 
-        if (pR != NULL && R != NULL)
-            pR->addSubtree(
-                R,
-                ZSYMBOLP(prole) ? ZSYMBOLC(prole) : NULL);
+        if (pR != NULL && R != NULL) {
+            const Lattice::Partition& partition = lattice.getEdgePartitions(ppnode).front();
+            Lattice::EdgeDescriptor subEdge = partition.getSequence().nthEdge(lattice, pi-1);
+            const LayerTagCollection& tags = lattice.getEdgeLayerTags(subEdge);
+
+            if (createIntersection(tags, unwantedTags).isEmpty()) {
+                zvalue role = partition.getSequence().nthRole(lattice, pi-1);
+
+                pR->addSubtree(
+                    R,
+                    ZSYMBOLP(role) ? ZSYMBOLC(role) : NULL);
+            }
+        }
 
                 // ( (ppnode->subnode_infos == NULL ||
                 //    a_labels.getKey(

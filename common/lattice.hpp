@@ -624,6 +624,8 @@ public:
      */
     int countAllVertices();
 
+    const LayerTagCollection& getSymbolTag() const;
+
 private:
 
     struct IsBlank {
@@ -692,7 +694,6 @@ private:
     VertexDescriptor priorVertex_(VertexDescriptor vertex);
 
     size_t symbolLength_(int ix) const;
-    const LayerTagCollection& getSymbolTag_() const;
 
     int getEdgeSourceInternalIndex_(EdgeDescriptor edge) const;
     int getEdgeTargetInternalIndex_(EdgeDescriptor edge) const;

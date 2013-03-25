@@ -30,6 +30,23 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
         builder.addEdge(subedge, tree->getSubtree(i)->label);
     }
 
+    Lattice::VertexDescriptor fromVertex = tree->segment_beg;
+    Lattice::VertexDescriptor toVertex = tree->segment_beg + tree->segment_len;
+
+    bool vertexSet = false;
+
+    try {
+        Lattice::EdgeDescriptor originalEdge
+            = boost::any_cast<Lattice::EdgeDescriptor>(tree->getOrigin());
+
+        fromVertex = lattice.getEdgeSource(originalEdge);
+        toVertex = lattice.getEdgeTarget(originalEdge);
+        vertexSet = true;
+
+    } catch (const boost::bad_any_cast &) {
+        ;
+    }
+
     if (tree->last_subtree < 0) {
         try {
             Lattice::EdgeDescriptor originalEdge
@@ -41,13 +58,18 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
             std::stringstream errorSs;
             errorSs << "Parser error: tree origin is not an edge (in tree of "
                     << (tree->getCategory() ? tree->getCategory()->get_string() : "(null)") << ")";
-            throw ParserException(errorSs.str());
+//            throw ParserException(errorSs.str());
         }
     }
 
+    if (!vertexSet && tree->segment_len == 0) {
+        fromVertex = lattice.addLooseVertex();
+        toVertex = lattice.addLooseVertex();
+    }
+
     return lattice.addEdge(
-        tree->segment_beg,
-        tree->segment_beg + tree->segment_len,
+        fromVertex,
+        toVertex,
         annotationItem,
         targetTags,
         builder.build());
