@@ -197,8 +197,6 @@ input[type="submit"]:hover, #input-file > div:hover, a.button:hover {
 #select-output-type { color:#555; float:right; font-size:13px; margin-right:10px; }
 #select-output-type > select { font-size:12px; }
 
-svg { width:100%; }
-
 /* footer */
 
 footer { background-color:#353535; border-top:2px solid #d1d1d1; color:#c1c1c1; font-size:12px;
@@ -238,6 +236,8 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 
 img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
     width:770px; }
+
+.wrapper svg { width:100%; }
 
 /* right menu */
 
