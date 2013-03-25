@@ -50,7 +50,7 @@ namespace utf8
         uint8_t u8;
     public:
         invalid_utf8 (uint8_t u) : u8(u) {}
-        virtual const char* what() const throw() { return "Invalid UTF-8"; }
+        virtual const char* what() const throw() { return "invalid UTF-8, convert file to UTF-8 encoding and run again"; }
         uint8_t utf8_octet() const {return u8;}
     };
 
@@ -58,7 +58,7 @@ namespace utf8
         uint16_t u16;
     public:
         invalid_utf16 (uint16_t u) : u16(u) {}
-        virtual const char* what() const throw() { return "Invalid UTF-16"; }
+        virtual const char* what() const throw() { return "invalid UTF-16, convert file to UTF-16 encoding and run again"; }
         uint16_t utf16_word() const {return u16;}
     };
 
