@@ -22,12 +22,17 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
     }
 
     Lattice::EdgeSequence::Builder builder(lattice);
+
+    bool wereSubedgesAdded = false;
     for (int i = 0; i <= tree->last_subtree; ++i) {
-        Lattice::EdgeDescriptor subedge = putZsyntreeIntoLattice(
-            lattice,
-            targetTags,
-            tree->getSubtree(i));
-        builder.addEdge(subedge, tree->getSubtree(i)->label);
+        if (!NULLP(tree->getSubtree(i)->getCategory())) {
+            Lattice::EdgeDescriptor subedge = putZsyntreeIntoLattice(
+                lattice,
+                targetTags,
+                tree->getSubtree(i));
+            builder.addEdge(subedge, tree->getSubtree(i)->label);
+            wereSubedgesAdded = true;
+        }
     }
 
     Lattice::VertexDescriptor fromVertex = tree->segment_beg;
@@ -47,7 +52,7 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
         ;
     }
 
-    if (tree->last_subtree < 0) {
+    if (!wereSubedgesAdded) {
         try {
             Lattice::EdgeDescriptor originalEdge
                 = boost::any_cast<Lattice::EdgeDescriptor>(tree->getOrigin());
