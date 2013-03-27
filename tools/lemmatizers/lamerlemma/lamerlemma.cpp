@@ -109,6 +109,12 @@ namespace psi {
             ("plain-text-lexicon",
              boost::program_options::value<std::string>(),
              "path to the lexicon in the plain text format")
+            ("primary-separator",
+             boost::program_options::value<std::string>(),
+             "Column separator (single tab character if not given)")
+            ("secondary-separator",
+             boost::program_options::value<std::string>(),
+             "Separator for data within columns (single space character if not given)")
             ("pos", "text file contains part-of-speech information")
             ("morpho", "text file contains morphology information (implies --pos)")
             ("save-binary-lexicon",
@@ -180,6 +186,7 @@ namespace psi {
         std::list<std::string> layerTags;
     
         layerTags.push_back("lamerlemma");
+        layerTags.push_back("lamerlemma-tagset");
     
         return layerTags;
     }
