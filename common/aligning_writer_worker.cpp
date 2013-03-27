@@ -38,6 +38,7 @@ void AligningWriterWorker::printTableRow_(std::vector<std::string> cellsContents
     if (!cellsContents.empty()) {
         for (size_t i = 0; i < cellsContents.size() - 1; ++i) {
             alignOutput_(cellsContents[i], getAlignment_(i));
+            alignOutput_(" ");
         }
         alignOutput_(cellsContents.back());
     }
