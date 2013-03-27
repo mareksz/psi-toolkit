@@ -29,3 +29,30 @@ unsigned int AligningWriterWorker::alignOutputNewline_() {
     currentPos_ = 0;
     return currentPos_;
 }
+
+void AligningWriterWorker::setAlignments_(std::vector<unsigned int> alignments) {
+    alignments_ = alignments;
+}
+
+void AligningWriterWorker::printTableRow_(std::vector<std::string> cellsContents) {
+    if (!cellsContents.empty()) {
+        for (size_t i = 0; i < cellsContents.size() - 1; ++i) {
+            alignOutput_(cellsContents[i], getAlignment_(i));
+        }
+        alignOutput_(cellsContents.back());
+    }
+    alignOutputNewline_();
+}
+
+unsigned int AligningWriterWorker::getAlignment_(size_t columnNum) {
+    if (columnNum < alignments_.size()) {
+        return alignments_[columnNum];
+    }
+    unsigned int lastAlignment = 0;
+    if (!alignments_.empty()) {
+        lastAlignment = alignments_.back();
+    }
+    return lastAlignment + DEFAULT_COLUMN_WIDTH * (columnNum - alignments_.size());
+}
+
+const unsigned int AligningWriterWorker::DEFAULT_COLUMN_WIDTH = 20;

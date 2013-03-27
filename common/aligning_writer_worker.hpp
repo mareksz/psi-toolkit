@@ -1,6 +1,9 @@
 #ifndef ALIGNING_WRITER_WORKER
 #define ALIGNING_WRITER_WORKER
 
+#include <string>
+#include <vector>
+
 #include "writer_worker.hpp"
 
 class AligningWriterWorker : public WriterWorker<std::ostream> {
@@ -30,8 +33,30 @@ protected:
      */
     unsigned int alignOutputNewline_();
 
+    /**
+     * Sets position of columns.
+     */
+    void setAlignments_(std::vector<unsigned int> alignments);
+
+    /**
+     * Prints cellsContents to outputStream_ aligning them.
+     */
+    void printTableRow_(std::vector<std::string> cellsContents);
+
 private:
     unsigned int currentPos_;
+
+    /**
+     * Positions of columns.
+     */
+    std::vector<unsigned int> alignments_;
+
+    /**
+     * Returns position of ith column.
+     */
+    unsigned int getAlignment_(size_t i);
+
+    static const unsigned int DEFAULT_COLUMN_WIDTH;
 
 };
 
