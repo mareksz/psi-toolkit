@@ -276,10 +276,10 @@
 276 0187 09   doktorów     !pl,nkjp-reader,token doktorów    T
 277 0187 09   doktorów     !pl,lemma,nkjp-reader doktor      word[276]
 278 0187 09   doktorów     !pl,lexeme,nkjp-reader doktor+subst subst[277]
-279 0187 09   doktorów     !pl,discarded,form,nkjp-reader doktorów subst,case=gen,gender=m1,number=pl[278(!pl,form,nkjp-reader),(!pl,form,nkjp-reader),<-1.79769e+308>]
-280 0187 09   doktorów     !pl,discarded,form,nkjp-reader doktorów subst,case=acc,gender=m1,number=pl[278(!pl,form,nkjp-reader),<-1.79769e+308>,,<-1.79769e+308>]
-281 0187 09   doktorów     !pl,lemma,nkjp-reader doktór      word[276]
-282 0187 09   doktorów     !pl,lexeme,nkjp-reader doktór+subst subst[281]
+279 0187 09   doktorów     !pl,lemma,nkjp-reader doktór      word[276]
+280 0187 09   doktorów     !pl,lexeme,nkjp-reader doktór+subst subst[279]
+281 0187 09   doktorów     !pl,discarded,form,nkjp-reader doktorów subst,case=gen,gender=m1,number=pl[278(!pl,form,nkjp-reader),280(!pl,form,nkjp-reader),<-1.79769e+308>]
+282 0187 09   doktorów     !pl,discarded,form,nkjp-reader doktorów subst,case=acc,gender=m1,number=pl[278(!pl,form,nkjp-reader),<-1.79769e+308>,280,<-1.79769e+308>]
 283 0196 01   _            !pl,nkjp-reader,token _           B
 284 0197 02   na           !pl,nkjp-reader,token na          T
 285 0197 02   na           !pl,lemma,nkjp-reader na          word[284,284]

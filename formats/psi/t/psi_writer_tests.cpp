@@ -24,6 +24,30 @@ int countAllEdges(Lattice & lattice) {
 }
 
 
+BOOST_AUTO_TEST_CASE( psi_header ) {
+    AnnotationItemManager aim;
+    Lattice lattice(aim);
+
+    boost::scoped_ptr<LatticeWriter<std::ostream> > writer(new PsiLatticeWriter(
+        true // with header
+    ));
+
+    std::ostringstream osstr;
+    writer->writeLattice(lattice, osstr);
+
+    std::string line;
+    std::string contents;
+    std::ifstream s(ROOT_DIR "formats/psi/t/files/header.psi");
+    while (getline(s, line)) {
+        contents += line;
+        contents += "\n";
+    }
+
+    BOOST_CHECK_EQUAL(osstr.str(), contents);
+
+}
+
+
 BOOST_AUTO_TEST_CASE( psi_lattice_writer_simple ) {
     AnnotationItemManager aim;
     Lattice lattice(aim);

@@ -381,7 +381,7 @@ void GVLatticeWriter::Worker::doRun() {
                 contents += line;
                 contents += "\n";
             }
-            alignOutput_(contents);
+            print_(contents);
         } catch (...) { }
 
         std::remove(tmpFile);

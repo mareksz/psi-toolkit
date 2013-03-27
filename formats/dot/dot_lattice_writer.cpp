@@ -85,15 +85,13 @@ void DotLatticeWriter::Worker::doRun() {
     Lattice::EdgesSortedByTargetIterator ei
         = lattice_.edgesSortedByTarget(lattice_.getLayerTagManager().anyTag());
 
-    alignOutput_("digraph G {");
-    alignOutputNewline_();
+    printLine_("digraph G {");
 
     if (processor_.isTree()) {
-        alignOutput_("rankdir=TB");
+        printLine_("rankdir=TB");
     } else {
-        alignOutput_("rankdir=LR");
+        printLine_("rankdir=LR");
     }
-    alignOutputNewline_();
 
     while (ei.hasNext()) {
 
@@ -222,8 +220,7 @@ void DotLatticeWriter::Worker::doRun() {
 
         }
 
-        alignOutput_(edgeSs.str());
-        alignOutputNewline_();
+        printLine_(edgeSs.str());
 
     }
 
@@ -237,16 +234,14 @@ void DotLatticeWriter::Worker::doRun() {
             if (!startVertexNodes.count(prev)) {
                 std::stringstream invisibleEdgeSs;
                 invisibleEdgeSs << prev << " -> " << next << " [style=invis]";
-                alignOutput_(invisibleEdgeSs.str());
-                alignOutputNewline_();
+                printLine_(invisibleEdgeSs.str());
             }
             prev = *vni;
             ++vni;
         }
     }
 
-    alignOutput_("}");
-    alignOutputNewline_();
+    printLine_("}");
 
     DEBUG("WRITING");
 }

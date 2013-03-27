@@ -123,7 +123,7 @@ void SimpleLatticeWriter::Worker::doRun() {
 
     writer.run();
 
-    alignOutputNewline_();
+    printLine_();
 
 }
 
