@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <iostream>
 
+#include <boost/assign/list_of.hpp>
+
 #include "logging.hpp"
 
 std::string PsiLatticeWriter::getFormatName() {
@@ -60,7 +62,7 @@ void PsiLatticeWriter::Worker::doRun() {
 
     int ordinal = 0;
 
-    int alignments[] = { 2, 7, 13, 26, 48, 60 };
+    std::vector<unsigned int> alignments = boost::assign::list_of(2)(7)(13)(26)(48)(60);
 
     if (processor_.isWithHeader()) {
         alignOutput_("##", alignments[0]);
@@ -234,7 +236,7 @@ void PsiLatticeWriter::Worker::doRun() {
 
         // edge text:
 
-        int edgeTextLength = utf8::distance(edgeText.begin(), edgeText.end());
+        unsigned int edgeTextLength = utf8::distance(edgeText.begin(), edgeText.end());
         std::string edgeTextPrinted;
         if (edgeTextLength == 0) {
             alignOutput_("∅", alignments[3]);
