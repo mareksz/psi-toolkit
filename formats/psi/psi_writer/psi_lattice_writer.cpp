@@ -92,6 +92,8 @@ void PsiLatticeWriter::Worker::doRun() {
             while (i < lattice_.getVertexRawCharIndex(source)) {
                 try {
 
+                    std::vector<std::string> outputCells;
+
                     Lattice::EdgeDescriptor rawEdge = lattice_.firstOutEdge(
                         lattice_.getVertexForRawCharIndex(i),
                         lattice_.getLayerTagManager().getMask("symbol")
@@ -102,34 +104,29 @@ void PsiLatticeWriter::Worker::doRun() {
                     std::stringstream ordinalSs;
                     ordinalSs << std::right << std::setfill('0') << std::setw(2);
                     ordinalSs << ordinal;
-                    alignOutput_(ordinalSs.str(), alignments[0]);
-                    alignOutput_(" ");
+                    outputCells.push_back(ordinalSs.str());
 
                     std::stringstream beginningSs;
                     beginningSs << std::right << std::setfill('0') << std::setw(4);
                     beginningSs << i;
-                    alignOutput_(beginningSs.str(), alignments[1]);
-                    alignOutput_(" ");
+                    outputCells.push_back(beginningSs.str());
 
                     std::stringstream lengthSs;
                     lengthSs << std::right << std::setfill('0') << std::setw(2);
                     lengthSs << lattice_.getEdgeLength(rawEdge);
-                    alignOutput_(lengthSs.str(), alignments[2]);
-                    alignOutput_(" ");
+                    outputCells.push_back(lengthSs.str());
 
                     std::string edgeText = quoter.escape(lattice_.getEdgeText(rawEdge));
-                    alignOutput_(edgeText, alignments[3]);
-                    alignOutput_(" ");
+                    outputCells.push_back(edgeText);
 
-                    alignOutput_("symbol", alignments[4]);
-                    alignOutput_(" ");
+                    outputCells.push_back("symbol");
 
                     const AnnotationItem& annotationItem = lattice_.getEdgeAnnotationItem(rawEdge);
-                    alignOutput_(quoter.escape(annotationItem.getText()), alignments[5]);
-                    alignOutput_(" ");
+                    outputCells.push_back(quoter.escape(annotationItem.getText()));
 
-                    alignOutput_(quoter.escape(annotationItem.getCategory()));
-                    alignOutputNewline_();
+                    outputCells.push_back(quoter.escape(annotationItem.getCategory()));
+
+                    printTableRow_(outputCells);
 
                     latticeTextCovered += edgeText;
 
@@ -139,35 +136,32 @@ void PsiLatticeWriter::Worker::doRun() {
 
                     // Lattice contains some text not covered by any edge.
 
+                    std::vector<std::string> outputCells;
+
                     char uncoveredSymbol = lattice_.getAllText()[i];
 
                     ++ordinal;
                     std::stringstream ordinalSs;
                     ordinalSs << std::right << std::setfill('0') << std::setw(2);
                     ordinalSs << ordinal;
-                    alignOutput_(ordinalSs.str(), alignments[0]);
-                    alignOutput_(" ");
+                    outputCells.push_back(ordinalSs.str());
 
                     std::stringstream beginningSs;
                     beginningSs << std::right << std::setfill('0') << std::setw(4);
                     beginningSs << i;
-                    alignOutput_(beginningSs.str(), alignments[1]);
-                    alignOutput_(" ");
+                    outputCells.push_back(beginningSs.str());
 
-                    alignOutput_("01", alignments[2]);
-                    alignOutput_(" ");
+                    outputCells.push_back("01");
 
-                    alignOutput_(quoter.escape(std::string(1, uncoveredSymbol)), alignments[3]);
-                    alignOutput_(" ");
+                    outputCells.push_back(quoter.escape(std::string(1, uncoveredSymbol)));
 
-                    alignOutput_("∅", alignments[4]);
-                    alignOutput_(" ");
+                    outputCells.push_back("∅");
 
-                    alignOutput_("∅", alignments[5]);
-                    alignOutput_(" ");
+                    outputCells.push_back("∅");
 
-                    alignOutput_("∅");
-                    alignOutputNewline_();
+                    outputCells.push_back("∅");
+
+                    printTableRow_(outputCells);
 
                     latticeTextCovered += uncoveredSymbol;
                     i++;
