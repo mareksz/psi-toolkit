@@ -45,6 +45,10 @@ void AligningWriterWorker::printTableRow_(std::vector<std::string> cellsContents
     alignOutputNewline_();
 }
 
+unsigned int AligningWriterWorker::getColumnWidth_(size_t columnNum) {
+    return getAlignment_(columnNum) - ((columnNum > 0) ? getAlignment_(columnNum - 1) : 0);
+}
+
 unsigned int AligningWriterWorker::getAlignment_(size_t columnNum) {
     if (columnNum < alignments_.size()) {
         return alignments_[columnNum];

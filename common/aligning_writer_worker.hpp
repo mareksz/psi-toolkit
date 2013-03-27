@@ -43,6 +43,11 @@ protected:
      */
     void printTableRow_(std::vector<std::string> cellsContents);
 
+    /**
+     * Returns the width of the specified column.
+     */
+    unsigned int getColumnWidth_(size_t columnNum);
+
 private:
     unsigned int currentPos_;
 
@@ -54,7 +59,7 @@ private:
     /**
      * Returns position of ith column.
      */
-    unsigned int getAlignment_(size_t i);
+    unsigned int getAlignment_(size_t columnNum);
 
     static const unsigned int DEFAULT_COLUMN_WIDTH;
 
