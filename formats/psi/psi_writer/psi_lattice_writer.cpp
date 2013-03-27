@@ -174,13 +174,14 @@ void PsiLatticeWriter::Worker::doRun() {
 
         edgeOrdinalMap[edge] = ordinal;
 
+        std::vector<std::string> outputCells;
+
         // ordinal:
 
         std::stringstream ordinalSs;
         ordinalSs << std::right << std::setfill('0') << std::setw(2);
         ordinalSs << ordinal;
-        alignOutput_(ordinalSs.str(), alignments[0]);
-        alignOutput_(" ");
+        outputCells.push_back(ordinalSs.str());
 
         // beginning:
 
@@ -191,8 +192,7 @@ void PsiLatticeWriter::Worker::doRun() {
             beginningSs << std::right << std::setfill('0') << std::setw(4);
             beginningSs << lattice_.getVertexRawCharIndex(source);
         }
-        alignOutput_(beginningSs.str(), alignments[1]);
-        alignOutput_(" ");
+        outputCells.push_back(beginningSs.str());
 
         // length:
 
@@ -207,8 +207,7 @@ void PsiLatticeWriter::Worker::doRun() {
             lengthSs << std::right << std::setfill('0') << std::setw(2);
             lengthSs << lattice_.getEdgeLength(edge);
         }
-        alignOutput_(lengthSs.str(), alignments[2]);
-        alignOutput_(" ");
+        outputCells.push_back(lengthSs.str());
 
         // (some preparations):
 
@@ -232,15 +231,15 @@ void PsiLatticeWriter::Worker::doRun() {
 
         // edge text:
 
+        std::stringstream edgeTextSs;
         unsigned int edgeTextLength = utf8::distance(edgeText.begin(), edgeText.end());
         std::string edgeTextPrinted;
         if (edgeTextLength == 0) {
-            alignOutput_("∅", alignments[3]);
+            edgeTextSs << "∅";
         } else if (edgeTextLength > alignments[3] - alignments[2] && !writeWholeText) {
             std::string::const_iterator bIter = edgeText.begin();
             utf8::unchecked::advance(bIter, alignments[3] - alignments[2] - 7);
-            alignOutput_(edgeText.substr(0, bIter - edgeText.begin()));
-            alignOutput_("...");
+            edgeTextSs << edgeText.substr(0, bIter - edgeText.begin()) << "...";
 
             std::string::const_iterator eIter = edgeText.end();
             for (int i = 0; i < 3; ++i)
@@ -257,8 +256,8 @@ void PsiLatticeWriter::Worker::doRun() {
                         - lattice_.getVertexRawCharIndex(source));
             } catch (std::out_of_range) { }
         }
-        alignOutput_(edgeTextPrinted, alignments[3]);
-        alignOutput_(" ");
+        edgeTextSs << edgeTextPrinted;
+        outputCells.push_back(edgeTextSs.str());
 
         // tags:
 
@@ -271,13 +270,11 @@ void PsiLatticeWriter::Worker::doRun() {
             }
             tagStr += tagName;
         }
-        alignOutput_(quoter.escape(tagStr), alignments[4]);
-        alignOutput_(" ");
+        outputCells.push_back(quoter.escape(tagStr));
 
         // annotation text:
 
-        alignOutput_(quoter.escape(annotationItem.getText()), alignments[5]);
-        alignOutput_(" ");
+        outputCells.push_back(quoter.escape(annotationItem.getText()));
 
         // annotations:
 
@@ -374,8 +371,9 @@ void PsiLatticeWriter::Worker::doRun() {
             aiSs << "[" << partSs.str() << "]";
         }
 
-        alignOutput_(aiSs.str());
-        alignOutputNewline_();
+        outputCells.push_back(aiSs.str());
+
+        printTableRow_(outputCells);
 
     }
 
