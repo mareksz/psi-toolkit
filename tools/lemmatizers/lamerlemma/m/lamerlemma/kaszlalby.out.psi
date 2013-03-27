@@ -2,8 +2,8 @@
 01 0000 10    kaszlałby    frag,txt-reader       kaszlałby   FRAG[]
 02 0000 10    kaszlałby    !pl,lang-guesser,text kaszlałby   TEXT[1]
 03 0000 10    kaszlałby    !pl,token             kaszlałby   T
-04 0000 10    kaszlałby    !pl,lamerlemma,lemma  kaszlać     word[3]
-05 0000 10    kaszlałby    !pl,lamerlemma,lexeme kaszlać+verb verb[4]
-06 0000 10    kaszlałby    !pl,lamerlemma,lemma  kaszleć     word[3]
-07 0000 10    kaszlałby    !pl,lamerlemma,lexeme kaszleć+verb verb[6]
-08 0000 10    kaszlałby    !pl,form,lamerlemma   kaszlałby   verb,aspect=imperf,gender=m,mode=pot,number=sg,person=ter,tense=praet[5,7]
+04 0000 10    kaszlałby    !pl,lamerlemma,lamerlemma-tagset,lemma kaszlać word[3]
+05 0000 10    kaszlałby    !pl,lamerlemma,lamerlemma-tagset,lexeme kaszlać+verb verb[4]
+06 0000 10    kaszlałby    !pl,lamerlemma,lamerlemma-tagset,lemma kaszleć word[3]
+07 0000 10    kaszlałby    !pl,lamerlemma,lamerlemma-tagset,lexeme kaszleć+verb verb[6]
+08 0000 10    kaszlałby    !pl,form,lamerlemma,lamerlemma-tagset kaszlałby verb,aspect=imperf,gender=m,mode=pot,number=sg,person=ter,tense=praet[5,7]
