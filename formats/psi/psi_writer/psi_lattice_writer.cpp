@@ -83,6 +83,8 @@ void PsiLatticeWriter::Worker::doRun() {
         Lattice::VertexDescriptor source = lattice_.getEdgeSource(edge);
         Lattice::VertexDescriptor target = lattice_.getEdgeTarget(edge);
 
+        if (edgeOrdinalMap.count(edge)) continue;
+
         if (lattice_.isEdgeHidden(edge)) continue;
 
         if (!lattice_.isLooseVertex(source) && !lattice_.isLooseVertex(target)) {
