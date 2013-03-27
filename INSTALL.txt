@@ -21,6 +21,7 @@ Optional
 * DjVuLibre library: development files - (Ubuntu package: libdjvulibre-dev) - for djvu-reader
 * Link Grammar library: development files - (Ubuntu package: liblink-grammar4-dev) - for link-parser
 * Bison and Flex tools - (Ubuntu packages: bison flex) - for gobio
+* CMPH library: development files - (Ubuntu package: `libcmph-dev`)
 
 
 Ubuntu 11.10
