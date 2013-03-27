@@ -62,8 +62,6 @@ void PsiLatticeWriter::Worker::doRun() {
 
     int ordinal = 0;
 
-    std::vector<unsigned int> alignments = boost::assign::list_of(2)(7)(13)(26)(48)(60);
-
     setAlignments_(boost::assign::list_of(2)(7)(13)(26)(48)(60));
 
     if (processor_.isWithHeader()) {
@@ -236,9 +234,9 @@ void PsiLatticeWriter::Worker::doRun() {
         std::string edgeTextPrinted;
         if (edgeTextLength == 0) {
             edgeTextSs << "∅";
-        } else if (edgeTextLength > alignments[3] - alignments[2] && !writeWholeText) {
+        } else if (edgeTextLength > getColumnWidth_(3) && !writeWholeText) {
             std::string::const_iterator bIter = edgeText.begin();
-            utf8::unchecked::advance(bIter, alignments[3] - alignments[2] - 7);
+            utf8::unchecked::advance(bIter, getColumnWidth_(3) - 7);
             edgeTextSs << edgeText.substr(0, bIter - edgeText.begin()) << "...";
 
             std::string::const_iterator eIter = edgeText.end();
