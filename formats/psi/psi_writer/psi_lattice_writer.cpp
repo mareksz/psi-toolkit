@@ -341,15 +341,26 @@ void PsiLatticeWriter::Worker::printEdge(
                 = edgeOrdinalMap.find(ed.getEdge());
             if (mi != edgeOrdinalMap.end()) {
                 linkSs << mi->second;
-
-                if (!NULLP(ed.getRole()))
+                if (!NULLP(ed.getRole())) {
                     linkSs << '$'
                         << quoter.escape(
                             lattice_.getAnnotationItemManager().zvalueToString(ed.getRole()))
                         << '$';
+                }
             } else if (!lattice_.getLayerTagManager().isThere(
                     "symbol", lattice_.getEdgeLayerTags(ed.getEdge()))) {
-                // printEdge(ed.getEdge(), quoter, edgeOrdinalMap, ordinal, latticeTextCovered);
+                printEdge(ed.getEdge(), quoter, edgeOrdinalMap, ordinal, latticeTextCovered);
+                std::map<Lattice::EdgeDescriptor, int>::iterator mi2
+                    = edgeOrdinalMap.find(ed.getEdge());
+                if (mi2 != edgeOrdinalMap.end()) {
+                    linkSs << mi2->second;
+                    if (!NULLP(ed.getRole())) {
+                        linkSs << '$'
+                            << quoter.escape(
+                                lattice_.getAnnotationItemManager().zvalueToString(ed.getRole()))
+                            << '$';
+                    }
+                }
             }
         }
         partSs << linkSs.str();
