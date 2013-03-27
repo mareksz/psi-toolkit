@@ -64,15 +64,17 @@ void PsiLatticeWriter::Worker::doRun() {
 
     std::vector<unsigned int> alignments = boost::assign::list_of(2)(7)(13)(26)(48)(60);
 
+    setAlignments_(boost::assign::list_of(2)(7)(13)(26)(48)(60));
+
     if (processor_.isWithHeader()) {
-        alignOutput_("##", alignments[0]);
-        alignOutput_(" beg.", alignments[1]);
-        alignOutput_(" len.", alignments[2]);
-        alignOutput_(" text", alignments[3]);
-        alignOutput_(" tags", alignments[4]);
-        alignOutput_(" annot.text", alignments[5]);
-        alignOutput_(" annotations");
-        alignOutputNewline_();
+        printTableRow_(boost::assign::list_of
+            ("##")
+            ("beg.")
+            ("len.")
+            ("text")
+            ("tags")
+            ("annot.text")
+            ("annotations"));
     }
 
     std::string latticeTextCovered;
