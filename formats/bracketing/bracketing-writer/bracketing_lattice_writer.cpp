@@ -233,9 +233,9 @@ void BracketingLatticeWriter::Worker::doRun() {
             j != i;
             j = ((j + latticeSize) - 1) % latticeSize
         ) {
-            alignOutput_(printedBrackets[i][j]);
+            print_(printedBrackets[i][j]);
         }
-        alignOutput_(latticeText.substr(i, symbolLength(latticeText, i)));
+        print_(latticeText.substr(i, symbolLength(latticeText, i)));
     }
 
     for (size_t i = 0; i < latticeSize; i++) {
