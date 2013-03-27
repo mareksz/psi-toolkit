@@ -133,13 +133,9 @@ void PsiLatticeWriter::Worker::doRun() {
 
                 } catch (NoEdgeException) {
 
-                    char uncoveredSymbol = lattice_.getAllText()[i];
+                    // Lattice contains some text not covered by any edge.
 
-                    // WARN(
-                        // "Lattice contains some text ('" << std::string(1, uncoveredSymbol) <<
-                        // "' at " << i << ") not covered by any edge. " <<
-                        // "It may be nonreproducible from generated PSI output."
-                    // );
+                    char uncoveredSymbol = lattice_.getAllText()[i];
 
                     ++ordinal;
                     std::stringstream ordinalSs;
@@ -344,13 +340,18 @@ void PsiLatticeWriter::Worker::doRun() {
                 std::map<Lattice::EdgeDescriptor, int>::iterator mi
                     = edgeOrdinalMap.find(ed.getEdge());
                 if (mi != edgeOrdinalMap.end()) {
-                    linkSs << (*mi).second;
+                    linkSs << mi->second;
 
                     if (!NULLP(ed.getRole()))
                         linkSs << '$'
                             << quoter.escape(
                                 lattice_.getAnnotationItemManager().zvalueToString(ed.getRole()))
                             << '$';
+                } else if (!lattice_.getLayerTagManager().isThere(
+                        "symbol", lattice_.getEdgeLayerTags(ed.getEdge()))) {
+
+                    // TODO
+
                 }
             }
             partSs << linkSs.str();
