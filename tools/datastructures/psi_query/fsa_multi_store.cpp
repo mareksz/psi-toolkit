@@ -54,8 +54,8 @@ namespace psi {
     
     void FSAMultiStore::load(std::istream &in)
     {
-        size_t separatorSize;
-        in.read((char*)&separatorSize, sizeof(size_t));
+        uint64_t separatorSize;
+        in.read((char*)&separatorSize, sizeof(uint64_t));
         separator_.resize(separatorSize);
         in.read(&separator_[0], separatorSize);
         storeFSA_.load(in);
@@ -70,8 +70,8 @@ namespace psi {
     
     void FSAMultiStore::save(std::ostream &out)
     {
-        size_t separatorSize = separator_.size();
-        out.write((char*)&separatorSize, sizeof(size_t));
+        uint64_t separatorSize = separator_.size();
+        out.write((char*)&separatorSize, sizeof(uint64_t));
         out.write(separator_.c_str(), separatorSize);
         storeFSA_.save(out);
     }

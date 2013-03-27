@@ -333,13 +333,13 @@ namespace psi {
           istream.push(boost::iostreams::gzip_decompressor());
           istream.push(in);    
           
-          size_t statesNum;
-          istream.read((char*)&statesNum, sizeof(size_t));
+          uint64_t statesNum;
+          istream.read((char*)&statesNum, sizeof(uint64_t));
           m_states.resize(statesNum);
           istream.read((char*)&m_states[0], statesNum * sizeof(PosT));
     
-          size_t arcsNum;
-          istream.read((char*)&arcsNum, sizeof(size_t));
+          uint64_t arcsNum;
+          istream.read((char*)&arcsNum, sizeof(uint64_t));
           m_arcs.resize(arcsNum);
           istream.read((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
       }
@@ -364,12 +364,12 @@ namespace psi {
           ostream.push(boost::iostreams::gzip_compressor());
           ostream.push(out);
           
-          size_t statesNum = m_states.size();
-          ostream.write((char*)&statesNum, sizeof(size_t));
+          uint64_t statesNum = m_states.size();
+          ostream.write((char*)&statesNum, sizeof(uint64_t));
           ostream.write((char*)&m_states[0], statesNum * sizeof(PosT));
     
-          size_t arcsNum = m_arcs.size();
-          ostream.write((char*)&arcsNum, sizeof(size_t));
+          uint64_t arcsNum = m_arcs.size();
+          ostream.write((char*)&arcsNum, sizeof(uint64_t));
           ostream.write((char*)&m_arcs[0], arcsNum * sizeof(ArcT));
       }
       // Some magic to remember the exact gzip stream end:
@@ -379,10 +379,10 @@ namespace psi {
       out.seekp(end); //jump to end;
     }
 
-    typedef BinDFSA<Arc<Symbol, unsigned>, unsigned, std::allocator> MemBinDFSA;
-    typedef BinDFSA<Arc<Symbol, unsigned>, unsigned, MmapAllocator>  MapBinDFSA;
+    typedef BinDFSA<Arc<Symbol, uint32_t>, uint32_t, std::allocator> MemBinDFSA;
+    typedef BinDFSA<Arc<Symbol, uint32_t>, uint32_t, MmapAllocator>  MapBinDFSA;
     
-    typedef BinDFSA<Arc<unsigned char, unsigned>, unsigned> StringBinFSA;
+    typedef BinDFSA<Arc<uint8_t, uint32_t>, uint32_t> StringBinFSA;
 
   }
 }
