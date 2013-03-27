@@ -13,6 +13,7 @@
 #include "annotator_factory.hpp"
 #include "psi_exception.hpp"
 
+#include "shallow_aliaser.hpp"
 #include "auto_completer.hpp"
 
 #if HAVE_PERL_BINDINGS
@@ -140,6 +141,8 @@ private:
                                                           const std::string & path);
 
     static bool isStandardInputOrOutputFileName(const std::string & path);
+
+    ShallowAliaser shallowAliaser_;
 };
 
 #endif

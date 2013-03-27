@@ -74,6 +74,8 @@ template<typename Source, typename Sink>
 void PipeRunner::parseIntoFinalPipeline_(
     std::vector<std::string> args, bool isTheFirstArgProgramName) {
 
+    args = shallowAliaser_.replace(args);
+
     parseRunnerProgramOptions_(args);
     if (stopAfterExecutingRunnerOptions_()) {
         justInformation_ = true;
