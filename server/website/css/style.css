@@ -215,7 +215,7 @@ footer ul { list-style:none; margin-left:6px; }
 footer li > a, footer li > a:visited { color:#c1c1c1; }
 footer li > a:hover { color:#fff; text-decoration:none; }
 
-#version { color:#eee; padding-top:12px; }
+#version { color:#eee; }
 
 .footer-bottom { color:#888; font-size:11px; }
 #author { float:right; margin-top:-14px; }

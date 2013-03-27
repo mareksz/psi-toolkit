@@ -9,24 +9,22 @@ as you see now to work offline by simple running:
 
 ## Which types of input files does PSI-Toolkit support?
 
-PSI-Toolkit deals with all kinds of text files, including some NLP-tools internal
-formats like PSI and UTT formats. Other supported file formats are: (x)html, pdf,
-doc, djvu, docx, xlsx and pptx.
+PSI-Toolkit deals with all kinds of text files, including some NLP-tools
+internal formats like PSI and UTT formats. Other supported file formats are:
+`(x)html`, `pdf`, `doc`, `djvu`, `docx`, `xlsx` and `pptx`.
 
 
-## I can not find the appropriate PSI-reader to handle my file.
+## Which languages does PSI-Toolkit support?
 
-You may try to use the <code>guessing-reader</code> to automatically guess
-the input file format. Another possibility is that PSI-Toolkit does not support
-your file format currently.
-
-
-## Where can I check if PSI-Toolkit supports text in my language?
-
-TODO
+It depends on the processor. Some of them, such as tokenizer and segmentizer,
+offer support for the wide range of languages, whereas others are designed
+for specific language, like in the case of `morfologik` or `link-grammar`.
+In [documentation](/help/documentation.html) you may find all supported
+languages for each processor.
 
 
 ## How can I display all text fragments with particular tag?
 
-TODO
-
+You can filter the display of PSI-lattice by using the `tag` option of
+`simple-writer`.
+See page [Working with PSI-lattice](/help/tutorial.html#header-11) for details.
