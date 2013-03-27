@@ -182,18 +182,11 @@ void PsiLatticeWriter::Worker::printEdge(
         }
     }
 
-    ++ordinal;
-
-    edgeOrdinalMap[edge] = ordinal;
-
     std::vector<std::string> outputCells;
 
-    // ordinal:
+    // prepare place for ordinal:
 
-    std::stringstream ordinalSs;
-    ordinalSs << std::right << std::setfill('0') << std::setw(2);
-    ordinalSs << ordinal;
-    outputCells.push_back(ordinalSs.str());
+    outputCells.push_back("");
 
     // beginning:
 
@@ -382,6 +375,15 @@ void PsiLatticeWriter::Worker::printEdge(
     }
 
     outputCells.push_back(aiSs.str());
+
+    // insert ordinal number into first cell:
+
+    ++ordinal;
+    edgeOrdinalMap[edge] = ordinal;
+    std::stringstream ordinalSs;
+    ordinalSs << std::right << std::setfill('0') << std::setw(2);
+    ordinalSs << ordinal;
+    outputCells.front() = ordinalSs.str();
 
     printTableRow_(outputCells);
 }
