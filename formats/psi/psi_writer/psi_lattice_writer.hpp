@@ -43,6 +43,13 @@ private:
 
         virtual void doRun();
 
+        void printEdge(
+            Lattice::EdgeDescriptor edge,
+            PsiQuoter &quoter,
+            std::map<Lattice::EdgeDescriptor, int> &edgeOrdinalMap,
+            int &ordinal,
+            std::string &latticeTextCovered);
+
         virtual ~Worker();
     private:
         PsiLatticeWriter& processor_;
