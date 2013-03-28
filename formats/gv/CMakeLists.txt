@@ -13,4 +13,4 @@ add_subdirectory(t)
 add_subdirectory(plugin)
 
 install(TARGETS formats-gv DESTINATION lib/)
-install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/gv-writer)
+install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/gv-lattice-writer)

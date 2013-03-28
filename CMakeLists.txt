@@ -83,7 +83,7 @@ message(STATUS "Downloading data (artifacts) ${DOWNLOAD_DATA}")
 if(IS_INSTALLABLE)
     # ./server/website content has to be moved to /var/psi-server/website during installation
     set(WEBSITE_ROOT "/var/lib/psi-server/website" CACHE STRING "The website root directory")
-else()
+else(IS_INSTALLABLE)
     set(WEBSITE_ROOT "../server/website" CACHE STRING "The website root directory")
 endif(IS_INSTALLABLE)
 

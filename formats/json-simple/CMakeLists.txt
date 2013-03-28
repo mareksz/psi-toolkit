@@ -5,4 +5,4 @@ add_library(formats-json-simple SHARED
 )
 
 install(TARGETS formats-json-simple DESTINATION lib/)
-install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/json-simple-lattice-writer)
+install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/json-lattice-writer)
