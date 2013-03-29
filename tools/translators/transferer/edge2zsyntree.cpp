@@ -14,6 +14,7 @@
 //#include "dicaux.h"
 
 #include <stack>
+#include "string_helpers.cpp"
 
 EdgeToZsyntreeConverter::EdgeToZsyntreeConverter(Lattice& latticeArg)
     :lattice(latticeArg),
@@ -347,7 +348,7 @@ zsyntree* EdgeToZsyntreeConverter::generateEquivLeaf_(
 
     (*eT).setAttr(
         GETSYMBOL4STRING(std::string("Equiv")),
-        GETSYMBOL4STRING(lattice.getAnnotationText(equivEdge)));
+        GETSYMBOL4STRING(getLemmaFromLexeme(lattice.getAnnotationText(equivEdge))));
 
     (*eT).setOrigin(equivEdge);
 
