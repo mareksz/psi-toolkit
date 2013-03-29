@@ -15,7 +15,8 @@
 #include "tscript_from_file.hpp"
 #include "put_zsyntree_into_lattice.hpp"
 
-TransfererRunner::TransfererRunner(const boost::program_options::variables_map& options) {
+TransfererRunner::TransfererRunner(const boost::program_options::variables_map& options)
+    :formsCounter_(0) {
     std::string lang = options["lang"].as<std::string>();
     langCode_ = lang;
 
@@ -146,11 +147,85 @@ void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edg
         lattice,
         lattice.getLayerTagManager().createTagCollection(tags_),
         targetTree);
+
+    putTargetForms_(
+        lattice,
+        targetTree,
+        transferer_);
 }
 
 void TransfererRunner::createTags_(const std::string& trg_lang) {
     tags_ = providedLayerTags();
     tags_.push_back(LayerTagManager::getLanguageTag(trg_lang));
+
+    targetFormTags_.push_back("form");
+    targetFormTags_.push_back("!translation");
+    targetFormTags_.push_back(LayerTagManager::getLanguageTag(trg_lang));
+}
+
+void TransfererRunner::putTargetForms_(Lattice& lattice, zsyntree* targetTree, boost::shared_ptr<tmil::Transferer> transferer_) {
+
+    std::stack<zsyntree*> nstack;
+    nstack.push(targetTree);
+
+    zsyntree* n;
+
+    zvalue z;
+    int i;
+
+    while (!nstack.empty()) {
+        n = nstack.top();
+        nstack.pop();
+
+        if(!NULLP(z = n->fetch(transferer_->getSurfSymbol())))
+        {
+            try {
+                Lattice::EdgeDescriptor edge
+                    = boost::any_cast<Lattice::EdgeDescriptor>(n->getOrigin());
+
+                if(ZVECTORP(z))
+                {
+                    zvector* v = ZVECTORC(z);
+                    int c;
+                    for(c = 0 ; c < v->getSize(); ++c)
+                        putTargetForm_(lattice, edge, v->elementAt(c));
+                }
+                else
+                    putTargetForm_(lattice, edge, z);
+            } catch (const boost::bad_any_cast &) {
+                ;
+            }
+        }
+        else
+        {
+            // wrzucamy do kolejki potomków n
+            for(i = n->last_subtree; i >= 0; --i)
+                nstack.push(ZSYNTREEC(n->fetch(INTEGER_TO_ZVALUE(i))));
+        }
+    }
+}
+
+void TransfererRunner::putTargetForm_(Lattice& lattice, Lattice::EdgeDescriptor edge, zvalue surf) {
+    zvalue lexeme =
+        (ZPAIRP(surf) ? ZPAIRC(surf)->getFirst() : surf);
+
+    AnnotationItem annotationItem("TODO", StringFrag(zvalue_to_string(lexeme)));
+
+    lattice.getAnnotationItemManager().setValue(
+        annotationItem, "SurfacePosition", formsCounter_++);
+
+    Lattice::EdgeSequence::Builder builder(lattice);
+    builder.addEdge(edge);
+
+    Lattice::VertexDescriptor fromVertex = lattice.getEdgeSource(edge);
+    Lattice::VertexDescriptor toVertex = lattice.getEdgeTarget(edge);
+
+    lattice.addEdge(
+        fromVertex,
+        toVertex,
+        annotationItem,
+        lattice.getLayerTagManager().createTagCollection(targetFormTags_),
+        builder.build());
 }
 
 const std::string TransfererRunner::DEFAULT_RULE_FILE

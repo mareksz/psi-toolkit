@@ -67,16 +67,23 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
         }
     }
 
+    bool newEdge = false;
+
     if (!vertexSet && tree->segment_len == 0) {
+        newEdge = true;
         fromVertex = lattice.addLooseVertex();
         toVertex = lattice.addLooseVertex();
     }
 
-    return lattice.addEdge(
+    Lattice::EdgeDescriptor addedEdge = lattice.addEdge(
         fromVertex,
         toVertex,
         annotationItem,
         targetTags,
         builder.build());
 
+    if (newEdge)
+        tree->setOrigin(addedEdge);
+
+    return addedEdge;
 }
