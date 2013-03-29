@@ -1,1 +1,8 @@
-A tag converter specifically geared toward, but not limited to, conversion of morphological tags.
+A tag converter specifically geared toward, but not limited to, conversion of
+morphological tags.
+
+Tagset-converter has some predefined sets of rules for several configurations,
+but if you want, you can provide your own rule file with `--rules` option.
+In general, there are two kinds of rules: simple substitutions and more complex
+if-then rules. The detailed tutorial on how to write your own rule sets for
+tagset-converter is being prepared.

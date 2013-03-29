@@ -1,3 +1,4 @@
 Link Grammar Parser is a syntactic parser based on link grammar.
 
-More information can be found at the project's website: <http://www.abisource.com/projects/link-grammar/>.
+More information can be found at the project's website:
+<http://www.abisource.com/projects/link-grammar/>.
