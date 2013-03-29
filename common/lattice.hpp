@@ -556,6 +556,14 @@ public:
     const StringFrag getAnnotationTextAsStringFrag(EdgeDescriptor edge);
     const std::string getAnnotationCategory(EdgeDescriptor edge);
 
+    /**
+     * Get all the descendents of a given edge matching a given mask
+     * spanning the same source/target vertex.
+     */
+    std::vector<EdgeDescriptor> getChildren(
+        EdgeDescriptor parent,
+        LayerTagMask mask);
+
     void runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask);
 
     bool isBlank(Lattice::EdgeDescriptor edge);

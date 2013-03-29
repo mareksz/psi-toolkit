@@ -353,6 +353,41 @@ BOOST_AUTO_TEST_CASE( lemmatizer ) {
     }
 }
 
+
+BOOST_AUTO_TEST_CASE( simple_get_descendents ) {
+    AnnotationItemManager aim;
+    Lattice lattice(aim);
+    initAndTokenize_(lattice, "prowokacjami");
+
+    boost::program_options::variables_map noOptions;
+    LemmatizerAnnotator<FakeLemmatizer> annotator(noOptions);
+
+    annotator.annotate(lattice);
+
+    // now checking
+
+    LayerTagMask lemmaMask_ = lattice.getLayerTagManager().getMask("lexeme");
+    Lattice::EdgesSortedByTargetIterator lemmaIter = lattice.edgesSortedByTarget(lemmaMask_);
+
+    BOOST_REQUIRE(lemmaIter.hasNext());
+    Lattice::EdgeDescriptor prowokacjamiLemma = lemmaIter.next();
+
+    LayerTagMask formMask_ = lattice.getLayerTagManager().getMask("form");
+
+    std::vector<Lattice::EdgeDescriptor> forms = lattice.getChildren(
+        prowokacjamiLemma,
+        formMask_);
+
+    BOOST_REQUIRE_EQUAL(forms.size(), 1);
+
+    std::vector<Lattice::EdgeDescriptor> formsOnForms = lattice.getChildren(
+        forms[0],
+        formMask_);
+
+    BOOST_REQUIRE(formsOnForms.empty());
+}
+
+
 BOOST_AUTO_TEST_CASE( variant_edges ) {
     //preparing lattice
     AnnotationItemManager aim;
