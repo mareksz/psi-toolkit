@@ -133,7 +133,8 @@ void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edg
 
     transferer_->include(rulesFile_.string().c_str());
 
-    zsyntree* tree = convertEdgeToZsyntree(lattice, edge);
+    EdgeToZsyntreeConverter converter(lattice);
+    zsyntree* tree = converter.convertEdgeToZsyntree(edge);
 
     std::cerr << "  GOT SOURCE:" << tree->zsyntree_to_string() << std::endl;
 
