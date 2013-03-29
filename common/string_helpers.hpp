@@ -13,4 +13,6 @@ size_t symbolLength(const char* s, int ix);
 
 size_t symbolLength(const char* s);
 
+std::string getLemmaFromLexeme(const std::string& lexeme);
+
 #endif

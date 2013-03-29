@@ -526,7 +526,7 @@ endif(WITH_LOW_MEMORY_COMPILATION)
 set(BASE_TARGETS common common-plugins utf8case sundown fex framework
     formats-apertium formats-bracketing formats-dot formats-guessing formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
-    maxent tools-tokenizers-tp tools-segmenters-srx tools-recognizers-langguesser
+    maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
     tools-converters-unumsunt tools-translators-transferer tools-lemmatizers-lamerlemma)
 

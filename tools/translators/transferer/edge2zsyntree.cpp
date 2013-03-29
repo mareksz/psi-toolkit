@@ -14,15 +14,21 @@
 //#include "dicaux.h"
 
 #include <stack>
+#include "string_helpers.cpp"
 
-zsyntree* convertEdgeToZsyntree(
-    Lattice& lattice,
+EdgeToZsyntreeConverter::EdgeToZsyntreeConverter(Lattice& latticeArg)
+    :lattice(latticeArg),
+     sym_fac(latticeArg.getAnnotationItemManager().getSymbolFactory()),
+     holder(latticeArg.getAnnotationItemManager().getZObjectsHolderPtr()),
+     lexemeTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("lexeme")),
+     formTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("form")),
+     equivMask_(lattice.getLayerTagManager().getMask("bilexicon")) {
+}
+
+zsyntree* EdgeToZsyntreeConverter::convertEdgeToZsyntree(
     Lattice::EdgeDescriptor start_edge)
 {
     LayerTagCollection unwantedTags = lattice.getSymbolTag();
-
-    zsymbolfactory* sym_fac = lattice.getAnnotationItemManager().getSymbolFactory();
-    zobjects_holder* holder = lattice.getAnnotationItemManager().getZObjectsHolderPtr();
 
     Lattice::EdgeDescriptor edge = start_edge;
     zvalue role = NULL_ZVALUE;
@@ -89,6 +95,10 @@ mloop:
             //     (*R).setAttr(aname_sm, sm_nil);
     }
 
+    zsyntree* eT = generateEquivTree_(edge);
+
+    if (eT)
+        (*R).setEquivTree(eT);
 
 //     if(a_pnode->target_data != NULL)
 //     {
@@ -285,4 +295,62 @@ backtracking:
 finish:
 
     return R;
+}
+
+zsyntree* EdgeToZsyntreeConverter::generateEquivTree_(
+    Lattice::EdgeDescriptor edge) {
+
+    const std::list<Lattice::Partition>& partitions = lattice.getEdgePartitions(edge);
+
+    // we are going down twice (for the lexeme) and up (for the equivalent)
+    BOOST_FOREACH(Lattice::Partition partition, partitions) {
+        Lattice::Partition::Iterator partitionIter(lattice, partition);
+
+        while (partitionIter.hasNext()) {
+            Lattice::EdgeDescriptor parent = partitionIter.next();
+
+            if (createIntersection(
+                    formTag_, lattice.getEdgeLayerTags(parent)).isNonempty()) {
+
+                const std::list<Lattice::Partition>& subPartitions
+                    = lattice.getEdgePartitions(parent);
+
+                BOOST_FOREACH(Lattice::Partition subPartition, subPartitions) {
+                    Lattice::Partition::Iterator subPartitionIter(lattice, subPartition);
+
+                    while (subPartitionIter.hasNext()) {
+
+                        Lattice::EdgeDescriptor grandParent = subPartitionIter.next();
+
+                        if (createIntersection(
+                                lexemeTag_, lattice.getEdgeLayerTags(grandParent)).isNonempty()) {
+
+                            std::vector<Lattice::EdgeDescriptor> equivs
+                                = lattice.getChildren(grandParent, equivMask_);
+
+                            if (!equivs.empty()) {
+                                return generateEquivLeaf_(equivs.front());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return NULL;
+}
+
+zsyntree* EdgeToZsyntreeConverter::generateEquivLeaf_(
+    Lattice::EdgeDescriptor equivEdge) {
+
+    zsyntree* eT = zsyntree::generate(holder);
+
+    (*eT).setAttr(
+        GETSYMBOL4STRING(std::string("Equiv")),
+        GETSYMBOL4STRING(getLemmaFromLexeme(lattice.getAnnotationText(equivEdge))));
+
+    (*eT).setOrigin(equivEdge);
+
+    return eT;
 }

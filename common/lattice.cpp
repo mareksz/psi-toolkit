@@ -629,6 +629,41 @@ const std::string Lattice::getAnnotationCategory(EdgeDescriptor edge) {
     return getEdgeAnnotationItem(edge).getCategory();
 }
 
+std::vector<Lattice::EdgeDescriptor> Lattice::getChildren(
+    EdgeDescriptor parent,
+    LayerTagMask mask) {
+
+    std::vector<EdgeDescriptor> results;
+
+    VertexDescriptor sourceVertex = getEdgeSource(parent);
+    VertexDescriptor targetVertex = getEdgeTarget(parent);
+
+    InOutEdgesIterator iter = outEdges(sourceVertex, mask);
+
+    while (iter.hasNext()) {
+        EdgeDescriptor potentialChild = iter.next();
+
+        VertexDescriptor itsTargetVertex = getEdgeTarget(potentialChild);
+
+        if (itsTargetVertex == targetVertex) {
+            const std::list<Partition>& partitions = getEdgePartitions(potentialChild);
+
+            BOOST_FOREACH(Partition partition, partitions) {
+                Partition::Iterator partitionIter(*this, partition);
+
+                while (partitionIter.hasNext()) {
+                    EdgeDescriptor itsParent = partitionIter.next();
+                    if (itsParent == parent)
+                        results.push_back(potentialChild);
+                }
+            }
+        }
+    }
+
+    return results;
+}
+
+
 void Lattice::runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask) {
     EdgesSortedBySourceIterator edgeIter(*this, superMask);
 

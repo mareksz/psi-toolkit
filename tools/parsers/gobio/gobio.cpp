@@ -30,7 +30,7 @@ void Gobio::Factory::doAddLanguageIndependentOptionsHandled(
     optionsDescription.add_options()
         ("rules",
         boost::program_options::value<std::string>()->default_value(DEFAULT_RULE_FILE),
-        "rules file");
+        "file with rules in text format");
 }
 
 std::string Gobio::Factory::doGetName() const {

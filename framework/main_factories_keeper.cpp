@@ -23,6 +23,7 @@
 #include "unumsunt.hpp"
 #include "transferer_runner.hpp"
 #include "lamerlemma.hpp"
+#include "detok.hpp"
 
 #if HAVE_GRAPHVIZ
 #include "gv_lattice_writer.hpp"
@@ -194,6 +195,8 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new poleng::bonsai::puddle::Puddle::Factory());
 
     keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
+
+    keeper_.takeProcessorFactory(new Detok::Factory());
 
 #if HAVE_CMPH
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());

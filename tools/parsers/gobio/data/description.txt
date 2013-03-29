@@ -1,1 +1,8 @@
-A deep parser [under construction].
+A deep parser based on the parser used in Translatica machine translation system.
+
+Gobio operates on morfologically annotated text.
+
+Gobio has some predefined sets of rules for several languages, but if you want,
+you can provide your own rule file with `--rules` option. The rules for gobio
+are in general a kind of context-free grammar rules. The tutorial on how to
+write your own rule sets for gobio is being prepared.

@@ -31,6 +31,9 @@ public:
 
     void processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge);
 
+    void putTargetForms_(Lattice& lattice, zsyntree* targetTree, boost::shared_ptr<tmil::Transferer> transferer_);
+    void putTargetForm_(Lattice& lattice, Lattice::EdgeDescriptor edge, zvalue surf);
+
     class Exception : public PsiException  {
     public:
         Exception(const std::string& msg): PsiException(msg) {
@@ -44,8 +47,11 @@ private:
 
     std::string langCode_;
     std::list<std::string> tags_;
+    std::list<std::string> targetFormTags_;
 
     boost::filesystem::path rulesFile_;
 
     static const std::string DEFAULT_RULE_FILE;
+
+    size_t formsCounter_;
 };

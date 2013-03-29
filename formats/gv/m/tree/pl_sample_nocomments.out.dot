@@ -1,6 +1,7 @@
 digraph g {
 	node [label="\N"];
-	graph [rankdir=TB];
+	graph [rankdir=TB,
+		ordering=out];
 	1 [label="Ala 'Ala'"];
 	2 [label="Ala Ala"];
 	3 [label="Ala rzeczownik"];
