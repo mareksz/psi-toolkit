@@ -53,11 +53,49 @@ void Detok::Worker::doRun() {
 
     Lattice::EdgesSortedByTargetIterator iter(lattice_, mask);
 
+    std::map<int, Lattice::EdgeDescriptor> orderMap;
+
     while (iter.hasNext()) {
         Lattice::EdgeDescriptor edge = iter.next();
 
-        INFO("OUTPUT: " << lattice_.getAnnotationText(edge));
+        AnnotationItem item = lattice_.getEdgeAnnotationItem(edge);
+
+        int position = ZVALUE_TO_INTEGER(
+            lattice_.getAnnotationItemManager().getValue(
+                item,
+                "SurfacePosition"));
+
+        orderMap[position] = edge;
     }
+
+    std::string finalText;
+
+    for (std::map<int, Lattice::EdgeDescriptor>::const_iterator orderMapIter
+             = orderMap.begin();
+         orderMapIter != orderMap.end();
+         ++orderMapIter) {
+
+        int position = (*orderMapIter).first;
+        Lattice::EdgeDescriptor edge = (*orderMapIter).second;
+
+        INFO("TOKEN: " << lattice_.getAnnotationText(edge));
+        finalText += lattice_.getAnnotationText(edge);
+        finalText += " ";
+    }
+
+    Lattice::VertexDescriptor fromVertex = lattice_.addLooseVertex();
+    Lattice::VertexDescriptor toVertex = lattice_.addLooseVertex();
+
+    INFO("TEXT: " << finalText);
+
+    AnnotationItem textItem("TEXT", StringFrag(finalText));
+
+    lattice_.addEdge(
+        fromVertex,
+        toVertex,
+        textItem,
+        lattice_.getLayerTagManager().createSingletonTagCollectionWithLangCode(
+            "text", "en"));
 }
 
 std::string Detok::doInfo() {
