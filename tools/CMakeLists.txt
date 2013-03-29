@@ -31,6 +31,7 @@ set(tools_DIRS
     segmenters/srx
     recognizers/langguesser
     lexica/bilexicon
+    lexica/mapper
     datastructures/lexica
     datastructures/psi_query
     taggers/metagger
