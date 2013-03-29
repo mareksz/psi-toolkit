@@ -207,6 +207,7 @@ void GVLatticeWriter::Worker::doRun() {
 
         if (processor_.isTree()) {
             processor_.getAdapter()->setRankDir("TB");
+            processor_.getAdapter()->setOrdering("out");
         } else {
             processor_.getAdapter()->setRankDir("LR");
         }

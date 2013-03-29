@@ -83,6 +83,11 @@ void GraphvizAdapterImpl::setRankDir(std::string dir) {
 }
 
 
+void GraphvizAdapterImpl::setOrdering(std::string ordering) {
+    agsafeset(g_, (char*)"ordering", (char*)(ordering.c_str()), (char*)"");
+}
+
+
 int GraphvizAdapterImpl::addNode(std::string id) {
 #if GRAPHVIZ_CGRAPH
     Agnode_t * n = agnode(g_, (char*)(id.c_str()), 1);

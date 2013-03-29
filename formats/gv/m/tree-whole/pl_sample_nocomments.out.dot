@@ -1,6 +1,7 @@
 digraph g {
 	node [label="\N"];
-	graph [rankdir=TB];
+	graph [rankdir=TB,
+		ordering=out];
 	1 [label="A 'A"];
 	2 [label="l 'l"];
 	3 [label="a 'a"];

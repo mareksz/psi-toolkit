@@ -38,6 +38,7 @@ public:
     virtual void finalize();
 
     virtual void setRankDir(std::string dir);
+    virtual void setOrdering(std::string ordering);
 
     virtual int addNode(std::string id);
     virtual void setNodeLabel(int node, std::string label);
