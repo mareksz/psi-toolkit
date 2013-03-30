@@ -1,0 +1,7 @@
+Universal lexicon for generic mapping tasks. Uses the following text file format:
+
+    key value_text [value_category [value_feature1,value_feature2,...,value_featureN]]
+
+Whitespace separates fields. Value category and value features are optional, but value features imply and require the use of value categories. Value features are separated by `,`. The number of value_features is not restricted. Value features of the form `key=value` are split accordingly, value features of the form `value` are treated as `value=1`.
+
+Complex keys use `,` as a separator. In complex keys text precedes category and category precedes attributes. Attribute lists need to be sorted in a locale-neutral way. 
