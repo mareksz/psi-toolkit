@@ -17,14 +17,13 @@ while(<STDIN>) {
     my @parses = parse($tag);
     foreach my $parse (@parses) {
         my ($pos, @features) = parse_to_features($parse, $_);
-        print join("\t", $form, $lemma, $pos, join(" ", @features)), "\n";
+        print join("\t", $form, $lemma, $pos, join(",", @features)), "\n";
     }
 }
 
 sub parse_to_features {
     my $parse = shift;
     my $line = shift;
-    my @features;
     my %features;
     foreach my $val (@$parse) {
         if(exists($map{$val})) {
@@ -36,29 +35,38 @@ sub parse_to_features {
         }
     }
     
+    my $pos;
+    
     if(exists($features{pos})) {
-        push(@features, $features{pos});
+        $pos = $features{pos};
         delete $features{pos};
     }
     elsif(exists($features{depreciativity})) {
-        push(@features, $features{depreciativity});
+        $pos = $features{depreciativity};
         delete $features{depreciativity};
     }
     elsif(exists($features{"winien-like"})) {
-        push(@features, $features{"winien-like"});
+        $pos = $features{"winien-like"};
         delete $features{"winien-like"};
     }
     elsif(exists($features{tense})) {
-        push(@features, "verb");
+        $pos = "verb";
     }
     elsif(exists($features{mode})) {
-        push(@features, "verb");
+        $pos = "verb"
     }
     else {
         print STDERR $line, "\n";
         print STDERR Dumper($parse);
     }
     
+    my %special = qw(subst gender verb aspect);
+    
+    if(exists($special{$pos}) and exists($features{$special{$pos}}) ) {
+        $pos .= ",$special{$pos}=$features{$special{$pos}}";
+    }
+    
+    my @features = ($pos);
     foreach my $key (sort keys %features) {
         push(@features, "$key=$features{$key}")
     }

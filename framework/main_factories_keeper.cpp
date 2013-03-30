@@ -163,7 +163,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new Gobio::Factory());
     keeper_.takeProcessorFactory(new Unumsunt::Factory());
 
-    keeper_.takeProcessorFactory(new LemmatizerAnnotator<psi::LamerLemma>::Factory());
+    keeper_.takeProcessorFactory(new LemmatizerAnnotator<LamerLemma>::Factory());
 
 #if HAVE_GRAPHVIZ
     keeper_.takeProcessorFactory(new GVLatticeWriter::Factory());

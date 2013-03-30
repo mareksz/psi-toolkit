@@ -17,7 +17,7 @@ namespace psi {
     class FSAMultiStore
     {
       public:
-        FSAMultiStore(const std::string& separator = "\t");
+        FSAMultiStore();
         
         template <typename OutputIterator>
         void get(const std::string& key, OutputIterator iterator) const {
@@ -37,7 +37,7 @@ namespace psi {
         
         class Builder {
           public:
-            Builder(const std::string& separator = "\t");
+            Builder();
             ~Builder();
       
             void add(const std::string& key, const std::string& value);
@@ -63,7 +63,6 @@ namespace psi {
             
           private:
             FSAMultiStore* store_;  
-            std::string separator_;
             
             bool singleLineAdded_;
         };
@@ -72,7 +71,6 @@ namespace psi {
       private:
         StringBinFSA storeFSA_;
         StringFSA searchSuffixFSA_;
-        std::string separator_;
         
         void buildSearchSuffix();
     };

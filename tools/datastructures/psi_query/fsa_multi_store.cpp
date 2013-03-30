@@ -1,11 +1,11 @@
+#include "config.hpp"
 #include "fsa_multi_store.hpp"
 
 namespace psi {
   namespace fsa {
     
-    FSAMultiStore::Builder::Builder(const std::string& separator)
-      : store_(new FSAMultiStore(separator)), separator_(separator),
-        singleLineAdded_(false) { }
+    FSAMultiStore::Builder::Builder()
+      : store_(new FSAMultiStore()), singleLineAdded_(false) { }
     
     FSAMultiStore::Builder::~Builder()
     {
@@ -14,7 +14,7 @@ namespace psi {
 
     void FSAMultiStore::Builder::add(const std::string& key, const std::string& value)
     {
-        addSeparatedLine(key + separator_ + value);  
+        addSeparatedLine(key + LEXICON_FIELD_SEPARATOR + value);  
     }
     
     void FSAMultiStore::Builder::addSeparatedLine(const std::string& line)
@@ -33,7 +33,7 @@ namespace psi {
         return ret;
     }
   
-    FSAMultiStore::FSAMultiStore(const std::string& separator) : separator_(separator)
+    FSAMultiStore::FSAMultiStore()
     {
         buildSearchSuffix();
     }
@@ -54,10 +54,6 @@ namespace psi {
     
     void FSAMultiStore::load(std::istream &in)
     {
-        uint64_t separatorSize;
-        in.read((char*)&separatorSize, sizeof(uint64_t));
-        separator_.resize(separatorSize);
-        in.read(&separator_[0], separatorSize);
         storeFSA_.load(in);
     }
     
@@ -70,20 +66,16 @@ namespace psi {
     
     void FSAMultiStore::save(std::ostream &out)
     {
-        uint64_t separatorSize = separator_.size();
-        out.write((char*)&separatorSize, sizeof(uint64_t));
-        out.write(separator_.c_str(), separatorSize);
         storeFSA_.save(out);
     }
     
     void FSAMultiStore::buildSearchSuffix()
     {
-        StringFSA separatorFSA(separator_);
+        StringFSA separatorFSA(LEXICON_FIELD_SEPARATOR);
         concatenate(searchSuffixFSA_, separatorFSA);
         StringFSA anyFSA(ANY);
         kleene_plus(anyFSA);
         concatenate(searchSuffixFSA_, anyFSA);
-    }
-    
+    } 
   }
 }

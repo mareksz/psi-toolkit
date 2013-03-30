@@ -3,8 +3,6 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace psi {
-
 Dictionary::Dictionary(bool hasPos, bool hasMorpho)
  : hasPos_(hasPos||hasMorpho), hasMorpho_(hasMorpho), store_(0)
 { }
@@ -19,7 +17,7 @@ void Dictionary::readDictionary(const std::string& filename)
     INFO("Reading text dictionary data");
     std::ifstream in;
     in.open(filename.c_str());
-    psi::fsa::FSAMultiStore::Builder builder("\t");
+    psi::fsa::FSAMultiStore::Builder builder;
     builder.createFromSeparatedLines(LineIterator(in), LineIterator());
     store_ = builder.build();
     in.close();
@@ -37,7 +35,7 @@ void Dictionary::load(std::ifstream &in) {
     INFO("Loading dictionary data");
     if(store_)
         delete store_;
-    store_ = new fsa::FSAMultiStore();
+    store_ = new psi::fsa::FSAMultiStore();
     store_->load(in);
     in.read((char*) &hasPos_, sizeof(bool));
     in.read((char*) &hasMorpho_, sizeof(bool));
@@ -62,8 +60,6 @@ LemmaMap Dictionary::get(const std::string& token)
 {
     LemmaMap lemmaMap;
     BOOST_FOREACH(std::string result, store_->get(token))
-        parseResult(result, lemmaMap, "\t", hasPos_, hasMorpho_);
+        parseResult(result, lemmaMap, hasPos_, hasMorpho_);
     return lemmaMap;
-}
-
 }
