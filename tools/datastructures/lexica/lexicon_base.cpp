@@ -6,6 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
+#include <boost/range/sub_range.hpp> 
 
 void LexiconBase::readPlainText(const boost::filesystem::path& plainTextLexicon) {
 
@@ -18,6 +19,8 @@ void LexiconBase::readPlainText(const boost::filesystem::path& plainTextLexicon)
     std::string stringSoFar;
     bool firstEntry = true;
 
+    typedef boost::sub_range<std::vector<std::string> > SubRange; 
+    
     while (std::getline(plainTextStream, line)) {
         removeComment_(line);
 
@@ -25,7 +28,7 @@ void LexiconBase::readPlainText(const boost::filesystem::path& plainTextLexicon)
             continue;
 
         std::vector<std::string> fields;
-        boost::split(fields, line, boost::is_any_of("\t "));
+        boost::split(fields, line, boost::is_any_of(LEXICON_TEXT_FIELD_SEPARATORS));
         fields.erase(std::remove_if(
                          fields.begin(), fields.end(),
                          boost::bind( &std::string::empty, _1 )), fields.end());
@@ -34,24 +37,27 @@ void LexiconBase::readPlainText(const boost::filesystem::path& plainTextLexicon)
             field = quoter_.unescape(field);
         }
 
-        if (fields.size() != 2)
+        if (fields.size() < 2)
             throw Exception(
-                std::string("two fields expected in plain text bilexicon, was: `")
+                std::string("at least two fields expected in plain text lexicon, was: `")
                 + line + "`");
 
         if (firstEntry) {
             prevKey = fields[0];
-            stringSoFar = fields[1];
+            stringSoFar = boost::join(SubRange(fields.begin() + 1, fields.end()),
+                                      LEXICON_FIELD_SEPARATOR);
             firstEntry = false;
         } else {
             if (fields[0] == prevKey) {
-                stringSoFar += ";";
-                stringSoFar += fields[1];
+                stringSoFar += LEXICON_RECORD_SEPARATOR;
+                stringSoFar += boost::join(SubRange(fields.begin() + 1, fields.end()),
+                                           LEXICON_FIELD_SEPARATOR);
             }
             else {
                 storeBuilder.add(prevKey, stringSoFar);
                 prevKey = fields[0];
-                stringSoFar = fields[1];
+                stringSoFar = boost::join(SubRange(fields.begin() + 1, fields.end()),
+                                          LEXICON_FIELD_SEPARATOR);
             }
         }
     }
@@ -84,7 +90,7 @@ std::vector<std::string> LexiconBase::getRecords(const std::string& text) {
     std::vector<std::string> records;
 
     if (entryFound) {
-        boost::split(records, entryFound.get(), boost::is_any_of(";"));
+        boost::split(records, entryFound.get(), boost::is_any_of(LEXICON_RECORD_SEPARATOR));
     }
 
     return records;
@@ -98,5 +104,5 @@ void LexiconBase::removeComment_(std::string& s) {
 }
 
 bool LexiconBase::isEmptyLine_(const std::string& s) {
-    return s.find_first_not_of(" \t");
+    return s.find_first_not_of(LEXICON_TEXT_FIELD_SEPARATORS);
 }

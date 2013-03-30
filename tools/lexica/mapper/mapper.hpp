@@ -45,8 +45,12 @@ private:
     void loadBinary_(const boost::filesystem::path& binaryLexiconPath);
 
     void addEntry_(Lattice& lattice, Lattice::EdgeDescriptor edge, const std::string& record);
-    AnnotationItem parseRecord_(const std::string& record);
-
+    
+    void parseEntry_(const std::string& record,
+                     boost::optional<std::string>& text,
+                     boost::optional<std::string>& category,
+                     std::vector<std::pair<std::string, std::string> >& attributes);
+    
     void createTags_(const std::string& trg_lang);
 
     std::string langCode_;
@@ -54,8 +58,22 @@ private:
     
     std::list<std::string> inTags_;
     std::list<std::string> outTags_;
+    
+    bool considerText_;
+    bool considerCategory_;
+    bool considerAttributes_;
+    
+    bool cloneText_;
+    bool cloneCategory_;
+    bool cloneAttributes_;
+    
+    bool addAttributes_;
+    
+    boost::optional<std::string> setText_;
+    boost::optional<std::string> setCategory_;
+    boost::optional<std::string> setAttributes_;
+    std::vector<std::pair<std::string, std::string> > setAttributesParsed_;
 
-    static const std::string DEFAULT_BINARY_LEXICON_SPEC;
 };
 
 #endif
