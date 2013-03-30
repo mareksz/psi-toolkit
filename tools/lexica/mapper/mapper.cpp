@@ -185,8 +185,11 @@ void Mapper::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         const AnnotationItem item = lattice.getEdgeAnnotationItem(edge);
         typedef std::pair<std::string, std::string> StringPair;
+        std::vector<std::string> attributes;
         BOOST_FOREACH(StringPair kv, manager.getValues(item))
-            keys.push_back(kv.first + "=" + kv.second);
+            attributes.push_back(kv.first + "=" + kv.second);
+        std::sort(attributes.begin(), attributes.end());
+        keys.insert(keys.end(), attributes.begin(), attributes.end());
     }
     
     std::string key = boost::algorithm::join(keys, LEXICON_KEY_FIELD_SEPARATOR);
