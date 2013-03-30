@@ -6,48 +6,60 @@
 #include <boost/assign.hpp>
 #include <boost/bind.hpp>
 
-#include "bi_lang_specific_processor_file_fetcher.hpp"
-#include "bi_language_dependent_annotator_factory.hpp"
-#include "its_data.hpp"
+#include "lang_specific_processor_file_fetcher.hpp"
+#include "language_dependent_annotator_factory.hpp"
 
 Mapper::Mapper(const boost::program_options::variables_map& options) {
+    
     std::string lang = options["lang"].as<std::string>();
     langCode_ = lang;
-
-    std::string trg_lang = options["trg-lang"].as<std::string>();
-
-    createTags_(trg_lang);
-
-    BiLangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang, trg_lang);
-
-    if (options.count("plain-text-lexicon") > 0) {
-        if (options.count("binary-lexicon") > 0
-            && options["binary-lexicon"].as<std::string>() != DEFAULT_BINARY_LEXICON_SPEC)
-            throw new Exception(
-                "either --plain-text-lexicon or --binary-lexicon expected, not both");
-
-        boost::filesystem::path plainTextLexiconPath =
-            fileFetcher.getOneFile(
-                options["plain-text-lexicon"].as<std::string>());
-
-        readPlainText_(plainTextLexiconPath);
-    } else if (options.count("binary-lexicon") > 0) {
-        boost::filesystem::path binaryLexiconPath =
-            fileFetcher.getOneFile(
-                options["binary-lexicon"].as<std::string>());
-
-        loadBinary_(binaryLexiconPath);
+    
+    LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
+    
+    if(options.count("in-tags") > 0 && options.count("out-tags") > 0) {
+        std::string inTagsString = options["in-tags"].as<std::string>();
+        std::string outTagsString = options["out-tags"].as<std::string>();
+        
+        boost::split(inTags_, inTagsString, boost::is_any_of(","));
+        boost::split(outTags_, outTagsString, boost::is_any_of(","));
     }
-
-    if (options.count("save-binary-lexicon") > 0) {
-        if (lexiconBase_.isEmpty())
-            throw new Exception("no data to save");
-
-        boost::filesystem::path binaryLexiconPath(
-            options["save-binary-lexicon"].as<std::string>());
-
-        saveBinary_(binaryLexiconPath);
+    else {
+        throw Exception("missing --in-tags or --out-tags");
     }
+    
+    //if(options.count("plain-text-lexicon") == 0
+    //   && options.count("binary-lexicon") == 0) {
+    //    throw Exception("no mapper lexicon file given"); 
+    //}
+    //else {
+    //    if (options.count("plain-text-lexicon") > 0) {
+    //        if (options.count("binary-lexicon") > 0)
+    //            throw new Exception(
+    //                "either --plain-text-lexicon or --binary-lexicon expected, not both");
+    //    
+    //        boost::filesystem::path plainTextLexiconPath =
+    //            fileFetcher.getOneFile(
+    //                options["plain-text-lexicon"].as<std::string>());
+    //    
+    //        readPlainText_(plainTextLexiconPath);
+    //    } else if (options.count("binary-lexicon") > 0) {
+    //        boost::filesystem::path binaryLexiconPath =
+    //            fileFetcher.getOneFile(
+    //                options["binary-lexicon"].as<std::string>());
+    //    
+    //        loadBinary_(binaryLexiconPath);
+    //    }
+    //    
+    //    if (options.count("save-binary-lexicon") > 0) {
+    //        if (lexiconBase_.isEmpty())
+    //            throw new Exception("no data to save");
+    //    
+    //        boost::filesystem::path binaryLexiconPath(
+    //            options["save-binary-lexicon"].as<std::string>());
+    //    
+    //        saveBinary_(binaryLexiconPath);
+    //    }
+    //}
 }
 
 std::string Mapper::getName() {
@@ -67,45 +79,8 @@ AnnotatorFactory::LanguagesHandling Mapper::languagesHandling(
 std::list<std::string> Mapper::languagesHandled(
     const boost::program_options::variables_map& options) {
 
-    if (LanguageDependentAnnotatorFactory::checkLangOption(options)
-        == AnnotatorFactory::JUST_ONE_LANGUAGE)
-        return boost::assign::list_of(options["lang"].as<std::string>());
-
-    std::string trgLang =
-        options.count("trg-lang")
-        ? options["trg-lang"].as<std::string>()
-        : "";
-
-    std::string fileSuffix = trgLang + ".bin";
-
     std::vector<std::string> langs;
-
-    boost::filesystem::path dataDirectory = getItsData(getFile());
-
-    boost::filesystem::directory_iterator end_iter;
-    for (boost::filesystem::directory_iterator fiter(dataDirectory);
-         fiter != end_iter;
-         ++fiter) {
-        boost::filesystem::path seg(fiter->path().filename());
-        std::string lexiconFileName = seg.string();
-
-        if (lexiconFileName.length() > fileSuffix.length()
-            && lexiconFileName.substr(
-                lexiconFileName.length() - fileSuffix.length())
-            == fileSuffix) {
-
-            if (trgLang.empty()) {
-                if (lexiconFileName.length() == 4 + fileSuffix.length())
-                    langs.push_back(lexiconFileName.substr(0, 2));
-            } else {
-                langs.push_back(lexiconFileName.substr(
-                                    0, lexiconFileName.length() - fileSuffix.length()));
-
-            }
-        }
-    }
-
-    std::sort(langs.begin(), langs.end());
+    langs.push_back("pl");
 
     return std::list<std::string>(langs.begin(), langs.end());
 }
@@ -113,56 +88,58 @@ std::list<std::string> Mapper::languagesHandled(
 boost::program_options::options_description Mapper::optionsHandled() {
     boost::program_options::options_description desc("Allowed options");
 
-    BiLanguageDependentAnnotatorFactory::addBiLanguageDependentOptions(desc);
+    LanguageDependentAnnotatorFactory::addLanguageDependentOptions(desc);
 
     desc.add_options()
-        ("binary-lexicon",
-         boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_BINARY_LEXICON_SPEC),
-         "path to the lexicon in the binary format")
-        ("plain-text-lexicon",
-         boost::program_options::value<std::string>(),
-         "path to the lexicon in the plain text format")
-        ("save-binary-lexicon",
-         boost::program_options::value<std::string>(),
-         "as a side effect the lexicon in the binary format is generated");
-
+        ("in-tags", boost::program_options::value<std::string>(), "map edges container all specified tags")
+        ("out-tags", boost::program_options::value<std::string>(), "add tags to mapped edges")
+        ("consider-text", boost::program_options::value<std::string>(), "")
+        ("consider-category", boost::program_options::value<std::string>(), "")
+        ("consider-attributes", boost::program_options::value<std::string>(), "")
+        ("clone-text", boost::program_options::value<std::string>(), "")
+        ("clone-category", boost::program_options::value<std::string>(), "")
+        ("add-attributes", boost::program_options::value<std::string>(), "")
+        ("set-text", boost::program_options::value<std::string>(), "")
+        ("set-category", boost::program_options::value<std::string>(), "")
+        ("set-attrs", boost::program_options::value<std::string>(), "")
+        ("store", boost::program_options::value<std::string>(), "")
+        ("binary-lexicon", boost::program_options::value<std::string>(), "")
+        ("plain-text-lexicon", boost::program_options::value<std::string>(), "")
+        ("save-binary-lexicon", boost::program_options::value<std::string>(), "")
+    ;
+    
     return desc;
 }
 
 std::list<std::string> Mapper::providedLayerTags() {
     return boost::assign::list_of
-        (std::string("lexeme"))
-        (std::string("mapper"))
-        (std::string("!translation"));
+        (std::string("mapper"));
 }
 
 std::list<std::list<std::string> > Mapper::requiredLayerTags() {
     return
-        boost::assign::list_of(
-            boost::assign::list_of(std::string("lexeme")));
+        boost::assign::list_of(std::list<std::string>());
 }
 
 std::list<std::string> Mapper::tagsToOperateOn() {
-    return boost::assign::list_of
-        (std::string("lexeme"))(LayerTagManager::getLanguageTag(langCode_));
+    return inTags_;
 }
 
 void Mapper::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
-    std::string edgeText = lattice.getAnnotationText(edge);
+    //std::string edgeText = lattice.getAnnotationText(edge);
 
-    std::vector<std::string> records = lexiconBase_.getRecords(edgeText);
+    //std::vector<std::string> records = lexiconBase_.getRecords(edgeText);
 
-    BOOST_FOREACH(std::string& record, records) {
-        addEntry_(lattice, edge, record);
-    }
+    //BOOST_FOREACH(std::string& record, records) {
+        addEntry_(lattice, edge, "MAPPER");
+    //}
 }
 
 void Mapper::addEntry_(
     Lattice& lattice, Lattice::EdgeDescriptor edge, const std::string& record) {
 
     LayerTagCollection tags = lattice.getLayerTagManager().createTagCollectionFromList(
-        tags_);
+        outTags_);
 
     Lattice::EdgeSequence::Builder builder(lattice);
     builder.addEdge(edge);
@@ -199,8 +176,8 @@ void Mapper::loadBinary_(const boost::filesystem::path& binaryLexiconPath) {
 }
 
 void Mapper::createTags_(const std::string& trg_lang) {
-    tags_ = providedLayerTags();
-    tags_.push_back(LayerTagManager::getLanguageTag(trg_lang));
+    inTags_ = providedLayerTags();
+    inTags_.push_back(LayerTagManager::getLanguageTag(trg_lang));
 }
 
 const std::string Mapper::DEFAULT_BINARY_LEXICON_SPEC

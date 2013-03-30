@@ -51,9 +51,9 @@ private:
 
     std::string langCode_;
     LexiconBase lexiconBase_;
-    std::list<std::string> tags_;
     
-    //std::list<std::string> outTags_;
+    std::list<std::string> inTags_;
+    std::list<std::string> outTags_;
 
     static const std::string DEFAULT_BINARY_LEXICON_SPEC;
 };
