@@ -15,50 +15,49 @@
 #include "fsa_ndfsa.hpp"
 #include "fsa_algorithms.hpp"
 
-namespace psi {
-  namespace fsa {
-    
-    namespace phoenix = boost::phoenix;
-    namespace qi = boost::spirit::qi;
-    namespace unicode = boost::spirit::standard;
+namespace fsa {
 
-    template <typename Iterator, typename FSA>
-    struct CharGrammar : qi::grammar<Iterator, FSA()> {
+namespace phoenix = boost::phoenix;
+namespace qi = boost::spirit::qi;
+namespace unicode = boost::spirit::standard;
 
-        CharGrammar() : CharGrammar::base_type(alternation) {
+template <typename Iterator, typename FSA>
+struct CharGrammar : qi::grammar<Iterator, FSA()> {
 
-            alternation =
-                sequence [qi::_val = qi::_1] >>
-                *( '|' >> sequence [phoenix::bind(&unify<FSA, FSA>, qi::_val, qi::_1)] );
+    CharGrammar() : CharGrammar::base_type(alternation) {
 
-            sequence =
-                repetition [qi::_val = qi::_1] >>
-                *( repetition [phoenix::bind(&concatenate<FSA, FSA>, qi::_val, qi::_1)] );
+        alternation =
+            sequence [qi::_val = qi::_1] >>
+            *( '|' >> sequence [phoenix::bind(&unify<FSA, FSA>, qi::_val, qi::_1)] );
 
-            repetition =
-                ( factor >> "*" ) [phoenix::bind(&kleene_star<FSA>, qi::_val = qi::_1)]
-                | ( factor >> "+" ) [phoenix::bind(&kleene_plus<FSA>, qi::_val = qi::_1)]
-                | ( factor >> "?" ) [phoenix::bind(&kleene_option<FSA>, qi::_val = qi::_1)]
-                | factor [qi::_val = qi::_1];
+        sequence =
+            repetition [qi::_val = qi::_1] >>
+            *( repetition [phoenix::bind(&concatenate<FSA, FSA>, qi::_val, qi::_1)] );
 
-            factor =
-                symbol [ qi::_val =
-                    phoenix::construct<FSA>( phoenix::begin(qi::_1), phoenix::end(qi::_1) ) ]
-                | '(' >> alternation [qi::_val = qi::_1] >> ')';
+        repetition =
+            ( factor >> "*" ) [phoenix::bind(&kleene_star<FSA>, qi::_val = qi::_1)]
+            | ( factor >> "+" ) [phoenix::bind(&kleene_plus<FSA>, qi::_val = qi::_1)]
+            | ( factor >> "?" ) [phoenix::bind(&kleene_option<FSA>, qi::_val = qi::_1)]
+            | factor [qi::_val = qi::_1];
 
-            symbol = ( ~unicode::char_("()|+*?") ) [qi::_val = qi::_1];
+        factor =
+            symbol [ qi::_val =
+                phoenix::construct<FSA>( phoenix::begin(qi::_1), phoenix::end(qi::_1) ) ]
+            | '(' >> alternation [qi::_val = qi::_1] >> ')';
 
-        }
+        symbol = ( ~unicode::char_("()|+*?") ) [qi::_val = qi::_1];
 
-        qi::rule<Iterator, FSA()> alternation;
-        qi::rule<Iterator, FSA()> sequence;
-        qi::rule<Iterator, FSA()> repetition;
-        qi::rule<Iterator, FSA()> factor;
-        qi::rule<Iterator, std::string()> symbol;
+    }
 
-    };
-    
-  }
+    qi::rule<Iterator, FSA()> alternation;
+    qi::rule<Iterator, FSA()> sequence;
+    qi::rule<Iterator, FSA()> repetition;
+    qi::rule<Iterator, FSA()> factor;
+    qi::rule<Iterator, std::string()> symbol;
+
+};
+
 }
+
 
 #endif

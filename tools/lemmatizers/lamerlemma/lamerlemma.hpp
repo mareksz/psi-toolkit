@@ -44,7 +44,7 @@ public:
     static boost::program_options::options_description optionsHandled();
 
 private:
-    Dictionary m_dict;
+    Dictionary dict_;
     std::string langCode_;
     int level_;
 

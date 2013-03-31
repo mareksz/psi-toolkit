@@ -2,7 +2,6 @@
 #include "psi_exception.hpp"
 
 LamerLemma::LamerLemma(const boost::program_options::variables_map& options)
- : m_dict(options.count("pos") || options.count("morpho"), options.count("morpho"))
 {
     std::string lang = options["lang"].as<std::string>();
     langCode_ = lang;
@@ -21,38 +20,42 @@ LamerLemma::LamerLemma(const boost::program_options::variables_map& options)
             fileFetcher.getOneFile(
                 options["plain-text-lexicon"].as<std::string>());
 
-        m_dict.readDictionary(plainTextLexiconPath.string());
+        dict_.readDictionary(plainTextLexiconPath.string());
     } else if (options.count("binary-lexicon")) {
         boost::filesystem::path binaryLexiconPath =
             fileFetcher.getOneFile(
                 options["binary-lexicon"].as<std::string>());
 
-        m_dict.load(binaryLexiconPath.string());
+        dict_.load(binaryLexiconPath.string());
     }
 
     if (options.count("save-binary-lexicon")) {
-        if (m_dict.isEmpty())
+        if (dict_.isEmpty())
             throw new PsiException("no data to save");
 
         boost::filesystem::path binaryLexiconPath(
             options["save-binary-lexicon"].as<std::string>());
 
-        m_dict.save(binaryLexiconPath.string());
+        dict_.save(binaryLexiconPath.string());
     }
 
 }
 
 bool LamerLemma::lemmatize(const std::string& token,
-                               AnnotationItemManager& annotationItemManager,
-                               LemmatizerOutputIterator& outputIterator) {
+                           AnnotationItemManager& annotationItemManager,
+                           LemmatizerOutputIterator& outputIterator) {
+    
     bool foundLemma = false;
     
     if(level_ == 0)
         return false;
     else {
-        LemmaMap lemmaMap = m_dict.get(token);
-        if(lemmaMap.size())
+        LemmaMap lemmaMap = dict_.get(token);
+        if(lemmaMap.size()) {
+            if(!foundLemma)
+                outputIterator.addNormalization(token);
             foundLemma = true;
+        }
         else
             return false;
          
@@ -61,7 +64,7 @@ bool LamerLemma::lemmatize(const std::string& token,
             std::string lemma = lemmaPair.first;
             outputIterator.addLemma(lemma);
             
-            if(level_ > 1 && m_dict.hasPos()) {
+            if(level_ > 1) {
                 TagMap &tagMap = lemmaPair.second;
                 BOOST_FOREACH(TagMap::value_type tagPair, tagMap) {
                 
@@ -80,13 +83,10 @@ bool LamerLemma::lemmatize(const std::string& token,
                     if(level_ > 2) {
                         FeatureMapSet featureMapSet = tagPair.second.second;
                         BOOST_FOREACH(FeatureMap featureMap, featureMapSet) {
-                            AnnotationItem form(pos, StringFrag(token));
-                            
-                            if(m_dict.hasMorpho()) {
-                                BOOST_FOREACH(FeatureMap::value_type feature, featureMap) {
-                                    annotationItemManager.setValue(form, feature.first,
-                                                                   feature.second);
-                                }
+                            AnnotationItem form(pos, StringFrag(token));    
+                            BOOST_FOREACH(FeatureMap::value_type feature, featureMap) {
+                                annotationItemManager.setValue(form, feature.first,
+                                                               feature.second);
                             }
                             outputIterator.addForm(form);
                         }
@@ -113,14 +113,6 @@ boost::program_options::options_description LamerLemma::optionsHandled() {
         ("plain-text-lexicon",
          boost::program_options::value<std::string>(),
          "path to the lexicon in the plain text format")
-        ("primary-separator",
-         boost::program_options::value<std::string>(),
-         "Column separator (single tab character if not given)")
-        ("secondary-separator",
-         boost::program_options::value<std::string>(),
-         "Separator for data within columns (single space character if not given)")
-        ("pos", "text file contains part-of-speech information")
-        ("morpho", "text file contains morphology information (implies --pos)")
         ("save-binary-lexicon",
          boost::program_options::value<std::string>(),
          "as a side effect the lexicon in the binary format is generated");

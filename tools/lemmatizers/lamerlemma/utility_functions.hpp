@@ -22,11 +22,9 @@ std::string KLEndEncode(std::string asRef, std::string toCode);
 
 std::string KLEndDecode(std::string asRef, std::string asCode);
 
-std::string parseInput(const std::string& result,
-                       bool parseTag, bool parseMorpho);
+std::string parseInput(const std::string& result);
 
-void parseResult(const std::string& result, LemmaMap &lemmaMap,
-                 bool parseTag, bool parseMorpho);
+void parseResult(const std::string& key, const std::string& result, LemmaMap &lemmaMapq);
 
 class Line {   
   public:
@@ -37,7 +35,7 @@ class Line {
             INFO("[" << line.linesRead_ << + "]");
             
         if(line.data_.size()) {
-            std::string parsedData = parseInput(line.data_, true, true);
+            std::string parsedData = parseInput(line.data_);
             line.data_.swap(parsedData);
         }
         return is;
