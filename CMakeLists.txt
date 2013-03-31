@@ -793,6 +793,13 @@ if(DOWNLOAD_DATA)
            "tools/lemmatizers/sfst/data/tr.a")
     endif()
 
+    download_and_unpack(
+    "http://amu.edu.pl/~junczys/data/lamerlemma/pl.tar.gz"
+    "pl/pl.bin"
+    "9b02332be66db383ce67974f1d327d2e"
+    "tools/lemmatizers/lamerlemma/data/pl.bin"
+    )
+
 endif(DOWNLOAD_DATA)
 
 # ====================================================
