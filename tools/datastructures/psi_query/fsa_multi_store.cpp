@@ -18,6 +18,8 @@ void FSAMultiStore::Builder::add(const std::string& key, const std::string& valu
 
 void FSAMultiStore::Builder::addSeparatedLine(const std::string& line)
 {
+    //@todo currently not implemented
+    std::cerr << line << std::endl;
     abort();
 }
 
