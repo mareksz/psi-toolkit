@@ -9,20 +9,20 @@ BOOST_AUTO_TEST_CASE(epsremove_test)
 {
     // create automaton for (a+b+)?
 
-    psi::fsa::NDFSA<> a(psi::fsa::Symbol('a'));
-    psi::fsa::NDFSA<> b(psi::fsa::Symbol('b'));
+    fsa::NDFSA<> a(fsa::Symbol('a'));
+    fsa::NDFSA<> b(fsa::Symbol('b'));
 
-    psi::fsa::kleene_plus(a);
-    psi::fsa::kleene_plus(b);
-    psi::fsa::concatenate(a, b);
-    psi::fsa::kleene_option(a);
+    fsa::kleene_plus(a);
+    fsa::kleene_plus(b);
+    fsa::concatenate(a, b);
+    fsa::kleene_option(a);
 
     // remove epsilon transitions
 
     a.print();
     std::cout << std::endl;
 
-    psi::fsa::epsRemove(a);
+    fsa::epsRemove(a);
 
     a.print();
 
