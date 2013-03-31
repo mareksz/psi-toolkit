@@ -963,15 +963,16 @@ class StateEquiv : std::binary_function<typename DFSA::state_type,
 template <typename DFSA>
 class Register : public boost::unordered_set<typename DFSA::state_type,
         StateHash<DFSA>, StateEquiv<DFSA> >
-{
-  private:
-    DFSA &fsa_;
-    
+{    
   public:
-    Register(DFSA &fsa) : fsa_(fsa),
+    Register(DFSA &fsa) : 
       boost::unordered_set<typename DFSA::state_type,
       StateHash<DFSA>, StateEquiv<DFSA> >(100, StateHash<DFSA>(fsa),
-      StateEquiv<DFSA>(fsa)) { }
+      StateEquiv<DFSA>(fsa)),
+      fsa_(fsa) { }
+
+  private:
+    DFSA &fsa_;
 };
 
 

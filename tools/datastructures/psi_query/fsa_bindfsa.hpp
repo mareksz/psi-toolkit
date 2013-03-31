@@ -133,7 +133,9 @@ void BinDFSA<ArcT, PosT, Allocator>::unsetEndState(size_t p) {
 template <typename ArcT, typename PosT, template <typename> class Allocator>
 size_t BinDFSA<ArcT, PosT, Allocator>::addState(bool start) {
     size_t p = m_states.size();
-    m_states.resize(p+1);
+    if(start && p)
+        WARN("Setting start state other than 0 in DSFA");
+    m_states.resize(p + 1);
     m_states[p] = m_arcs.size();
     return p;
 }
