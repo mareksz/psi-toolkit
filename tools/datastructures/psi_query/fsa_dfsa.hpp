@@ -74,6 +74,7 @@ state_type delta(state_type p, symbol_type a) const;
             return boost::optional<state_type>();
         else
             return boost::optional<state_type>(arc->getDest());
+    }
 };
 
 }
