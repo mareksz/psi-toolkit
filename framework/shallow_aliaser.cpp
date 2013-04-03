@@ -17,7 +17,7 @@ std::string ShallowAliaser::replace(const std::string& pipeline) {
 
     // FIXME: optimize using regexps
     BOOST_FOREACH(const string_map::value_type& pair, aliases_) {
-        boost::replace_all(result, " " + pair.first + " ", " " + pair.second + " ");
+        boost::replace_all(result, pair.first, pair.second);
     }
 
     boost::algorithm::trim(result);
