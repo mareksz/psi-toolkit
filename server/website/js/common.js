@@ -1,11 +1,26 @@
 $(document).ready(function(){
     bindBibtexToggle();
+    bindDetailedDescriptionToggle();
 });
 
 function bindBibtexToggle() {
-  $('a.bibtex-toggler').click(function(){
-    $(this).next().toggle('fast');
-  });
+    $('a.bibtex-toggler').click(function() {
+        $(this).next().toggle('fast');
+    });
+}
+
+function bindDetailedDescriptionToggle() {
+    $('.help-toggler').click(function() {
+        var button = $(this);
+        button.prev().toggle('fast', function() {
+            if ($(this).is(":visible")) {
+                button.text('[show less]');
+            }
+            else {
+                button.text('[show more]');
+            }
+        })
+    });
 }
 
 function addRightMenu(menuId, containerId) {

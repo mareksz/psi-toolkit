@@ -13,6 +13,7 @@ std::set<std::string> HtmlHelpFormatter::extensionsForRandomExamples_ =
 void HtmlHelpFormatter::doFormatOneProcessorHelp(
     std::string processorName,
     std::string description,
+    std::string detailedDescription,
     boost::program_options::options_description options,
     std::list<std::string> aliases,
     std::vector<TestBatch> usingExamples,
@@ -22,10 +23,7 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
     output << "<div class=\"help-item\">"
         << "<h2 id=\"" << processorName << "\">" << processorName << "</h2>" << std::endl;
 
-    if (description.size() != 0) {
-        output << "<div class=\"help-desc\">" << markdownString2String(description)
-            << "</div>" << std::endl;
-    }
+    formatDescription_(description, detailedDescription, output);
 
     if (!aliases.empty()) {
         formatAliases_(aliases, output);
@@ -41,6 +39,23 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
 
     formatAllowedOptions_(options, output);
     output << "</div>" << std::endl;
+}
+
+void HtmlHelpFormatter::formatDescription_(std::string description,
+                                           std::string details,
+                                           std::ostream& output) {
+    if (!description.empty()) {
+        output << "<div class=\"help-desc\">" << markdownString2String(description);
+
+        if (!details.empty()) {
+            output << "<div class=\"help-details\" style=\"display:none;\">"
+                << markdownString2String(details)
+                << "</div>" << std::endl
+                << "<span class=\"help-toggler\">[show more]</span>" << std::endl;
+        }
+
+        output << "</div>" << std::endl;
+    }
 }
 
 void HtmlHelpFormatter::formatLanguagesHandled_(std::list<std::string> langCodes,

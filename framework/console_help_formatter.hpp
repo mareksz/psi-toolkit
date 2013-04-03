@@ -12,6 +12,7 @@ protected:
     void doFormatOneProcessorHelp(
         std::string processorName,
         std::string description,
+        std::string detailedDescription,
         boost::program_options::options_description options,
         std::list<std::string> aliases,
         std::vector<TestBatch> usingExamples,

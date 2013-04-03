@@ -30,10 +30,16 @@ private:
     void doFormatOneProcessorHelp(
         std::string processorName,
         std::string description,
+        std::string detailedDescription,
         boost::program_options::options_description options,
         std::list<std::string> aliases,
         std::vector<TestBatch> usingExamples,
         std::list<std::string> languagesHandled,
+        std::ostream& output);
+
+    void formatDescription_(
+        std::string description,
+        std::string details,
         std::ostream& output);
 
     void formatAliases_(std::list<std::string> aliases, std::ostream& output);
@@ -44,7 +50,8 @@ private:
         std::ostream& output,
         std::string divClass);
 
-    void formatAllowedOptions_(boost::program_options::options_description options,
+    void formatAllowedOptions_(
+        boost::program_options::options_description options,
         std::ostream& output);
 
     void doFormatOneAlias(

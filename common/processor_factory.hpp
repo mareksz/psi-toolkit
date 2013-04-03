@@ -76,6 +76,8 @@ public:
      */
     std::string getDescription();
 
+    std::string getDetailedDescription();
+
     /**
      * Checks if all requirements are met. If not puts a message into `message' stream.
      */
@@ -105,10 +107,12 @@ private:
     virtual std::string doGetName() const = 0;
 
     virtual std::string doGetDescription();
+    virtual std::string doGetDetailedDescription();
 
     virtual std::list<std::string> doGetAliases();
 
     std::string getFileContent(boost::filesystem::path path);
+    std::string getDataFile(std::string fileName, bool printWarnign = true);
 
     virtual bool doCheckRequirements(const boost::program_options::variables_map& /*options*/,
                                      std::ostream & /*message*/) const;

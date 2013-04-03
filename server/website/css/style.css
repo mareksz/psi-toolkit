@@ -224,15 +224,18 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 
 .help-item { border-top:1px dotted #ccc; padding-bottom:24px; }
 .help-item > div { margin-bottom:12px; }
+.help-desc { clear:both; }
 .alias-item { margin-left:24px; }
 
 .help-examples, .help-opts, .help-alias, .help-langs { margin-left:24px; }
 .example-desc { margin-top:6px; }
-.help-example { }
 .in-out { margin-bottom:25px; }
 .in-out > pre, .in-out > a { padding-left:35px; }
 .in-out > a { display:block; }
 .in, .out { float:left; font-weight:bold; margin-right:5px; }
+
+.help-toggler { color:#004767; float:right; font-size:.9em; text-decoration:none; cursor:pointer; }
+.help-toggler:hover { text-decoration:underline; }
 
 img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
     width:770px; }

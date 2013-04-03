@@ -20,6 +20,7 @@ void HelpFormatter::formatOneProcessorHelp(std::string processorName, std::ostre
     doFormatOneProcessorHelp(
         processorName,
         getProcessorDescription(processorName),
+        getProcessorDetailedDescription(processorName),
         getProcessorOptions(processorName),
         getAliasesForProcessorName(processorName),
         getProcessorUsingExamples(processorName),
@@ -111,6 +112,11 @@ boost::filesystem::path HelpFormatter::getPathToFrameworkDataFile_(const std::st
 
 std::string HelpFormatter::getProcessorDescription(std::string processorName) {
     return MainFactoriesKeeper::getInstance().getProcessorFactory(processorName).getDescription();
+}
+
+std::string HelpFormatter::getProcessorDetailedDescription(std::string processorName) {
+    return MainFactoriesKeeper::getInstance().getProcessorFactory(processorName)
+        .getDetailedDescription();
 }
 
 boost::program_options::options_description HelpFormatter::getProcessorOptions(
