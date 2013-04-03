@@ -12,6 +12,7 @@ add_subdirectory(translators)
 
 set(tools_DIRS
     tokenizers/tp
+    tokenizers/detok
     lemmatizers/morfologik
     parsers/gobio
     parsers/link
@@ -31,6 +32,7 @@ set(tools_DIRS
     segmenters/srx
     recognizers/langguesser
     lexica/bilexicon
+    lexica/mapper
     datastructures/lexica
     datastructures/psi_query
     taggers/metagger
@@ -41,7 +43,7 @@ set(tools_DIRS
     translators/bonsai/rules
     translators/bonsai/translator
     translators/transferer
-    lemmatizers/lamerlemma 
+    lemmatizers/lamerlemma
     CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE
 )
 

@@ -17,41 +17,38 @@
 #include "lemmatizer_output_iterator.hpp"
 #include "dictionary.hpp"
 
-namespace psi {
+class LamerLemma {
 
-    class LamerLemma {
+public:
+    LamerLemma(const boost::program_options::variables_map& options);
 
-    public:
-        LamerLemma(const boost::program_options::variables_map& options);
+    bool lemmatize(const std::string& token,
+                   AnnotationItemManager& annotationItemManager,
+                   LemmatizerOutputIterator& outputIterator);
 
-        bool lemmatize(const std::string& token,
-                       AnnotationItemManager& annotationItemManager,
-                       LemmatizerOutputIterator& outputIterator);
+    static std::string getName();
+    static boost::filesystem::path getFile();
+    static std::list<std::string> getLayerTags();
+    std::string getLanguage() const;
 
-        static std::string getName();
-        static boost::filesystem::path getFile();
-        static std::list<std::string> getLayerTags();
-        std::string getLanguage() const;
+    static AnnotatorFactory::LanguagesHandling languagesHandling(
+        const boost::program_options::variables_map& options);
 
-        static AnnotatorFactory::LanguagesHandling languagesHandling(
-            const boost::program_options::variables_map& options);
+    static std::list<std::string> languagesHandled(
+        const boost::program_options::variables_map& options);
 
-        static std::list<std::string> languagesHandled(
-            const boost::program_options::variables_map& options);
+    static bool checkRequirements(
+        const boost::program_options::variables_map& options,
+        std::ostream & message);
 
-        static bool checkRequirements(
-            const boost::program_options::variables_map& options,
-            std::ostream & message);
+    static boost::program_options::options_description optionsHandled();
 
-        static boost::program_options::options_description optionsHandled();
+private:
+    Dictionary dict_;
+    std::string langCode_;
+    int level_;
 
-    private:
-        Dictionary m_dict;
-        std::string langCode_;
-        int level_;
+    static const std::string DEFAULT_LAMERLEMMA_SPEC;
+};
 
-        static const std::string DEFAULT_LAMERLEMMA_SPEC;
-    };
-
-}
 #endif

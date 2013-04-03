@@ -22,6 +22,8 @@
 #include "puddle.hpp"
 #include "unumsunt.hpp"
 #include "transferer_runner.hpp"
+#include "lamerlemma.hpp"
+#include "detok.hpp"
 
 #if HAVE_GRAPHVIZ
 #include "gv_lattice_writer.hpp"
@@ -54,7 +56,7 @@
 #if HAVE_CMPH
 #include "one_edge_at_a_time_annotator.hpp"
 #include "bilexicon.hpp"
-#include "lamerlemma.hpp"
+#include "mapper.hpp"
 #endif
 
 #if HAVE_PERL_BINDINGS
@@ -161,6 +163,8 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new Gobio::Factory());
     keeper_.takeProcessorFactory(new Unumsunt::Factory());
 
+    keeper_.takeProcessorFactory(new LemmatizerAnnotator<LamerLemma>::Factory());
+
 #if HAVE_GRAPHVIZ
     keeper_.takeProcessorFactory(new GVLatticeWriter::Factory());
 #endif
@@ -192,9 +196,11 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 
     keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
 
+    keeper_.takeProcessorFactory(new Detok::Factory());
+
 #if HAVE_CMPH
-    keeper_.takeProcessorFactory(new LemmatizerAnnotator<psi::LamerLemma>::Factory());
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());
+    keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<Mapper>::Factory());
 #endif
 
 #if HAVE_PERL_BINDINGS

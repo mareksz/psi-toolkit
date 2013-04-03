@@ -17,6 +17,8 @@ server/website*/storage/*
 bindings/python/Test/__pycache__
 gcov.output.data
 tools/lemmatizers/sfst/data/tr.a
+tools/lemmatizers/lamerlemma/data/*.bin
 tools/lexica/bilexicon/data/plen.bin
+tools/lexica/mapper/data/*.bin
 tools/taggers/metagger/t/files/pl.blm
 bindings/python/Test/test.pyc

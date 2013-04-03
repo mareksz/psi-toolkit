@@ -526,9 +526,9 @@ endif(WITH_LOW_MEMORY_COMPILATION)
 set(BASE_TARGETS common common-plugins utf8case sundown fex framework
     formats-apertium formats-bracketing formats-dot formats-guessing formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
-    maxent tools-tokenizers-tp tools-segmenters-srx tools-recognizers-langguesser
+    maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
-    tools-converters-unumsunt tools-translators-transferer)
+    tools-converters-unumsunt tools-translators-transferer tools-lemmatizers-lamerlemma)
 
 # ----------------------------------------------------
 # TESTS_TARGETS
@@ -539,6 +539,7 @@ set(TESTS_TARGETS common-tests framework-tests utf8case-tests
     tools-tokenizers-tp-tests tools-segmenters-srx-tests tools-datastructures-psi_query-tests
     tools-recognizers-langguesser-tests tools-parsers-gobio-tests tools-parsers-puddle-tests
     tools-taggers-metagger-tests tools-converters-unumsunt-tests tools-translators-transferer-tests)
+
 
 set(TARGETS ${BASE_TARGETS} psi-pipe)
 
@@ -563,8 +564,8 @@ if(HAVE_CMPH)
     set(BASE_TARGETS ${BASE_TARGETS} tools-lexica-bilexicon)
     set(TESTS_TARGETS ${TESTS_TARGETS} tools-lexica-bilexicon-tests)
 
-    set(BASE_TARGETS ${BASE_TARGETS} tools-lemmatizers-lamerlemma)
-    #set(TESTS_TARGETS ${TESTS_TARGETS} tools-lemmatizers-lamerlemma-tests)
+    set(BASE_TARGETS ${BASE_TARGETS} tools-lexica-mapper)
+#    set(TESTS_TARGETS ${TESTS_TARGETS} tools-lexica-mapper-tests)
 endif(HAVE_CMPH)
 
 if(USE_POSTGRESQL)
@@ -791,6 +792,13 @@ if(DOWNLOAD_DATA)
            "0d8a94791fce28f862e2890406e81727"
            "tools/lemmatizers/sfst/data/tr.a")
     endif()
+
+    download_and_unpack(
+    "http://amu.edu.pl/~junczys/data/lamerlemma/pl.tar.gz"
+    "pl/pl.bin"
+    "9b02332be66db383ce67974f1d327d2e"
+    "tools/lemmatizers/lamerlemma/data/pl.bin"
+    )
 
 endif(DOWNLOAD_DATA)
 

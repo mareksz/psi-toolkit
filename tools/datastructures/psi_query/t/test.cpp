@@ -7,27 +7,27 @@ BOOST_AUTO_TEST_SUITE( psi_query )
 
 BOOST_AUTO_TEST_CASE(DFSA_test)
 {
-    psi::fsa::DFSA<> fsa;
-    psi::fsa::State q0 = fsa.addState();
-    psi::fsa::State q1 = fsa.addState();
-    psi::fsa::State q2 = fsa.addState();
-    psi::fsa::State q3 = fsa.addState();
+    fsa::DFSA<> fsa;
+    fsa::State q0 = fsa.addState();
+    fsa::State q1 = fsa.addState();
+    fsa::State q2 = fsa.addState();
+    fsa::State q3 = fsa.addState();
 
-    fsa.addArc(q0, psi::fsa::ArcWeighted<>('a', q1));
-    fsa.addArc(q0, psi::fsa::ArcWeighted<>('b', q1));
-    fsa.addArc(q0, psi::fsa::ArcWeighted<>('c', q1));
+    fsa.addArc(q0, fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q0, fsa::ArcWeighted<>('b', q1));
+    fsa.addArc(q0, fsa::ArcWeighted<>('c', q1));
 
-    fsa.addArc(q1, psi::fsa::ArcWeighted<>('a', q1));
-    fsa.addArc(q1, psi::fsa::ArcWeighted<>('b', q2));
-    fsa.addArc(q1, psi::fsa::ArcWeighted<>('c', q3));
+    fsa.addArc(q1, fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q1, fsa::ArcWeighted<>('b', q2));
+    fsa.addArc(q1, fsa::ArcWeighted<>('c', q3));
 
-    fsa.addArc(q2, psi::fsa::ArcWeighted<>('a', q1));
-    fsa.addArc(q2, psi::fsa::ArcWeighted<>('b', q3));
-    fsa.addArc(q2, psi::fsa::ArcWeighted<>('c', q3));
+    fsa.addArc(q2, fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q2, fsa::ArcWeighted<>('b', q3));
+    fsa.addArc(q2, fsa::ArcWeighted<>('c', q3));
 
-    fsa.addArc(q3, psi::fsa::ArcWeighted<>('a', q1));
-    fsa.addArc(q3, psi::fsa::ArcWeighted<>('b', q3));
-    fsa.addArc(q3, psi::fsa::ArcWeighted<>('c', q3));
+    fsa.addArc(q3, fsa::ArcWeighted<>('a', q1));
+    fsa.addArc(q3, fsa::ArcWeighted<>('b', q3));
+    fsa.addArc(q3, fsa::ArcWeighted<>('c', q3));
 
 
     fsa.setStartState(q0);
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(DFSA_test)
     BOOST_CHECK_EQUAL(fsa.in(test2.begin(), test2.end()), 0);
     BOOST_CHECK_EQUAL(fsa.in(test3.begin(), test3.end()), 1);
     BOOST_CHECK_EQUAL(fsa.in(test4.begin(), test4.end()), 1);
-    psi::fsa::reverse(fsa);
+    fsa::reverse(fsa);
 
     BOOST_CHECK_EQUAL(fsa.in(test1.begin(), test1.end()), 0);
     BOOST_CHECK_EQUAL(fsa.in(test2.begin(), test2.end()), 0);
