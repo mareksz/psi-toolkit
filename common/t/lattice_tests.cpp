@@ -694,6 +694,9 @@ BOOST_AUTO_TEST_CASE( iterating_over_loose_vertices ) {
     Lattice::VertexDescriptor vertexLooseBegin = lattice.addLooseVertex();
     Lattice::VertexDescriptor vertexLooseEnd = lattice.addLooseVertex();
 
+    BOOST_CHECK_EQUAL(lattice.getFirstVertex(), vertexFirst);
+    BOOST_CHECK_EQUAL(lattice.getLastVertex(), vertexLast);
+
     AnnotationItem aiX("x");
     AnnotationItem aiY("y");
     AnnotationItem aiZ("z");
@@ -701,6 +704,9 @@ BOOST_AUTO_TEST_CASE( iterating_over_loose_vertices ) {
     lattice.addEdge(vertexLooseBegin, vertexFirst, aiX, tagToken);
     lattice.addEdge(vertexFirst, vertexLast, aiY, tagToken);
     lattice.addEdge(vertexLast, vertexLooseEnd, aiZ, tagToken);
+
+    BOOST_CHECK_EQUAL(lattice.getFirstVertex(), vertexLooseBegin);
+    BOOST_CHECK_EQUAL(lattice.getLastVertex(), vertexLooseEnd);
 
     Lattice::VertexIterator vi(lattice);
     BOOST_CHECK(vi.hasNext());
