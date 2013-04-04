@@ -1253,7 +1253,7 @@ Lattice::VertexDescriptor Lattice::VertexIterator::next() {
             return returnedVertexDescriptor;
         }
     }
-    throw NoEdgeException("Vertex iterator has no next edges.");
+    throw NoVertexException("Vertex iterator has no next vertex.");
 }
 
 void Lattice::VertexIterator::nextRealVertex_() {
