@@ -84,7 +84,11 @@ Lattice::VertexDescriptor Lattice::getVertexForRawCharIndex(int ix) const {
     return ix;
 }
 
-Lattice::VertexDescriptor Lattice::getFirstVertex() const {
+Lattice::VertexDescriptor Lattice::getFirstVertex() {
+    if (inEdges(0, layerTagManager_.anyTag()).hasNext()) {
+        VertexIterator vi(*this);
+        return vi.next();
+    }
     return 0;
 }
 

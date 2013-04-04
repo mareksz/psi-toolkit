@@ -417,9 +417,9 @@ public:
     VertexDescriptor getVertexForRawCharIndex(int ix) const;
 
     /**
-     * Returns the first vertex (the same as getVertexForRawCharIndex(0)).
+     * Returns the first vertex (NOT the same as getVertexForRawCharIndex(0) - can be loose).
      */
-    VertexDescriptor getFirstVertex() const;
+    VertexDescriptor getFirstVertex();
 
     /**
      * Returns the last vertex.
