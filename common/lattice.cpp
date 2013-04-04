@@ -405,15 +405,19 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
             -1
         );
     } else {
-        if (vertex == 0) {
-            return InOutEdgesIterator();
+        bool priorVertexImplicitOutEdges;
+        VertexDescriptor priorVertex;
+        try {
+            priorVertex = priorVertex_(vertex);
+            priorVertexImplicitOutEdges = implicitOutEdges_[priorVertex];
+        } catch (NoVertexException) {
+            priorVertexImplicitOutEdges = false;
         }
-        VertexDescriptor priorVertex = priorVertex_(vertex);
         VerticesMap::iterator iter = vertices_.find(vertex);
         if (iter == vertices_.end()) {
             return Lattice::InOutEdgesIterator(
                 (layerTagManager_.canBeAppliedToImplicitSymbol(mask)
-                 && implicitOutEdges_[priorVertex]) ?
+                 && priorVertexImplicitOutEdges) ?
                     priorVertex : -1
             );
         }
@@ -421,7 +425,7 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
         if (mask.isAny()) {
             return Lattice::InOutEdgesIterator(
                 boost::in_edges(boost_vertex, graph_),
-                implicitOutEdges_[priorVertex] ? priorVertex : -1
+                priorVertexImplicitOutEdges ? priorVertex : -1
             );
         }
         int ix = addTagMaskIndex_(mask);
@@ -429,7 +433,7 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
             graph_[boost_vertex].inEdgesIndex[ix].begin(),
             graph_[boost_vertex].inEdgesIndex[ix].end(),
             (layerTagManager_.canBeAppliedToImplicitSymbol(mask)
-             && implicitOutEdges_[priorVertex]) ?
+             && priorVertexImplicitOutEdges) ?
                 priorVertex : -1
         );
     }
