@@ -1318,10 +1318,7 @@ Lattice::SortedEdgesIterator::SortedEdgesIterator(
     lattice_(lattice),
     mask_(mask),
     vi_(lattice)
-{
-    if (vi_.hasNext())
-        vi_.next();
-}
+{ }
 
 bool Lattice::SortedEdgesIterator::hasNext() {
     if (ei_.hasNext()) return true;
@@ -1349,6 +1346,9 @@ Lattice::EdgesSortedBySourceIterator::EdgesSortedBySourceIterator(
     LayerTagMask mask
 ) : SortedEdgesIterator(lattice, mask) {
     ei_ = lattice_.outEdges(0, mask_);
+    if (vi_.hasNext()) {
+        ei_ = getEdgesIterator_(vi_.next());
+    }
 }
 
 Lattice::InOutEdgesIterator Lattice::EdgesSortedBySourceIterator::getEdgesIterator_(
@@ -1362,6 +1362,9 @@ Lattice::EdgesSortedByTargetIterator::EdgesSortedByTargetIterator(
     LayerTagMask mask
 ) : SortedEdgesIterator(lattice, mask) {
     ei_ = lattice_.inEdges(0, mask_);
+    if (vi_.hasNext()) {
+        ei_ = getEdgesIterator_(vi_.next());
+    }
 }
 
 Lattice::InOutEdgesIterator Lattice::EdgesSortedByTargetIterator::getEdgesIterator_(

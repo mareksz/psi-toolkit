@@ -355,9 +355,9 @@ public:
     protected:
         Lattice& lattice_;
         LayerTagMask mask_;
+        VertexIterator vi_;
         InOutEdgesIterator ei_;
     private:
-        VertexIterator vi_;
         virtual InOutEdgesIterator getEdgesIterator_(VertexDescriptor vd) = 0;
     };
 
