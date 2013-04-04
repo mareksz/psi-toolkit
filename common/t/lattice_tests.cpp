@@ -677,6 +677,61 @@ BOOST_AUTO_TEST_CASE( loose_vertices ) {
     BOOST_CHECK_THROW(lattice.getEdgeLength(edgeLoose), WrongVertexException);
 }
 
+BOOST_AUTO_TEST_CASE( iterating_over_loose_vertices ) {
+    //preparing lattice
+    AnnotationItemManager aim;
+    Lattice lattice(aim, "a");
+
+    Lattice::VertexDescriptor vertexFirst = lattice.getFirstVertex();
+    Lattice::VertexDescriptor vertexLast = lattice.getLastVertex();
+
+    lattice.addSymbols(vertexFirst, vertexLast);
+    LayerTagCollection tagToken
+        = lattice.getLayerTagManager().createSingletonTagCollection("token");
+
+    LayerTagMask maskToken = lattice.getLayerTagManager().getMask(tagToken);
+
+    Lattice::VertexDescriptor vertexLooseBegin = lattice.addLooseVertex();
+    Lattice::VertexDescriptor vertexLooseEnd = lattice.addLooseVertex();
+
+    AnnotationItem aiX("x");
+    AnnotationItem aiY("y");
+    AnnotationItem aiZ("z");
+
+    lattice.addEdge(vertexLooseBegin, vertexFirst, aiX, tagToken);
+    lattice.addEdge(vertexFirst, vertexLast, aiY, tagToken);
+    lattice.addEdge(vertexLast, vertexLooseEnd, aiZ, tagToken);
+
+    Lattice::VertexIterator vi(lattice);
+    BOOST_CHECK(vi.hasNext());
+    BOOST_CHECK_EQUAL(vi.next(), vertexLooseBegin);
+    BOOST_CHECK(vi.hasNext());
+    BOOST_CHECK_EQUAL(vi.next(), vertexFirst);
+    BOOST_CHECK(vi.hasNext());
+    BOOST_CHECK_EQUAL(vi.next(), vertexLast);
+    BOOST_CHECK(vi.hasNext());
+    BOOST_CHECK_EQUAL(vi.next(), vertexLooseEnd);
+    BOOST_CHECK(!vi.hasNext());
+
+    Lattice::EdgesSortedBySourceIterator sei = lattice.edgesSortedBySource(maskToken);
+    BOOST_CHECK(sei.hasNext());
+    BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(sei.next()), "x");
+    BOOST_CHECK(sei.hasNext());
+    BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(sei.next()), "y");
+    BOOST_CHECK(sei.hasNext());
+    BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(sei.next()), "z");
+    BOOST_CHECK(!sei.hasNext());
+
+    Lattice::EdgesSortedByTargetIterator tei = lattice.edgesSortedByTarget(maskToken);
+    BOOST_CHECK(tei.hasNext());
+    BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(tei.next()), "x");
+    BOOST_CHECK(tei.hasNext());
+    BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(tei.next()), "y");
+    BOOST_CHECK(tei.hasNext());
+    BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(tei.next()), "z");
+    BOOST_CHECK(!tei.hasNext());
+}
+
 BOOST_AUTO_TEST_CASE( vertex_iterator_advanced ) {
     //preparing lattice
     AnnotationItemManager aim;
