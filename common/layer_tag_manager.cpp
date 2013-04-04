@@ -49,6 +49,21 @@ std::list<std::string> LayerTagManager::getTagNames(const LayerTagCollection& ta
     return result;
 }
 
+LayerTagMask LayerTagManager::getMask(std::string specification) {
+    LayerTagMaskSpecificationGrammar grammar;
+    std::vector< std::vector<std::string> > alternative;
+    std::string::const_iterator begin = specification.begin();
+    std::string::const_iterator end = specification.end();
+    if (parse(begin, end, grammar, alternative)) {
+        std::vector<LayerTagCollection> tagCollections;
+        BOOST_FOREACH(std::vector<std::string> conjunction, alternative) {
+            tagCollections.push_back(createTagCollectionFromVector(conjunction));
+        }
+        return getAlternativeMask(tagCollections);
+    }
+    return getMask(createSingletonTagCollection(specification));
+}
+
 LayerTagCollection LayerTagManager::planeTags() {
     LayerTagCollection result = LayerTagCollection(m_.size());
     for (size_t i = 0; i < m_.size(); ++i) {

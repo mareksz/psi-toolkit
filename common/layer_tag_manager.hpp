@@ -4,12 +4,38 @@
 #include <list>
 #include <string>
 
+#include <boost/assign.hpp>
 #include <boost/bimap.hpp>
 #include <boost/foreach.hpp>
-#include <boost/assign.hpp>
+#include <boost/spirit/include/qi.hpp>
 
 #include "layer_tag_collection.hpp"
 #include "layer_tag_mask.hpp"
+
+
+namespace qi = boost::spirit::qi;
+
+
+struct LayerTagMaskSpecificationGrammar : public qi::grammar<
+    std::string::const_iterator,
+    std::vector< std::vector<std::string> >()
+> {
+
+    LayerTagMaskSpecificationGrammar() : LayerTagMaskSpecificationGrammar::base_type(start) {
+
+        start
+            %= conjunction % ';';
+
+        conjunction
+            %= +(qi::char_ - ',' - ';') % ',';
+
+    }
+
+    qi::rule<std::string::const_iterator, std::vector< std::vector<std::string> >()> start;
+    qi::rule<std::string::const_iterator, std::vector<std::string>()> conjunction;
+
+};
+
 
 /*!
   LayerTagManager is used to
@@ -89,9 +115,12 @@ public:
         return LayerTagMask(tagCollection);
     }
 
-    LayerTagMask getMask(std::string tagName) {
-        return getMask(createSingletonTagCollection(tagName));
-    }
+    /**
+     * Return a mask that is an alternative of conjunctions of given tags.
+     * Specification is a list of lists of tags separated by ',' (conjunction),
+     * separated by ';' (alternative).
+     */
+    LayerTagMask getMask(std::string specification);
 
     LayerTagMask getMask(std::list<std::string> tagNames) {
         return getMask(createTagCollection(tagNames));
