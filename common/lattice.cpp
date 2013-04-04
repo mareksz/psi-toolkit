@@ -982,8 +982,15 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::lastEdge(Lattice & lattice) const
 
 Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t index) const {
     if (links.empty()) {
+        const char* latticeText = lattice.getAllText().c_str();
+
+        const char* begIter = latticeText + begin;
+        const char* endIter = latticeText + end;
+        const char* foundIter = begIter;
+        utf8::advance(foundIter, index, endIter);
+
         return lattice.firstOutEdge(
-            lattice.getVertexForRawCharIndex(index),
+            lattice.getVertexForRawCharIndex(foundIter - latticeText),
             lattice.getLayerTagManager().getMask("symbol")
         );
     } else {
