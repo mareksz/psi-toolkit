@@ -45,6 +45,7 @@ private:
     void loadBinary_(const boost::filesystem::path& binaryLexiconPath);
 
     void addEntry_(Lattice& lattice, Lattice::EdgeDescriptor edge, const std::string& record);
+    void addEntryUnknown_(Lattice& lattice, Lattice::EdgeDescriptor edge);
     
     void parseEntry_(const std::string& record,
                      boost::optional<std::string>& text,
@@ -73,7 +74,15 @@ private:
     boost::optional<std::string> setCategory_;
     boost::optional<std::string> setAttributes_;
     std::vector<std::pair<std::string, std::string> > setAttributesParsed_;
+    
+    bool unknownCloneText_;
+    bool unknownCloneCategory_;
+    bool unknownCloneAttributes_;
 
+    boost::optional<std::string> unknownSetText_;
+    boost::optional<std::string> unknownSetCategory_;
+    boost::optional<std::string> unknownSetAttributes_;
+    std::vector<std::pair<std::string, std::string> > unknownSetAttributesParsed_;
 };
 
 #endif
