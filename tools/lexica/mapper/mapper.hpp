@@ -25,8 +25,15 @@ public:
         const boost::program_options::variables_map& options);
 
     static boost::program_options::options_description optionsHandled();
+    
     static std::list<std::string> providedLayerTags();
     static std::list<std::list<std::string> > requiredLayerTags();
+    
+    static std::list<std::string> providedLayerTags(
+        const boost::program_options::variables_map& options);
+    static std::list<std::list<std::string> > requiredLayerTags(
+        const boost::program_options::variables_map& options);
+    
     std::list<std::string> tagsToOperateOn();
 
     void processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge);

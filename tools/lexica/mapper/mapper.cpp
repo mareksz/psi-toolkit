@@ -157,11 +157,48 @@ std::list<std::string> Mapper::languagesHandled(
 }
 
 std::list<std::string> Mapper::providedLayerTags() {
-    return boost::assign::list_of
-        (std::string("mapper"));
+    return std::list<std::string>();
 }
 
-std::list<std::list<std::string> > Mapper::requiredLayerTags() {
+std::list<std::list<std::string> > Mapper::requiredLayerTags() {    
+    return
+        boost::assign::list_of(std::list<std::string>());
+}
+
+std::list<std::string> Mapper::providedLayerTags(
+    const boost::program_options::variables_map& options) {
+
+    std::list<std::string> outTags;
+    
+    if(options.count("out-tags") > 0) {
+        std::string outTagsString = options["out-tags"].as<std::string>();
+        
+        std::list<std::string> outTags;
+        boost::split(outTags, outTagsString, std::bind1st(std::equal_to<char>(), ','));
+    }
+    else {
+        throw Exception("missing --out-tags");
+    }
+    
+    outTags.push_back("mapper");
+    return outTags;
+}
+
+std::list<std::list<std::string> > Mapper::requiredLayerTags(
+    const boost::program_options::variables_map& options) {
+    
+    if(options.count("in-tags") > 0) {
+        std::string inTagsString = options["in-tags"].as<std::string>();
+        std::list<std::string> inTags;
+        boost::split(inTags, inTagsString, std::bind1st(std::equal_to<char>(), ','));
+
+        return
+            boost::assign::list_of(inTags);        
+    }
+    else {
+        throw Exception("missing --in-tags");
+    }
+    
     return
         boost::assign::list_of(std::list<std::string>());
 }
