@@ -3,6 +3,6 @@
   <configuration
       name="generate-lexdb-forms-en"
       annotator="mapper"
-      options="--lang pl --in-tags 'form' --out-tags 'token' --consider-text --consider-category --clone-attributes --binary %ITSDATA%/en-lexdb-generation-forms.bin">
+      options="--lang pl --in-tags form --out-tags token --consider-text --consider-category --clone-attributes --binary %ITSDATA%/en-lexdb-generation-forms.bin">
   </configuration>
 </configurations>
