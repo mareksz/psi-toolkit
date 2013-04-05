@@ -58,6 +58,30 @@ bool LayerTagMask::operator<(LayerTagMask other) const {
     return false;
 }
 
+bool LayerTagMask::operator==(LayerTagMask other) const {
+    if (any_ && other.any_)
+        return true;
+
+    if (none_ && other.none_)
+        return true;
+
+    if (any_ != other.any_)
+        return false;
+
+    if (none_ != other.none_)
+        return false;
+
+    if (tagAlts_.size() != other.tagAlts_.size())
+        return false;
+
+    for (size_t i = 0; i < tagAlts_.size(); ++i) {
+        if (tagAlts_[i] != other.tagAlts_[i])
+            return false;
+    }
+
+    return true;
+}
+
 bool matches(
     LayerTagCollection tags,
     LayerTagMask mask) {
