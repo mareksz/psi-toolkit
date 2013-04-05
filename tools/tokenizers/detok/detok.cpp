@@ -25,7 +25,7 @@ boost::filesystem::path Detok::Factory::doGetFile() const {
 
 std::list<std::list<std::string> > Detok::Factory::doRequiredLayerTags() {
     return boost::assign::list_of(
-        boost::assign::list_of(std::string("form")));
+        boost::assign::list_of(std::string("token")));
 }
 
 std::list<std::list<std::string> > Detok::Factory::doOptionalLayerTags() {
@@ -49,7 +49,7 @@ Detok::Worker::Worker(Detok& processor, Lattice& lattice):
 void Detok::Worker::doRun() {
     INFO("detokenizer working");
 
-    LayerTagMask mask = lattice_.getLayerTagManager().getMaskWithLangCode("form", "en");
+    LayerTagMask mask = lattice_.getLayerTagManager().getMaskWithLangCode("token", "en");
 
     Lattice::EdgesSortedByTargetIterator iter(lattice_, mask);
 
