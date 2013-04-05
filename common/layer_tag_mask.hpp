@@ -18,6 +18,8 @@ public:
      */
     bool operator<(LayerTagMask other) const;
 
+    bool operator==(LayerTagMask other) const;
+
     friend bool matches(
         LayerTagCollection tags,
         LayerTagMask mask);
