@@ -103,9 +103,7 @@ boost::program_options::options_description TransfererRunner::optionsHandled() {
 }
 
 std::list<std::string> TransfererRunner::providedLayerTags() {
-    return boost::assign::list_of
-        (std::string("transfered"))
-        (std::string("!translation"));
+    return mainLayerTags_();
 }
 
 std::list<std::list<std::string> > TransfererRunner::requiredLayerTags() {
@@ -154,13 +152,33 @@ void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edg
         transferer_);
 }
 
-void TransfererRunner::createTags_(const std::string& trg_lang) {
-    tags_ = providedLayerTags();
-    tags_.push_back(LayerTagManager::getLanguageTag(trg_lang));
+void TransfererRunner::createTags_(const std::string& trgLang) {
+    std::string trgLangCode = LayerTagManager::getLanguageTag(trgLang);
 
+    tags_ = mainLayerTags_();
+    tags_.push_back(trgLangCode);
+
+    targetFormTags_ = coreLayerTags_();
     targetFormTags_.push_back("form");
-    targetFormTags_.push_back("!translation");
-    targetFormTags_.push_back(LayerTagManager::getLanguageTag(trg_lang));
+    targetFormTags_.push_back(trgLangCode);
+
+    targetTokenTags_ = coreLayerTags_();
+    targetTokenTags_.push_back("token");
+    targetTokenTags_.push_back(trgLangCode);
+}
+
+std::list<std::string> TransfererRunner::mainLayerTags_() {
+    std::list<std::string> tags = coreLayerTags_();
+
+    tags.push_back("parse-transferred");
+
+    return tags;
+}
+
+std::list<std::string> TransfererRunner::coreLayerTags_() {
+    return boost::assign::list_of
+        (std::string("transferer"))
+        (std::string("!translation"));
 }
 
 void TransfererRunner::putTargetForms_(Lattice& lattice, zsyntree* targetTree, boost::shared_ptr<tmil::Transferer> transferer_) {
@@ -206,10 +224,21 @@ void TransfererRunner::putTargetForms_(Lattice& lattice, zsyntree* targetTree, b
 }
 
 void TransfererRunner::putTargetForm_(Lattice& lattice, Lattice::EdgeDescriptor edge, zvalue surf) {
-    zvalue lexeme =
-        (ZPAIRP(surf) ? ZPAIRC(surf)->getFirst() : surf);
 
-    AnnotationItem annotationItem("TODO", StringFrag(zvalue_to_string(lexeme)));
+    // could be a form or a token
+    bool isForm = ZPAIRP(surf);
+
+    std::string category =
+        (isForm ? zvalue_to_string(ZPAIRC(surf)->getSecond()) : "T");
+
+    zvalue text =
+        (isForm ? ZPAIRC(surf)->getFirst() : surf);
+
+    LayerTagCollection tags =
+        lattice.getLayerTagManager().createTagCollection(
+            isForm ? targetFormTags_ : targetTokenTags_);
+
+    AnnotationItem annotationItem(category, StringFrag(zvalue_to_string(text)));
 
     lattice.getAnnotationItemManager().setValue(
         annotationItem, "SurfacePosition", formsCounter_++);
@@ -224,7 +253,7 @@ void TransfererRunner::putTargetForm_(Lattice& lattice, Lattice::EdgeDescriptor 
         fromVertex,
         toVertex,
         annotationItem,
-        lattice.getLayerTagManager().createTagCollection(targetFormTags_),
+        tags,
         builder.build());
 }
 

@@ -44,10 +44,13 @@ public:
 
 private:
     void createTags_(const std::string& trg_lang);
+    static std::list<std::string> mainLayerTags_();
+    static std::list<std::string> coreLayerTags_();
 
     std::string langCode_;
     std::list<std::string> tags_;
     std::list<std::string> targetFormTags_;
+    std::list<std::string> targetTokenTags_;
 
     boost::filesystem::path rulesFile_;
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+  <configuration
+      name="generate-lexdb-forms-en"
+      annotator="mapper"
+      options="--lang en --in-tags 'form' --out-tags 'token' --consider-text --consider-category --clone-attributes --binary %ITSDATA/en-lexdb-generation-forms.bin">
+  </configuration>
+</configurations>

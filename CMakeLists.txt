@@ -782,6 +782,7 @@ endfunction(download_and_unpack)
 
 if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/bilexicon/data/plen.bin")
+    download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
 
     if (HAVE_SFST)
        file(MAKE_DIRECTORY "${psi-toolkit_SOURCE_DIR}/tools/lemmatizers/sfst/data")
