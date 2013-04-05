@@ -64,31 +64,19 @@ std::string ProcessorFactory::getDescription() {
 }
 
 std::string ProcessorFactory::doGetDescription() {
-    std::string description("");
+    return getDataFile("description.txt");
+}
 
-    ProcessorFileFetcher fileFetcher(doGetFile());
-    try {
-        boost::filesystem::path pathToDescriptionFile
-            = fileFetcher.getOneFile("%ITSDATA%/description.txt");
-        description = getFileContent(pathToDescriptionFile);
-    }
-    catch (FileFetcher::Exception& err) {
-        WARN("An error occured when trying to open the processor's description file: "
-             << err.what());
-    }
+std::string ProcessorFactory::getDetailedDescription() {
+    return doGetDetailedDescription();
+}
 
-    return description;
+std::string ProcessorFactory::doGetDetailedDescription() {
+    return getDataFile("detailed_description.txt", false);
 }
 
 std::list<std::string> ProcessorFactory::doGetAliases() {
     return std::list<std::string>();
-}
-
-std::string ProcessorFactory::getFileContent(boost::filesystem::path path) {
-    std::stringstream content;
-    content << std::ifstream( path.string().c_str() ).rdbuf();
-
-    return content.str();
 }
 
 ProcessorFactory::~ProcessorFactory() {
@@ -102,4 +90,29 @@ bool ProcessorFactory::checkRequirements(const boost::program_options::variables
 bool ProcessorFactory::doCheckRequirements(const boost::program_options::variables_map& /*options*/,
                                            std::ostream & /*message*/) const {
     return true;
+}
+
+std::string ProcessorFactory::getDataFile(std::string fileName, bool printWarning /* = true */) {
+    std::string content("");
+
+    ProcessorFileFetcher fileFetcher(doGetFile());
+    try {
+        boost::filesystem::path pathToDataFile = fileFetcher.getOneFile("%ITSDATA%/" + fileName);
+        content = getFileContent(pathToDataFile);
+    }
+    catch (FileFetcher::Exception& err) {
+        if (printWarning) {
+            WARN("An error occured when trying to open the " << fileName << " file: " << ": "
+                << err.what());
+        }
+    }
+
+    return content;
+}
+
+std::string ProcessorFactory::getFileContent(boost::filesystem::path path) {
+    std::stringstream content;
+    content << std::ifstream( path.string().c_str() ).rdbuf();
+
+    return content.str();
 }

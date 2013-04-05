@@ -11,6 +11,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/git_info.cpp.in"
 # library framework
 # ----------------------------------------------------
 add_library(framework SHARED
+    shallow_aliaser.cpp
     aliaser.cpp
     auto_completer.cpp
     configuration_finder.cpp

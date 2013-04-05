@@ -37,6 +37,7 @@ protected:
     virtual void doFormatOneProcessorHelp(
         std::string processorName,
         std::string description,
+        std::string detailedDescription,
         boost::program_options::options_description options,
         std::list<std::string> aliases,
         std::vector<TestBatch> usingExamples,
@@ -44,6 +45,8 @@ protected:
         std::ostream& output) =0;
 
     std::string getProcessorDescription(std::string processorName);
+    std::string getProcessorDetailedDescription(std::string processorName);
+
     boost::program_options::options_description getProcessorOptions(std::string processorName);
     std::vector<TestBatch> getProcessorUsingExamples(std::string processorName);
 

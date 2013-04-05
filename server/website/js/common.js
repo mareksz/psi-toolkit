@@ -1,11 +1,26 @@
 $(document).ready(function(){
     bindBibtexToggle();
+    bindDetailedDescriptionToggle();
 });
 
 function bindBibtexToggle() {
-  $('a.bibtex-toggler').click(function(){
-    $(this).next().toggle('fast');
-  });
+    $('a.bibtex-toggler').click(function() {
+        $(this).next().toggle('fast');
+    });
+}
+
+function bindDetailedDescriptionToggle() {
+    $('.help-toggler').click(function() {
+        var button = $(this);
+        button.prev().toggle('fast', function() {
+            if ($(this).is(":visible")) {
+                button.text('[show less]');
+            }
+            else {
+                button.text('[show more]');
+            }
+        })
+    });
 }
 
 function addRightMenu(menuId, containerId) {
@@ -35,10 +50,29 @@ function createRightMenuFromHeaders(containerId) {
 function bindStickyRightMenu(menuId) {
   var menu = $('#' + menuId);
   var origOffsetY = menu.offset().top;
+  var extraTop = 12; // = .right-menu.sticky-menu#top
+  var footerTop = $(document).height() - $("footer").outerHeight() - 2;
+
+  function footerTopToDownOfPage() {
+    return $(window).height() - ($("footer").offset().top - window.scrollY)
+  }
 
   function onScroll(e) {
-    window.scrollY + 12 >= origOffsetY ? menu.addClass('sticky-menu')
-                                       : menu.removeClass('sticky-menu');
+    if (window.scrollY + extraTop >= origOffsetY) {
+        menu.addClass('sticky-menu');
+
+        if (window.scrollY + extraTop + menu.height() > footerTop) {
+            menu.css("top", "auto");
+            menu.css("bottom", footerTopToDownOfPage() + "px");
+        }
+        else {
+            menu.removeAttr("style");
+        }
+    }
+    else {
+        menu.removeAttr("style");
+        menu.removeClass('sticky-menu');
+    }
   }
 
   document.addEventListener('scroll', onScroll);

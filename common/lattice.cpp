@@ -84,7 +84,11 @@ Lattice::VertexDescriptor Lattice::getVertexForRawCharIndex(int ix) const {
     return ix;
 }
 
-Lattice::VertexDescriptor Lattice::getFirstVertex() const {
+Lattice::VertexDescriptor Lattice::getFirstVertex() {
+    if (inEdges(0, layerTagManager_.anyTag()).hasNext()) {
+        VertexIterator vi(*this);
+        return vi.next();
+    }
     return 0;
 }
 
@@ -405,15 +409,19 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
             -1
         );
     } else {
-        if (vertex == 0) {
-            return InOutEdgesIterator();
+        bool priorVertexImplicitOutEdges;
+        VertexDescriptor priorVertex;
+        try {
+            priorVertex = priorVertex_(vertex);
+            priorVertexImplicitOutEdges = implicitOutEdges_[priorVertex];
+        } catch (NoVertexException) {
+            priorVertexImplicitOutEdges = false;
         }
-        VertexDescriptor priorVertex = priorVertex_(vertex);
         VerticesMap::iterator iter = vertices_.find(vertex);
         if (iter == vertices_.end()) {
             return Lattice::InOutEdgesIterator(
                 (layerTagManager_.canBeAppliedToImplicitSymbol(mask)
-                 && implicitOutEdges_[priorVertex]) ?
+                 && priorVertexImplicitOutEdges) ?
                     priorVertex : -1
             );
         }
@@ -421,7 +429,7 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
         if (mask.isAny()) {
             return Lattice::InOutEdgesIterator(
                 boost::in_edges(boost_vertex, graph_),
-                implicitOutEdges_[priorVertex] ? priorVertex : -1
+                priorVertexImplicitOutEdges ? priorVertex : -1
             );
         }
         int ix = addTagMaskIndex_(mask);
@@ -429,7 +437,7 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
             graph_[boost_vertex].inEdgesIndex[ix].begin(),
             graph_[boost_vertex].inEdgesIndex[ix].end(),
             (layerTagManager_.canBeAppliedToImplicitSymbol(mask)
-             && implicitOutEdges_[priorVertex]) ?
+             && priorVertexImplicitOutEdges) ?
                 priorVertex : -1
         );
     }
@@ -974,8 +982,15 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::lastEdge(Lattice & lattice) const
 
 Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t index) const {
     if (links.empty()) {
+        const char* latticeText = lattice.getAllText().c_str();
+
+        const char* begIter = latticeText + begin;
+        const char* endIter = latticeText + end;
+        const char* foundIter = begIter;
+        utf8::advance(foundIter, index, endIter);
+
         return lattice.firstOutEdge(
-            lattice.getVertexForRawCharIndex(index),
+            lattice.getVertexForRawCharIndex(foundIter - latticeText),
             lattice.getLayerTagManager().getMask("symbol")
         );
     } else {
@@ -1245,7 +1260,7 @@ Lattice::VertexDescriptor Lattice::VertexIterator::next() {
             return returnedVertexDescriptor;
         }
     }
-    throw NoEdgeException("Vertex iterator has no next edges.");
+    throw NoVertexException("Vertex iterator has no next vertex.");
 }
 
 void Lattice::VertexIterator::nextRealVertex_() {
@@ -1318,10 +1333,7 @@ Lattice::SortedEdgesIterator::SortedEdgesIterator(
     lattice_(lattice),
     mask_(mask),
     vi_(lattice)
-{
-    if (vi_.hasNext())
-        vi_.next();
-}
+{ }
 
 bool Lattice::SortedEdgesIterator::hasNext() {
     if (ei_.hasNext()) return true;
@@ -1349,6 +1361,9 @@ Lattice::EdgesSortedBySourceIterator::EdgesSortedBySourceIterator(
     LayerTagMask mask
 ) : SortedEdgesIterator(lattice, mask) {
     ei_ = lattice_.outEdges(0, mask_);
+    if (vi_.hasNext()) {
+        ei_ = getEdgesIterator_(vi_.next());
+    }
 }
 
 Lattice::InOutEdgesIterator Lattice::EdgesSortedBySourceIterator::getEdgesIterator_(
@@ -1362,6 +1377,9 @@ Lattice::EdgesSortedByTargetIterator::EdgesSortedByTargetIterator(
     LayerTagMask mask
 ) : SortedEdgesIterator(lattice, mask) {
     ei_ = lattice_.inEdges(0, mask_);
+    if (vi_.hasNext()) {
+        ei_ = getEdgesIterator_(vi_.next());
+    }
 }
 
 Lattice::InOutEdgesIterator Lattice::EdgesSortedByTargetIterator::getEdgesIterator_(

@@ -124,6 +124,13 @@
    fun:FcConfigParseAndLoad
 }
 {
+   graphviz leak mincross layout
+   Memcheck:Leak
+   ...
+   fun:dot_mincross
+   fun:dot_layout
+}
+{
    graphviz addr4 fcconfig
    Memcheck:Addr4
    ...

@@ -355,9 +355,9 @@ public:
     protected:
         Lattice& lattice_;
         LayerTagMask mask_;
+        VertexIterator vi_;
         InOutEdgesIterator ei_;
     private:
-        VertexIterator vi_;
         virtual InOutEdgesIterator getEdgesIterator_(VertexDescriptor vd) = 0;
     };
 
@@ -417,9 +417,9 @@ public:
     VertexDescriptor getVertexForRawCharIndex(int ix) const;
 
     /**
-     * Returns the first vertex (the same as getVertexForRawCharIndex(0)).
+     * Returns the first vertex (NOT the same as getVertexForRawCharIndex(0) - can be loose).
      */
-    VertexDescriptor getFirstVertex() const;
+    VertexDescriptor getFirstVertex();
 
     /**
      * Returns the last vertex.

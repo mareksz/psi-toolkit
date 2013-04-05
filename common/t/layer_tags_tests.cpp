@@ -97,6 +97,10 @@ BOOST_AUTO_TEST_CASE( tags_masks ) {
         boost::assign::list_of
         (std::string("foo"))
         (std::string("bar")));
+    LayerTagMask maskFooBarVector = layer_tag_manager.getMaskFromVector(
+        boost::assign::list_of
+        (std::string("foo"))
+        (std::string("bar")));
     LayerTagMask maskAny = layer_tag_manager.anyTag();
 
     BOOST_CHECK(maskFoo.isSome());
@@ -115,6 +119,22 @@ BOOST_AUTO_TEST_CASE( tags_masks ) {
     BOOST_CHECK(matches(tagFooBar, maskBar));
     BOOST_CHECK(matches(tagFooBar, maskFooBar));
     BOOST_CHECK(matches(tagFooBar, maskFooBarList));
+    BOOST_CHECK(maskFooBarList == maskFooBarVector);
+}
+
+BOOST_AUTO_TEST_CASE( mask_specifications ) {
+    LayerTagManager layer_tag_manager;
+
+    LayerTagCollection tagFoo = layer_tag_manager.createSingletonTagCollection("foo");
+    LayerTagCollection tagBarBaz = layer_tag_manager.createTagCollectionFromList(
+        boost::assign::list_of
+        (std::string("bar"))
+        (std::string("baz")));
+
+    LayerTagMask mask1 = layer_tag_manager.getAlternativeMask(tagFoo, tagBarBaz);
+    LayerTagMask mask2 = layer_tag_manager.getMask("foo;bar,baz");
+
+    BOOST_CHECK(mask1 == mask2);
 }
 
 BOOST_AUTO_TEST_CASE( planes ) {

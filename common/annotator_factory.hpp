@@ -23,6 +23,9 @@ public:
      */
     std::list<std::list<std::string> > requiredLayerTags();
 
+    std::list<std::list<std::string> > requiredLayerTags(
+        const boost::program_options::variables_map& options);
+
     /**
      * Returns layer tags that might be useful for the annotator.
      *
@@ -31,12 +34,19 @@ public:
      */
     std::list<std::list<std::string> > optionalLayerTags();
 
+    std::list<std::list<std::string> > optionalLayerTags(
+        const boost::program_options::variables_map& options);
+
     /**
      * Layer tags provided by the given annotator. This information
      * could be used by the framework when considering `requiredLayerTags`
      * and `optionalLayerTags` of another annotator.
      */
     std::list<std::string> providedLayerTags();
+
+    std::list<std::string> providedLayerTags(
+        const boost::program_options::variables_map& options);
+
 
     enum LanguagesHandling {
         /**
@@ -93,9 +103,19 @@ private:
 
     virtual std::list<std::list<std::string> > doRequiredLayerTags() = 0;
 
+    virtual std::list<std::list<std::string> > doRequiredLayerTags(
+        const boost::program_options::variables_map& options);
+
     virtual std::list<std::list<std::string> > doOptionalLayerTags() = 0;
 
+    virtual std::list<std::list<std::string> > doOptionalLayerTags(
+        const boost::program_options::variables_map& options);
+
+
     virtual std::list<std::string> doProvidedLayerTags() = 0;
+
+    virtual std::list<std::string> doProvidedLayerTags(
+        const boost::program_options::variables_map& options);
 
     virtual std::string doGetContinuation(
         const boost::program_options::variables_map& options) const;
