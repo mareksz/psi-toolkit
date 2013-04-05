@@ -7,6 +7,8 @@
 #include <boost/assign.hpp>
 #include <boost/bimap.hpp>
 #include <boost/foreach.hpp>
+
+#undef New // to resolve conflict with SWIG
 #include <boost/spirit/include/qi.hpp>
 
 #include "layer_tag_collection.hpp"
