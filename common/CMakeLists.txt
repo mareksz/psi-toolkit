@@ -17,6 +17,7 @@ add_library(common SHARED
     configurator.cpp
     cutter.cpp
     cutter_annotator_options.cpp
+    encoding_converter.cpp
     escaping.cpp
     file_extractor.cpp
     file_fetcher.cpp
@@ -58,10 +59,13 @@ add_library(common SHARED
     ${common-java-files}
 )
 
-target_link_libraries(common pcre pcrecpp fex)
+target_link_libraries(common pcre pcrecpp fex tiniconv)
 
 include_directories("${psi-toolkit_SOURCE_DIR}/fex/fex")
 link_directories("${psi-toolkit_BINARY_DIR}/fex/fex")
+
+include_directories("${psi-toolkit_SOURCE_DIR}/tiniconv")
+link_directories("${psi-toolkit_BINARY_DIR}/tiniconv")
 
 if(USE_JAVA)
     target_link_libraries(common ${JAVA_JVM_LIBRARY})
