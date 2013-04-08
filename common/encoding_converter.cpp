@@ -86,7 +86,7 @@ std::string EncodingConverter::convert(std::string from, std::string to, std::st
 bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
                                  std::string input, std::string& output) {
 
-    struct tiniconv_ctx_s tiniconvStruct;
+    tiniconv_ctx_s tiniconvStruct;
     int result = tiniconv_init(inCharsetId, outCharsetId, TINICONV_OPTION, &tiniconvStruct);
 
     if (result != TINICONV_INIT_OK) {
@@ -95,10 +95,15 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
     }
 
     int inSizeConsumed, outSizeConsumed;
-    unsigned char outputBuffer[400000];
+
+    // FIXME: for 400 000 memory access violation at address: 0xbfa729ac: no mapping at fault
+    // address
+    unsigned char outputBuffer[40000];
+    const char* inputChars = input.c_str();
+    int inputCharsLength = strlen(inputChars);
 
     result = tiniconv_convert(&tiniconvStruct,
-                              (const unsigned char*)input.c_str(), input.length(), &inSizeConsumed,
+                              (const unsigned char*)inputChars, inputCharsLength, &inSizeConsumed,
                               outputBuffer, sizeof(outputBuffer) - 1, &outSizeConsumed);
 
     if (result < TINICONV_CONVERT_OUT_TOO_SMALL) {
@@ -107,8 +112,8 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
     }
 
     outputBuffer[outSizeConsumed] = 0;
-
     output = std::string((const char *)outputBuffer);
+
     DEBUG("tiniconv convertion output: [" << output << "]");
 
     return true;
