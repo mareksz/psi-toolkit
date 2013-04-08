@@ -98,7 +98,7 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
 
     // FIXME: for 400 000 memory access violation at address: 0xbfa729ac: no mapping at fault
     // address
-    unsigned char outputBuffer[40000];
+    unsigned char outputBuffer[50000];
     const char* inputChars = input.c_str();
     int inputCharsLength = strlen(inputChars);
 
