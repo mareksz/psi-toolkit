@@ -51,6 +51,8 @@ std::map<std::string, int> EncodingConverter::CHARSET_CODES = boost::assign::map
     ("Big5",            38)
     ;
 
+const int EncodingConverter::TINICONV_OPTION = 0;
+
 EncodingConverter::EncodingConverter() : defaultEncoding_("UTF-8") {
 }
 
@@ -64,41 +66,50 @@ std::string EncodingConverter::detect(std::string text) {
 
 std::string EncodingConverter::convert(std::string from, std::string to, std::string text) {
     if (!CHARSET_CODES.count(from)) {
-        // TODO: unrecognized source encoding
         WARN("unrecognized source encoding: " << from);
+        return text;
     }
     if (!CHARSET_CODES.count(to)) {
-        // TODO: unrecognized target encoding
         WARN("unrecognized target encoding: " << to);
+        return text;
     }
-    struct tiniconv_ctx_s tc_ctx;
-    // FIXME: 0 is magic number!
-    int result = tiniconv_init(CHARSET_CODES[from], CHARSET_CODES[to], 0, &tc_ctx);
+
+    std::string convertedText("");
+
+    if (!convert_(CHARSET_CODES[from], CHARSET_CODES[to], text, convertedText)) {
+        return text;
+    }
+
+    return convertedText;
+}
+
+bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
+                                 std::string input, std::string& output) {
+
+    struct tiniconv_ctx_s tiniconvStruct;
+    int result = tiniconv_init(inCharsetId, outCharsetId, TINICONV_OPTION, &tiniconvStruct);
 
     if (result != TINICONV_INIT_OK) {
-        // TODO: init failed
         WARN("tiniconv initialization failed");
+        return false;
     }
 
     int inSizeConsumed, outSizeConsumed;
-    unsigned char output[400000];
+    unsigned char outputBuffer[400000];
 
-    result = tiniconv_convert(&tc_ctx,
-                              (const unsigned char*)text.c_str(), text.length(), &inSizeConsumed,
-                              output, sizeof(output) - 1, &outSizeConsumed);
+    result = tiniconv_convert(&tiniconvStruct,
+                              (const unsigned char*)input.c_str(), input.length(), &inSizeConsumed,
+                              outputBuffer, sizeof(outputBuffer) - 1, &outSizeConsumed);
 
     if (result < TINICONV_CONVERT_OUT_TOO_SMALL) {
-        // TODO: convertion failed
         WARN("tiniconv convertion failed");
+        return false;
     }
 
-    output[outSizeConsumed] = 0;
+    outputBuffer[outSizeConsumed] = 0;
 
-    std::string convertedText((char *)output);
-    DEBUG("converted text: [" << convertedText << "]");
+    output = std::string((const char *)outputBuffer);
+    DEBUG("tiniconv convertion output: [" << output << "]");
 
-    return convertedText;
-    /*
-    return std::string("");
-    */
+    return true;
 }
