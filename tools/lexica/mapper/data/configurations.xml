@@ -5,4 +5,9 @@
       annotator="mapper"
       options="--lang pl --in-tags form --out-tags token --consider-text --consider-category --clone-attributes --binary %ITSDATA%/en-lexdb-generation-forms.bin">
   </configuration>
+  <configuration
+      name="pl-valency"
+      annotator="mapper"
+      options="--lang pl --in-tags lexeme --out-tags valency --consider-text --clone-text --clone-category --add-attributes --binary %ITSDATA%/pl-valency.bin">
+  </configuration>
 </configurations>
