@@ -17,6 +17,8 @@
 #include "annotator_promise.hpp"
 #include "non_annotator_promise.hpp"
 
+#include "stream_helpers.hpp"
+
 #include "logging.hpp"
 #include "version_information.hpp"
 
@@ -770,20 +772,12 @@ void PipeRunner::turnOnLineByLineMode_() {
     }
 }
 
-void PipeRunner::convertInputStreamEncoding_(std::istream& input) {
-    std::stringstream temp;
-    temp << input.rdbuf();
+void PipeRunner::convertInputStreamEncoding_(std::istream& stream) {
+    std::string data = getDataFromIStream(stream);
 
-    std::string output = inputEncoding_.empty()
-                         ? encodingConverter_.convert(temp.str())
-                         : encodingConverter_.convert(inputEncoding_, temp.str());
+    std::string convertedData = inputEncoding_.empty()
+                                ? encodingConverter_.convert(data)
+                                : encodingConverter_.convert(inputEncoding_, data);
 
-    int outputSize = output.size();
-    const char* rawOutput = output.c_str();
-
-    input.clear();
-
-    for (int i = outputSize; i > 0; i--) {
-        input.putback(rawOutput[i - 1]);
-    }
+    setDataToIStream(stream, convertedData);
 }

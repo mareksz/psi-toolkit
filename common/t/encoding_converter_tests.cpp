@@ -14,7 +14,6 @@ BOOST_AUTO_TEST_CASE( tiniconv_conversion ) {
     EncodingConverter converter;
 
     // uchardet detects below example as text encoded in windows-1252 instead of ISO-8859-2,
-    // so it's not included in the rest of test cases
     std::string input = getContentOfExampleFile_("example_iso-8859-2.txt");
     std::string result = converter.convert("ISO-8859-2", "UTF-8", input);
 

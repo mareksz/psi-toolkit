@@ -4,6 +4,7 @@
 #include <boost/program_options/parsers.hpp>
 
 #include "guessing_reader.hpp"
+#include "stream_helpers.hpp"
 
 #include "txt_lattice_reader.hpp"
 #include "apertium_lattice_reader.hpp"
@@ -64,7 +65,7 @@ GuessingReader::GuessingReader(int blockSize) : blockSize_(blockSize) { }
 
 
 std::string GuessingReader::guessFileType(std::istream& input) {
-    std::string data = getStartingDataBlockWithoutTouchingIStream_(input);
+    std::string data = getStartingDataWithoutTouchingStream(input, blockSize_);
     std::string filetype = fileRecognizer_.recognizeFileExtension(data);
 
     if (filetype == "zip") {
@@ -75,41 +76,6 @@ std::string GuessingReader::guessFileType(std::istream& input) {
     }
 
     return filetype;
-}
-
-std::string GuessingReader::getStartingDataBlockWithoutTouchingIStream_(std::istream& stream) {
-    char buffer[blockSize_];
-    stream.read(buffer, blockSize_);
-
-    // it is necessary to remove eofbit flag in the case of when the blockSize_
-    // is greather than the total length of input
-    stream.clear();
-
-    int lastReadable = (int)stream.gcount();
-    DEBUG("read bits for input type recognition (" << lastReadable << " bits): " << buffer);
-
-    for (int i = lastReadable; i > 0; i--) {
-        stream.putback(buffer[i - 1]);
-    }
-
-    return std::string(buffer, lastReadable);
-}
-
-std::string GuessingReader::getDataWithoutTouchingIStream_(std::istream& stream) {
-    std::stringstream data;
-    data << stream.rdbuf();
-
-    std::string stringData = data.str();
-    int dataSize = stringData.size();
-    const char* rawData = stringData.c_str();
-
-    stream.clear();
-
-    for (int i = dataSize; i > 0; i--) {
-        stream.putback(rawData[i - 1]);
-    }
-
-    return stringData;
 }
 
 LatticeReader<std::istream>* GuessingReader::getLatticeReader(std::string type) {

@@ -7,7 +7,7 @@
 #include "uchardet.h"
 
 
-const std::string EncodingConverter::ASCII = "ascii";
+const std::string EncodingConverter::ASCII = "ascii/unknown"; // like in uchardet
 
 /*
  * Integers are set according to constant values from tiniconv library.
@@ -114,20 +114,12 @@ std::string EncodingConverter::convert(std::string from, std::string to, std::st
         WARN("unrecognized source encoding: " << from);
         return text;
     }
-    if (from == ASCII) {
-        INFO("conversion skipped bacause source encoding is ASCII");
-        return text;
-    }
     if (!CHARSET_CODES.count(to)) {
         WARN("unrecognized target encoding: " << to);
         return text;
     }
-    if (from == to) {
-        INFO("conversion skipped because source and target encodings are the same");
-        return text;
-    }
-    if (from == targetEncoding_) {
-        INFO("conversion skipped because source encoding is as expected");
+    if (from == ASCII || from == to || from == targetEncoding_) {
+        INFO("conversion skipped because source and/or target encoding(s)");
         return text;
     }
 

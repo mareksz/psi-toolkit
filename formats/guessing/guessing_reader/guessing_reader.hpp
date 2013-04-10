@@ -66,8 +66,6 @@ private:
     static std::map<std::string, PointerToReader> fileTypeToReaderMap_;
     static std::map<std::string, std::string> fileTypeToReaderOptionsMap_;
 
-    std::string getStartingDataBlockWithoutTouchingIStream_(std::istream&);
-    std::string getDataWithoutTouchingIStream_(std::istream&);
     FileRecognizer fileRecognizer_;
 
 };
