@@ -73,10 +73,10 @@ const int EncodingConverter::TINICONV_OPTION = 0;
 // FIXME: 400 000 = memory access violation at address: 0xbfa729ac: no mapping at fault address
 const int EncodingConverter::BUFFER_SIZE = 100000;
 
-EncodingConverter::EncodingConverter() : defaultEncoding_("UTF-8") { }
+EncodingConverter::EncodingConverter() : targetEncoding_("UTF-8") { }
 
-EncodingConverter::EncodingConverter(std::string defaultEncoding)
-    : defaultEncoding_(defaultEncoding) { }
+EncodingConverter::EncodingConverter(std::string targetEncoding)
+    : targetEncoding_(targetEncoding) { }
 
 std::string EncodingConverter::detect(std::string text) {
     std::string charset(ASCII_CHARSET);
@@ -159,10 +159,10 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
     return true;
 }
 
-std::string EncodingConverter::convert(std::string to, std::string text) {
-    return convert(detect(text), to, text);
+std::string EncodingConverter::convert(std::string from, std::string text) {
+    return convert(from, targetEncoding_, text);
 }
 
 std::string EncodingConverter::convert(std::string text) {
-    return convert(detect(text), defaultEncoding_, text);
+    return convert(detect(text), targetEncoding_, text);
 }

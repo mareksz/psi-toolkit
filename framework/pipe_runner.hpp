@@ -60,6 +60,8 @@ private:
     ShallowAliaser shallowAliaser_;
 
     bool encodingConvertion_;
+    std::string inputEncoding_;
+    EncodingConverter encodingConverter_;
     void convertInputStreamEncoding_(std::istream&);
 
     template<typename Source, typename Sink>

@@ -8,19 +8,19 @@ class EncodingConverter {
 public:
 
     EncodingConverter();
-    EncodingConverter(std::string defaultEncoding);
+    EncodingConverter(std::string targetEncoding);
 
     std::string detect(std::string text);
 
     std::string convert(std::string from, std::string to, std::string text);
-    std::string convert(std::string to, std::string text);
+    std::string convert(std::string from, std::string text);
     std::string convert(std::string text);
 
     static std::vector<std::string> getAllEncodings();
 
 private:
 
-    std::string defaultEncoding_;
+    std::string targetEncoding_;
 
     bool convert_(int inCharsetId, int outCharsetId, std::string input, std::string& output);
     bool detect_(const char* input, size_t length, std::string& output);

@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( auto_conversion ) {
     EncodingConverter converter;
 
     std::string input = getContentOfExampleFile_("example_windows-1255.txt");
-    std::string result = converter.convert("UTF-8", input);
+    std::string result = converter.convert("windows-1255", input);
 
     BOOST_CHECK_EQUAL("למההםפשוטלאמדבריםעברי", result);
 
