@@ -16,6 +16,8 @@
 #include "shallow_aliaser.hpp"
 #include "auto_completer.hpp"
 
+#include "encoding_converter.hpp"
+
 #if HAVE_PERL_BINDINGS
 #include <EXTERN.h>
 #include <perl.h>

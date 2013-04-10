@@ -55,6 +55,19 @@ std::map<std::string, int> EncodingConverter::CHARSET_CODES = boost::assign::map
     ("Big5",            38)
     ;
 
+std::vector<std::string> EncodingConverter::getAllEncodings() {
+    std::vector<std::string> keys;
+
+    for (std::map<std::string, int>::iterator it = CHARSET_CODES.begin();
+         it != CHARSET_CODES.end();
+         ++it) {
+
+        keys.push_back(it->first);
+    }
+
+    return keys;
+}
+
 const int EncodingConverter::TINICONV_OPTION = 0;
 
 // FIXME: 400 000 = memory access violation at address: 0xbfa729ac: no mapping at fault address

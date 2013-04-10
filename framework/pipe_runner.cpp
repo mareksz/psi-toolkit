@@ -147,6 +147,7 @@ void PipeRunner::setRunnerOptionsDescription_() {
         ("aliases", "Show aliases, i.e. alternative names for processors")
         ("line-by-line,l", "Process input line by line")
         ("list-languages", "List languages handled for each processor specified")
+        ("list-encodings", "List handled character encodings")
         ("log-level", boost::program_options::value<std::string>(),
          "Set logging level")
         ("log-file", boost::program_options::value<std::string>(),
@@ -174,6 +175,14 @@ bool PipeRunner::stopAfterExecutingRunnerOptions_() {
     if (runnerOptions_.count("aliases")) {
         std::cout << "Aliases:" << std::endl;
         ConsoleHelpFormatter().formatAliases(std::cout);
+        return true;
+    }
+
+    if (runnerOptions_.count("list-encodings")) {
+        std::cout << "Character encodings:" << std::endl;
+        BOOST_FOREACH(std::string charset, EncodingConverter::getAllEncodings()) {
+            std::cout << charset << std::endl;
+        }
         return true;
     }
 

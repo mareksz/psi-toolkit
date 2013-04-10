@@ -5,28 +5,30 @@
 #include <map>
 
 class EncodingConverter {
-    public:
+public:
 
-        EncodingConverter();
-        EncodingConverter(std::string defaultEncoding);
+    EncodingConverter();
+    EncodingConverter(std::string defaultEncoding);
 
-        std::string detect(std::string text);
+    std::string detect(std::string text);
 
-        std::string convert(std::string from, std::string to, std::string text);
-        std::string convert(std::string to, std::string text);
-        std::string convert(std::string text);
+    std::string convert(std::string from, std::string to, std::string text);
+    std::string convert(std::string to, std::string text);
+    std::string convert(std::string text);
 
-    private:
+    static std::vector<std::string> getAllEncodings();
 
-        std::string defaultEncoding_;
+private:
 
-        bool convert_(int inCharsetId, int outCharsetId, std::string input, std::string& output);
-        bool detect_(const char* input, size_t length, std::string& output);
+    std::string defaultEncoding_;
 
-        static const std::string ASCII_CHARSET;
-        static std::map<std::string, int> CHARSET_CODES;
-        static const int TINICONV_OPTION;
-        static const int BUFFER_SIZE;
+    bool convert_(int inCharsetId, int outCharsetId, std::string input, std::string& output);
+    bool detect_(const char* input, size_t length, std::string& output);
+
+    static const std::string ASCII_CHARSET;
+    static std::map<std::string, int> CHARSET_CODES;
+    static const int TINICONV_OPTION;
+    static const int BUFFER_SIZE;
 };
 
 #endif
