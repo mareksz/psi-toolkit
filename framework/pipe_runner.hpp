@@ -53,9 +53,14 @@ public:
 private:
     PipelineSpecification pipelineSpecification_;
     bool justInformation_;
-    bool lineByLine_;
 
+    bool lineByLine_;
     void turnOnLineByLineMode_();
+
+    ShallowAliaser shallowAliaser_;
+
+    bool encodingConvertion_;
+    void convertInputStreamEncoding_(std::istream&);
 
     template<typename Source, typename Sink>
     void parseIntoFinalPipeline_(std::vector<std::string> args, bool isTheFirstArgProgramName);
@@ -143,8 +148,6 @@ private:
                                                           const std::string & path);
 
     static bool isStandardInputOrOutputFileName(const std::string & path);
-
-    ShallowAliaser shallowAliaser_;
 };
 
 #endif

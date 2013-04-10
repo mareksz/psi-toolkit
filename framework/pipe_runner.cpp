@@ -23,6 +23,7 @@
 PipeRunner::PipeRunner(const std::string& pipeline)
     : justInformation_(false),
     lineByLine_(false),
+    encodingConvertion_(false),
     runnerOptionsDescription_("PipeRunner options") {
 
     parseIntoFinalPipeline_<std::istream, std::ostream>(splitPipeline(pipeline), false);
@@ -31,6 +32,7 @@ PipeRunner::PipeRunner(const std::string& pipeline)
 PipeRunner::PipeRunner(int argc, char* argv[])
     : justInformation_(false),
     lineByLine_(false),
+    encodingConvertion_(false),
     runnerOptionsDescription_("PipeRunner options") {
 
     std::vector<std::string> args(argv, argv + argc);
@@ -148,6 +150,8 @@ void PipeRunner::setRunnerOptionsDescription_() {
         ("line-by-line,l", "Process input line by line")
         ("list-languages", "List languages handled for each processor specified")
         ("list-encodings", "List handled character encodings")
+        ("encoding-convertion,c", boost::program_options::bool_switch()->default_value(false),
+         "Detect and convert encoding charset of input")
         ("log-level", boost::program_options::value<std::string>(),
          "Set logging level")
         ("log-file", boost::program_options::value<std::string>(),
@@ -184,6 +188,10 @@ bool PipeRunner::stopAfterExecutingRunnerOptions_() {
             std::cout << charset << std::endl;
         }
         return true;
+    }
+
+    if (runnerOptions_.count("encoding-convertion")) {
+        encodingConvertion_ = runnerOptions_["encoding-convertion"].as<bool>();
     }
 
     if (runnerOptions_.count("version")) {
@@ -472,7 +480,10 @@ void PipeRunner::runPipelineNode_(
                 processor);
 
         if (!reader)
-            throw Exception("first element of the pipeline should be a writer");
+            throw Exception("first element of the pipeline should be a reader");
+
+        if (encodingConvertion_)
+            convertInputStreamEncoding_(in);
 
         reader->readIntoLattice(in, lattice);
     }
@@ -753,5 +764,20 @@ void PipeRunner::turnOnLineByLineMode_() {
     if (!lineByLine_) {
         lineByLine_ = true;
         INFO("Line-by-line mode is turned ON.");
+    }
+}
+
+void PipeRunner::convertInputStreamEncoding_(std::istream& input) {
+    std::stringstream temp;
+    temp << input.rdbuf();
+
+    std::string output = EncodingConverter().convert(temp.str());
+    int outputSize = output.size();
+    const char* rawOutput = output.c_str();
+
+    input.clear();
+
+    for (int i = outputSize; i > 0; i--) {
+        input.putback(rawOutput[i - 1]);
     }
 }

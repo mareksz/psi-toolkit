@@ -88,6 +88,24 @@ std::string EncodingConverter::detect(std::string text) {
     return charset;
 }
 
+bool EncodingConverter::detect_(const char* input, size_t length, std::string& output) {
+    uchardet_t handle = uchardet_new();
+
+    int result = uchardet_handle_data(handle, input, length);
+    if (result != 0) {
+        WARN("uchardet handling data error");
+        return false;
+    }
+    uchardet_data_end(handle);
+
+    output = uchardet_get_charset(handle);
+    DEBUG("uchardet detected encoding: " << output);
+
+    uchardet_delete(handle);
+
+    return true;
+}
+
 std::string EncodingConverter::convert(std::string from, std::string to, std::string text) {
     if (!CHARSET_CODES.count(from)) {
         WARN("unrecognized source encoding: " << from);
@@ -105,14 +123,6 @@ std::string EncodingConverter::convert(std::string from, std::string to, std::st
     }
 
     return convertedText;
-}
-
-std::string EncodingConverter::convert(std::string to, std::string text) {
-    return convert(detect(text), to, text);
-}
-
-std::string EncodingConverter::convert(std::string text) {
-    return convert(detect(text), defaultEncoding_, text);
 }
 
 bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
@@ -149,20 +159,10 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
     return true;
 }
 
-bool EncodingConverter::detect_(const char* input, size_t length, std::string& output) {
-    uchardet_t handle = uchardet_new();
+std::string EncodingConverter::convert(std::string to, std::string text) {
+    return convert(detect(text), to, text);
+}
 
-    int result = uchardet_handle_data(handle, input, length);
-    if (result != 0) {
-        WARN("uchardet handling data error");
-        return false;
-    }
-    uchardet_data_end(handle);
-
-    output = uchardet_get_charset(handle);
-    DEBUG("uchardet detected encoding: " << output);
-
-    uchardet_delete(handle);
-
-    return true;
+std::string EncodingConverter::convert(std::string text) {
+    return convert(detect(text), defaultEncoding_, text);
 }
