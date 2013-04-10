@@ -23,7 +23,7 @@
 PipeRunner::PipeRunner(const std::string& pipeline)
     : justInformation_(false),
     lineByLine_(false),
-    encodingConvertion_(false),
+    encodingConversion_(false),
     encodingConverter_("UTF-8"),
     runnerOptionsDescription_("PipeRunner options") {
 
@@ -33,7 +33,7 @@ PipeRunner::PipeRunner(const std::string& pipeline)
 PipeRunner::PipeRunner(int argc, char* argv[])
     : justInformation_(false),
     lineByLine_(false),
-    encodingConvertion_(false),
+    encodingConversion_(false),
     encodingConverter_("UTF-8"),
     runnerOptionsDescription_("PipeRunner options") {
 
@@ -152,7 +152,7 @@ void PipeRunner::setRunnerOptionsDescription_() {
         ("line-by-line,l", "Process input line by line")
         ("list-languages", "List languages handled for each processor specified")
         ("list-encodings", "List handled character encodings")
-        ("encoding-convertion,c", boost::program_options::bool_switch()->default_value(false),
+        ("encoding-conversion,c", boost::program_options::bool_switch()->default_value(false),
          "Detect and convert character encoding of input")
         ("from-encoding,e", boost::program_options::value<std::string>(),
          "Convert character encoding of input")
@@ -194,12 +194,12 @@ bool PipeRunner::stopAfterExecutingRunnerOptions_() {
         return true;
     }
 
-    if (runnerOptions_.count("encoding-convertion")) {
-        encodingConvertion_ = runnerOptions_["encoding-convertion"].as<bool>();
+    if (runnerOptions_.count("encoding-conversion")) {
+        encodingConversion_ = runnerOptions_["encoding-conversion"].as<bool>();
     }
 
     if (runnerOptions_.count("from-encoding")) {
-        encodingConvertion_ = true;
+        encodingConversion_ = true;
         inputEncoding_ = runnerOptions_["from-encoding"].as<std::string>();
     }
 
@@ -491,7 +491,7 @@ void PipeRunner::runPipelineNode_(
         if (!reader)
             throw Exception("first element of the pipeline should be a reader");
 
-        if (encodingConvertion_)
+        if (encodingConversion_)
             convertInputStreamEncoding_(in);
 
         reader->readIntoLattice(in, lattice);

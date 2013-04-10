@@ -59,7 +59,7 @@ private:
 
     ShallowAliaser shallowAliaser_;
 
-    bool encodingConvertion_;
+    bool encodingConversion_;
     std::string inputEncoding_;
     EncodingConverter encodingConverter_;
     void convertInputStreamEncoding_(std::istream&);

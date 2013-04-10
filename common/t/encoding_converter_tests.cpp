@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE( uchardet_detection ) {
     BOOST_CHECK_EQUAL("Этот только UTF, да и вообще перевод не корректный", result);
 }
 
-BOOST_AUTO_TEST_CASE( auto_conversion ) {
+BOOST_AUTO_TEST_CASE( conversion_with_default_target_encoding ) {
     EncodingConverter converter;
 
     std::string input = getContentOfExampleFile_("example_windows-1255.txt");
@@ -53,9 +53,36 @@ BOOST_AUTO_TEST_CASE( auto_conversion ) {
 
     BOOST_CHECK_EQUAL("למההםפשוטלאמדבריםעברי", result);
 
-    result = converter.convert(input);
+    input = getContentOfExampleFile_("example_iso-8859-2.txt");
+    result = converter.convert("ISO-8859-2", input);
+
+    BOOST_CHECK_EQUAL("Zażółć gęślą jaźń.", result);
+}
+
+BOOST_AUTO_TEST_CASE( auto_conversion ) {
+    EncodingConverter converter;
+
+    std::string input = getContentOfExampleFile_("example_windows-1255.txt");
+    std::string result = converter.convert(input);
 
     BOOST_CHECK_EQUAL("למההםפשוטלאמדבריםעברי", result);
+}
+
+BOOST_AUTO_TEST_CASE( specific_causes ) {
+    EncodingConverter converter;
+
+    std::string input = "text in ascii which shouldn't be converted";
+
+    std::string encoding = converter.detect(input);
+    BOOST_CHECK_EQUAL(EncodingConverter::ASCII, encoding);
+
+    std::string output = converter.convert(input);
+    BOOST_CHECK_EQUAL(input, output);
+
+    input = "przykładowy tekst w UTF-8 (zażółć gęślą jaźń)";
+
+    output = converter.convert("UTF-8", "UTF-8", input);
+    BOOST_CHECK_EQUAL(input, output);
 }
 
 std::string getContentOfExampleFile_(std::string fileName) {

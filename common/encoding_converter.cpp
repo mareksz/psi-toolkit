@@ -7,14 +7,14 @@
 #include "uchardet.h"
 
 
-const std::string EncodingConverter::ASCII_CHARSET = "ascii/unknown";
+const std::string EncodingConverter::ASCII = "ascii";
 
 /*
  * Integers are set according to constant values from tiniconv library.
  * See file tiniconv/tiniconv.h
  */
 std::map<std::string, int> EncodingConverter::CHARSET_CODES = boost::assign::map_list_of
-    (ASCII_CHARSET,     0)
+    (ASCII,             0)
     ("windows-1250",    1)
     ("windows-1251",    2)
     ("windows-1252",    3)
@@ -79,7 +79,7 @@ EncodingConverter::EncodingConverter(std::string targetEncoding)
     : targetEncoding_(targetEncoding) { }
 
 std::string EncodingConverter::detect(std::string text) {
-    std::string charset(ASCII_CHARSET);
+    std::string charset;
 
     if (!detect_(text.c_str(), text.length(), charset)) {
         WARN("undetected encoding");
@@ -88,7 +88,7 @@ std::string EncodingConverter::detect(std::string text) {
     return charset;
 }
 
-bool EncodingConverter::detect_(const char* input, size_t length, std::string& output) {
+bool EncodingConverter::detect_(const char* input, size_t length, std::string& encoding) {
     uchardet_t handle = uchardet_new();
 
     int result = uchardet_handle_data(handle, input, length);
@@ -98,8 +98,11 @@ bool EncodingConverter::detect_(const char* input, size_t length, std::string& o
     }
     uchardet_data_end(handle);
 
-    output = uchardet_get_charset(handle);
-    DEBUG("uchardet detected encoding: " << output);
+    encoding = uchardet_get_charset(handle);
+    if (encoding.empty())
+        encoding = ASCII;
+
+    DEBUG("uchardet detected encoding: " << encoding);
 
     uchardet_delete(handle);
 
@@ -111,8 +114,20 @@ std::string EncodingConverter::convert(std::string from, std::string to, std::st
         WARN("unrecognized source encoding: " << from);
         return text;
     }
+    if (from == ASCII) {
+        INFO("conversion skipped bacause source encoding is ASCII");
+        return text;
+    }
     if (!CHARSET_CODES.count(to)) {
         WARN("unrecognized target encoding: " << to);
+        return text;
+    }
+    if (from == to) {
+        INFO("conversion skipped because source and target encodings are the same");
+        return text;
+    }
+    if (from == targetEncoding_) {
+        INFO("conversion skipped because source encoding is as expected");
         return text;
     }
 
@@ -165,4 +180,8 @@ std::string EncodingConverter::convert(std::string from, std::string text) {
 
 std::string EncodingConverter::convert(std::string text) {
     return convert(detect(text), targetEncoding_, text);
+}
+
+std::string EncodingConverter::getTargetEncoding() {
+    return targetEncoding_;
 }
