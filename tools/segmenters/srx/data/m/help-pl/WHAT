@@ -1,1 +1,1 @@
-segment --lang pl ! write-simple --tag segment
+segment --lang pl ! write-simple --tags segment

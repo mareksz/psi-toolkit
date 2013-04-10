@@ -38,7 +38,7 @@ LatticeWriter<std::ostream>* SimpleLatticeWriter::Factory::doCreateLatticeWriter
         options.count("linear"),
         options.count("no-alts"),
         options.count("with-blank"),
-        quoter.unescape(options["tag"].as<std::string>()),
+        quoter.unescape(options["tags"].as<std::string>()),
         quoter.unescape(options["sep"].as<std::string>()),
         quoter.unescape(options["alt-sep"].as<std::string>()),
         tagsSeparators,
@@ -68,7 +68,7 @@ boost::program_options::options_description SimpleLatticeWriter::Factory::doOpti
         ("spec",
             boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "specification of higher-order tags and their separators")
-        ("tag",
+        ("tags",
             boost::program_options::value<std::string>()->default_value("token"),
             "basic tag or tags separated by commas (conjunction) or semicolons (alternative)");
 

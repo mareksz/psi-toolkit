@@ -35,7 +35,7 @@ done_testing();
 # Helper functions
 
 sub _test_excpetions_unknown_pipe_command {
-    my $command = "tp-tokenizer --lang pl ! unknown-perl-simple-writer --tag token";
+    my $command = "tp-tokenizer --lang pl ! unknown-perl-simple-writer --tags token";
 
     my $text_to_process = 'Ala ma kota.';
     my $expected_exception = "unknown processor `unknown-perl-simple-writer`";
@@ -45,7 +45,7 @@ sub _test_excpetions_unknown_pipe_command {
 }
 
 sub _test_excpetions_bad_arguments {
-    my $command = "tp-tokenizer --unknown-option pl ! perl-simple-writer --tag token";
+    my $command = "tp-tokenizer --unknown-option pl ! perl-simple-writer --tags token";
     my $text_to_process = 'Ala ma kota.';
 
     my $expected_exception = "unknown exception";

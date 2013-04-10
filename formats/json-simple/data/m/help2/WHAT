@@ -1,1 +1,1 @@
-tokenize --lang en ! segmenter ! json-simple-writer --tag token --spec segment
+tokenize --lang en ! segmenter ! json-simple-writer --tags token --spec segment

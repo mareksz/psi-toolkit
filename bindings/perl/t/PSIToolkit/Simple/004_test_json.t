@@ -48,30 +48,30 @@ sub _start_simple_json_test {
     _run_json_test("tp-tokenizer --lang pl", "Ala ma kota");
     _run_json_test("tp-tokenizer --lang pl", "Ala ma \" \\ kota");
 
-    _run_json_test("srx-segmenter --lang pl", "Ala ma kota. Kot jest dobry.", "--tag segment");
+    _run_json_test("srx-segmenter --lang pl", "Ala ma kota. Kot jest dobry.", "--tags segment");
 }
 
 sub _start_json_test_with_polish_letters {
     _run_json_test("tp-tokenizer --lang pl", "ążśźęćółń ĄŻŚŹĘĆÓŁŃ 123456789 ! @ # $ % ^ & * ( ) [ ]");
-    _run_json_test("srx-segmenter --lang pl", "Ala ma kota. Kot ma Alę.", "--tag segment");
+    _run_json_test("srx-segmenter --lang pl", "Ala ma kota. Kot ma Alę.", "--tags segment");
 }
 
 sub _start_json_test_with_simple_tokenized_hash {
-    _run_json_test_as_with_args("tp-tokenizer --lang pl", "Ala ma kota.", "--tag token");
-    _run_json_test_as_with_args("tp-tokenizer --lang pl", "Chrząszcz będzie śmiesznym prezentem w Łodzi!!!", "--tag token");
+    _run_json_test_as_with_args("tp-tokenizer --lang pl", "Ala ma kota.", "--tags token");
+    _run_json_test_as_with_args("tp-tokenizer --lang pl", "Chrząszcz będzie śmiesznym prezentem w Łodzi!!!", "--tags token");
 }
 
 sub _start_json_test_with_alternatives {
-    _run_json_test("tp-tokenizer --lang pl", "ąż ółń", "--tag symbol --spec token");
+    _run_json_test("tp-tokenizer --lang pl", "ąż ółń", "--tags symbol --spec token");
 }
 
 sub _start_json_test_nasty_examples {
     _run_json_test("tp-tokenizer --lang pl", "");
-    _run_json_test("tp-tokenizer --lang pl", "", "--tag symbol --spec token");
+    _run_json_test("tp-tokenizer --lang pl", "", "--tags symbol --spec token");
 }
 
 sub _start_json_test_with_morfologik_hash {
-    _run_json_test_as_with_args("tp-tokenizer --lang pl ! morfologik", "Ala ma kota.", "--tag form");
+    _run_json_test_as_with_args("tp-tokenizer --lang pl ! morfologik", "Ala ma kota.", "--tags form");
 }
 
 sub _run_json_test_as_with_args {

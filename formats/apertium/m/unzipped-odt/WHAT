@@ -1,1 +1,1 @@
-apertium-reader --format odt --unzip-data false ! simple-writer --tag frag
+apertium-reader --format odt --unzip-data false ! simple-writer --tags frag

@@ -34,7 +34,7 @@ done_testing();
 # Helper functions
 
 sub _test_run_pipe_run_for_perl_with_args_tokenizer {
-    my $command = "tp-tokenizer --lang pl ! perl-simple-writer --with-args --tag token";
+    my $command = "tp-tokenizer --lang pl ! perl-simple-writer --with-args --tags token";
     my $text_to_process = 'Ala ma kota.';
     my $expected_result = [
         {
@@ -62,7 +62,7 @@ sub _test_run_pipe_run_for_perl_with_args_tokenizer {
 }
 
 sub _test_run_pipe_run_for_perl_with_args_morfologik {
-    my $command = "tp-tokenizer --lang pl ! morfologik ! perl-simple-writer --with-args --tag form";
+    my $command = "tp-tokenizer --lang pl ! morfologik ! perl-simple-writer --with-args --tags form";
     my $text_to_process = 'Ala ma kota.';
     my $expected_result = [
         [

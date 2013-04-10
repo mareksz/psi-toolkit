@@ -1,1 +1,1 @@
-tp-tokenizer --lang pl ! morfologik ! bilexicon --lang pl --trg-lang en ! simple-writer --tag bilexicon
+tp-tokenizer --lang pl ! morfologik ! bilexicon --lang pl --trg-lang en ! simple-writer --tags bilexicon

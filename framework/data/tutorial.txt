@@ -68,7 +68,7 @@ The expected result is ([click here to run this example in new window](/pipe.psi
 To lemmatize the same sentence and display all lemmas for each word, the
 following pipeline is used:
 
-    read-text ! tokenize ! lemmatize ! write-simple --tag lemma
+    read-text ! tokenize ! lemmatize ! write-simple --tags lemma
 
 The result is: ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmatize+!+write-simple&input-text=Piękna+gra+trwała+długo.)):
 
@@ -77,7 +77,7 @@ The result is: ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmat
     trwać|trwała|trwały
     długo
 
-Note that in order display information about lemmas you need to set the `--tag
+Note that in order display information about lemmas you need to set the `--tags
 lemma` switch for the `write-simple` command.
 
 
@@ -85,7 +85,7 @@ lemma` switch for the `write-simple` command.
 
 As was shown in the previous example, the use of the PSI processor may be
 customized be means of switches (options). Most of the options require
-a value, as it is in the case of the previously mentioned `--tag` option
+a value, as it is in the case of the previously mentioned `--tags` option
 (the value was `lemma`).
 
 You may find all available options for each processor in [Documentation]
@@ -108,8 +108,8 @@ returns exactly the same results as a more sophisticated one:([run example]
 as the missing tasks are complemented automatically with default processors.
 The following two pipelines will produce the same output:
 
-* `read-text ! tokenize ! lemmatize ! write-simple --tag lemma`
-* `lemmatize ! write-simple --tag lemma` (a default reader and a default
+* `read-text ! tokenize ! lemmatize ! write-simple --tags lemma`
+* `lemmatize ! write-simple --tags lemma` (a default reader and a default
 tokenizer will be auto-complemented).
 
 
@@ -127,8 +127,8 @@ of aliases](/help/aliases.html).
 
 For example the following pipelines are equivalent:
 
-* `segment ! write --tag segment`
-* `srx-segmenter ! simple-writer --tag segment`
+* `segment ! write --tags segment`
+* `srx-segmenter ! simple-writer --tags segment`
 
 
 ## More examples ##
@@ -181,10 +181,10 @@ For the detailed description of the PSI-format see [PSI-format]
 
 Remember that you can filter the display of the PSI-lattice by using the tag
 option of `simple-writer`.
-Here are two examples: ([run example](/pipe.psis?pipe-text=tokenize+!+write-simple+--tag+token&input-text=Piękna+gra+trwała+długo.)):
+Here are two examples: ([run example](/pipe.psis?pipe-text=tokenize+!+write-simple+--tags+token&input-text=Piękna+gra+trwała+długo.)):
 
-* `tokenize ! write-simple --tag token`
-* `lemmatize ! write-simple --tag lemma`
+* `tokenize ! write-simple --tags token`
+* `lemmatize ! write-simple --tags lemma`
 
 
 ## Command-line usage ##
@@ -195,8 +195,8 @@ You can pass any command pipeline as an argument for the `psi-pipe`
 program. To pass the input text to the standard input you need to use the `echo`
 command. Apply the vertical bar `|` to pipe `echo` and `psi-pipe`.
 
-    $ echo "Piękna gra trwała długo." | psi-pipe lemmatize ! write-simple --tag lemma
+    $ echo "Piękna gra trwała długo." | psi-pipe lemmatize ! write-simple --tags lemma
 
 If you want to pass a file instead of raw text, you may use the `cat` command:
 
-    $ cat ../path-to-your/file.docx | psi-pipe lemmatize ! write-simple --tag lemma
+    $ cat ../path-to-your/file.docx | psi-pipe lemmatize ! write-simple --tags lemma
