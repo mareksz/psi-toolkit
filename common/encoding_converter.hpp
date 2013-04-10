@@ -21,6 +21,7 @@ class EncodingConverter {
         std::string defaultEncoding_;
 
         bool convert_(int inCharsetId, int outCharsetId, std::string input, std::string& output);
+        bool detect_(const char* input, size_t length, std::string& output);
 
         static std::map<std::string, int> CHARSET_CODES;
         static const int TINICONV_OPTION;

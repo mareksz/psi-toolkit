@@ -1,8 +1,11 @@
+#include <boost/assign.hpp>
+
 #include "encoding_converter.hpp"
-#include "tiniconv.h"
 #include "logging.hpp"
 
-#include <boost/assign.hpp>
+#include "tiniconv.h"
+#include "uchardet.h"
+
 
 
 /*
@@ -64,7 +67,13 @@ EncodingConverter::EncodingConverter(std::string defaultEncoding)
 }
 
 std::string EncodingConverter::detect(std::string text) {
-    return std::string("");
+    std::string charset("ascii/unknown");
+
+    if (!detect_(text.c_str(), text.length(), charset)) {
+        WARN("undetected encoding");
+    }
+
+    return charset;
 }
 
 std::string EncodingConverter::convert(std::string from, std::string to, std::string text) {
@@ -116,6 +125,24 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
     output = std::string((const char *)outputBuffer);
 
     DEBUG("tiniconv convertion output: [" << output << "]");
+
+    return true;
+}
+
+bool EncodingConverter::detect_(const char* input, size_t length, std::string& output) {
+    uchardet_t handle = uchardet_new();
+
+    int result = uchardet_handle_data(handle, input, length);
+    if (result != 0) {
+        WARN("uchardet handling data error");
+        return false;
+    }
+    uchardet_data_end(handle);
+
+    output = uchardet_get_charset(handle);
+    DEBUG("uchardet detected encoding: " << output);
+
+    uchardet_delete(handle);
 
     return true;
 }
