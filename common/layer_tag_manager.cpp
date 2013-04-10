@@ -1,5 +1,9 @@
 #include "layer_tag_manager.hpp"
 
+
+#include <boost/algorithm/string.hpp>
+
+
 LayerTagManager::LayerTagManager() : symbolTag_(createSingletonTagCollection("symbol")) { }
 
 LayerTagCollection LayerTagManager::createSingletonTagCollection(std::string tagName) {
@@ -50,26 +54,16 @@ std::list<std::string> LayerTagManager::getTagNames(const LayerTagCollection& ta
 }
 
 LayerTagMask LayerTagManager::getMask(std::string specification) {
-    std::vector< std::vector<std::string> > alternative = splitSpecification(specification);
+    std::list< std::list<std::string> > alternative = splitMaskSpecification(specification);
     if (alternative.empty()) {
         return getMask(createSingletonTagCollection(specification));
     } else {
         std::vector<LayerTagCollection> tagCollections;
-        BOOST_FOREACH(std::vector<std::string> conjunction, alternative) {
-            tagCollections.push_back(createTagCollectionFromVector(conjunction));
+        BOOST_FOREACH(std::list<std::string> conjunction, alternative) {
+            tagCollections.push_back(createTagCollection(conjunction));
         }
         return getAlternativeMask(tagCollections);
     }
-}
-
-std::vector< std::vector<std::string> > LayerTagManager::splitSpecification(
-        std::string specification) {
-    std::vector< std::vector<std::string> > result;
-    LayerTagMaskSpecificationGrammar grammar;
-    std::string::const_iterator begin = specification.begin();
-    std::string::const_iterator end = specification.end();
-    parse(begin, end, grammar, result);
-    return result;
 }
 
 LayerTagCollection LayerTagManager::planeTags() {
@@ -109,3 +103,26 @@ bool LayerTagManager::canBeAppliedToImplicitSymbol(const LayerTagMask& tagMask) 
 
     return false;
 }
+
+std::list<std::string> LayerTagManager::splitCollectionSpecification(
+        std::string specification) {
+    std::vector<std::string> result;
+    boost::split(result, specification, boost::is_any_of(","));
+    return std::list<std::string>(result.begin(), result.end());
+}
+
+std::list< std::list<std::string> > LayerTagManager::splitMaskSpecification(
+        std::string specification) {
+    std::list< std::list<std::string> > result;
+    std::vector< std::vector<std::string> > vectorResult;
+    LayerTagMaskSpecificationGrammar grammar;
+    std::string::const_iterator begin = specification.begin();
+    std::string::const_iterator end = specification.end();
+    parse(begin, end, grammar, vectorResult);
+    BOOST_FOREACH(std::vector<std::string> vec, vectorResult) {
+        result.push_back(std::list<std::string>(vec.begin(), vec.end()));
+    }
+    return result;
+}
+
+

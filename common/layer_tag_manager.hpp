@@ -56,6 +56,14 @@ public:
 
     LayerTagCollection createSingletonTagCollection(std::string tagName);
 
+    /**
+     * Create tag collection that is a conjunction of given tags.
+     * Specification is a list of tags separated by ','.
+     */
+    LayerTagCollection createTagCollection(std::string specification) {
+        return createTagCollection(splitCollectionSpecification(specification));
+    }
+
     LayerTagCollection createTagCollection(std::list<std::string> tagNames);
 
     LayerTagCollection createTagCollection(std::vector<std::string> tagNames);
@@ -123,8 +131,6 @@ public:
      * separated by ';' (alternative).
      */
     LayerTagMask getMask(std::string specification);
-
-    static std::vector< std::vector<std::string> > splitSpecification(std::string specification);
 
     LayerTagMask getMask(std::list<std::string> tagNames) {
         return getMask(createTagCollection(tagNames));
@@ -203,6 +209,17 @@ public:
     bool isThere(std::string tagName, LayerTagCollection tags);
 
     bool canBeAppliedToImplicitSymbol(const LayerTagMask& tags);
+
+    /**
+     * Split string of token names separated by `,` into list of token names.
+     */
+    static std::list<std::string> splitCollectionSpecification(std::string specification);
+
+    /**
+     * Split string of token names separated by `,` and `;` into list of lists of token names.
+     */
+    static std::list< std::list<std::string> > splitMaskSpecification(
+            std::string specification);
 
 private:
 
