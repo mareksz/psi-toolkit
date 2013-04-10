@@ -4,7 +4,7 @@ edges are not shown by default. To see all edges, use the `--show-symbol-edges`
 switch. The edges of different layer tags are distinguished by different colors.
 To see the tags' names, use the `--show-tags` switch. To disable coloring,
 use the `--no-color` switch. The range of displayed edges can be restricted
-with the `--filter` option, which allows to specify the visible layer tags.
+with the `--tags` option, which allows to specify the visible layer tags.
 When this option is used, only edges with specified layer tags are shown.
 
 GV-writer tries to align lattice vertices left to right.

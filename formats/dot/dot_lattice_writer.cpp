@@ -15,8 +15,8 @@ LatticeWriter<std::ostream>* DotLatticeWriter::Factory::doCreateLatticeWriter(
     const boost::program_options::variables_map& options) {
 
     std::set<std::string> filter;
-    if (options.count("filter")) {
-        std::vector<std::string> filterVector = options["filter"].as< std::vector<std::string> >();
+    if (options.count("tags")) {
+        std::vector<std::string> filterVector = options["tags"].as< std::vector<std::string> >();
         filter.insert(filterVector.begin(), filterVector.end());
     }
 
@@ -38,12 +38,12 @@ boost::program_options::options_description DotLatticeWriter::Factory::doOptions
             "force aligning nodes left to right")
         ("color",
             "assign different colors to edges with different tags")
-        ("filter", boost::program_options::value< std::vector<std::string> >()->multitoken(),
-            "filter edges by specified tags")
         ("show-symbol-edges",
             "show symbol edges")
         ("show-tags",
             "print edges' layer tags")
+        ("tags", boost::program_options::value< std::vector<std::string> >()->multitoken(),
+            "filter edges by specified tags")
         ("tree",
             "show dependencies between edges instead of the content of the lattice");
 

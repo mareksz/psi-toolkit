@@ -66,8 +66,8 @@ LatticeWriter<std::ostream>* GVLatticeWriter::Factory::doCreateLatticeWriter(
     const boost::program_options::variables_map& options) {
 
     std::set<std::string> filter;
-    if (options.count("filter")) {
-        std::vector<std::string> filterVector = options["filter"].as< std::vector<std::string> >();
+    if (options.count("tags")) {
+        std::vector<std::string> filterVector = options["tags"].as< std::vector<std::string> >();
         filter.insert(filterVector.begin(), filterVector.end());
     }
 
@@ -86,8 +86,6 @@ boost::program_options::options_description GVLatticeWriter::Factory::doOptionsH
     boost::program_options::options_description optionsDescription("Allowed options");
 
     optionsDescription.add_options()
-        ("filter", boost::program_options::value< std::vector<std::string> >()->multitoken(),
-            "show only edges tagged with specified tags")
         ("format", boost::program_options::value<std::string>()->default_value("svg"),
             "choose output format")
         ("no-align",
@@ -98,6 +96,8 @@ boost::program_options::options_description GVLatticeWriter::Factory::doOptionsH
             "print edges' layer tags")
         ("show-symbol-edges",
             "show symbol edges")
+        ("tags", boost::program_options::value< std::vector<std::string> >()->multitoken(),
+            "show only edges tagged with specified tags")
         ("tree",
             "show dependencies between edges instead of the content of the lattice");
 

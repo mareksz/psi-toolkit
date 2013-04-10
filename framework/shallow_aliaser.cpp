@@ -49,7 +49,7 @@ void ShallowAliaser::initializeAliases_() {
         " --av-separator : --av-pairs-separator ;");
 
     addWriteGetDrawAlias("tree", "gv-writer --tree");
-    addWriteGetDrawAlias("parse-tree", "gv-writer --tree --filter-parse");
+    addWriteGetDrawAlias("parse-tree", "gv-writer --tree --tags parse");
 }
 
 void ShallowAliaser::addReadReaderAlias(std::string alias, std::string expand) {
