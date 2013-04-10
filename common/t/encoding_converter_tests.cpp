@@ -35,20 +35,6 @@ BOOST_AUTO_TEST_CASE( uchardet_detection ) {
     EncodingConverter converter;
 
     std::string input = getContentOfExampleFile_("example_windows-1255.txt");
-    std::string result = converter.detect(input);
-
-    BOOST_CHECK_EQUAL("windows-1255", result);
-
-    input = getContentOfExampleFile_("example_windows-1251.txt");
-    result = converter.detect(input);
-
-    BOOST_CHECK_EQUAL("windows-1251", result);
-}
-
-BOOST_AUTO_TEST_CASE( auto_conversion ) {
-    EncodingConverter converter;
-/*
-    std::string input = getContentOfExampleFile_("example_windows-1255.txt");
     std::string result = converter.convert("windows-1255", "UTF-8", input);
 
     BOOST_CHECK_EQUAL("למההםפשוטלאמדבריםעברי", result);
@@ -57,7 +43,19 @@ BOOST_AUTO_TEST_CASE( auto_conversion ) {
     result = converter.convert("windows-1251", "UTF-8", input);
 
     BOOST_CHECK_EQUAL("Этот только UTF, да и вообще перевод не корректный", result);
-*/
+}
+
+BOOST_AUTO_TEST_CASE( auto_conversion ) {
+    EncodingConverter converter;
+
+    std::string input = getContentOfExampleFile_("example_windows-1255.txt");
+    std::string result = converter.convert("UTF-8", input);
+
+    BOOST_CHECK_EQUAL("למההםפשוטלאמדבריםעברי", result);
+
+    result = converter.convert(input);
+
+    BOOST_CHECK_EQUAL("למההםפשוטלאמדבריםעברי", result);
 }
 
 std::string getContentOfExampleFile_(std::string fileName) {

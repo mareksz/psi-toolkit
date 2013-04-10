@@ -7,13 +7,14 @@
 #include "uchardet.h"
 
 
+const std::string EncodingConverter::ASCII_CHARSET = "ascii/unknown";
 
 /*
  * Integers are set according to constant values from tiniconv library.
  * See file tiniconv/tiniconv.h
  */
 std::map<std::string, int> EncodingConverter::CHARSET_CODES = boost::assign::map_list_of
-    ("ascii/unknown",   0)
+    (ASCII_CHARSET,     0)
     ("windows-1250",    1)
     ("windows-1251",    2)
     ("windows-1252",    3)
@@ -59,15 +60,13 @@ const int EncodingConverter::TINICONV_OPTION = 0;
 // FIXME: 400 000 = memory access violation at address: 0xbfa729ac: no mapping at fault address
 const int EncodingConverter::BUFFER_SIZE = 100000;
 
-EncodingConverter::EncodingConverter() : defaultEncoding_("UTF-8") {
-}
+EncodingConverter::EncodingConverter() : defaultEncoding_("UTF-8") { }
 
 EncodingConverter::EncodingConverter(std::string defaultEncoding)
-    : defaultEncoding_(defaultEncoding) {
-}
+    : defaultEncoding_(defaultEncoding) { }
 
 std::string EncodingConverter::detect(std::string text) {
-    std::string charset("ascii/unknown");
+    std::string charset(ASCII_CHARSET);
 
     if (!detect_(text.c_str(), text.length(), charset)) {
         WARN("undetected encoding");
@@ -93,6 +92,14 @@ std::string EncodingConverter::convert(std::string from, std::string to, std::st
     }
 
     return convertedText;
+}
+
+std::string EncodingConverter::convert(std::string to, std::string text) {
+    return convert(detect(text), to, text);
+}
+
+std::string EncodingConverter::convert(std::string text) {
+    return convert(detect(text), defaultEncoding_, text);
 }
 
 bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
