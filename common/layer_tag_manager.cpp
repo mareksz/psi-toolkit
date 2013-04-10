@@ -54,16 +54,21 @@ std::list<std::string> LayerTagManager::getTagNames(const LayerTagCollection& ta
 }
 
 LayerTagMask LayerTagManager::getMask(std::string specification) {
-    std::list< std::list<std::string> > alternative = splitMaskSpecification(specification);
-    if (alternative.empty()) {
+    std::list< std::list<std::string> > tagNames = splitMaskSpecification(specification);
+    if (tagNames.empty()) {
         return getMask(createSingletonTagCollection(specification));
     } else {
-        std::vector<LayerTagCollection> tagCollections;
-        BOOST_FOREACH(std::list<std::string> conjunction, alternative) {
-            tagCollections.push_back(createTagCollection(conjunction));
-        }
-        return getAlternativeMask(tagCollections);
+        return getAlternativeMaskFromTagNames(tagNames);
     }
+}
+
+LayerTagMask LayerTagManager::getAlternativeMaskFromTagNames(
+        std::list< std::list<std::string> > tagNames) {
+    std::vector<LayerTagCollection> tagCollections;
+    BOOST_FOREACH(std::list<std::string> conjunction, tagNames) {
+        tagCollections.push_back(createTagCollection(conjunction));
+    }
+    return getAlternativeMask(tagCollections);
 }
 
 LayerTagCollection LayerTagManager::planeTags() {
@@ -114,14 +119,10 @@ std::list<std::string> LayerTagManager::splitCollectionSpecification(
 std::list< std::list<std::string> > LayerTagManager::splitMaskSpecification(
         std::string specification) {
     std::list< std::list<std::string> > result;
-    std::vector< std::vector<std::string> > vectorResult;
     LayerTagMaskSpecificationGrammar grammar;
     std::string::const_iterator begin = specification.begin();
     std::string::const_iterator end = specification.end();
-    parse(begin, end, grammar, vectorResult);
-    BOOST_FOREACH(std::vector<std::string> vec, vectorResult) {
-        result.push_back(std::list<std::string>(vec.begin(), vec.end()));
-    }
+    parse(begin, end, grammar, result);
     return result;
 }
 

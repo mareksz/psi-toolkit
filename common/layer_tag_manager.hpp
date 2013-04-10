@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
 #include <boost/assign.hpp>
 #include <boost/bimap.hpp>
@@ -20,7 +21,7 @@ namespace qi = boost::spirit::qi;
 
 struct LayerTagMaskSpecificationGrammar : public qi::grammar<
     std::string::const_iterator,
-    std::vector< std::vector<std::string> >()
+    std::list< std::list<std::string> >()
 > {
 
     LayerTagMaskSpecificationGrammar() : LayerTagMaskSpecificationGrammar::base_type(start) {
@@ -33,8 +34,8 @@ struct LayerTagMaskSpecificationGrammar : public qi::grammar<
 
     }
 
-    qi::rule<std::string::const_iterator, std::vector< std::vector<std::string> >()> start;
-    qi::rule<std::string::const_iterator, std::vector<std::string>()> conjunction;
+    qi::rule<std::string::const_iterator, std::list< std::list<std::string> >()> start;
+    qi::rule<std::string::const_iterator, std::list<std::string>()> conjunction;
 
 };
 
@@ -194,12 +195,17 @@ public:
         return LayerTagMask(alts);
     }
 
-    LayerTagMask getAlternativeMask(
-        std::vector<LayerTagCollection> tagCollections) {
-
+    /**
+     * Return mask that is an alternative of given tag collections.
+     */
+    LayerTagMask getAlternativeMask(std::vector<LayerTagCollection> tagCollections) {
         return LayerTagMask(tagCollections);
     }
 
+    /**
+     * Return mask that is an alternative of conjunctions of given tags.
+     */
+    LayerTagMask getAlternativeMaskFromTagNames(std::list< std::list<std::string> > tagNames);
 
     LayerTagCollection planeTags();
     LayerTagCollection onlyPlaneTags(LayerTagCollection tags);
