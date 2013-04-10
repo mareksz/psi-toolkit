@@ -20,8 +20,8 @@ Mapper::Mapper(const boost::program_options::variables_map& options) {
         std::string inTagsString = options["in-tags"].as<std::string>();
         std::string outTagsString = options["out-tags"].as<std::string>();
 
-        boost::split(inTags_, inTagsString, std::bind1st(std::equal_to<char>(), ','));
-        boost::split(outTags_, outTagsString, std::bind1st(std::equal_to<char>(), ','));
+        inTags_ = LayerTagManager::splitCollectionSpecification(inTagsString);
+        outTags_ = LayerTagManager::splitCollectionSpecification(outTagsString);
     }
     else {
         throw Exception("missing --in-tags or --out-tags");
@@ -175,9 +175,8 @@ std::list<std::string> Mapper::providedLayerTags(
 
     if(options.count("out-tags") > 0) {
         std::string outTagsString = options["out-tags"].as<std::string>();
-
-        std::list<std::string> outTags;
-        boost::split(outTags, outTagsString, std::bind1st(std::equal_to<char>(), ','));
+        std::list<std::string> outTags
+            = LayerTagManager::splitCollectionSpecification(outTagsString);
     }
     else {
         throw Exception("missing --out-tags");
@@ -192,8 +191,8 @@ std::list<std::list<std::string> > Mapper::requiredLayerTags(
 
     if(options.count("in-tags") > 0) {
         std::string inTagsString = options["in-tags"].as<std::string>();
-        std::list<std::string> inTags;
-        boost::split(inTags, inTagsString, std::bind1st(std::equal_to<char>(), ','));
+        std::list<std::string> inTags
+            = LayerTagManager::splitCollectionSpecification(inTagsString);
 
         return
             boost::assign::list_of(inTags);
