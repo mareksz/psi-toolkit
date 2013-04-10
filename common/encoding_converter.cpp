@@ -53,6 +53,9 @@ std::map<std::string, int> EncodingConverter::CHARSET_CODES = boost::assign::map
 
 const int EncodingConverter::TINICONV_OPTION = 0;
 
+// FIXME: 400 000 = memory access violation at address: 0xbfa729ac: no mapping at fault address
+const int EncodingConverter::BUFFER_SIZE = 100000;
+
 EncodingConverter::EncodingConverter() : defaultEncoding_("UTF-8") {
 }
 
@@ -96,9 +99,7 @@ bool EncodingConverter::convert_(int inCharsetId, int outCharsetId,
 
     int inSizeConsumed, outSizeConsumed;
 
-    // FIXME: for 400 000 memory access violation at address: 0xbfa729ac: no mapping at fault
-    // address
-    unsigned char outputBuffer[50000];
+    unsigned char outputBuffer[BUFFER_SIZE];
     const char* inputChars = input.c_str();
     int inputCharsLength = strlen(inputChars);
 

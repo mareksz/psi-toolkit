@@ -24,6 +24,7 @@ class EncodingConverter {
 
         static std::map<std::string, int> CHARSET_CODES;
         static const int TINICONV_OPTION;
+        static const int BUFFER_SIZE;
 };
 
 #endif
