@@ -124,6 +124,8 @@ public:
      */
     LayerTagMask getMask(std::string specification);
 
+    static std::vector< std::vector<std::string> > splitSpecification(std::string specification);
+
     LayerTagMask getMask(std::list<std::string> tagNames) {
         return getMask(createTagCollection(tagNames));
     }
