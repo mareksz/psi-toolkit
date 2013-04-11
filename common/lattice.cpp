@@ -349,6 +349,7 @@ Lattice::InOutEdgesIterator Lattice::outEdges(
     Lattice::VertexDescriptor vertex,
     LayerTagMask mask
 ) {
+    int ix = addTagMaskIndex_(mask);
     if (isLooseVertex(vertex)) {
         Graph::vertex_descriptor boost_vertex = vertices_[vertex];
         if (mask.isAny()) {
@@ -357,7 +358,6 @@ Lattice::InOutEdgesIterator Lattice::outEdges(
                 -1
             );
         }
-        int ix = addTagMaskIndex_(mask);
         return Lattice::InOutEdgesIterator(
             graph_[boost_vertex].outEdgesIndex[ix].begin(),
             graph_[boost_vertex].outEdgesIndex[ix].end(),
@@ -379,7 +379,6 @@ Lattice::InOutEdgesIterator Lattice::outEdges(
                 implicitOutEdges_[vertex] ? vertex : -1
             );
         }
-        int ix = addTagMaskIndex_(mask);
         return Lattice::InOutEdgesIterator(
             graph_[boost_vertex].outEdgesIndex[ix].begin(),
             graph_[boost_vertex].outEdgesIndex[ix].end(),
@@ -394,6 +393,7 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
     Lattice::VertexDescriptor vertex,
     LayerTagMask mask
 ) {
+    int ix = addTagMaskIndex_(mask);
     if (isLooseVertex(vertex)) {
         Graph::vertex_descriptor boost_vertex = vertices_[vertex];
         if (mask.isAny()) {
@@ -402,7 +402,6 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
                 -1
             );
         }
-        int ix = addTagMaskIndex_(mask);
         return Lattice::InOutEdgesIterator(
             graph_[boost_vertex].inEdgesIndex[ix].begin(),
             graph_[boost_vertex].inEdgesIndex[ix].end(),
@@ -432,7 +431,6 @@ Lattice::InOutEdgesIterator Lattice::inEdges(
                 priorVertexImplicitOutEdges ? priorVertex : -1
             );
         }
-        int ix = addTagMaskIndex_(mask);
         return Lattice::InOutEdgesIterator(
             graph_[boost_vertex].inEdgesIndex[ix].begin(),
             graph_[boost_vertex].inEdgesIndex[ix].end(),
