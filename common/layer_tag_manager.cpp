@@ -125,5 +125,3 @@ std::list< std::list<std::string> > LayerTagManager::splitMaskSpecification(
     parse(begin, end, grammar, result);
     return result;
 }
-
-
