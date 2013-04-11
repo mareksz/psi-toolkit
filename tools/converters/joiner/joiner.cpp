@@ -164,9 +164,6 @@ void Joiner::Worker::doRun() {
     LayerTagMask rightMask = tagManager.getAlternativeMaskFromTagNames(
         processor_.rightMaskSpecification_);
 
-    lattice_.addTagMaskIndex_(leftMask);
-    lattice_.addTagMaskIndex_(rightMask);
-
     LayerTagCollection providedTags = tagManager.createTagCollection(
         processor_.outTags_);
 
