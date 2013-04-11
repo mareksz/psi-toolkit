@@ -528,7 +528,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex framework
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
-    tools-converters-unumsunt tools-translators-transferer tools-lemmatizers-lamerlemma)
+    tools-converters-unumsunt tools-converters-joiner tools-translators-transferer tools-lemmatizers-lamerlemma)
 
 # ----------------------------------------------------
 # TESTS_TARGETS

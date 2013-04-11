@@ -671,6 +671,30 @@ std::vector<Lattice::EdgeDescriptor> Lattice::getChildren(
     return results;
 }
 
+boost::optional<Lattice::EdgeDescriptor> Lattice::getParent(EdgeDescriptor child) {
+    return getParent(child, getLayerTagManager().anyTag());
+}
+
+boost::optional<Lattice::EdgeDescriptor> Lattice::getParent(
+    EdgeDescriptor child,
+    LayerTagMask mask) {
+
+    const std::list<Partition>& partitions = getEdgePartitions(child);
+
+    BOOST_FOREACH(Partition partition, partitions) {
+        Partition::Iterator partitionIter(*this, partition);
+
+        while (partitionIter.hasNext()) {
+            EdgeDescriptor parent = partitionIter.next();
+
+            if (matches(getEdgeLayerTags(parent), mask))
+                return boost::optional<EdgeDescriptor>(parent);
+        }
+    }
+
+    return boost::optional<EdgeDescriptor>();
+}
+
 
 void Lattice::runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask) {
     EdgesSortedBySourceIterator edgeIter(*this, superMask);

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+  <configuration
+      name="join-forms-and-valency"
+      annotator="joiner"
+      options="--left-mask form --right-mask valency --out-tags parse-terminal --take-right-text">
+  </configuration>
+</configurations>
