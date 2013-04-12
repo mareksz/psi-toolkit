@@ -6,7 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
-#include <boost/range/sub_range.hpp> 
+#include <boost/range/sub_range.hpp>
 
 namespace fsa {
 
@@ -17,8 +17,8 @@ void FSALexiconBase::readPlainText(const boost::filesystem::path& plainTextLexic
     boost::filesystem::ifstream plainTextStream(plainTextLexicon);
 
     std::string line;
-    typedef boost::sub_range<std::vector<std::string> > SubRange; 
-    
+    typedef boost::sub_range<std::vector<std::string> > SubRange;
+
     while (std::getline(plainTextStream, line)) {
         removeComment_(line);
 
@@ -27,7 +27,7 @@ void FSALexiconBase::readPlainText(const boost::filesystem::path& plainTextLexic
 
         std::vector<std::string> fields;
         boost::split(fields, line, boost::is_any_of(LEXICON_TEXT_FIELD_SEPARATORS));
-        fields.erase(std::remove_if(
+        fields.erase(std::remove_if (
                          fields.begin(), fields.end(),
                          boost::bind( &std::string::empty, _1 )), fields.end());
 

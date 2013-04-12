@@ -43,7 +43,7 @@ void Dictionary::save(std::ofstream &out) {
     store_->save(out);
     INFO("Done");
 }
-    
+
 LemmaMap Dictionary::get(const std::string& token)
 {
     LemmaMap lemmaMap;

@@ -86,7 +86,7 @@ NDFSA<ArcT>::find(typename ArcT::state_type p, typename ArcT::symbol_type a) con
 
     ArcT test(a, 0);
     arc_iterator_type result = std::lower_bound(r.first, r.second, test, ArcSorter());
-    
+
     //std::cerr << "Arc find: " << (int)a << " " << std::distance(r.first, result) << std::endl;
     //std::cerr << "Check: " << (result != r.second && a == result->getSymbol()) << std::endl;
     return (result != r.second && a == result->getSymbol()) ? result : r.second;

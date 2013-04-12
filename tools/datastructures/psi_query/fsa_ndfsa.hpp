@@ -34,7 +34,7 @@ class NDFSA {
     arc_iterator_type find(state_type, symbol_type) const;
 
   public:
-        
+
 /*******************************************************************************
 ## Constructor
 
@@ -73,7 +73,7 @@ Example:
 *******************************************************************************/
     template <typename InputIterator>
     NDFSA(InputIterator, InputIterator);
-        
+
 /*******************************************************************************
 ## Constructor
 
@@ -128,7 +128,7 @@ Example:
     template <typename InputIterator> bool in(InputIterator, InputIterator);
 
 Checks whether given sequence of labels belongs to the language of the automaton.
-    
+
 *******************************************************************************/
     template <typename InputIterator>
     bool in(InputIterator, InputIterator);
@@ -140,7 +140,7 @@ Checks whether given sequence of labels belongs to the language of the automaton
 
 Creates a single new state. If argument is set to true, an end state is created.
 The state identifier is returned.
-    
+
 *******************************************************************************/
     state_type addState(bool = false);
 
@@ -151,7 +151,7 @@ The state identifier is returned.
 
 *******************************************************************************/
     void deleteLastState();
-    
+
 /*******************************************************************************
 ## Get set of start states
 
@@ -221,7 +221,7 @@ The state identifier is returned.
     void addArc(state_type, arc_type);
 
 Add arc beginning in given state.
-    
+
 *******************************************************************************/
     void addArc(state_type, arc_type);
 

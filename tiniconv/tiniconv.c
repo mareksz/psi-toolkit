@@ -25,12 +25,12 @@
 int tiniconv_init(int in_charset_id, int out_charset_id, int options, struct tiniconv_ctx_s *ctx)
 {
   assert(ctx != NULL);
-  
+
   if (in_charset_id < 0 || in_charset_id >= TINICONV_CHARSETSIZE)
     return TINICONV_INIT_IN_CHARSET_NA;
   if (out_charset_id < 0 || out_charset_id >= TINICONV_CHARSETSIZE)
     return TINICONV_INIT_OUT_CHARSET_NA;
-  
+
   memset(ctx, 0, sizeof(*ctx));
   ctx->mb2wc = tiniconv_charset_map[in_charset_id].mb2wc;
   ctx->flushwc = tiniconv_charset_map[in_charset_id].flushwc;
@@ -39,7 +39,7 @@ int tiniconv_init(int in_charset_id, int out_charset_id, int options, struct tin
   ctx->options = options;
   if (!TINICONV_OPTION_GET_OUT_ILSEQ_CHAR(options))
     ctx->options = ctx->options | TINICONV_OPTION_OUT_ILSEQ_CHAR('?');
-  
+
   return TINICONV_INIT_OK;
 }
 
@@ -51,14 +51,14 @@ int tiniconv_convert(struct tiniconv_ctx_s *ctx,
   int in_idx, out_idx;
   int result, last_result;
   state_t last_istate;
-  
+
   assert(ctx != NULL);
   assert(in_buf != NULL);
   assert(out_buf != NULL);
-  
+
   for (in_idx = 0, out_idx = 0; in_idx < in_size && out_idx < out_size;)
   {
-  	last_istate = ctx->istate;
+    last_istate = ctx->istate;
     /* typedef int (*xxx_mb2wc_t) (conv_t conv, ucs4_t *pwc, unsigned char const *s, int n); */
     result = ctx->mb2wc(ctx, &wc, in_buf + in_idx, in_size - in_idx);
     assert(result <= in_size - in_idx);
@@ -85,12 +85,12 @@ int tiniconv_convert(struct tiniconv_ctx_s *ctx,
       }
       else
       {
-      	in_idx += RET_TOOFEW(result);
-      	continue;
+        in_idx += RET_TOOFEW(result);
+        continue;
       }
     }
     in_idx += last_result = result;
-    
+
     /* typedef int (*xxx_wc2mb_t) (conv_t conv, unsigned char *r, ucs4_t wc, int n); */
     result = ctx->wc2mb(ctx, out_buf + out_idx, wc, out_size - out_idx);
     assert(result <= out_size - out_idx);

@@ -88,7 +88,7 @@ undefined and can (and will!) lead to errors.
 *******************************************************************************/
 
 namespace fsa {
-  
+
 template <class FSA>
 class HashFSA {
   private:
@@ -207,7 +207,7 @@ void HashFSA<FSA>::rec_compute_word_numbers(size_t start, std::vector<size_t> &t
   if (tc[start] == 0) {
     ArcRange<ArcIt> r = m_fsa.getArcs(start);
 
-    for(ArcIt arcIt = r.first; arcIt != r.second; arcIt++) {
+    for (ArcIt arcIt = r.first; arcIt != r.second; arcIt++) {
       const_cast<typename FSA::arc_type&>(*arcIt).setWeight(tc[start]);
       rec_compute_word_numbers(arcIt->getDest(), tc);
       tc[start] += tc[arcIt->getDest()];
@@ -244,7 +244,7 @@ typename HashFSA<FSA>::ArcIt HashFSA<FSA>::find_num(typename FSA::state_type p, 
 
 template <class FSA>
 typename HashFSA<FSA>::ArcIt HashFSA<FSA>::linsearch_num(ArcIt start, ArcIt end, Weight value) {
-    for(ArcIt it = start; it <= end; it++) {
+    for (ArcIt it = start; it <= end; it++) {
         if (it->getWeight() < value and
            (it == end or (it+1)->getWeight() >= value)) {
             return it;

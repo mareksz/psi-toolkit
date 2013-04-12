@@ -25,15 +25,15 @@ public:
         const boost::program_options::variables_map& options);
 
     static boost::program_options::options_description optionsHandled();
-    
+
     static std::list<std::string> providedLayerTags();
     static std::list<std::list<std::string> > requiredLayerTags();
-    
+
     static std::list<std::string> providedLayerTags(
         const boost::program_options::variables_map& options);
     static std::list<std::list<std::string> > requiredLayerTags(
         const boost::program_options::variables_map& options);
-    
+
     std::list<std::string> tagsToOperateOn();
 
     void processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge);
@@ -53,35 +53,35 @@ private:
 
     void addEntry_(Lattice& lattice, Lattice::EdgeDescriptor edge, const std::string& record);
     void addEntryUnknown_(Lattice& lattice, Lattice::EdgeDescriptor edge);
-    
+
     void parseEntry_(const std::string& record,
                      boost::optional<std::string>& text,
                      boost::optional<std::string>& category,
                      std::vector<std::pair<std::string, std::string> >& attributes);
-    
+
     void createTags_(const std::string& trg_lang);
 
     std::string langCode_;
     LexiconBase lexiconBase_;
-    
+
     std::list<std::string> inTags_;
     std::list<std::string> outTags_;
-    
+
     bool considerText_;
     bool considerCategory_;
     bool considerAttributes_;
-    
+
     bool cloneText_;
     bool cloneCategory_;
     bool cloneAttributes_;
-    
+
     bool addAttributes_;
-    
+
     boost::optional<std::string> setText_;
     boost::optional<std::string> setCategory_;
     boost::optional<std::string> setAttributes_;
     std::vector<std::pair<std::string, std::string> > setAttributesParsed_;
-    
+
     bool unknownCloneText_;
     bool unknownCloneCategory_;
     bool unknownCloneAttributes_;

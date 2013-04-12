@@ -46,7 +46,7 @@ class BinDFSA {
     BinDFSA(std::string);
 
     boost::optional<state_type> delta(state_type p, symbol_type a) const {
-       if(m_states.size() < p)
+       if (m_states.size() < p)
            return boost::optional<state_type>();
 
        arc_iterator_type arc = find(p, a);
@@ -75,7 +75,7 @@ class BinDFSA {
 
     size_t addState(bool = false);
     void addArc(size_t, arc_type);
-    
+
     void deleteLastState();
 
     std::set<size_t> epsClosure(size_t p) const;
@@ -133,7 +133,7 @@ void BinDFSA<ArcT, PosT, Allocator>::unsetEndState(size_t p) {
 template <typename ArcT, typename PosT, template <typename> class Allocator>
 size_t BinDFSA<ArcT, PosT, Allocator>::addState(bool start) {
     size_t p = m_states.size();
-    if(start && p)
+    if (start && p)
         WARN("Setting start state other than 0 in DSFA");
     m_states.resize(p + 1);
     m_states[p] = m_arcs.size();
@@ -143,7 +143,7 @@ size_t BinDFSA<ArcT, PosT, Allocator>::addState(bool start) {
 template <typename ArcT, typename PosT, template <typename> class Allocator>
 void BinDFSA<ArcT, PosT, Allocator>::addArc(size_t p, ArcT a) {
     //std::cerr << "Adding " << p << " " << a.getDest() << " " << (int)a.getSymbol() << std::endl;
-  
+
     ArcSorter cmp;
     if (p < m_states.size()) {
         PosT pos = unsetLastBit(m_states[p]);
@@ -171,9 +171,9 @@ void BinDFSA<ArcT, PosT, Allocator>::addArc(size_t p, ArcT a) {
 template <typename ArcT, typename PosT, template <typename> class Allocator>
 void BinDFSA<ArcT, PosT, Allocator>::deleteLastState() {
   size_t last_size = unsetLastBit(m_states.back());
-  
+
   //std::cerr << m_states.size() << " " << last_size << " " << m_arcs.size() << std::endl;
-  
+
   m_states.pop_back();
   m_arcs.resize(last_size);
 }
@@ -185,7 +185,7 @@ BinDFSA<ArcT, PosT, Allocator>::find(size_t p, typename ArcT::symbol_type a) con
 
     ArcT test(a, 0);
     arc_iterator_type result = std::lower_bound(r.first, r.second, test, ArcSorter());
-    
+
     //std::cerr << "Arc find: " << (int)a << " " << std::distance(r.first, result) << std::endl;
     //std::cerr << "Check: " << (result != r.second && a == result->getSymbol()) << std::endl;
     return (result != r.second && a == result->getSymbol()) ? result : m_arcs.end();
@@ -332,8 +332,8 @@ void BinDFSA<ArcT, PosT, Allocator>::load(IStream& in) {
   {
       boost::iostreams::filtering_istream istream;
       istream.push(boost::iostreams::gzip_decompressor());
-      istream.push(in);    
-      
+      istream.push(in);
+
       uint64_t statesNum;
       istream.read((char*)&statesNum, sizeof(uint64_t));
       m_states.resize(statesNum);
@@ -357,14 +357,14 @@ void BinDFSA<ArcT, PosT, Allocator>::save(std::string filename) {
 template <typename ArcT, typename PosT, template <typename> class Allocator>
 template <class OStream>
 void BinDFSA<ArcT, PosT, Allocator>::save(OStream& out) {
-  
+
   uint64_t start = out.tellp();
   out.write((char*) &start, sizeof(uint64_t)); //make some space;
   {
       boost::iostreams::filtering_ostream ostream;
       ostream.push(boost::iostreams::gzip_compressor());
       ostream.push(out);
-      
+
       uint64_t statesNum = m_states.size();
       ostream.write((char*)&statesNum, sizeof(uint64_t));
       ostream.write((char*)&m_states[0], statesNum * sizeof(PosT));

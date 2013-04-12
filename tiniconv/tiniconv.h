@@ -23,7 +23,7 @@
 #ifdef WIN32
 #ifdef DLL
 #define EXPORT(type) __declspec(dllexport) type
-#else 
+#else
 #define EXPORT(type) /*__declspec(dllimport)*/ type
 #endif/*DLL*/
 #else

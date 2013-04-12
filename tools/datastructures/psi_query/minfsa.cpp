@@ -5,7 +5,7 @@
 
 #include "fsa_multi_store.hpp"
 
-class Line : public std::string {   
+class Line : public std::string {
   public:
     friend std::istream &operator>>(std::istream &is, Line &line) {
         std::getline(is, line);
@@ -20,4 +20,3 @@ int main(int argc, char** argv) {
     psi::fsa::FSAMultiStore *store = builder.build();
     store->save(argv[1]);
 }
-

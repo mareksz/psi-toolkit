@@ -46,7 +46,7 @@
 
 *****************************************************************/
 
-//The following result for thai was collected from a limited sample (1M). 
+//The following result for thai was collected from a limited sample (1M).
 
 //Character Mapping Table:
 static const unsigned char TIS620CharToOrderMap[] =
@@ -72,13 +72,13 @@ static const unsigned char TIS620CharToOrderMap[] =
 
 
 
-//Model Table: 
+//Model Table:
 //total sequences: 100%
 //first 512 sequences: 92.6386%
 //first 1024 sequences:7.3177%
 //rest  sequences:     1.0230%
-//negative sequences:  0.0436% 
-static const PRUint8 ThaiLangModel[] = 
+//negative sequences:  0.0436%
+static const PRUint8 ThaiLangModel[] =
 {
 0, 1, 3, 3, 3, 3, 0, 0, 3, 3, 0, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 0, 3, 3, 3, 3,
 0, 3, 3, 0, 0, 0, 1, 3, 0, 3, 3, 2, 3, 3, 0, 1, 2, 3, 3, 3, 3, 0, 2, 0, 2, 0, 0, 3, 2, 1, 2, 2,
@@ -211,7 +211,7 @@ static const PRUint8 ThaiLangModel[] =
 };
 
 
-const SequenceModel TIS620ThaiModel = 
+const SequenceModel TIS620ThaiModel =
 {
   TIS620CharToOrderMap,
   ThaiLangModel,

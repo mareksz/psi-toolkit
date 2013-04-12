@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
                                     a.poprawne[i].end()), true);
     }
 
-    //for(int i = 0;i < a.niePoprawneSize; ++i) {
+    //for (int i = 0;i < a.niePoprawneSize; ++i) {
         //BOOST_CHECK_EQUAL(a.ndfsa.in(a.niePoprawne[i].begin(),
         //                            a.niePoprawne[i].end()), false);
     //}
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
                                     b.poprawne[i].end()), true);
     }
 
-    //for(int i = 0;i < b.niePoprawneSize; ++i) {
+    //for (int i = 0;i < b.niePoprawneSize; ++i) {
         //BOOST_CHECK_EQUAL(b.ndfsa.in(b.niePoprawne[i].begin(),
         //                            b.niePoprawne[i].end()), false);
     //}
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
                                     c.poprawne[i].end()), true);
     }
 
-    //for(int i = 0;i < c.niePoprawneSize; ++i) {
+    //for (int i = 0;i < c.niePoprawneSize; ++i) {
         //BOOST_CHECK_EQUAL(c.ndfsa.in(c.niePoprawne[i].begin(),
         //                            c.niePoprawne[i].end()), false);
     //}
@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE(NDFSA_test)
                                     d.poprawne[i].end()), true);
     }
 
-    //for(int i = 0;i < d.niePoprawneSize; ++i) {
+    //for (int i = 0;i < d.niePoprawneSize; ++i) {
     //    BOOST_CHECK_EQUAL(d.ndfsa.in(d.niePoprawne[i].begin(),
     //                                d.niePoprawne[i].end()), false);
     //}

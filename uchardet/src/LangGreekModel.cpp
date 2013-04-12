@@ -87,13 +87,13 @@ static const unsigned char win1253_CharToOrderMap[] =
   9,  8, 14,  7,  2, 12, 28, 23, 42, 24, 64, 75, 19, 26, 27, 253,  //f0
 };
 
-//Model Table: 
+//Model Table:
 //total sequences: 100%
 //first 512 sequences: 98.2851%
 //first 1024 sequences:1.7001%
 //rest  sequences:     0.0359%
-//negative sequences:  0.0148% 
-static const PRUint8 GreekLangModel[] = 
+//negative sequences:  0.0148%
+static const PRUint8 GreekLangModel[] =
 {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -225,7 +225,7 @@ static const PRUint8 GreekLangModel[] =
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-const SequenceModel Latin7Model = 
+const SequenceModel Latin7Model =
 {
   Latin7_CharToOrderMap,
   GreekLangModel,
@@ -234,7 +234,7 @@ const SequenceModel Latin7Model =
   "ISO-8859-7"
 };
 
-const SequenceModel Win1253Model = 
+const SequenceModel Win1253Model =
 {
   win1253_CharToOrderMap,
   GreekLangModel,

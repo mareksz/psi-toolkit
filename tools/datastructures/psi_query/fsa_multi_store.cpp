@@ -13,7 +13,7 @@ FSAMultiStore::Builder::~Builder()
 
 void FSAMultiStore::Builder::add(const std::string& key, const std::string& value)
 {
-    addSeparatedLine(key + LEXICON_FIELD_SEPARATOR + value);  
+    addSeparatedLine(key + LEXICON_FIELD_SEPARATOR + value);
 }
 
 void FSAMultiStore::Builder::addSeparatedLine(const std::string& line)
@@ -72,6 +72,6 @@ void FSAMultiStore::buildSearchSuffix()
     StringFSA anyFSA(ANY);
     kleene_plus(anyFSA);
     concatenate(searchSuffixFSA_, anyFSA);
-} 
+}
 
 }

@@ -16,7 +16,7 @@ Mapper::Mapper(const boost::program_options::variables_map& options) {
 
     LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
 
-    if(options.count("in-tags") > 0 && options.count("out-tags") > 0) {
+    if (options.count("in-tags") > 0 && options.count("out-tags") > 0) {
         std::string inTagsString = options["in-tags"].as<std::string>();
         std::string outTagsString = options["out-tags"].as<std::string>();
 
@@ -31,7 +31,7 @@ Mapper::Mapper(const boost::program_options::variables_map& options) {
     considerCategory_ = options.count("consider-category") > 0;
     considerAttributes_ = options.count("consider-attributes") > 0;
 
-    if(!(considerText_ || considerCategory_ || considerAttributes_))
+    if (!(considerText_ || considerCategory_ || considerAttributes_))
         throw Exception("you have to specify at least one of the following options: "
                         "--consider-text, --consider-category, --consider-attributes");
 
@@ -41,47 +41,47 @@ Mapper::Mapper(const boost::program_options::variables_map& options) {
 
     addAttributes_ = options.count("add-attributes") > 0;
 
-    if(options.count("set-text") > 0)
+    if (options.count("set-text") > 0)
         setText_ = options["set-text"].as<std::string>();
 
-    if(options.count("set-category") > 0)
+    if (options.count("set-category") > 0)
         setCategory_ = options["set-category"].as<std::string>();
 
-    if(options.count("set-attributes") > 0)
+    if (options.count("set-attributes") > 0)
         setAttributes_ = options["set-attributes"].as<std::string>();
 
     unknownCloneText_ = options.count("unknown-clone-text") > 0;
     unknownCloneCategory_ = options.count("unknown-clone-category") > 0;
     unknownCloneAttributes_ = options.count("unknown-clone-attributes") > 0;
 
-    if(options.count("unknown-set-text") > 0)
+    if (options.count("unknown-set-text") > 0)
         unknownSetText_ = options["unknown-set-text"].as<std::string>();
 
-    if(options.count("unknown-set-category") > 0)
+    if (options.count("unknown-set-category") > 0)
         unknownSetCategory_ = options["unknown-set-category"].as<std::string>();
 
-    if(options.count("unknown-set-attributes") > 0)
+    if (options.count("unknown-set-attributes") > 0)
         unknownSetAttributes_ = options["unknown-set-attributes"].as<std::string>();
 
-    if(cloneText_ and setText_)
+    if (cloneText_ and setText_)
         throw(Exception("use either --clone-text or --set-text, not both"));
 
-    if(cloneCategory_ and setCategory_)
+    if (cloneCategory_ and setCategory_)
         throw(Exception("use either --clone-category or --set-category, not both"));
 
-    if(cloneAttributes_ and setAttributes_)
+    if (cloneAttributes_ and setAttributes_)
         throw(Exception("use either --clone-attributes or --set-attributes, not both"));
 
-    if(unknownCloneText_ and unknownSetText_)
+    if (unknownCloneText_ and unknownSetText_)
         throw(Exception("use either --unknown-clone-text or --unknown-set-text, not both"));
 
-    if(unknownCloneCategory_ and unknownSetCategory_)
+    if (unknownCloneCategory_ and unknownSetCategory_)
         throw(Exception("use either --unknown-clone-category or --unknown-set-category, not both"));
 
-    if(unknownCloneAttributes_ and unknownSetAttributes_)
+    if (unknownCloneAttributes_ and unknownSetAttributes_)
         throw(Exception("use either --unknown-clone-attributes or --unknown-set-attributes, not both"));
 
-    if(setAttributes_) {
+    if (setAttributes_) {
         std::stringstream dummyRecord;
         dummyRecord << "dummyLemma" << LEXICON_FIELD_SEPARATOR << "dummyCategory"
             << LEXICON_FIELD_SEPARATOR << setAttributes_.get();
@@ -91,7 +91,7 @@ Mapper::Mapper(const boost::program_options::variables_map& options) {
         parseEntry_(dummyRecord.str(), dummyText, dummyCategory, setAttributesParsed_);
     }
 
-    if(unknownSetAttributes_) {
+    if (unknownSetAttributes_) {
         std::stringstream dummyRecord;
         dummyRecord << "dummyLemma" << LEXICON_FIELD_SEPARATOR << "dummyCategory"
             << LEXICON_FIELD_SEPARATOR << unknownSetAttributes_.get();
@@ -101,7 +101,7 @@ Mapper::Mapper(const boost::program_options::variables_map& options) {
         parseEntry_(dummyRecord.str(), dummyText, dummyCategory, unknownSetAttributesParsed_);
     }
 
-    if(options.count("plain-text-lexicon") == 0
+    if (options.count("plain-text-lexicon") == 0
        && options.count("binary-lexicon") == 0) {
         throw Exception("no mapper lexicon file given");
     }
@@ -173,7 +173,7 @@ std::list<std::string> Mapper::providedLayerTags(
 
     std::list<std::string> outTags;
 
-    if(options.count("out-tags") > 0) {
+    if (options.count("out-tags") > 0) {
         std::string outTagsString = options["out-tags"].as<std::string>();
         std::list<std::string> outTags
             = LayerTagManager::splitCollectionSpecification(outTagsString);
@@ -189,7 +189,7 @@ std::list<std::string> Mapper::providedLayerTags(
 std::list<std::list<std::string> > Mapper::requiredLayerTags(
     const boost::program_options::variables_map& options) {
 
-    if(options.count("in-tags") > 0) {
+    if (options.count("in-tags") > 0) {
         std::string inTagsString = options["in-tags"].as<std::string>();
         std::list<std::string> inTags
             = LayerTagManager::splitCollectionSpecification(inTagsString);
@@ -251,11 +251,11 @@ std::list<std::string> Mapper::tagsToOperateOn() {
 void Mapper::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
 
     std::vector<std::string> keys;
-    if(considerText_)
+    if (considerText_)
         keys.push_back(lattice.getAnnotationText(edge));
-    if(considerCategory_)
+    if (considerCategory_)
         keys.push_back(lattice.getAnnotationCategory(edge));
-    if(considerAttributes_) {
+    if (considerAttributes_) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         const AnnotationItem item = lattice.getEdgeAnnotationItem(edge);
         typedef std::pair<std::string, std::string> StringPair;
@@ -269,11 +269,11 @@ void Mapper::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
     std::string key = boost::algorithm::join(keys, LEXICON_KEY_FIELD_SEPARATOR);
     std::vector<std::string> records = lexiconBase_.getRecords(key);
 
-    if(!records.empty()) {
+    if (!records.empty()) {
         BOOST_FOREACH(std::string& record, records)
             addEntry_(lattice, edge, record);
     }
-    else if(unknownCloneText_ || unknownCloneCategory_ || unknownCloneAttributes_
+    else if (unknownCloneText_ || unknownCloneCategory_ || unknownCloneAttributes_
         || unknownSetText_ || unknownSetCategory_ || unknownSetAttributes_) {
         addEntryUnknown_(lattice, edge);
     }
@@ -290,34 +290,34 @@ void Mapper::addEntry_(
 
     parseEntry_(record, text, category, attributes);
 
-    if(cloneText_)
+    if (cloneText_)
         text = lattice.getAnnotationText(edge);
-    if(cloneCategory_)
+    if (cloneCategory_)
         category = lattice.getAnnotationCategory(edge);
-    if(setText_)
+    if (setText_)
         text = setText_;
-    if(setCategory_)
+    if (setCategory_)
         category = setCategory_;
 
-    if(!text)
+    if (!text)
         text = record;
-    if(!category)
+    if (!category)
         category = record;
 
     AnnotationItem ai(category.get(), StringFrag(text.get()));
 
-    if(cloneAttributes_) {
+    if (cloneAttributes_) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         const AnnotationItem item = lattice.getEdgeAnnotationItem(edge);
         BOOST_FOREACH(StringPair kv, manager.getValues(item))
             manager.setValue(ai, kv.first, kv.second);
     }
-    if(setAttributes_) {
+    if (setAttributes_) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         BOOST_FOREACH(StringPair kv, setAttributesParsed_)
             manager.setValue(ai, kv.first, kv.second);
     }
-    if(addAttributes_) {
+    if (addAttributes_) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         BOOST_FOREACH(StringPair kv, attributes)
             manager.setValue(ai, kv.first, kv.second);
@@ -344,29 +344,29 @@ void Mapper::addEntryUnknown_(Lattice& lattice, Lattice::EdgeDescriptor edge) {
     typedef std::pair<std::string, std::string> StringPair;
     std::vector<StringPair> attributes;
 
-    if(unknownCloneText_)
+    if (unknownCloneText_)
         text = lattice.getAnnotationText(edge);
-    if(unknownCloneCategory_)
+    if (unknownCloneCategory_)
         category = lattice.getAnnotationCategory(edge);
-    if(unknownSetText_)
+    if (unknownSetText_)
         text = unknownSetText_;
-    if(unknownSetCategory_)
+    if (unknownSetCategory_)
         category = unknownSetCategory_;
 
-    if(!text)
+    if (!text)
         text = "unknown";
-    if(!category)
+    if (!category)
         category = "unknown";
 
     AnnotationItem ai(category.get(), StringFrag(text.get()));
 
-    if(unknownCloneAttributes_) {
+    if (unknownCloneAttributes_) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         const AnnotationItem item = lattice.getEdgeAnnotationItem(edge);
         BOOST_FOREACH(StringPair kv, manager.getValues(item))
             manager.setValue(ai, kv.first, kv.second);
     }
-    if(unknownSetAttributes_) {
+    if (unknownSetAttributes_) {
         AnnotationItemManager& manager = lattice.getAnnotationItemManager();
         BOOST_FOREACH(StringPair kv, unknownSetAttributesParsed_)
             manager.setValue(ai, kv.first, kv.second);
@@ -393,18 +393,18 @@ void Mapper::parseEntry_(const std::string& record,
     std::vector<std::string> fields;
     boost::split(fields, record, boost::is_any_of(LEXICON_FIELD_SEPARATOR));
 
-    if(fields.size() > 0)
+    if (fields.size() > 0)
         text = fields[0];
-    if(fields.size() > 1) {
+    if (fields.size() > 1) {
         category = fields[1];
     }
-    if(fields.size() > 2) {
+    if (fields.size() > 2) {
         std::vector<std::string> subfields;
         boost::split(subfields, fields[2], boost::is_any_of(LEXICON_SUBFIELD_SEPARATOR));
 
         BOOST_FOREACH(std::string subfield, subfields) {
             size_t sep;
-            if((sep = subfield.find_first_of(LEXICON_KEY_VALUE_SEPARATOR))
+            if ((sep = subfield.find_first_of(LEXICON_KEY_VALUE_SEPARATOR))
                != std::string::npos) {
                 attributes.push_back(std::make_pair(
                     subfield.substr(0, sep), subfield.substr(sep + 1)));
