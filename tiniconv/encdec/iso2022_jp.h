@@ -79,7 +79,7 @@ iso2022_jp_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
   switch (state) {
     case STATE_ASCII:
       if (c < 0x80) {
-        int ret = ascii_mbtowc(conv,pwc,s,1);
+        int ret = ascii_mbtowc(conv, pwc, s, 1);
         if (ret == RET_ILSEQ)
           return RET_ILSEQ;
         if (ret != 1) abort();
@@ -89,7 +89,7 @@ iso2022_jp_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
         return RET_ILSEQ;
     case STATE_JISX0201ROMAN:
       if (c < 0x80) {
-        int ret = jisx0201_mbtowc(conv,pwc,s,1);
+        int ret = jisx0201_mbtowc(conv, pwc, s, 1);
         if (ret == RET_ILSEQ)
           return RET_ILSEQ;
         if (ret != 1) abort();
@@ -101,7 +101,7 @@ iso2022_jp_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
       if (n < count+2)
         goto none;
       if (s[0] < 0x80 && s[1] < 0x80) {
-        int ret = jisx0208_mbtowc(conv,pwc,s,2);
+        int ret = jisx0208_mbtowc(conv, pwc, s, 2);
         if (ret == RET_ILSEQ)
           return RET_ILSEQ;
         if (ret != 2) abort();
@@ -125,7 +125,7 @@ iso2022_jp_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   int ret;
 
   /* Try ASCII. */
-  ret = ascii_wctomb(conv,buf,wc,1);
+  ret = ascii_wctomb(conv, buf, wc, 1);
   if (ret != RET_ILUNI) {
     if (ret != 1) abort();
     if (buf[0] < 0x80) {
@@ -146,7 +146,7 @@ iso2022_jp_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   }
 
   /* Try JIS X 0201-1976 Roman. */
-  ret = jisx0201_wctomb(conv,buf,wc,1);
+  ret = jisx0201_wctomb(conv, buf, wc, 1);
   if (ret != RET_ILUNI) {
     if (ret != 1) abort();
     if (buf[0] < 0x80) {
@@ -167,7 +167,7 @@ iso2022_jp_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   }
 
   /* Try JIS X 0208-1990 in place of JIS X 0208-1978 and JIS X 0208-1983. */
-  ret = jisx0208_wctomb(conv,buf,wc,2);
+  ret = jisx0208_wctomb(conv, buf, wc, 2);
   if (ret != RET_ILUNI) {
     if (ret != 2) abort();
     if (buf[0] < 0x80 && buf[1] < 0x80) {

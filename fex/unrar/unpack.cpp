@@ -189,17 +189,17 @@ int Unpack::DecodeNumber(struct Decode *Dec)
 }
 
 const
-static unsigned char LDecode[]={0, 1,2, 3,4, 5,6, 7,8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224};
+static unsigned char LDecode[]={0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224};
 const
-static unsigned char LBits[]=  {0, 0,0, 0,0, 0,0, 0,1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5};
+static unsigned char LBits[]=  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5};
 static int DDecode[DC];
 static byte DBits[DC];
 const
-static int DBitLengthCounts[]= {4, 2,2, 2,2, 2,2, 2,2, 2,2, 2,2, 2,2, 2,14, 0,12};
+static int DBitLengthCounts[]= {4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 14, 0, 12};
 const
-static unsigned char SDDecode[]={0, 4,8, 16, 32, 64, 128, 192};
+static unsigned char SDDecode[]={0, 4, 8, 16, 32, 64, 128, 192};
 const
-static unsigned char SDBits[]=  {2, 2,3, 4, 5, 6,  6,  6};
+static unsigned char SDBits[]=  {2, 2, 3, 4, 5, 6,  6,  6};
 
 void Unpack::init_tables()
 {
@@ -614,7 +614,7 @@ bool Unpack::AddVMCode(unsigned int FirstByte, byte *Code, int CodeSize)
 
     OldFilterLengths[FiltPos]=StackFilter->BlockLength;
 
-    memset(StackFilter->Prg.InitR, 0,sizeof(StackFilter->Prg.InitR));
+    memset(StackFilter->Prg.InitR, 0, sizeof(StackFilter->Prg.InitR));
     StackFilter->Prg.InitR[3]=VM_GLOBALMEMADDR;
     StackFilter->Prg.InitR[4]=StackFilter->BlockLength;
     StackFilter->Prg.InitR[5]=StackFilter->ExecCount;
@@ -666,7 +666,7 @@ bool Unpack::AddVMCode(unsigned int FirstByte, byte *Code, int CodeSize)
     VM.SetLowEndianValue((uint *)&GlobalData[0x1c], StackFilter->BlockLength);
     VM.SetLowEndianValue((uint *)&GlobalData[0x20], 0);
     VM.SetLowEndianValue((uint *)&GlobalData[0x2c], StackFilter->ExecCount);
-    memset(&GlobalData[0x30], 0,16);
+    memset(&GlobalData[0x30], 0, 16);
 
     if (FirstByte & 8) // put data block passed as parameter if any
     {
@@ -901,7 +901,7 @@ bool Unpack::ReadTables()
     LowDistRepCount=0;
 
     if (!(BitField & 0x4000))
-        memset(UnpOldTable, 0,sizeof(UnpOldTable));
+        memset(UnpOldTable, 0, sizeof(UnpOldTable));
     faddbits(2);
     {
         for (int I=0;I<BC;I++)
@@ -994,16 +994,16 @@ void Unpack::UnpInitData(int Solid)
     if (!Solid)
     {
         TablesRead=false;
-        memset(OldDist, 0,sizeof(OldDist));
+        memset(OldDist, 0, sizeof(OldDist));
         OldDistPtr=0;
         LastDist=LastLength=0;
-//    memset(Window, 0,MAXWINSIZE);
-        memset(UnpOldTable, 0,sizeof(UnpOldTable));
-        memset(&LD, 0,sizeof(LD));
-        memset(&DD, 0,sizeof(DD));
-        memset(&LDD, 0,sizeof(LDD));
-        memset(&RD, 0,sizeof(RD));
-        memset(&BD, 0,sizeof(BD));
+//    memset(Window, 0, MAXWINSIZE);
+        memset(UnpOldTable, 0, sizeof(UnpOldTable));
+        memset(&LD, 0, sizeof(LD));
+        memset(&DD, 0, sizeof(DD));
+        memset(&LDD, 0, sizeof(LDD));
+        memset(&RD, 0, sizeof(RD));
+        memset(&BD, 0, sizeof(BD));
         UnpPtr=WrPtr=0;
         PPMEscChar=2;
         UnpBlockType=BLOCK_LZ;
@@ -1042,8 +1042,8 @@ void Unpack::MakeDecodeTables(unsigned char *LenTab, struct Decode *Dec, int Siz
 {
     int LenCount[16], TmpPos[16], I;
     long M, N;
-    memset(LenCount, 0,sizeof(LenCount));
-    memset(Dec->DecodeNum, 0,Size*sizeof(*Dec->DecodeNum));
+    memset(LenCount, 0, sizeof(LenCount));
+    memset(Dec->DecodeNum, 0, Size*sizeof(*Dec->DecodeNum));
     for (I=0;I<Size;I++)
         LenCount[LenTab[I] & 0xF]++;
 

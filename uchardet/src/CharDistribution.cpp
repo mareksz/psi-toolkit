@@ -106,4 +106,3 @@ EUCJPDistributionAnalysis::EUCJPDistributionAnalysis()
   mTableSize = JIS_TABLE_SIZE;
   mTypicalDistributionRatio = JIS_TYPICAL_DISTRIBUTION_RATIO;
 }
-

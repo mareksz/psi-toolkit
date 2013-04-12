@@ -74,7 +74,7 @@ void RawRead::Get(byte *Field, int Size)
         ReadPos+=Size;
     }
     else
-        memset(Field, 0,Size);
+        memset(Field, 0, Size);
 }
 
 

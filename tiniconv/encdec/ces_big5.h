@@ -28,7 +28,7 @@ ces_big5_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
   unsigned char c = *s;
   /* Code set 0 (ASCII) */
   if (c < 0x80)
-    return ascii_mbtowc(conv,pwc,s,n);
+    return ascii_mbtowc(conv, pwc, s, n);
   /* Code set 1 (BIG5) */
   if (c >= 0xa1 && c < 0xff) {
     if (n < 2)
@@ -36,7 +36,7 @@ ces_big5_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
     {
       unsigned char c2 = s[1];
       if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0xa1 && c2 < 0xff))
-        return big5_mbtowc(conv,pwc,s,2);
+        return big5_mbtowc(conv, pwc, s, 2);
       else
         return RET_ILSEQ;
     }
@@ -51,12 +51,12 @@ ces_big5_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   int ret;
 
   /* Code set 0 (ASCII) */
-  ret = ascii_wctomb(conv,r,wc,n);
+  ret = ascii_wctomb(conv, r, wc, n);
   if (ret != RET_ILUNI)
     return ret;
 
   /* Code set 1 (BIG5) */
-  ret = big5_wctomb(conv,buf,wc,2);
+  ret = big5_wctomb(conv, buf, wc, 2);
   if (ret != RET_ILUNI) {
     if (ret != 2) abort();
     if (n < 2)

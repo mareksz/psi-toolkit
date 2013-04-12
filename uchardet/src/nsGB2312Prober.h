@@ -73,4 +73,3 @@ protected:
 
 
 #endif /* nsGB2312Prober_h__ */
-

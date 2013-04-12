@@ -46,17 +46,17 @@ void Unpack::CopyString20(unsigned int Length, unsigned int Distance)
 void Unpack::Unpack20(bool Solid)
 {
     const
-    static unsigned char LDecode[]={0, 1,2, 3,4, 5,6, 7,8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224};
+    static unsigned char LDecode[]={0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224};
     const
-    static unsigned char LBits[]=  {0, 0,0, 0,0, 0,0, 0,1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5};
+    static unsigned char LBits[]=  {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5};
     const
-    static int DDecode[]={0, 1,2, 3,4, 6,8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384, 24576, 32768U, 49152U, 65536, 98304, 131072, 196608, 262144, 327680, 393216, 458752, 524288, 589824, 655360, 720896, 786432, 851968, 917504, 983040};
+    static int DDecode[]={0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384, 24576, 32768U, 49152U, 65536, 98304, 131072, 196608, 262144, 327680, 393216, 458752, 524288, 589824, 655360, 720896, 786432, 851968, 917504, 983040};
     const
-    static unsigned char DBits[]=  {0, 0,0, 0,1, 1,2, 2, 3, 3, 4, 4, 5, 5,  6,  6,  7,  7,  8,  8,   9,   9,  10,  10,  11,  11,  12,   12,   13,   13,    14,    14,   15,   15,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16};
+    static unsigned char DBits[]=  {0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5,  6,  6,  7,  7,  8,  8,   9,   9,  10,  10,  11,  11,  12,   12,   13,   13,    14,    14,   15,   15,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16,    16};
     const
-    static unsigned char SDDecode[]={0, 4,8, 16, 32, 64, 128, 192};
+    static unsigned char SDDecode[]={0, 4, 8, 16, 32, 64, 128, 192};
     const
-    static unsigned char SDBits[]=  {2, 2,3, 4, 5, 6,  6,  6};
+    static unsigned char SDBits[]=  {2, 2, 3, 4, 5, 6,  6,  6};
     unsigned int Bits;
 
     if (Suspended)
@@ -191,7 +191,7 @@ bool Unpack::ReadTables20()
 {
     byte BitLength[BC20];
     unsigned char Table[MC20*4];
-    int TableSize, N,I;
+    int TableSize, N, I;
     if (InAddr>ReadTop-25)
         if (!UnpReadBuf())
             return (false);
@@ -199,7 +199,7 @@ bool Unpack::ReadTables20()
     UnpAudioBlock=(BitField & 0x8000);
 
     if (!(BitField & 0x4000))
-        memset(UnpOldTable20, 0,sizeof(UnpOldTable20));
+        memset(UnpOldTable20, 0, sizeof(UnpOldTable20));
     addbits(2);
 
     if (UnpAudioBlock)
@@ -295,9 +295,9 @@ void Unpack::UnpInitData20(int Solid)
         UnpAudioBlock=UnpChannelDelta=UnpCurChannel=0;
         UnpChannels=1;
 
-        memset(AudV, 0,sizeof(AudV));
-        memset(UnpOldTable20, 0,sizeof(UnpOldTable20));
-        memset(MD, 0,sizeof(MD));
+        memset(AudV, 0, sizeof(AudV));
+        memset(UnpOldTable20, 0, sizeof(UnpOldTable20));
+        memset(MD, 0, sizeof(MD));
     }
 }
 

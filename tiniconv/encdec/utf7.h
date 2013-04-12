@@ -163,10 +163,10 @@ active:
       {
         if (*(s-base64count-count) == '+')
         {
-        	/* Begin of base64 sequence.
-        	 * Not changing state and not reporting RET_TOOFEW(>0).
-        	 * Next time will do the things again. */
-        	return RET_TOOSMALL;
+            /* Begin of base64 sequence.
+             * Not changing state and not reporting RET_TOOFEW(>0).
+             * Next time will do the things again. */
+            return RET_TOOSMALL;
         }
         goto none;
       }

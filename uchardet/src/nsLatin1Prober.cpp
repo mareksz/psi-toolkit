@@ -154,7 +154,7 @@ float nsLatin1Prober::GetConfidence(void)
   for (PRInt32 i = 0; i < FREQ_CAT_NUM; i++)
     total += mFreqCounter[i];
 
-  if(!total)
+  if (!total)
     confidence = 0.0f;
   else
   {
@@ -178,5 +178,3 @@ void  nsLatin1Prober::DumpStatus()
   printf(" Latin1Prober: %1.3f [%s]\r\n", GetConfidence(), GetCharSetName());
 }
 #endif
-
-

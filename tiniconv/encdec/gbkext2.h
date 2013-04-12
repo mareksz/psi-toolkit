@@ -1171,4 +1171,3 @@ gbkext2_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
   }
   return RET_ILSEQ;
 }
-

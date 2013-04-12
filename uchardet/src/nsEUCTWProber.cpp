@@ -88,4 +88,3 @@ float nsEUCTWProber::GetConfidence(void)
 
   return (float)distribCf;
 }
-

@@ -44,7 +44,7 @@ using std::string;
 class HandleUniversalDetector : public nsUniversalDetector
 {
 protected:
-	string m_charset;
+    string m_charset;
 
 public:
     HandleUniversalDetector()

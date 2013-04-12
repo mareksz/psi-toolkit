@@ -39,8 +39,8 @@
  * 2. Private area mappings:
  *
  *              code                 Unicode
- *    0x{A1..A2}{40..7E,80..A0}  U+E4C6..U+E585
- *    0x{AA..AF,F8..FE}{A1..FE}  U+E000..U+E4C5
+ *    0x{A1..A2}{40..7E, 80..A0}  U+E4C6..U+E585
+ *    0x{AA..AF, F8..FE}{A1..FE}  U+E000..U+E4C5
  *
  * We add them too because, although there are backward compatibility problems
  * when a character from a private area is moved to an official Unicode code
@@ -52,7 +52,7 @@ cp936_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
 {
   /* Try GBK first. */
   {
-    int ret = ces_gbk_mbtowc(conv,pwc,s,n);
+    int ret = ces_gbk_mbtowc(conv, pwc, s, n);
     if (ret != RET_ILSEQ)
       return ret;
   }
@@ -94,7 +94,7 @@ cp936_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
 {
   /* Try GBK first. */
   {
-    int ret = ces_gbk_wctomb(conv,r,wc,n);
+    int ret = ces_gbk_wctomb(conv, r, wc, n);
     if (ret != RET_ILUNI)
       return ret;
   }

@@ -28,7 +28,7 @@ euc_cn_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
   unsigned char c = *s;
   /* Code set 0 (ASCII or GB 1988-89) */
   if (c < 0x80)
-    return ascii_mbtowc(conv,pwc,s,n);
+    return ascii_mbtowc(conv, pwc, s, n);
   /* Code set 1 (GB 2312-1980) */
   if (c >= 0xa1 && c < 0xff) {
     if (n < 2)
@@ -38,7 +38,7 @@ euc_cn_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
       if (c2 >= 0xa1 && c2 < 0xff) {
         unsigned char buf[2];
         buf[0] = c-0x80; buf[1] = c2-0x80;
-        return gb2312_mbtowc(conv,pwc,buf,2);
+        return gb2312_mbtowc(conv, pwc, buf, 2);
       } else
         return RET_ILSEQ;
     }
@@ -53,12 +53,12 @@ euc_cn_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   int ret;
 
   /* Code set 0 (ASCII or GB 1988-89) */
-  ret = ascii_wctomb(conv,r,wc,n);
+  ret = ascii_wctomb(conv, r, wc, n);
   if (ret != RET_ILUNI)
     return ret;
 
   /* Code set 1 (GB 2312-1980) */
-  ret = gb2312_wctomb(conv,buf,wc,2);
+  ret = gb2312_wctomb(conv, buf, wc, 2);
   if (ret != RET_ILUNI) {
     if (ret != 2) abort();
     if (n < 2)

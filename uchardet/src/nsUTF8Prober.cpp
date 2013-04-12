@@ -84,4 +84,3 @@ float nsUTF8Prober::GetConfidence(void)
   else
     return (float)0.99;
 }
-

@@ -88,4 +88,3 @@ float nsEUCKRProber::GetConfidence(void)
 
   return (float)distribCf;
 }
-

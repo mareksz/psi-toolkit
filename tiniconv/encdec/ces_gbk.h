@@ -29,12 +29,12 @@ ces_gbk_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
 
   /* Code set 0 (ASCII or GB 1988-89) */
   if (c < 0x80)
-    return ascii_mbtowc(conv,pwc,s,n);
+    return ascii_mbtowc(conv, pwc, s, n);
   /* Code set 1 (GBK) */
   if (c >= 0x81 && c < 0xff) {
     if (n < 2)
       return RET_TOOFEW(0);
-    return gbk_mbtowc(conv,pwc,s,2);
+    return gbk_mbtowc(conv, pwc, s, 2);
   }
   return RET_ILSEQ;
 }
@@ -46,12 +46,12 @@ ces_gbk_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   int ret;
 
   /* Code set 0 (ASCII or GB 1988-89) */
-  ret = ascii_wctomb(conv,r,wc,n);
+  ret = ascii_wctomb(conv, r, wc, n);
   if (ret != RET_ILUNI)
     return ret;
 
   /* Code set 1 (GBK) */
-  ret = gbk_wctomb(conv,buf,wc,2);
+  ret = gbk_wctomb(conv, buf, wc, 2);
   if (ret != RET_ILUNI) {
     if (ret != 2) abort();
     if (n < 2)

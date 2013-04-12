@@ -28,9 +28,9 @@
  * It adds the following ranges:
  *
  * (part of GBK/1)  0xA2A1-0xA2AA  Small Roman numerals
- * GBK/3   0x{81-A0}{40-7E,80-FE}  6080 new characters, all in Unicode
- * GBK/4   0x{AA-FE}{40-7E,80-A0}  8160 new characters, 8080 in Unicode
- * GBK/5   0x{A8-A9}{40-7E,80-A0}  166 new characters, 153 in Unicode
+ * GBK/3   0x{81-A0}{40-7E, 80-FE}  6080 new characters, all in Unicode
+ * GBK/4   0x{AA-FE}{40-7E, 80-A0}  8160 new characters, 8080 in Unicode
+ * GBK/5   0x{A8-A9}{40-7E, 80-A0}  166 new characters, 153 in Unicode
  *
  * Furthermore, all four tables I have looked at
  *   - the CP936 table by Microsoft, found on ftp.unicode.org in 1999,
@@ -84,19 +84,19 @@ gbk_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
         unsigned char buf[2];
         int ret;
         buf[0] = c-0x80; buf[1] = c2-0x80;
-        ret = gb2312_mbtowc(conv,pwc,buf,2);
+        ret = gb2312_mbtowc(conv, pwc, buf, 2);
         if (ret != RET_ILSEQ)
           return ret;
         buf[0] = c; buf[1] = c2;
-        ret = cp936ext_mbtowc(conv,pwc,buf,2);
+        ret = cp936ext_mbtowc(conv, pwc, buf, 2);
         if (ret != RET_ILSEQ)
           return ret;
       }
     }
     if (c >= 0x81 && c <= 0xa0)
-      return gbkext1_mbtowc(conv,pwc,s,2);
+      return gbkext1_mbtowc(conv, pwc, s, 2);
     if (c >= 0xa8 && c <= 0xfe)
-      return gbkext2_mbtowc(conv,pwc,s,2);
+      return gbkext2_mbtowc(conv, pwc, s, 2);
     if (c == 0xa2) {
       unsigned char c2 = s[1];
       if (c2 >= 0xa1 && c2 <= 0xaa) {
@@ -115,7 +115,7 @@ gbk_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   int ret;
 
   if (wc != 0x30fb && wc != 0x2015) {
-    ret = gb2312_wctomb(conv,buf,wc,2);
+    ret = gb2312_wctomb(conv, buf, wc, 2);
     if (ret != RET_ILUNI) {
       if (ret != 2) abort();
       if (n < 2)
@@ -125,7 +125,7 @@ gbk_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
       return 2;
     }
   }
-  ret = gbkext_inv_wctomb(conv,buf,wc,2);
+  ret = gbkext_inv_wctomb(conv, buf, wc, 2);
   if (ret != RET_ILUNI) {
     if (ret != 2) abort();
     if (n < 2)
@@ -141,7 +141,7 @@ gbk_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
     r[1] = 0xa1 + (wc-0x2170);
     return 2;
   }
-  ret = cp936ext_wctomb(conv,buf,wc,2);
+  ret = cp936ext_wctomb(conv, buf, wc, 2);
   if (ret != RET_ILUNI) {
     if (ret != 2) abort();
     if (n < 2)

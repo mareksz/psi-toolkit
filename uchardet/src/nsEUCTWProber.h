@@ -71,4 +71,3 @@ protected:
 
 
 #endif /* nsEUCTWProber_h__ */
-

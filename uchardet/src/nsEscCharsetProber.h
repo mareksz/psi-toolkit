@@ -64,4 +64,3 @@ protected:
 };
 
 #endif /* nsEscCharSetProber_h__ */
-

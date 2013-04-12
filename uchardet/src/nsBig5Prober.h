@@ -71,4 +71,3 @@ protected:
 
 
 #endif /* nsBig5Prober_h__ */
-

@@ -67,4 +67,3 @@ protected:
 
 
 #endif /* nsLatin1Prober_h__ */
-

@@ -93,4 +93,3 @@ float nsGB18030Prober::GetConfidence(void)
 
   return (float)distribCf;
 }
-

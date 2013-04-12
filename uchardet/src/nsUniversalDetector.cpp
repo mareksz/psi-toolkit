@@ -100,7 +100,7 @@ nsUniversalDetector::Reset()
 
 nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  if(mDone) 
+  if (mDone) 
     return NS_OK;
 
   if (aLen > 0)

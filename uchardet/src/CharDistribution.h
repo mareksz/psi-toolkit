@@ -239,4 +239,3 @@ protected:
 };
 
 #endif //CharDistribution_h__
-

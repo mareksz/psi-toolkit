@@ -75,4 +75,3 @@ protected:
 
 
 #endif /* nsEUCJPProber_h__ */
-

@@ -77,4 +77,3 @@ protected:
 
 
 #endif /* nsSJISProber_h__ */
-

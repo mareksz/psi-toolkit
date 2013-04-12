@@ -85,4 +85,3 @@ float nsBig5Prober::GetConfidence(void)
 
   return (float)distribCf;
 }
-

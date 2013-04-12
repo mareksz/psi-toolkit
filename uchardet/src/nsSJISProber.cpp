@@ -95,4 +95,3 @@ float nsSJISProber::GetConfidence(void)
 
   return (contxtCf > distribCf ? contxtCf : distribCf);
 }
-

@@ -59,7 +59,7 @@ nsSBCSGroupProber::nsSBCSGroupProber()
   mProbers[10] = new nsSingleByteCharSetProber(&TIS620ThaiModel);
 
   nsHebrewProber *hebprober = new nsHebrewProber();
-  // Notice: Any change in these indexes - 10,11,12 must be reflected
+  // Notice: Any change in these indexes - 10, 11, 12 must be reflected
   // in the code below as well.
   mProbers[11] = hebprober;
   mProbers[12] = new nsSingleByteCharSetProber(&Win1255Model, PR_FALSE, hebprober); // Logical Hebrew

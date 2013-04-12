@@ -98,4 +98,3 @@ nsProbingState nsEscCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
 
   return mState;
 }
-

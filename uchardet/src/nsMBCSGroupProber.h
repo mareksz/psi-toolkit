@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *			Proofpoint, Inc.
+ *          Proofpoint, Inc.
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -77,4 +77,3 @@ protected:
 };
 
 #endif /* nsMBCSGroupProber_h__ */
-

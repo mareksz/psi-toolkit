@@ -61,4 +61,3 @@ protected:
 };
 
 #endif /* nsUTF8Prober_h__ */
-

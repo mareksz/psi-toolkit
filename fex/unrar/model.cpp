@@ -33,7 +33,7 @@ ModelPPM::ModelPPM()
 void ModelPPM::RestartModelRare()
 {
     int i, k, m;
-    memset(CharMask, 0,sizeof(CharMask));
+    memset(CharMask, 0, sizeof(CharMask));
     SubAlloc.InitSubAllocator();
     InitRL=-(MaxOrder < 12 ? MaxOrder:12)-1;
     MinContext = MaxContext = (PPM_CONTEXT*) SubAlloc.AllocContext();
@@ -64,12 +64,12 @@ void ModelPPM::RestartModelRare()
 
 void ModelPPM::StartModelRare(int MaxOrder)
 {
-    int i, k, m ,Step;
+    int i, k, m , Step;
     EscCount=1;
 /*
     if (MaxOrder < 2)
     {
-        memset(CharMask, 0,sizeof(CharMask));
+        memset(CharMask, 0, sizeof(CharMask));
         OrderFall=ModelPPM::MaxOrder;
         MinContext=MaxContext;
         while (MinContext->Suffix != NULL)
@@ -100,7 +100,7 @@ void ModelPPM::StartModelRare(int MaxOrder)
                 m++;
             }
         }
-        memset(HB2Flag, 0,0x40);
+        memset(HB2Flag, 0, 0x40);
         memset(HB2Flag+0x40, 0x08, 0x100-0x40);
         DummySEE2Cont.Shift=PERIOD_BITS;
     }
@@ -521,7 +521,7 @@ inline bool PPM_CONTEXT::decodeSymbol2(ModelPPM *Model)
 inline void ModelPPM::ClearMask()
 {
     EscCount=1;
-    memset(CharMask, 0,sizeof(CharMask));
+    memset(CharMask, 0, sizeof(CharMask));
 }
 
 

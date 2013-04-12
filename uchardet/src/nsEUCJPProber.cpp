@@ -96,4 +96,3 @@ float nsEUCJPProber::GetConfidence(void)
 
   return (contxtCf > distribCf ? contxtCf : distribCf);
 }
-

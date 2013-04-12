@@ -101,4 +101,3 @@ extern const SMModel ISO2022JPSMModel;
 extern const SMModel ISO2022KRSMModel;
 
 #endif /* nsCodingStateMachine_h__ */
-

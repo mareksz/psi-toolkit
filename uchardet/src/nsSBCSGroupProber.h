@@ -67,4 +67,3 @@ protected:
 };
 
 #endif /* nsSBCSGroupProber_h__ */
-

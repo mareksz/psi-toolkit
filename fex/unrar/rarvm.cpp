@@ -953,7 +953,7 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
                     if (Byte>=0)
                     {
                         const
-                        static byte Masks[16]={4, 4,6, 6,0, 0,7, 7,4, 4,0, 0,4, 4,0, 0};
+                        static byte Masks[16]={4, 4, 6, 6, 0, 0, 7, 7, 4, 4, 0, 0, 4, 4, 0, 0};
                         byte CmdMask=Masks[Byte];
                         if (CmdMask!=0)
                             for (int I=0;I<=2;I++)
@@ -1049,7 +1049,7 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
                     unsigned int PrevByte=0, PrevDelta=0, Dif[7];
                     int D1=0, D2=0, D3;
                     int K1=0, K2=0, K3=0;
-                    memset(Dif, 0,sizeof(Dif));
+                    memset(Dif, 0, sizeof(Dif));
 
                     for (int I=CurChannel, ByteCount=0;I<DataSize;I+=Channels, ByteCount++)
                     {

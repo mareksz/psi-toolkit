@@ -100,7 +100,7 @@ bool SubAllocator::StartSubAllocator(int SASize)
 void SubAllocator::InitSubAllocator()
 {
     int i, k;
-    memset(FreeList, 0,sizeof(FreeList));
+    memset(FreeList, 0, sizeof(FreeList));
     pText=HeapStart;
     uint Size2=FIXED_UNIT_SIZE*(SubAllocatorSize/8/FIXED_UNIT_SIZE*7);
     uint RealSize2=Size2/FIXED_UNIT_SIZE*UNIT_SIZE;
@@ -190,7 +190,7 @@ void* SubAllocator::AllocUnitsRare(int indx)
         }
     } while ( !FreeList[i].next );
     void* RetVal=RemoveNode(i);
-    SplitBlock(RetVal, i,indx);
+    SplitBlock(RetVal, i, indx);
     return RetVal;
 }
 
