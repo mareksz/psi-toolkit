@@ -70,6 +70,8 @@ void Detok::Worker::doRun() {
 
     std::string finalText;
 
+    bool firstToken = true;
+
     for (std::map<int, Lattice::EdgeDescriptor>::const_iterator orderMapIter
              = orderMap.begin();
          orderMapIter != orderMap.end();
@@ -79,8 +81,13 @@ void Detok::Worker::doRun() {
         Lattice::EdgeDescriptor edge = (*orderMapIter).second;
 
         INFO("TOKEN: " << lattice_.getAnnotationText(edge));
+
+        if (firstToken)
+            firstToken = false;
+        else
+            finalText += " ";
+
         finalText += lattice_.getAnnotationText(edge);
-        finalText += " ";
     }
 
     Lattice::VertexDescriptor fromVertex = lattice_.addLooseVertex();

@@ -169,6 +169,10 @@ public:
                         createLanguageTag(langCode)));
     }
 
+    static std::list<std::list<std::string> > multiplyMaskListByLangCode(
+        const std::list<std::list<std::string> >& maskList,
+        const std::string& langCode);
+
     LayerTagMask getAlternativeMask(
         LayerTagCollection tagCollection1,
         LayerTagCollection tagCollection2) {

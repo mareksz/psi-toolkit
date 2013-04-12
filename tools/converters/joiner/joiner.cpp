@@ -1,6 +1,7 @@
 #include "joiner.hpp"
 
 Joiner::Joiner(
+    const std::string& langCode,
     const std::string& leftMaskSpecification,
     const std::string& rightMaskSpecification,
     const std::string& outTagsSpecification,
@@ -8,10 +9,15 @@ Joiner::Joiner(
     bool takeLeftCategory,
     HandlingAttributes handlingAttributes,
     bool outerJoin)
-    :leftMaskSpecification_(
-        LayerTagManager::splitMaskSpecification(leftMaskSpecification)),
+    :langCode_(langCode),
+     leftMaskSpecification_(
+         LayerTagManager::multiplyMaskListByLangCode(
+             LayerTagManager::splitMaskSpecification(leftMaskSpecification),
+             langCode)),
      rightMaskSpecification_(
-         LayerTagManager::splitMaskSpecification(rightMaskSpecification)),
+         LayerTagManager::multiplyMaskListByLangCode(
+             LayerTagManager::splitMaskSpecification(rightMaskSpecification),
+             langCode)),
      outTags_(
          LayerTagManager::splitCollectionSpecification(outTagsSpecification)),
      takeLeftText_(takeLeftText),
@@ -22,6 +28,8 @@ Joiner::Joiner(
 
 Annotator* Joiner::Factory::doCreateAnnotator(
     const boost::program_options::variables_map& options) {
+
+    std::string lang = options["lang"].as<std::string>();
 
     std::string leftMaskSpecification =
         options["left-mask"].as<std::string>();
@@ -41,6 +49,7 @@ Annotator* Joiner::Factory::doCreateAnnotator(
     bool outerJoin = !options.count("no-outer-join");
 
     return new Joiner(
+        lang,
         leftMaskSpecification,
         rightMaskSpecification,
         outTags,
@@ -104,20 +113,8 @@ std::list<std::string> Joiner::Factory::doProvidedLayerTags(
         options["out-tags"].as<std::string>());
 }
 
-AnnotatorFactory::LanguagesHandling Joiner::Factory::doLanguagesHandling(
-    const boost::program_options::variables_map& options) const {
-
-    return LANGUAGE_INDEPENDENT;
-}
-
-std::list<std::string> Joiner::Factory::doLanguagesHandled(
-    const boost::program_options::variables_map& options) const {
-
-    return std::list<std::string>();
-}
-
-boost::program_options::options_description Joiner::Factory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("Allowed options");
+void Joiner::Factory::doAddLanguageIndependentOptionsHandled(
+    boost::program_options::options_description& optionsDescription) {
 
     optionsDescription.add_options()
         ("left-mask", boost::program_options::value<std::string>()
@@ -134,8 +131,6 @@ boost::program_options::options_description Joiner::Factory::doOptionsHandled() 
         ("take-left-attributes", "take only attributes from the \"left\" edge (by default the attributes from the \"left\" one and the \"right\" one are merged")
         ("take-right-attributes", "take only attributes from the \"right\" edge")
         ("no-outer-join", "switch off \"outer\" join");
-
-    return optionsDescription;
 }
 
 boost::filesystem::path Joiner::Factory::doGetFile() const {

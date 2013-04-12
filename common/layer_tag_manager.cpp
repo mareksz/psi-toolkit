@@ -62,6 +62,23 @@ LayerTagMask LayerTagManager::getMask(std::string specification) {
     }
 }
 
+std::list<std::list<std::string> > LayerTagManager::multiplyMaskListByLangCode(
+        const std::list<std::list<std::string> >& maskList,
+        const std::string& langCode) {
+
+    std::list<std::list<std::string> > retMaskList = maskList;
+
+    std::string langCodeTag = getLanguageTag(langCode);
+
+    for (std::list<std::list<std::string> >::iterator iter = retMaskList.begin();
+         iter != retMaskList.end();
+         ++iter)
+        iter->push_back(langCodeTag);
+
+    return retMaskList;
+}
+
+
 LayerTagMask LayerTagManager::getAlternativeMaskFromTagNames(
         std::list< std::list<std::string> > tagNames) {
     std::vector<LayerTagCollection> tagCollections;

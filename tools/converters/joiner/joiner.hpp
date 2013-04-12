@@ -1,12 +1,13 @@
 #pragma once
 
 #include "annotator_factory.hpp"
+#include "language_dependent_annotator_factory.hpp"
 
 class Joiner: public Annotator {
 
 public:
 
-    class Factory: public AnnotatorFactory {
+    class Factory: public LanguageDependentAnnotatorFactory {
     public:
         virtual Annotator* doCreateAnnotator(const boost::program_options::variables_map& options);
 
@@ -22,13 +23,8 @@ public:
         virtual std::list<std::string> doProvidedLayerTags(
             const boost::program_options::variables_map& options);
 
-        virtual LanguagesHandling doLanguagesHandling(
-            const boost::program_options::variables_map& options) const;
-
-        virtual std::list<std::string> doLanguagesHandled(
-            const boost::program_options::variables_map& options) const;
-
-        virtual boost::program_options::options_description doOptionsHandled();
+        virtual void doAddLanguageIndependentOptionsHandled(
+            boost::program_options::options_description& optionsDescription);
 
         virtual boost::filesystem::path doGetFile() const;
 
@@ -42,6 +38,7 @@ public:
     };
 
     Joiner(
+        const std::string& langCode,
         const std::string& leftMaskSpecification,
         const std::string& rightMaskSpecification,
         const std::string& outTags,
@@ -63,6 +60,7 @@ private:
 
     virtual std::string doInfo();
 
+    std::string langCode_;
     std::list<std::list<std::string> > leftMaskSpecification_;
     std::list<std::list<std::string> > rightMaskSpecification_;
     std::list<std::string> outTags_;
