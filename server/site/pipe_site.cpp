@@ -15,9 +15,11 @@
 
 const std::string PipeSite::GUESSING_READER = "guessing-reader";
 
-PipeSite::PipeSite(PsiServer& server, const std::string & pipe, const std::string & text)
+PipeSite::PipeSite(PsiServer& server, const std::string& pipe, const std::string& text)
     : TemplateSite(server),
-    initialText_(text.c_str()), initialPipe_(pipe.c_str()), initialOutput_(""),
+    initialText_(text.c_str()),
+    initialPipe_(pipe.c_str()),
+    initialOutput_(""),
     fileStorage_(std::string(psiServer_.websiteRoot)),
     encodingConverter_("UTF-8")
 {
@@ -52,10 +54,6 @@ char * PipeSite::pipeText() {
 }
 
 char * PipeSite::outputText() {
-    if (initialOutput_.empty()) {
-        initialOutput_ = runPipe_(initialText_);
-    }
-
     std::string output = getOrSetDefaultData_("output-text", initialOutput_);
     return stringToChar(generateOutput_(output));
 }
@@ -65,6 +63,9 @@ char * PipeSite::actionPipe() {
 
     std::string output = runPipe_(input);
     psiServer_.session()->setData("output-text", output);
+
+    if (initialOutput_.empty())
+        initialOutput_ = output;
 
     return stringToChar(std::string("/psitoolkit.html"));
 }
@@ -78,7 +79,7 @@ char * PipeSite::hiddenOptions() {
         std::string("psisOptions = {") +
         std::string("'isInputFile' : '") + fileOnOff + std::string("', ") +
         std::string("'fileToDownload' : '") + outputFile + std::string("', ") +
-        std::string("'lastOutputType' : '") + outputType + std::string("' ") +
+        std::string("'initialOutputType' : '") + outputType + std::string("' ") +
         std::string("};");
 
     psiServer_.session()->clearData("radio-file");
