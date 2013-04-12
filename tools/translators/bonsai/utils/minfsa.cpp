@@ -21,20 +21,20 @@ int main (int argc, char* args[]) {
 
     desc.add_options()
         ("help", "Display this message")
-        ("registers,r", po::value<int>()->default_value(50), "Number of registers kept in memory")
+        ("registers", po::value<int>()->default_value(50), "Number of registers kept in memory")
     ;
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, args, desc), vm);
     po::notify(vm);
-      
+
     if (vm.count("help")) {
         std::cerr << desc << std::endl;
         return 1;
     }
-    
+
     poleng::bonsai::IncrementalFSA fsa(vm["registers"].as<int>());
-    
+
     int c = 1;
     std::string line;
     while(getline(std::cin,line)) {
@@ -45,7 +45,7 @@ int main (int argc, char* args[]) {
 	c++;
     }
     fsa.finalize();
-    
+
     std::cerr << "end" << std::endl;
     return 0;
 }

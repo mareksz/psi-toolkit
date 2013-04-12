@@ -5,12 +5,12 @@
 int main(int argc, char **argv) {
     boost::program_options::options_description desc("Options");
     desc.add_options()
-        ("file,f", boost::program_options::value<std::string>(), "input XML file")
-        ("tagset,t", boost::program_options::value<std::string>(), "tagset file")
+        ("file", boost::program_options::value<std::string>(), "input XML file")
+        ("tagset", boost::program_options::value<std::string>(), "tagset file")
         ("description", boost::program_options::value<std::string>(), "description file")
-        ("rules,r", boost::program_options::value<std::string>(), "rules file")
-        ("dictionary,d", boost::program_options::value<std::string>(), "inflected forms dictionary")
-        ("model,m", boost::program_options::value<std::string>(), "Input model for tagging")
+        ("rules", boost::program_options::value<std::string>(), "rules file")
+        ("dictionary", boost::program_options::value<std::string>(), "inflected forms dictionary")
+        ("model", boost::program_options::value<std::string>(), "Input model for tagging")
         ("verbose", "talks a lot on stderr")
         ("constituents", "constituents only")
         ("tagged", "pre-tagged input text")
