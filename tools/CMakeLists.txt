@@ -38,6 +38,7 @@ set(tools_DIRS
     taggers/metagger
     spellcheckers/aspell
     converters/unumsunt
+    converters/joiner
     translators/bonsai
     translators/bonsai/irstlm
     translators/bonsai/rules

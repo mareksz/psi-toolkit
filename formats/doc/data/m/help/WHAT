@@ -1,1 +1,1 @@
-doc-reader ! write --tag frag
+doc-reader ! write --tags frag

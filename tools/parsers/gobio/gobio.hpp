@@ -94,9 +94,12 @@ public:
         virtual std::list<std::string> doProvidedLayerTags();
 
         static const std::string DEFAULT_RULE_FILE;
+
+    public:
+        static const std::string DEFAULT_TERMINAL_TAG;
     };
 
-    Gobio(std::string rulesPath);
+    Gobio(std::string rulesPath, std::string terminalTag = Factory::DEFAULT_TERMINAL_TAG);
 
     void parse(Lattice &lattice);
 
@@ -115,6 +118,8 @@ private:
     virtual std::string doInfo();
 
     std::string rulesPath_;
+
+    std::string terminalTag_;
 
     zsymbolfactory * sym_fac_;
 

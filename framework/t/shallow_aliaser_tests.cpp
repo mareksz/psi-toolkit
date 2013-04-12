@@ -10,7 +10,7 @@ BOOST_AUTO_TEST_CASE( simple ) {
     ShallowAliaser aliaser;
 
     {
-        BOOST_CHECK_EQUAL(aliaser.replace("write-tokens"), "simple-writer --tag token");
+        BOOST_CHECK_EQUAL(aliaser.replace("write-tokens"), "simple-writer --tags token");
     }
 
     {
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE( simple ) {
         std::vector<std::string> result = aliaser.replace(pipeline);
 
         std::vector<std::string> expected = boost::assign::list_of
-            ("simple-writer")("--tag")("token");
+            ("simple-writer")("--tags")("token");
 
         BOOST_CHECK_EQUAL_COLLECTIONS(result.begin(), result.end(),
                                       expected.begin(), expected.end());
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE( more_complex ) {
 
     {
         BOOST_CHECK_EQUAL(aliaser.replace("read-docx ! tokenize ! write-tokens"),
-                          "apertium-reader --format docx ! tokenize ! simple-writer --tag token");
+                          "apertium-reader --format docx ! tokenize ! simple-writer --tags token");
     }
 }
 BOOST_AUTO_TEST_SUITE_END()

@@ -1,1 +1,1 @@
-djvu-reader ! write --tag frag
+djvu-reader ! write --tags frag

@@ -36,7 +36,7 @@ LatticeWriter<std::ostream> * JSONLatticeWriter::Factory::doCreateLatticeWriter(
         options.count("linear"),
         options.count("no-alts"),
         options.count("with-blank"),
-        quoter.unescape(options["tag"].as<std::string>()),
+        quoter.unescape(options["tags"].as<std::string>()),
         higherOrderTags,
         options.count("with-args"),
         fallbackTags
@@ -56,9 +56,9 @@ boost::program_options::options_description JSONLatticeWriter::Factory::doOption
             "skip alternative edges")
         ("with-blank",
             "do not skip edges with whitespace text")
-        ("tag",
+        ("tags",
             boost::program_options::value<std::string>()->default_value("token"),
-            "basic tag")
+            "basic tag or tags separated by commas (conjunction) or semicolons (alternative)")
         ("spec",
             boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "specification of higher-order tags")

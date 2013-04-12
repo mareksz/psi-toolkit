@@ -43,6 +43,16 @@ public:
         attributes_(item.attributes_) {
     }
 
+    AnnotationItem(
+        const AnnotationItem& item,
+        const std::string& newCategory,
+        StringFrag newText) :
+        category_(newCategory),
+        text_(newText),
+        values_(item.values_),
+        attributes_(item.attributes_) {
+    }
+
     AnnotationItem(const AnnotationItem& item, StringFrag newText) :
         category_(item.category_),
         text_(newText),

@@ -1,5 +1,9 @@
 #include "layer_tag_manager.hpp"
 
+
+#include <boost/algorithm/string.hpp>
+
+
 LayerTagManager::LayerTagManager() : symbolTag_(createSingletonTagCollection("symbol")) { }
 
 LayerTagCollection LayerTagManager::createSingletonTagCollection(std::string tagName) {
@@ -49,6 +53,41 @@ std::list<std::string> LayerTagManager::getTagNames(const LayerTagCollection& ta
     return result;
 }
 
+LayerTagMask LayerTagManager::getMask(std::string specification) {
+    std::list< std::list<std::string> > tagNames = splitMaskSpecification(specification);
+    if (tagNames.empty()) {
+        return getMask(createSingletonTagCollection(specification));
+    } else {
+        return getAlternativeMaskFromTagNames(tagNames);
+    }
+}
+
+std::list<std::list<std::string> > LayerTagManager::multiplyMaskListByLangCode(
+        const std::list<std::list<std::string> >& maskList,
+        const std::string& langCode) {
+
+    std::list<std::list<std::string> > retMaskList = maskList;
+
+    std::string langCodeTag = getLanguageTag(langCode);
+
+    for (std::list<std::list<std::string> >::iterator iter = retMaskList.begin();
+         iter != retMaskList.end();
+         ++iter)
+        iter->push_back(langCodeTag);
+
+    return retMaskList;
+}
+
+
+LayerTagMask LayerTagManager::getAlternativeMaskFromTagNames(
+        std::list< std::list<std::string> > tagNames) {
+    std::vector<LayerTagCollection> tagCollections;
+    BOOST_FOREACH(std::list<std::string> conjunction, tagNames) {
+        tagCollections.push_back(createTagCollection(conjunction));
+    }
+    return getAlternativeMask(tagCollections);
+}
+
 LayerTagCollection LayerTagManager::planeTags() {
     LayerTagCollection result = LayerTagCollection(m_.size());
     for (size_t i = 0; i < m_.size(); ++i) {
@@ -85,4 +124,21 @@ bool LayerTagManager::canBeAppliedToImplicitSymbol(const LayerTagMask& tagMask) 
     }
 
     return false;
+}
+
+std::list<std::string> LayerTagManager::splitCollectionSpecification(
+        std::string specification) {
+    std::vector<std::string> result;
+    boost::split(result, specification, boost::is_any_of(","));
+    return std::list<std::string>(result.begin(), result.end());
+}
+
+std::list< std::list<std::string> > LayerTagManager::splitMaskSpecification(
+        std::string specification) {
+    std::list< std::list<std::string> > result;
+    LayerTagMaskSpecificationGrammar grammar;
+    std::string::const_iterator begin = specification.begin();
+    std::string::const_iterator end = specification.end();
+    parse(begin, end, grammar, result);
+    return result;
 }

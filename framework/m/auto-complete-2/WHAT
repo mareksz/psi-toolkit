@@ -1,2 +1,2 @@
-lemmatize --lang pl ! simple-writer --tag lemma
+lemmatize --lang pl ! simple-writer --tags lemma
 

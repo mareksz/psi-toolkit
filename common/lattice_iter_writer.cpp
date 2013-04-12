@@ -36,21 +36,25 @@ void LatticeIterWriter::run() {
         // gather information about edges
         while (oei.hasNext()) {
             edge = oei.next();
-            std::list<std::string> tags
-                = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
-            BOOST_FOREACH(std::string tag, tags) {
+            LayerTagCollection tagCollection = lattice_.getEdgeLayerTags(edge);
+            std::list<std::string> tagNames
+                = lattice_.getLayerTagManager().getTagNames(tagCollection);
+            if (
+                (withBlank_ ||
+                    !boost::algorithm::trim_copy(lattice_.getEdgeText(edge)).empty()) &&
+                matches(tagCollection, basicTagMask_)
+            ) {
+                basicTagEdges.push(edge);
+            }
+            BOOST_FOREACH(std::string tag, tagNames) {
                 if (
-                    withBlank_ ||
-                    !boost::algorithm::trim_copy(lattice_.getEdgeText(edge)).empty()
+                    (withBlank_ ||
+                        !boost::algorithm::trim_copy(lattice_.getEdgeText(edge)).empty()) &&
+                    !fallbackTags_.empty()
                 ) {
-                    if (basicTag_ == tag) {
-                        basicTagEdges.push(edge);
-                    }
-                    if (!fallbackTags_.empty()) {
-                        FallbackMap::iterator fmi = fallbackMap.find(tag);
-                        if (fmi != fallbackMap.end()) {
-                            fmi->second.push(edge);
-                        }
+                    FallbackMap::iterator fmi = fallbackMap.find(tag);
+                    if (fmi != fallbackMap.end()) {
+                        fmi->second.push(edge);
                     }
                 }
                 if (isHandledTag_(tag) && targets[tag] == vd) {

@@ -3,13 +3,42 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
+#include <boost/assign.hpp>
 #include <boost/bimap.hpp>
 #include <boost/foreach.hpp>
-#include <boost/assign.hpp>
+
+#undef New // to resolve conflict with SWIG
+#include <boost/spirit/include/qi.hpp>
 
 #include "layer_tag_collection.hpp"
 #include "layer_tag_mask.hpp"
+
+
+namespace qi = boost::spirit::qi;
+
+
+struct LayerTagMaskSpecificationGrammar : public qi::grammar<
+    std::string::const_iterator,
+    std::list< std::list<std::string> >()
+> {
+
+    LayerTagMaskSpecificationGrammar() : LayerTagMaskSpecificationGrammar::base_type(start) {
+
+        start
+            %= conjunction % ';';
+
+        conjunction
+            %= +(qi::char_ - ',' - ';') % ',';
+
+    }
+
+    qi::rule<std::string::const_iterator, std::list< std::list<std::string> >()> start;
+    qi::rule<std::string::const_iterator, std::list<std::string>()> conjunction;
+
+};
+
 
 /*!
   LayerTagManager is used to
@@ -27,6 +56,14 @@ public:
     }
 
     LayerTagCollection createSingletonTagCollection(std::string tagName);
+
+    /**
+     * Create tag collection that is a conjunction of given tags.
+     * Specification is a list of tags separated by ','.
+     */
+    LayerTagCollection createTagCollection(std::string specification) {
+        return createTagCollection(splitCollectionSpecification(specification));
+    }
 
     LayerTagCollection createTagCollection(std::list<std::string> tagNames);
 
@@ -89,9 +126,12 @@ public:
         return LayerTagMask(tagCollection);
     }
 
-    LayerTagMask getMask(std::string tagName) {
-        return getMask(createSingletonTagCollection(tagName));
-    }
+    /**
+     * Return a mask that is an alternative of conjunctions of given tags.
+     * Specification is a list of lists of tags separated by ',' (conjunction),
+     * separated by ';' (alternative).
+     */
+    LayerTagMask getMask(std::string specification);
 
     LayerTagMask getMask(std::list<std::string> tagNames) {
         return getMask(createTagCollection(tagNames));
@@ -129,6 +169,10 @@ public:
                         createLanguageTag(langCode)));
     }
 
+    static std::list<std::list<std::string> > multiplyMaskListByLangCode(
+        const std::list<std::list<std::string> >& maskList,
+        const std::string& langCode);
+
     LayerTagMask getAlternativeMask(
         LayerTagCollection tagCollection1,
         LayerTagCollection tagCollection2) {
@@ -155,12 +199,17 @@ public:
         return LayerTagMask(alts);
     }
 
-    LayerTagMask getAlternativeMask(
-        std::vector<LayerTagCollection> tagCollections) {
-
+    /**
+     * Return mask that is an alternative of given tag collections.
+     */
+    LayerTagMask getAlternativeMask(std::vector<LayerTagCollection> tagCollections) {
         return LayerTagMask(tagCollections);
     }
 
+    /**
+     * Return mask that is an alternative of conjunctions of given tags.
+     */
+    LayerTagMask getAlternativeMaskFromTagNames(std::list< std::list<std::string> > tagNames);
 
     LayerTagCollection planeTags();
     LayerTagCollection onlyPlaneTags(LayerTagCollection tags);
@@ -170,6 +219,17 @@ public:
     bool isThere(std::string tagName, LayerTagCollection tags);
 
     bool canBeAppliedToImplicitSymbol(const LayerTagMask& tags);
+
+    /**
+     * Split string of token names separated by `,` into list of token names.
+     */
+    static std::list<std::string> splitCollectionSpecification(std::string specification);
+
+    /**
+     * Split string of token names separated by `,` and `;` into list of lists of token names.
+     */
+    static std::list< std::list<std::string> > splitMaskSpecification(
+            std::string specification);
 
 private:
 

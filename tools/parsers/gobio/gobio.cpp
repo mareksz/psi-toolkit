@@ -30,7 +30,10 @@ void Gobio::Factory::doAddLanguageIndependentOptionsHandled(
     optionsDescription.add_options()
         ("rules",
         boost::program_options::value<std::string>()->default_value(DEFAULT_RULE_FILE),
-        "file with rules in text format");
+        "file with rules in text format")
+        ("terminal-tag",
+         boost::program_options::value<std::string>()->default_value(DEFAULT_TERMINAL_TAG),
+         "tag for terminal");
 }
 
 std::string Gobio::Factory::doGetName() const {
@@ -42,8 +45,8 @@ boost::filesystem::path Gobio::Factory::doGetFile() const {
 }
 
 std::list<std::list<std::string> > Gobio::Factory::doRequiredLayerTags() {
-    return boost::assign::list_of(
-        boost::assign::list_of(std::string("gobio-tagset")));
+    return boost::assign::list_of
+        (boost::assign::list_of(std::string("gobio-tagset")));
 }
 
 std::list<std::list<std::string> > Gobio::Factory::doOptionalLayerTags() {
@@ -59,6 +62,9 @@ std::list<std::string> Gobio::Factory::doProvidedLayerTags() {
 
 const std::string Gobio::Factory::DEFAULT_RULE_FILE
     = "%ITSDATA%/%LANG%/rules.g";
+
+const std::string Gobio::Factory::DEFAULT_TERMINAL_TAG
+    = "form";
 
 LatticeWorker* Gobio::doCreateLatticeWorker(Lattice & lattice) {
     return new Worker(*this, lattice);
@@ -76,7 +82,9 @@ std::string Gobio::doInfo() {
     return "gobio parser";
 }
 
-Gobio::Gobio(std::string rulesPath) : rulesPath_(rulesPath), sym_fac_(NULL) { }
+Gobio::Gobio(std::string rulesPath, std::string terminalTag)
+    : rulesPath_(rulesPath), terminalTag_(terminalTag), sym_fac_(NULL) {
+}
 
 void Gobio::parse(Lattice & lattice) {
     sym_fac_ = lattice.getAnnotationItemManager().getSymbolFactory();
@@ -110,7 +118,7 @@ void Gobio::parse(Lattice & lattice) {
     LayerTagMask maskGobio = lattice.getLayerTagManager().getAlternativeMask(
         boost::assign::list_of
             (lattice.getLayerTagManager().createSingletonTagCollection("gobio"))
-            (lattice.getLayerTagManager().createSingletonTagCollection("form"))
+            (lattice.getLayerTagManager().createSingletonTagCollection(terminalTag_))
     );
     LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
         boost::assign::list_of("gobio")("parse")

@@ -528,7 +528,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet fr
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
-    tools-converters-unumsunt tools-translators-transferer tools-lemmatizers-lamerlemma)
+    tools-converters-unumsunt tools-converters-joiner tools-translators-transferer tools-lemmatizers-lamerlemma)
 
 # ----------------------------------------------------
 # TESTS_TARGETS
@@ -782,6 +782,8 @@ endfunction(download_and_unpack)
 
 if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/bilexicon/data/plen.bin")
+    download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
+    download_artifact("tools/lexica/mapper/data/pl-valency.bin")
 
     if (HAVE_SFST)
        file(MAKE_DIRECTORY "${psi-toolkit_SOURCE_DIR}/tools/lemmatizers/sfst/data")

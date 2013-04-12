@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+  <configuration
+      name="pl-join-forms-and-valency"
+      annotator="joiner"
+      options="--lang pl --left-mask form --right-mask valency --out-tags parse-terminal --take-right-text">
+    <provided>
+      <tag>parse-terminal</tag>
+    </provided>
+    <required>
+      <tags>
+        <tag>form</tag>
+      </tags>
+      <tags>
+        <tag>valency</tag>
+      </tags>
+    </required>
+  </configuration>
+</configurations>

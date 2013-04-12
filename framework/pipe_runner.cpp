@@ -288,7 +288,7 @@ bool PipeRunner::parseIntoPipelineSpecification_(
 
 void PipeRunner::showEmptyPipeWarningMessage_() {
     std::cerr << "no pipeline specified, try this: "
-              << "psi-pipe tokenize ! write-simple --tag token"
+              << "psi-pipe tokenize ! write-simple --tags token"
               << std::endl;
     std::cerr << "see --help option for details..." << std::endl;
     exit(1);

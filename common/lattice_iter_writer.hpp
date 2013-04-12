@@ -33,7 +33,7 @@ public:
         linear_(linear),
         noAlts_(noAlts),
         withBlank_(withBlank),
-        basicTag_(basicTag),
+        basicTagMask_(lattice.getLayerTagManager().getMask(basicTag)),
         handledTags_(handledTags),
         fallbackTags_(fallbackTags)
     {
@@ -50,7 +50,7 @@ private:
     bool linear_;
     bool noAlts_;
     bool withBlank_;
-    std::string basicTag_;
+    LayerTagMask basicTagMask_;
     std::vector<std::string> handledTags_;
     std::vector<std::string> fallbackTags_;
 

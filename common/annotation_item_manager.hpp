@@ -58,6 +58,10 @@ public:
         const AnnotationItem & annotationItem
     );
 
+    void addValues(
+        AnnotationItem& targetItem,
+        const AnnotationItem& sourceItem);
+
     //Converter & master stuff:
 
     zvalue stringToZvalue(std::string s) const;

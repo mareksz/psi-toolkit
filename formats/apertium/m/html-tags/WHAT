@@ -1,1 +1,1 @@
-apertium-reader --keep-tags true ! simple-writer --tag tag
+apertium-reader --keep-tags true ! simple-writer --tags tag

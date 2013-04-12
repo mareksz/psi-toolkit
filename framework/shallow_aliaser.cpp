@@ -41,15 +41,15 @@ void ShallowAliaser::initializeAliases_() {
     addReadReaderAlias("pptx", "apertium-reader --format pptx");
     addReadReaderAlias("html", "apertium-reader --format html");
 
-    addWriteGetAlias("tokens",   "simple-writer --tag token");
-    addWriteGetAlias("segments", "simple-writer --tag segment");
+    addWriteGetAlias("tokens",   "simple-writer --tags token");
+    addWriteGetAlias("segments", "simple-writer --tags segment");
 
     addWriteWriterGetAlias("xml", "bracketing-writer --skip-symbol-edges --opening-bracket \n"
         "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
         " --av-separator : --av-pairs-separator ;");
 
     addWriteGetDrawAlias("tree", "gv-writer --tree");
-    addWriteGetDrawAlias("parse-tree", "gv-writer --tree --filter-parse");
+    addWriteGetDrawAlias("parse-tree", "gv-writer --tree --tags parse");
 }
 
 void ShallowAliaser::addReadReaderAlias(std::string alias, std::string expand) {

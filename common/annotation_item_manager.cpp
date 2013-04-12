@@ -144,6 +144,20 @@ std::map<std::string, std::string> AnnotationItemManager::getAVMap(
     return result;
 }
 
+void AnnotationItemManager::addValues(
+    AnnotationItem& targetItem,
+    const AnnotationItem& sourceItem) {
+
+    std::list<std::pair<std::string, zvalue> > avs =
+        getValuesAsZvalues(sourceItem);
+
+    for (std::list<std::pair<std::string, zvalue> >::iterator av = avs.begin();
+         av != avs.end();
+         ++av)
+        setValue(targetItem, av->first, av->second);
+}
+
+
 zvalue AnnotationItemManager::stringToZvalue(std::string s) const {
     return zSymbolFactory_->get_symbol(s.c_str());
 }

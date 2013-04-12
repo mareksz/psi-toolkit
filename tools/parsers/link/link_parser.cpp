@@ -238,11 +238,14 @@ void LinkParser::parse(Lattice & lattice) {
             Lattice::EdgeSequence::Builder builder(lattice);
             if (edgeDescription.children.empty()) {
                 isToken = true;
-                for (int i = edgeDescription.start; i < edgeDescription.end; i++) {
-                    builder.addEdge(lattice.firstOutEdge(
+                size_t i = edgeDescription.start;
+                while (i < edgeDescription.end) {
+                    Lattice::EdgeDescriptor e = lattice.firstOutEdge(
                         lattice.getVertexForRawCharIndex(i),
                         lattice.getLayerTagManager().getMask("symbol")
-                    ));
+                    );
+                    builder.addEdge(e);
+                    i += lattice.getEdgeLength(e);
                 }
             } else {
                 isToken = false;
@@ -293,11 +296,14 @@ void LinkParser::fillInBlanks(Lattice & lattice) {
                     )
                 );
                 Lattice::EdgeSequence::Builder builder(lattice);
-                for (size_t i = currentIndex; i < edgeBeginIndex; i++) {
-                    builder.addEdge(lattice.firstOutEdge(
+                size_t i = currentIndex;
+                while (i < edgeBeginIndex) {
+                    Lattice::EdgeDescriptor e = lattice.firstOutEdge(
                         lattice.getVertexForRawCharIndex(i),
                         lattice.getLayerTagManager().getMask("symbol")
-                    ));
+                    );
+                    builder.addEdge(e);
+                    i += lattice.getEdgeLength(e);
                 }
                 lattice.addEdge(
                     currentIndex,

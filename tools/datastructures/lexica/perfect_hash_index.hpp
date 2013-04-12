@@ -56,7 +56,8 @@ public:
     PerfectHashIndex(CMPH_ALGO algo) : m_algo(algo), m_hash(0) {}
 
     ~PerfectHashIndex() {
-        cmph_destroy(m_hash);
+        if (m_hash)
+            cmph_destroy(m_hash);
         clearKeys();
     }
 

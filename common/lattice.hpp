@@ -355,9 +355,9 @@ public:
     protected:
         Lattice& lattice_;
         LayerTagMask mask_;
+        VertexIterator vi_;
         InOutEdgesIterator ei_;
     private:
-        VertexIterator vi_;
         virtual InOutEdgesIterator getEdgesIterator_(VertexDescriptor vd) = 0;
     };
 
@@ -417,9 +417,9 @@ public:
     VertexDescriptor getVertexForRawCharIndex(int ix) const;
 
     /**
-     * Returns the first vertex (the same as getVertexForRawCharIndex(0)).
+     * Returns the first vertex (NOT the same as getVertexForRawCharIndex(0) - can be loose).
      */
-    VertexDescriptor getFirstVertex() const;
+    VertexDescriptor getFirstVertex();
 
     /**
      * Returns the last vertex.
@@ -564,6 +564,21 @@ public:
         EdgeDescriptor parent,
         LayerTagMask mask);
 
+    /**
+     * Get the first parent of the first partition.
+     */
+    boost::optional<EdgeDescriptor> getParent(
+        EdgeDescriptor child);
+
+    /**
+     * Get the first parent of the first partition matching
+     * the given mask.
+     */
+    boost::optional<EdgeDescriptor> getParent(
+        EdgeDescriptor child,
+        LayerTagMask mask);
+
+
     void runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask);
 
     bool isBlank(Lattice::EdgeDescriptor edge);
@@ -634,6 +649,8 @@ public:
 
     const LayerTagCollection& getSymbolTag() const;
 
+    int addTagMaskIndex_(LayerTagMask tagMask);
+
 private:
 
     struct IsBlank {
@@ -694,8 +711,6 @@ private:
     typedef TagMasksBimap::value_type TagMasksBimapItem;
     typedef TagMasksBimap::left_map::const_iterator TagMasksBimapLeftIterator;
     TagMasksBimap indexedTagMasks_;
-
-    int addTagMaskIndex_(LayerTagMask tagMask);
 
     void resizeImplicitEdgesStructures_();
 
