@@ -230,7 +230,11 @@ void Unumsunt::convertTags(Lattice & lattice) {
         } else {
             targetCategory = cmi->second;
         }
-        AnnotationItem targetAI(targetCategory, sourceAI.getTextAsStringFrag());
+
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem(targetCategory, sourceAI.getTextAsStringFrag())));
+        AnnotationItem & targetAI = *(items.front());
 
         std::list< std::pair<std::string, zvalue> > avs
             = lattice.getAnnotationItemManager().getValuesAsZvalues(sourceAI);
@@ -252,7 +256,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
         }
 
         BOOST_FOREACH(UnumsuntRule rule, aux_rules_) {
-            rule.apply(lattice.getAnnotationItemManager(), targetAI);
+            rule.apply(lattice.getAnnotationItemManager(), items);
         }
 
         const std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(edge);

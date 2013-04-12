@@ -1,6 +1,9 @@
 #include "tests.hpp"
 
+#include <vector>
+
 #include <boost/assign/list_of.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "annotation_item_manager.hpp"
 #include "unumsunt.hpp"
@@ -84,12 +87,15 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
     AnnotationItemManager aim;
 
     {
-        AnnotationItem item("cat");
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("cat")));
+        AnnotationItem & item = *(items.front());
         aim.setValue(item, "A", "a");
         aim.setValue(item, "B", "b");
         aim.setValue(item, "C", "c");
 
-        BOOST_CHECK(rule.apply(aim, item));
+        BOOST_CHECK(rule.apply(aim, items));
         BOOST_CHECK_EQUAL(item.getCategory(), "cat");
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "aa");
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "b");
@@ -98,11 +104,14 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
     }
 
     {
-        AnnotationItem item("cat2");
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("cat2")));
+        AnnotationItem & item = *(items.front());
         aim.setValue(item, "A", "a");
         aim.setValue(item, "B", "b");
 
-        BOOST_CHECK(!rule.apply(aim, item));
+        BOOST_CHECK(!rule.apply(aim, items));
         BOOST_CHECK_EQUAL(item.getCategory(), "cat2");
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "b");
@@ -110,11 +119,14 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
     }
 
     {
-        AnnotationItem item("cat");
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("cat")));
+        AnnotationItem & item = *(items.front());
         aim.setValue(item, "A", "a");
         aim.setValue(item, "B", "c");
 
-        BOOST_CHECK(!rule.apply(aim, item));
+        BOOST_CHECK(!rule.apply(aim, items));
         BOOST_CHECK_EQUAL(item.getCategory(), "cat");
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "c");
@@ -133,10 +145,13 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule_change_category ) {
 
     AnnotationItemManager aim;
 
-    AnnotationItem item("noun");
+    std::vector< boost::shared_ptr<AnnotationItem> > items;
+    items.push_back(boost::shared_ptr<AnnotationItem>(
+        new AnnotationItem("noun")));
+    AnnotationItem & item = *(items.front());
     aim.setValue(item, "A", "a");
 
-    BOOST_CHECK(rule.apply(aim, item));
+    BOOST_CHECK(rule.apply(aim, items));
     BOOST_CHECK_EQUAL(item.getCategory(), "pronoun");
     BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
 
@@ -154,18 +169,24 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule_with_words ) {
     AnnotationItemManager aim;
 
     {
-        AnnotationItem item("noun", std::string("aaa"));
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("noun", std::string("aaa"))));
+        AnnotationItem & item = *(items.front());
         aim.setValue(item, "A", "a");
 
-        BOOST_CHECK(rule.apply(aim, item));
+        BOOST_CHECK(rule.apply(aim, items));
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "x");
     }
 
     {
-        AnnotationItem item("noun", std::string("ccc"));
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("noun", std::string("ccc"))));
+        AnnotationItem & item = *(items.front());
         aim.setValue(item, "A", "a");
 
-        BOOST_CHECK(!rule.apply(aim, item));
+        BOOST_CHECK(!rule.apply(aim, items));
         BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
     }
 
