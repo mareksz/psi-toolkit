@@ -1,7 +1,7 @@
 #ifndef LATTICE_WRAPPER_HDR
 #define LATTICE_WRAPPER_HDR
 
-#include "lattice.hpp" 
+#include "lattice.hpp"
 
 bool isNonTerminal(Lattice::EdgeDescriptor edge, Lattice& lattice);
 

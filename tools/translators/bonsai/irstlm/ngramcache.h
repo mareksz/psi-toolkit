@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
 
 class ngramcache{
 private:
-  htable* ht;  
+  htable* ht;
   mempool *mp;
   int maxn;
   int ngsize;
@@ -36,17 +36,16 @@ private:
   int entries;
 
 public:
-    
+
   int cursize(){return entries;};
   int maxsize(){return maxn;};
-  ngramcache(int n,int size,int maxentries);  
-  char* get(const int* ngp,char* info=NULL);  
-  ~ngramcache();  
-  void reset(int n=0);  
-  int add(const int* ngp,const char* info);  
-  int isfull(){return (entries >= maxn);};  
+  ngramcache(int n, int size, int maxentries);
+  char* get(const int* ngp, char* info=NULL);
+  ~ngramcache();
+  void reset(int n=0);
+  int add(const int* ngp, const char* info);
+  int isfull(){return (entries >= maxn);};
   void stat();
 };
 
 #endif
-

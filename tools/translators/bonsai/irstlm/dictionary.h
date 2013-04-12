@@ -28,7 +28,7 @@
 #define MAX_WORD 1000
 #define LOAD_FACTOR  5
 
-#ifndef GROWTH_STEP 
+#ifndef GROWTH_STEP
 #define GROWTH_STEP 100000
 #endif
 
@@ -43,12 +43,12 @@
 
 
 //End of sentence symbol
-#ifndef EOS_ 
+#ifndef EOS_
 #define EOS_ "</s>"
 #endif
 
 //Out-Of-Vocabulary symbol
-#ifndef OOV_ 
+#ifndef OOV_
 #define OOV_ "<unk>"
 #endif
 
@@ -80,22 +80,22 @@ class dictionary{
 
   friend class dictionary_iter;
 
-  dictionary* oovlex; //<! additional dictionary 
+  dictionary* oovlex; //<! additional dictionary
 
   inline int dub(){return dubv;}
   inline int dub(int value){return (dubv=value);}
 
-  inline char *OOV(){return (OOV_);} 
+  inline char *OOV(){return (OOV_);}
   inline char *BoS(){return (BOS_);}
   inline char *EoS(){return (EOS_);}
 
   inline int oovcode(int v=-1){return oov_code=(v>=0?v:oov_code);}
-  
+
   inline char *intsymb(char* isymb=NULL){
     if (isymb==NULL) return is;
     if (is!=NULL) delete [] is;
     is=new char[strlen(isymb+1)];
-    strcpy(is,isymb);
+    strcpy(is, isymb);
     return is=isymb;
   }
 
@@ -104,12 +104,12 @@ class dictionary{
   inline int oovlexsize(){return oovlex?oovlex->n:0;}
   inline int inoovlex(){return in_oov_lex;}
   inline int oovlexcode(){return oov_lex_code;}
-  
+
 
   int isprintable(char* w){
     char buffer[MAX_WORD];
     sprintf(buffer,"%s",w);
-    return strcmp(w,buffer)==0;
+    return strcmp(w, buffer)==0;
   }
 
   inline void genoovcode(){
@@ -117,32 +117,32 @@ class dictionary{
     //std::cerr << "OOV code is "<< c << std::endl;
     oovcode(c);
   }
-  
+
   inline dictionary* oovlexp(char *fname=NULL){
     if (fname==NULL) return oovlex;
     if (oovlex!=NULL) delete oovlex;
-    oovlex=new dictionary(fname,DICT_INITSIZE);
+    oovlex=new dictionary(fname, DICT_INITSIZE);
     return oovlex;
   }
 
-  inline int setoovrate(double oovrate){ 
+  inline int setoovrate(double oovrate){
     encode(OOV()); //be sure OOV code exists
     int oovfreq=(int)(oovrate * totfreq());
     std::cerr << "setting OOV rate to: " << oovrate << " -- freq= " << oovfreq << std::endl;
-    return freq(oovcode(),oovfreq);
+    return freq(oovcode(), oovfreq);
   }
 
 
-  inline long long incfreq(int code,long long value){N+=value;return tb[code].freq+=value;}
+  inline long long incfreq(int code, long long value){N+=value;return tb[code].freq+=value;}
 
-  inline long long multfreq(int code,double value){
+  inline long long multfreq(int code, double value){
     N+=(long long)(value * tb[code].freq)-tb[code].freq;
     return tb[code].freq=(long long)(value * tb[code].freq);
   }
-  
-  inline long freq(int code,long long value=-1){
+
+  inline long freq(int code, long long value=-1){
     if (value>=0){
-      N+=value-tb[code].freq; 
+      N+=value-tb[code].freq;
       tb[code].freq=value;
     }
     return tb[code].freq;
@@ -151,14 +151,14 @@ class dictionary{
   inline long long totfreq(){return N;}
 
   void grow();
-  //dictionary(int size=400,char* isym=NULL,char* oovlex=NULL);
-  dictionary(char *filename=NULL,int size=DICT_INITSIZE,char* isymb=NULL,char* oovlex=NULL);
+  //dictionary(int size=400, char* isym=NULL, char* oovlex=NULL);
+  dictionary(char *filename=NULL, int size=DICT_INITSIZE, char* isymb=NULL, char* oovlex=NULL);
   dictionary(dictionary* d, int sortflag=1); //flag for sorting wrt to frequency (default=1, i.e. sort)
 
   ~dictionary();
   void generate(char *filename);
   void load(char *filename);
-  void save(char *filename,int freqflag=0);
+  void save(char *filename, int freqflag=0);
   void load(std::istream& fd);
   void save(std::ostream& fd);
 
@@ -169,7 +169,7 @@ class dictionary{
   void stat();
 
   void cleanfreq(){
-    for (int i=0;i<n;tb[i++].freq=0); 
+    for (int i=0;i<n;tb[i++].freq=0);
     N=0;
   }
 
@@ -184,4 +184,3 @@ class dictionary_iter {
 };
 
 #endif
-

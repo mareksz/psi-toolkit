@@ -6,12 +6,12 @@ Transformation::Transformation(Symbol srcSymbol_, SListPtr srcSymbols_, SListPtr
     srcSymbol(srcSymbol_), srcSymbols(srcSymbols_), trgSymbols(trgSymbols_), cost(cost_), unweighted_costs(ec_), lmc(lmc_), lm_heuristic(0), alignment( new Alignment() ) {
         //lm_heuristic = lmc->get_terminal_cost(trgSymbols);
     }
-    
+
 Transformation::Transformation(Symbol srcSymbol_, SListPtr trgSymbols_, double cost_, Floats ec_, LmContainerPtr lmc_) :
     srcSymbol(srcSymbol_), srcSymbols(SListPtr( new SList() )), trgSymbols(trgSymbols_), cost(cost_), unweighted_costs(ec_), lmc(lmc_), lm_heuristic(0), alignment( new Alignment() ) {
         //lm_heuristic = lmc->get_terminal_cost(trgSymbols);
     }
-    
+
 bool Transformation::isSource(Symbol s) {
     return s.str() == srcSymbol.str();
 }
@@ -33,38 +33,38 @@ Floats& Transformation::get_unweighted() {
 }
 
 SListPtr& Transformation::sources() {
-    return srcSymbols;  
+    return srcSymbols;
 }
 
 SListPtr& Transformation::targets() {
-    return trgSymbols;  
+    return trgSymbols;
 }
 
 std::string Transformation::str() {
     std::stringstream ss;
     ss << srcSymbol.str() << " --> " << srcSymbols->str() << " :: " << trgSymbols->str();
-    
+
     {
-	ss << "\t(";
-	for(Alignment::iterator ait = alignment->begin(); ait != alignment->end(); ait++) {
-	    if(ait != alignment->begin())
-		ss << " ";
-	    ss << ait->first << "-" << ait->second;
-	}
-	ss << ")";
+    ss << "\t(";
+    for (Alignment::iterator ait = alignment->begin(); ait != alignment->end(); ait++) {
+        if (ait != alignment->begin())
+        ss << " ";
+        ss << ait->first << "-" << ait->second;
     }
-    
-    if(pedantry) {
-	ss << "\t(" ;
-	for(size_t i = 0; i < unweighted_costs.size(); i++) {
-	    ss << unweighted_costs[i];
-	    if(i < unweighted_costs.size()-1)
-		ss << ",";
-	}
-	ss << " - ";
-	ss << cost  << ")";
+    ss << ")";
     }
-    
+
+    if (pedantry) {
+    ss << "\t(" ;
+    for (size_t i = 0; i < unweighted_costs.size(); i++) {
+        ss << unweighted_costs[i];
+        if (i < unweighted_costs.size()-1)
+        ss << ",";
+    }
+    ss << " - ";
+    ss << cost  << ")";
+    }
+
     return ss.str();
 }
 
@@ -96,9 +96,9 @@ double Transformation::word_penalty_weight = 0;
 /*********************** HyperEdge ************************/
 
 HyperEdge::HyperEdge(SListPtr src) : ts( new TransformationSet() ), nonTerminals( new SList() ) {
-    for(SList::iterator it = src->begin(); it != src->end(); it++) {
-	if(it->is_nt()) 
-	    nonTerminals->push_back(*it);
+    for (SList::iterator it = src->begin(); it != src->end(); it++) {
+    if (it->is_nt())
+        nonTerminals->push_back(*it);
     }
 }
 
@@ -115,11 +115,11 @@ SListPtr& HyperEdge::nts() {
 }
 
 double HyperEdge::get_cost() {
-    if(ts->size() > 0) {
-	return (*(ts->begin()))->get_cost();
+    if (ts->size() > 0) {
+    return (*(ts->begin()))->get_cost();
     }
     else {
-	return 0;
+    return 0;
     }
 }
 
@@ -127,5 +127,3 @@ Floats HyperEdge::tm_weights;
 Floats HyperEdge::lm_weights;
 Floats HyperEdge::rs_weights;
 double HyperEdge::word_penalty_weight = 0;
-
-

@@ -50,8 +50,8 @@ public:
   ~lmmacro() {};
 
   bool loadmap(std::string lmfilename, std::istream& inp, std::istream& inpMap);
-  double lprob(ngram ng); 
-  double clprob(ngram ng); 
+  double lprob(ngram ng);
+  double clprob(ngram ng);
 
   const char *maxsuffptr(ngram ong);
   const char *cmaxsuffptr(ngram ong);
@@ -72,4 +72,3 @@ public:
 
 
 #endif
-

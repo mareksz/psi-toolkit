@@ -9,7 +9,7 @@
 class gzfilebuf : public std::streambuf {
 public:
   gzfilebuf(const char *filename)
-  { _gzf = gzopen(filename, "rb"); 
+  { _gzf = gzopen(filename, "rb");
     setg (_buff+sizeof(int),     // beginning of putback area
           _buff+sizeof(int),     // read position
           _buff+sizeof(int));    // end position
@@ -70,7 +70,7 @@ protected:
 
   std::streamsize xsgetn (char* s,
                           std::streamsize num) {
-    return gzread(_gzf,s,num);
+    return gzread(_gzf, s, num);
   }
 
 private:

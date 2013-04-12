@@ -47,15 +47,15 @@ inline void error(char* message){
 //instantiate an empty lm table
 lmtable::lmtable(){
 
-  configure(1,false);
+  configure(1, false);
 
-  dict=new dictionary((char *)NULL,1000000,(char*)NULL,(char*)NULL);
+  dict=new dictionary((char *)NULL, 1000000, (char*)NULL, (char*)NULL);
 
   memset(cursize, 0, sizeof(cursize));
-	memset(tbltype, 0, sizeof(tbltype));
-	memset(maxsize, 0, sizeof(maxsize));
-	memset(info, 0, sizeof(info));
-	memset(NumCenters, 0, sizeof(NumCenters));
+    memset(tbltype, 0, sizeof(tbltype));
+    memset(maxsize, 0, sizeof(maxsize));
+    memset(info, 0, sizeof(info));
+    memset(NumCenters, 0, sizeof(NumCenters));
 
   max_cache_lev=0;
   for (int i=0;i<=LMTMAXLEV+1;i++) lmtcache[i]=NULL;
@@ -76,7 +76,7 @@ lmtable::lmtable(){
 
 void lmtable::init_probcache(){
     assert(probcache==NULL);
-    probcache=new ngramcache(maxlev,sizeof(double),400000);
+    probcache=new ngramcache(maxlev, sizeof(double), 400000);
 #ifdef TRACE_CACHE
     cacheout=new std::fstream("/tmp/tracecache",std::ios::out);
     sentence_id=0;
@@ -85,14 +85,14 @@ void lmtable::init_probcache(){
 
 void lmtable::init_statecache(){
     assert(statecache==NULL);
-    statecache=new ngramcache(maxlev-1,sizeof(char *),200000);
+    statecache=new ngramcache(maxlev-1, sizeof(char *), 200000);
 }
 
 void lmtable::init_lmtcaches(int uptolev){
     max_cache_lev=uptolev;
     for (int i=2;i<=max_cache_lev;i++){
     assert(lmtcache[i]==NULL);
-    lmtcache[i]=new ngramcache(i,sizeof(char *),200000);
+    lmtcache[i]=new ngramcache(i, sizeof(char *), 200000);
     }
 }
 
@@ -104,13 +104,13 @@ void lmtable::check_cache_levels(){
 }
 
 void lmtable::reset_caches(){
-      if (probcache) probcache->reset(MAX(probcache->cursize(),probcache->maxsize()));
-      if (statecache) statecache->reset(MAX(statecache->cursize(),statecache->maxsize()));
+      if (probcache) probcache->reset(MAX(probcache->cursize(), probcache->maxsize()));
+      if (statecache) statecache->reset(MAX(statecache->cursize(), statecache->maxsize()));
       for (int i=2;i<=max_cache_lev;i++)
-        lmtcache[i]->reset(MAX(lmtcache[i]->cursize(),lmtcache[i]->maxsize()));
+        lmtcache[i]->reset(MAX(lmtcache[i]->cursize(), lmtcache[i]->maxsize()));
 }
 
-void lmtable::configure(int n,bool quantized){
+void lmtable::configure(int n, bool quantized){
   maxlev=n;
   if (n==1)
     tbltype[1]=(quantized?QLEAF:LEAF);
@@ -124,12 +124,12 @@ void lmtable::configure(int n,bool quantized){
 
 //loadstd::istream& inp a lmtable from a lm file
 
-void lmtable::load(istream& inp,const char* filename,const char* outfilename,int keep_on_disk,OUTFILE_TYPE outtype){
+void lmtable::load(istream& inp, const char* filename, const char* outfilename, int keep_on_disk, OUTFILE_TYPE outtype){
 
 #ifdef WIN32
   if (keep_on_disk>0){
     std::cerr << "lmtable::load memory mapping not yet available under WIN32\n";
-		keep_on_disk = 0;
+        keep_on_disk = 0;
   }
 #endif
 
@@ -143,14 +143,14 @@ void lmtable::load(istream& inp,const char* filename,const char* outfilename,int
       cerr << "Error: nothing to do. Passed input file: binary. Specified output format: binary.\n";
       exit(0);
     }
-    loadbin(inp,header,filename,keep_on_disk);
+    loadbin(inp, header, filename, keep_on_disk);
   }
   else{
     if (strncmp(header,"ARPA",4)==0 && outtype==TEXT) {
       cerr << "Error: nothing to do. Passed input file: textual. Specified output format: textual.\n";
       exit(0);
     }
-    loadtxt(inp,header,outfilename,keep_on_disk);
+    loadtxt(inp, header, outfilename, keep_on_disk);
   }
 
   //cerr << "OOV code is " << lmtable::getDict()->oovcode() << "\n";
@@ -189,13 +189,13 @@ int parseWords(char *sentence, char **words, int max)
 //This method also loads files processed with the quantization
 //tool: qlm
 
-int parseline(istream& inp, int Order,ngram& ng,float& prob,float& bow){
+int parseline(istream& inp, int Order, ngram& ng, float& prob, float& bow){
 
   char* words[1+ LMTMAXLEV + 1 + 1];
   int howmany;
   char line[MAX_LINE];
 
-  inp.getline(line,MAX_LINE);
+  inp.getline(line, MAX_LINE);
   if (strlen(line)==MAX_LINE-1){
       cerr << "parseline: input line exceed MAXLINE ("
       << MAX_LINE << ") chars " << line << "\n";
@@ -232,7 +232,7 @@ int parseline(istream& inp, int Order,ngram& ng,float& prob,float& bow){
 }
 
 
-void lmtable::loadcenters(istream& inp,int Order){
+void lmtable::loadcenters(istream& inp, int Order){
   char line[MAX_LINE];
 
   //first read the coodebook
@@ -246,20 +246,20 @@ void lmtable::loadcenters(istream& inp,int Order){
     if (Order<maxlev) inp >> Bcenters[Order][c];
   };
   //empty the last line
-  inp.getline((char*)line,MAX_LINE);
+  inp.getline((char*)line, MAX_LINE);
 
 }
 
-void lmtable::loadtxt(istream& inp,const char* header,const char* outfilename,int mmap){
+void lmtable::loadtxt(istream& inp, const char* header, const char* outfilename, int mmap){
     if (mmap>0)
-      loadtxtmmap(inp,header,outfilename);
+      loadtxtmmap(inp, header, outfilename);
     else {
-      loadtxt(inp,header);
+      loadtxt(inp, header);
       lmtable::getDict()->genoovcode();
     }
 }
 
-void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilename){
+void lmtable::loadtxtmmap(istream& inp, const char* header, const char* outfilename){
 
   char nameNgrams[BUFSIZ];
   char nameHeader[BUFSIZ];
@@ -267,7 +267,7 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
   FILE *fd = NULL;
   long long filesize=0;
 
-  int Order,n;
+  int Order, n;
 
   int maxlevel_h;
   //char *SepString = " \t\n"; unused
@@ -276,12 +276,12 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
   char line[MAX_LINE];
 
   //prepare word dictionary
-  //dict=(dictionary*) new dictionary(NULL,1000000,NULL,NULL);
+  //dict=(dictionary*) new dictionary(NULL, 1000000, NULL, NULL);
   lmtable::getDict()->incflag(1);
 
   //put here ngrams, log10 probabilities or their codes
   ngram ng(lmtable::getDict());
-  float pb,bow;;
+  float pb, bow;;
 
   //check the header to decide if the LM is quantized or not
   isQtable=(strncmp(header,"qARPA",5)==0?true:false);
@@ -313,7 +313,7 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
 
   // READ ARPA Header
 
-  while (inp.getline(line,MAX_LINE)){
+  while (inp.getline(line, MAX_LINE)){
 
     if (strlen(line)==MAX_LINE-1){
       cerr << "lmtable::loadtxtmmap: input line exceed MAXLINE ("
@@ -332,11 +332,11 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
 
       //at this point we are sure about the size of the LM
       if (!yetconfigured){
-        configure(maxlev,isQtable);
+        configure(maxlev, isQtable);
         yetconfigured=true;
 
         //opening output file
-        strcpy(nameNgrams,outfilename);
+        strcpy(nameNgrams, outfilename);
         strcat(nameNgrams, "-ngrams");
 
         cerr << "saving ngrams probs in " << nameNgrams << "\n";
@@ -352,8 +352,8 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
         cerr << "filesize = " << filesize << "\n";
 
         // set the file to the proper size:
-        ftruncate(fileno(fd),filesize);
-        table[0]=(char *)(MMap(fileno(fd),PROT_READ|PROT_WRITE,0,filesize,&tableGaps[0]));
+        ftruncate(fileno(fd), filesize);
+        table[0]=(char *)(MMap(fileno(fd), PROT_READ|PROT_WRITE, 0, filesize, &tableGaps[0]));
 
         //allocate space for tables into the file through mmap:
 
@@ -379,7 +379,7 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
 
       cerr << Order << "-grams: reading ";
       if (isQtable) {
-        loadcenters(inp,Order);
+        loadcenters(inp, Order);
         // writing centroids on disk
         if (Order<maxlev){
           memcpy(table[Order] - 2 * NumCenters[Order] * sizeof(float),
@@ -405,12 +405,12 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
       //WE ASSUME A WELL STRUCTURED FILE!!!
       for (int c=0;c<maxsize[Order];c++){
 
-        if (parseline(inp,Order,ng,pb,bow)){
+        if (parseline(inp, Order, ng, pb, bow)){
           //if table is in incomplete ARPA format pb is just the
           //discounted frequency, so we need to add bow * Pr(n-1 gram)
           if (isItable && Order>1){
             //get bow of lower of context
-            get(ng,ng.size,ng.size-1);
+            get(ng, ng.size, ng.size-1);
             float rbow=0.0;
             if (ng.lev==ng.size-1){ //found context
               int ibow=ng.bow; rbow=*((float *)&ibow);
@@ -428,7 +428,7 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
         }
       }
       // To avoid huge memory write concentrated at the end of the program
-      msync(table[0],filesize,MS_SYNC);
+      msync(table[0], filesize, MS_SYNC);
 
       // now we can fix table at level Order -1
       // (not required if the input LM is in lexicographical order)
@@ -440,11 +440,11 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
   for (int i=1;i<=maxlev;i++)
     if (maxsize[i] != cursize[i]) {
       for (int l=1;l<=maxlev;l++)
-	cerr << "Level " << l << ": starting ngrams=" << maxsize[l] << " - actual stored ngrams=" << cursize[l] << "\n";
+    cerr << "Level " << l << ": starting ngrams=" << maxsize[l] << " - actual stored ngrams=" << cursize[l] << "\n";
       break;
     }
 
-  Munmap(table[0],filesize,MS_SYNC);
+  Munmap(table[0], filesize, MS_SYNC);
   for (int l=1;l<=maxlev;l++)
     table[l]=0; // to avoid wrong free in ~lmtable()
   cerr << "running fclose...\n";
@@ -456,10 +456,10 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
 
   // saving header + dictionary
 
-  strcpy(nameHeader,outfilename);
+  strcpy(nameHeader, outfilename);
   strcat(nameHeader, "-header");
   cerr << "saving header+dictionary in " << nameHeader << "\n";
-  fstream out(nameHeader,ios::out);
+  fstream out(nameHeader, ios::out);
 
   // print header
   if (isQtable){
@@ -498,19 +498,19 @@ void lmtable::loadtxtmmap(istream& inp,const char* header,const char* outfilenam
   return;
 }
 
-void lmtable::loadtxt(istream& inp,const char* header){
+void lmtable::loadtxt(istream& inp, const char* header){
 
 
   //open input stream and prepare an input string
   char line[MAX_LINE];
 
   //prepare word dictionary
-  //dict=(dictionary*) new dictionary(NULL,1000000,NULL,NULL);
+  //dict=(dictionary*) new dictionary(NULL, 1000000, NULL, NULL);
   lmtable::getDict()->incflag(1);
 
   //put here ngrams, log10 probabilities or their codes
   ngram ng(lmtable::getDict());
-  float prob,bow;
+  float prob, bow;
 
   //check the header to decide if the LM is quantized or not
   isQtable=(strncmp(header,"qARPA",5)==0?true:false);
@@ -524,9 +524,9 @@ void lmtable::loadtxt(istream& inp,const char* header){
   cerr << "loadtxt()\n";
 
   // READ ARPA Header
-  int Order,n;
+  int Order, n;
 
-  while (inp.getline(line,MAX_LINE)){
+  while (inp.getline(line, MAX_LINE)){
 
     if (strlen(line)==MAX_LINE-1){
       cerr << "lmtable::loadtxt: input line exceed MAXLINE ("
@@ -545,7 +545,7 @@ void lmtable::loadtxt(istream& inp,const char* header){
 
       //at this point we are sure about the size of the LM
       if (!yetconfigured){
-        configure(maxlev,isQtable);yetconfigured=true;
+        configure(maxlev, isQtable);yetconfigured=true;
         //allocate space for loading the table of this level
         for (int i=1;i<=maxlev;i++)
           table[i]= new char[maxsize[i] * nodesize(tbltype[i])];
@@ -553,7 +553,7 @@ void lmtable::loadtxt(istream& inp,const char* header){
 
       cerr << Order << "-grams: reading ";
 
-      if (isQtable) loadcenters(inp,Order);
+      if (isQtable) loadcenters(inp, Order);
 
       //allocate support vector to manage badly ordered n-grams
       if (maxlev>1 && Order<maxlev) {
@@ -568,13 +568,13 @@ void lmtable::loadtxt(istream& inp,const char* header){
 
       for (int c=0;c<maxsize[Order];c++){
 
-        if (parseline(inp,Order,ng,prob,bow)){
+        if (parseline(inp, Order, ng, prob, bow)){
 
           //if table is in incomplete ARPA format prob is just the
           //discounted frequency, so we need to add bow * Pr(n-1 gram)
           if (isItable && Order>1) {
             //get bow of lower of context
-            get(ng,ng.size,ng.size-1);
+            get(ng, ng.size, ng.size-1);
             float rbow=0.0;
             if (ng.lev==ng.size-1){ //found context
               int ibow=ng.bow; rbow=*((float *)&ibow);
@@ -615,9 +615,9 @@ void lmtable::printTable(int level) {
   cout << "level = " << level << "\n";
   int p;
   for (int c=0;c<printEntryN;c++){
-    p=prob(tbl,ndt);
+    p=prob(tbl, ndt);
     cout << *(float *)&p << " "
-	 << word(tbl) << "\n";
+     << word(tbl) << "\n";
     tbl+=ndsz;
   }
   return;
@@ -636,14 +636,14 @@ void lmtable::checkbounds(int level){
   //re-order table at level+1 on disk
   //generate random filename to avoid collisions
   ofstream out;string filePath;
-  createtempfile(out,filePath,ios::out|ios::binary);
+  createtempfile(out, filePath, ios::out|ios::binary);
 
-  int start,end,newstart;
+  int start, end, newstart;
 
   //re-order table at level l+1
   newstart=0;
   for (int c=0;c<cursize[level];c++){
-    start=startpos[level][c]; end=bound(tbl+(long long)c*ndsz,ndt);
+    start=startpos[level][c]; end=bound(tbl+(long long)c*ndsz, ndt);
     //is start==-1 there are no successors for this entry and end==-2
     if (end==-2) end=start;
     assert(start<=end);
@@ -651,7 +651,7 @@ void lmtable::checkbounds(int level){
     assert(end<=cursize[level+1]);
 
     if (start<end){
-      out.write((char*)(succtbl + (long long)start * succndsz),(end-start) * succndsz);
+      out.write((char*)(succtbl + (long long)start * succndsz), (end-start) * succndsz);
       if (!out.good()){
         std::cerr << " Something went wrong while writing temporary file " << filePath
         << " Maybe there is not enough space on this filesystem\n";
@@ -661,15 +661,15 @@ void lmtable::checkbounds(int level){
       }
     }
 
-    bound(tbl+(long long)c*ndsz,ndt,newstart+(end-start));
+    bound(tbl+(long long)c*ndsz, ndt, newstart+(end-start));
     newstart+=(end-start);
   }
 
   out.close();
 
-  fstream inp(filePath.c_str(),ios::in|ios::binary);
+  fstream inp(filePath.c_str(), ios::in|ios::binary);
 
-  inp.read(succtbl,cursize[level+1]*succndsz);
+  inp.read(succtbl, cursize[level+1]*succndsz);
   inp.close();
   removefile(filePath);
 
@@ -679,7 +679,7 @@ void lmtable::checkbounds(int level){
 //loading of LMs in text format. It searches for the prefix, then it adds the
 //suffix to the last level and updates the start-end positions.
 
-int lmtable::add(ngram& ng,int iprob,int ibow){
+int lmtable::add(ngram& ng, int iprob, int ibow){
 
   char *found; LMT_TYPE ndt; int ndsz;
   static int no_more_msg = 0;
@@ -693,28 +693,28 @@ int lmtable::add(ngram& ng,int iprob,int ibow){
 
       ndt=tbltype[l]; ndsz=nodesize(ndt);
 
-      if (search(l,start,(end-start),ndsz,
-                 ng.wordp(ng.size-l+1),LMT_FIND, &found)){
+      if (search(l, start, (end-start), ndsz,
+                 ng.wordp(ng.size-l+1), LMT_FIND, &found)){
 
         //update start-end positions for next step
         if (l< (ng.size-1)){
           //set start position
           if (found==table[l]) start=0; //first pos in table
-          else start=bound(found - ndsz,ndt); //end of previous entry
+          else start=bound(found - ndsz, ndt); //end of previous entry
 
           //set end position
-          end=bound(found,ndt);
+          end=bound(found, ndt);
         }
       }
       else {
-	if (!no_more_msg)
-	  cerr << "warning: missing back-off for ngram " << ng << " (and possibly for others)\n";
+    if (!no_more_msg)
+      cerr << "warning: missing back-off for ngram " << ng << " (and possibly for others)\n";
 
-	no_more_msg++;
-	if (!(no_more_msg % 5000000))
-	  cerr << "!";
+    no_more_msg++;
+    if (!(no_more_msg % 5000000))
+      cerr << "!";
 
-	return 0;
+    return 0;
       }
     }
 
@@ -726,7 +726,7 @@ int lmtable::add(ngram& ng,int iprob,int ibow){
       startpos[ng.size-1][position]=cursize[ng.size];
 
     //always update ending position
-    bound(found,ndt,cursize[ng.size]+1);
+    bound(found, ndt, cursize[ng.size]+1);
 
   }
 
@@ -736,9 +736,9 @@ int lmtable::add(ngram& ng,int iprob,int ibow){
   ndt=tbltype[ng.size];ndsz=nodesize(ndt);
 
   found=table[ng.size] + ((long long)cursize[ng.size] * ndsz);
-  word(found,*ng.wordp(1));
-  prob(found,ndt,iprob);
-  if (ng.size<maxlev){bow(found,ndt,ibow);bound(found,ndt,-2);}
+  word(found, *ng.wordp(1));
+  prob(found, ndt, iprob);
+  if (ng.size<maxlev){bow(found, ndt, ibow);bound(found, ndt, -2);}
 
   cursize[ng.size]++;
 
@@ -770,16 +770,16 @@ void *lmtable::search(int lev,
   char* tb;
   tb=table[lev]+((long long)sz * offs);
   //prepare search pattern
-  char w[LMTCODESIZE];putmem(w,ngp[0],0,LMTCODESIZE);
+  char w[LMTCODESIZE];putmem(w, ngp[0], 0, LMTCODESIZE);
 
   int idx=0; // index returned by mybsearch
-  *found=NULL;	//initialize output variable
+  *found=NULL;  //initialize output variable
 
   totbsearch[lev]++;
 
-  switch(action){
+  switch (action){
     case LMT_FIND:
-      if (!tb || !mybsearch(tb,n,sz,(unsigned char *)w,&idx)) return NULL;
+      if (!tb || !mybsearch(tb, n, sz, (unsigned char *)w, &idx)) return NULL;
       else
         return *found=tb + ((long long)idx * sz);
     default:
@@ -834,8 +834,8 @@ int lmtable::mybsearch(char *ar, int n, int size,
 
 void lmtable::savetxt(const char *filename){
 
-  fstream out(filename,ios::out);
-  int		cnt[1+MAX_NGRAM];
+  fstream out(filename, ios::out);
+  int       cnt[1+MAX_NGRAM];
   int l;
 
   out.precision(7);
@@ -847,7 +847,7 @@ void lmtable::savetxt(const char *filename){
     out << endl;
   }
 
-  ngram ng(lmtable::getDict(),0);
+  ngram ng(lmtable::getDict(), 0);
 
   cerr << "savetxt: " << filename << "\n";
 
@@ -872,7 +872,7 @@ void lmtable::savetxt(const char *filename){
     }
 
     ng.size=0;
-    dumplm(out,ng,1,l,0,cursize[1]);
+    dumplm(out, ng, 1, l, 0, cursize[1]);
 
   }
 
@@ -883,7 +883,7 @@ void lmtable::savetxt(const char *filename){
 
 void lmtable::savebin(const char *filename){
 
-  fstream out(filename,ios::out);
+  fstream out(filename, ios::out);
   cerr << "savebin: " << filename << "\n";
 
   // print header
@@ -905,11 +905,11 @@ void lmtable::savebin(const char *filename){
   for (int i=1;i<=maxlev;i++){
     cerr << "saving " << cursize[i] << " " << i << "-grams\n";
     if (isQtable){
-      out.write((char*)Pcenters[i],NumCenters[i] * sizeof(float));
+      out.write((char*)Pcenters[i], NumCenters[i] * sizeof(float));
       if (i<maxlev)
-        out.write((char *)Bcenters[i],NumCenters[i] * sizeof(float));
+        out.write((char *)Bcenters[i], NumCenters[i] * sizeof(float));
     }
-    out.write(table[i],cursize[i]*nodesize(tbltype[i]));
+    out.write(table[i], cursize[i]*nodesize(tbltype[i]));
   }
 
   cerr << "done\n";
@@ -919,16 +919,16 @@ void lmtable::savebin(const char *filename){
 //manages the long header of a bin file
 //and allocates table for each n-gram level
 
-void lmtable::loadbinheader(istream& inp,const char* header){
+void lmtable::loadbinheader(istream& inp, const char* header){
 
   // read rest of header
   inp >> maxlev;
 
   if (strncmp(header,"Qblmt",5)==0) isQtable=1;
-  else if(strncmp(header,"blmt",4)==0) isQtable=0;
+  else if (strncmp(header,"blmt",4)==0) isQtable=0;
   else error("loadbin: LM file is not in binary format");
 
-  configure(maxlev,isQtable);
+  configure(maxlev, isQtable);
 
   for (int l=1;l<=maxlev;l++){
     inp >> cursize[l]; maxsize[l]=cursize[l];
@@ -946,13 +946,13 @@ void lmtable::loadbinheader(istream& inp,const char* header){
 
 //load codebook of level l
 
-void lmtable::loadbincodebook(istream& inp,int l){
+void lmtable::loadbincodebook(istream& inp, int l){
 
   Pcenters[l]=new float [NumCenters[l]];
-  inp.read((char*)Pcenters[l],NumCenters[l] * sizeof(float));
+  inp.read((char*)Pcenters[l], NumCenters[l] * sizeof(float));
   if (l<maxlev){
     Bcenters[l]=new float [NumCenters[l]];
-    inp.read((char *)Bcenters[l],NumCenters[l]*sizeof(float));
+    inp.read((char *)Bcenters[l], NumCenters[l]*sizeof(float));
   }
 
 }
@@ -960,10 +960,10 @@ void lmtable::loadbincodebook(istream& inp,int l){
 
 //load a binary lmfile
 
-void lmtable::loadbin(istream& inp, const char* header,const char* filename,int mmap){
+void lmtable::loadbin(istream& inp, const char* header, const char* filename, int mmap){
 
   //cerr << "loadbin()\n";
-  loadbinheader(inp,header);
+  loadbinheader(inp, header);
   lmtable::getDict()->load(inp);
 
   //if MMAP is used, then open the file
@@ -983,18 +983,18 @@ void lmtable::loadbin(istream& inp, const char* header,const char* filename,int 
 
     //check that the LM is uncompressed
     char miniheader[4];
-    read(diskid,miniheader,4);
+    read(diskid, miniheader, 4);
     if (strncmp(miniheader,"Qblm",4) && strncmp(miniheader,"blmt",4))
       error("mmap functionality does not work with compressed binary LMs\n");
 #endif
   }
 
   for (int l=1;l<=maxlev;l++){
-    if (isQtable) loadbincodebook(inp,l);
+    if (isQtable) loadbincodebook(inp, l);
     if ((memmap == 0) || (l < memmap)){
       //cerr << "loading " << cursize[l] << " " << l << "-grams\n";
       table[l]=new char[(long long)cursize[l] * nodesize(tbltype[l])];
-      inp.read(table[l],(long long)cursize[l] * nodesize(tbltype[l]));
+      inp.read(table[l], (long long)cursize[l] * nodesize(tbltype[l]));
     }
     else{
 
@@ -1003,11 +1003,11 @@ void lmtable::loadbin(istream& inp, const char* header,const char* filename,int 
 #else
       //cerr << "mapping " << cursize[l] << " " << l << "-grams\n";
       tableOffs[l]=inp.tellg();
-      table[l]=(char *)MMap(diskid,PROT_READ,
+      table[l]=(char *)MMap(diskid, PROT_READ,
                             tableOffs[l], (long long)cursize[l]*nodesize(tbltype[l]),
                     &tableGaps[l]);
       table[l]+=tableGaps[l];
-      inp.seekg((long long)cursize[l]*nodesize(tbltype[l]),ios_base::cur);
+      inp.seekg((long long)cursize[l]*nodesize(tbltype[l]), ios_base::cur);
 #endif
 
     }
@@ -1019,7 +1019,7 @@ void lmtable::loadbin(istream& inp, const char* header,const char* filename,int 
 
 
 
-int lmtable::get(ngram& ng,int n,int lev){
+int lmtable::get(ngram& ng, int n, int lev){
 
 /***
   cout << "cerco:" << ng << "\n";
@@ -1030,7 +1030,7 @@ int lmtable::get(ngram& ng,int n,int lev){
   if (n < lev) error("get: ngram is too small");
 
   //set boudaries for 1-gram
-  int offset=0,limit=cursize[1];
+  int offset=0, limit=cursize[1];
 
   //information of table entries
   int hit;char* found; LMT_TYPE ndt;
@@ -1042,7 +1042,7 @@ int lmtable::get(ngram& ng,int n,int lev){
     //initialize entry information
     hit = 0 ; found = NULL; ndt=tbltype[l];
 
-    if (lmtcache[l] && lmtcache[l]->get(ng.wordp(n),(char *)&found))
+    if (lmtcache[l] && lmtcache[l]->get(ng.wordp(n), (char *)&found))
       hit=1;
     else
       search(l,
@@ -1055,13 +1055,13 @@ int lmtable::get(ngram& ng,int n,int lev){
 
     //insert both found and not found items!!!
     if (lmtcache[l] && hit==0)
-      lmtcache[l]->add(ng.wordp(n),(char *)&found);
+      lmtcache[l]->add(ng.wordp(n), (char *)&found);
 
     if (!found) return 0;
-    if (prob(found,ndt)==NOPROB) return 0; //pruned n-gram
+    if (prob(found, ndt)==NOPROB) return 0; //pruned n-gram
 
-    ng.bow=(l<maxlev?bow(found,ndt):0);
-    ng.prob=prob(found,ndt);
+    ng.bow=(l<maxlev?bow(found, ndt):0);
+    ng.prob=prob(found, ndt);
     ng.link=found;
     ng.info=ndt;
     ng.lev=l;
@@ -1070,11 +1070,11 @@ int lmtable::get(ngram& ng,int n,int lev){
 
       //if current offset is at the bottom also that of successors will be
       if (offset+1==cursize[l]) limit=cursize[l+1];
-      else limit=bound(found,ndt);
+      else limit=bound(found, ndt);
 
       //if current start is at the begin, then also that of successors will be
       if (found==table[l]) offset=0;
-      else offset=bound((found - nodesize(ndt)),ndt);
+      else offset=bound((found - nodesize(ndt)), ndt);
 
       assert(offset!=-1); assert(limit!=-1);
     }
@@ -1096,7 +1096,7 @@ int lmtable::get(ngram& ng,int n,int lev){
 
 //recursively prints the language model table
 
-void lmtable::dumplm(fstream& out,ngram ng, int ilev, int elev, int ipos,int epos){
+void lmtable::dumplm(fstream& out, ngram ng, int ilev, int elev, int ipos, int epos){
 
   LMT_TYPE ndt=tbltype[ilev];
   int ndsz=nodesize(ndt);
@@ -1107,17 +1107,17 @@ void lmtable::dumplm(fstream& out,ngram ng, int ilev, int elev, int ipos,int epo
 
   for (int i=ipos;i<epos;i++){
     *ng.wordp(1)=word(table[ilev]+(long long)i*ndsz);
-    int ipr=prob(table[ilev]+(long long)i*ndsz,ndt);
+    int ipr=prob(table[ilev]+(long long)i*ndsz, ndt);
 
     //skip pruned n-grams
-    if(ipr==NOPROB) continue;
+    if (ipr==NOPROB) continue;
 
     if (ilev<elev){
       //get first and last successor position
-      int isucc=(i>0?bound(table[ilev]+(long long)(i-1)*ndsz,ndt):0);
-      int esucc=bound(table[ilev]+(long long)i*ndsz,ndt);
+      int isucc=(i>0?bound(table[ilev]+(long long)(i-1)*ndsz, ndt):0);
+      int esucc=bound(table[ilev]+(long long)i*ndsz, ndt);
       if (isucc < esucc) //there are successors!
-        dumplm(out,ng,ilev+1,elev,isucc,esucc);
+        dumplm(out, ng, ilev+1, elev, isucc, esucc);
       //else
       //cout << "no successors for " << ng << "\n";
     }
@@ -1130,7 +1130,7 @@ void lmtable::dumplm(fstream& out,ngram ng, int ilev, int elev, int ipos,int epo
       }
 
       if (ilev<maxlev){
-        int ibo=bow(table[ilev]+ (long long)i * ndsz,ndt);
+        int ibo=bow(table[ilev]+ (long long)i * ndsz, ndt);
         if (isQtable) out << "\t" << ibo;
         else
           if (*((float *)&ibo)!=0.0)
@@ -1143,10 +1143,10 @@ void lmtable::dumplm(fstream& out,ngram ng, int ilev, int elev, int ipos,int epo
 }
 
 //succscan iteratively returns all successors of an ngram h for which
-//get(h,h.size,h.size) returned true.
+//get(h, h.size, h.size) returned true.
 
 
-int lmtable::succscan(ngram& h,ngram& ng,LMT_ACTION action,int lev){
+int lmtable::succscan(ngram& h, ngram& ng, LMT_ACTION action, int lev){
   assert(lev==h.lev+1 && h.size==lev && lev<=maxlev);
 
   LMT_TYPE ndt=tbltype[h.lev];
@@ -1159,13 +1159,13 @@ int lmtable::succscan(ngram& h,ngram& ng,LMT_ACTION action,int lev){
 
       ng.size=lev;
       ng.trans(h);
-      ng.midx[lev]=(h.link>table[h.lev]?bound(h.link-ndsz,ndt):0);
+      ng.midx[lev]=(h.link>table[h.lev]?bound(h.link-ndsz, ndt):0);
 
       return 1;
 
     case LMT_CONT:
 
-      if (ng.midx[lev]<bound(h.link,ndt))
+      if (ng.midx[lev]<bound(h.link, ndt))
       {
         //put current word into ng
         *ng.wordp(1)=word(table[lev]+ng.midx[lev]*nodesize(tbltype[lev]));
@@ -1190,7 +1190,7 @@ int lmtable::succscan(ngram& h,ngram& ng,LMT_ACTION action,int lev){
 const char *lmtable::maxsuffptr(ngram ong){
 //cerr << "lmtable::maxsuffptr\n";
 //cerr << "ong: " << ong
-//	<< " -> ong.size: " << ong.size << "\n";
+//  << " -> ong.size: " << ong.size << "\n";
 
   if (ong.size==0) return (char*) NULL;
   if (ong.size>=maxlev) ong.size=maxlev-1;
@@ -1199,7 +1199,7 @@ const char *lmtable::maxsuffptr(ngram ong){
   //ngram ng(lmtable::getDict()); //eventually use the <unk> word
   //ng.trans(ong);
 
-  if (get(ng,ng.size,ng.size))
+  if (get(ng, ng.size, ng.size))
     return ng.link;
   else{
     ong.size--;
@@ -1211,21 +1211,21 @@ const char *lmtable::maxsuffptr(ngram ong){
 const char *lmtable::cmaxsuffptr(ngram ong){
 //cerr << "lmtable::CMAXsuffptr\n";
 //cerr << "ong: " << ong
-//	<< " -> ong.size: " << ong.size << "\n";
+//  << " -> ong.size: " << ong.size << "\n";
 
   if (ong.size==0) return (char*) NULL;
   if (ong.size>=maxlev) ong.size=maxlev-1;
 
   char* found;
 
-  if (statecache && (ong.size==maxlev-1) && statecache->get(ong.wordp(maxlev-1),(char *)&found))
+  if (statecache && (ong.size==maxlev-1) && statecache->get(ong.wordp(maxlev-1), (char *)&found))
     return found;
 
   found=(char *)maxsuffptr(ong);
 
   if (statecache && ong.size==maxlev-1){
     //if (statecache->isfull()) statecache->reset();
-    statecache->add(ong.wordp(maxlev-1),(char *)&found);
+    statecache->add(ong.wordp(maxlev-1), (char *)&found);
   };
 
   return found;
@@ -1237,7 +1237,7 @@ const char *lmtable::cmaxsuffptr(ngram ong){
 //bow: backoff weight
 //bol: backoff level
 
-double lmtable::lprob(ngram ong,double* bow, int* bol,int internalcall){
+double lmtable::lprob(ngram ong, double* bow, int* bol, int internalcall){
 //double lmtable::lprob(ngram ong){
 
   if (ong.size==0) return 0.0;
@@ -1252,10 +1252,10 @@ double lmtable::lprob(ngram ong,double* bow, int* bol,int internalcall){
   //ngram ng(lmtable::getDict()); //avoid dictionary transfer
   //ng.trans(ong);
 
-  double rbow,lpr=0;
-  int ibow,iprob;
+  double rbow, lpr=0;
+  int ibow, iprob;
 
-  if (get(ng,ng.size,ng.size)){
+  if (get(ng, ng.size, ng.size)){
     iprob=ng.prob;
     lpr = (double)(isQtable?Pcenters[ng.size][iprob]:*((float *)&iprob));
     if (*ng.wordp(1)==dict->oovcode()) lpr-=logOOVpenalty;
@@ -1267,7 +1267,7 @@ double lmtable::lprob(ngram ong,double* bow, int* bol,int internalcall){
     else{ //compute backoff
           //set backoff state, shift n-gram, set default bow prob
       rbow=0.0;
-			if (bol) (*bol)++; //increase backoff level
+            if (bol) (*bol)++; //increase backoff level
       if ((ng.lev==(ng.size-1)) && (*ng.wordp(2)!=dict->oovcode())){
         //found history in table: use its bo weight
         //avoid wrong quantization of bow of <unk>
@@ -1279,7 +1279,7 @@ double lmtable::lprob(ngram ong,double* bow, int* bol,int internalcall){
 
       //prepare recursion step
       ong.size--;
-      return rbow + lmtable::lprob(ong,bow,bol,internalcall=1);
+      return rbow + lmtable::lprob(ong, bow, bol, internalcall=1);
     }
   }
 }
@@ -1301,7 +1301,7 @@ double lmtable::clprob(ngram ong){
 #endif
 
   //cache hit
-  if (probcache && ong.size==maxlev && probcache->get(ong.wordp(maxlev),(char *)&logpr)){
+  if (probcache && ong.size==maxlev && probcache->get(ong.wordp(maxlev), (char *)&logpr)){
     return logpr;
   }
 
@@ -1309,7 +1309,7 @@ double lmtable::clprob(ngram ong){
   logpr=lmtable::lprob(ong);
 
   if (probcache && ong.size==maxlev){
-     probcache->add(ong.wordp(maxlev),(char *)&logpr);
+     probcache->add(ong.wordp(maxlev), (char *)&logpr);
   };
 
   return logpr;
@@ -1319,7 +1319,7 @@ double lmtable::clprob(ngram ong){
 
 
 void lmtable::stat(int level){
-  int totmem=0,memory;
+  int totmem=0, memory;
   float mega=1024 * 1024;
 
   cout.precision(2);
@@ -1351,8 +1351,8 @@ void lmtable::reset_mmap(){
   if (memmap>0 and memmap<=maxlev)
     for (int l=memmap;l<=maxlev;l++){
       //std::cerr << "resetting mmap at level:" << l << "\n";
-      Munmap(table[l]-tableGaps[l],(long long)cursize[l]*nodesize(tbltype[l])+tableGaps[l],0);
-      table[l]=(char *)MMap(diskid,PROT_READ,
+      Munmap(table[l]-tableGaps[l], (long long)cursize[l]*nodesize(tbltype[l])+tableGaps[l], 0);
+      table[l]=(char *)MMap(diskid, PROT_READ,
                             tableOffs[l], (long long)cursize[l]*nodesize(tbltype[l]),
                             &tableGaps[l]);
       table[l]+=tableGaps[l];
@@ -1366,197 +1366,195 @@ void lmtable::reset_mmap(){
 // *boff: backoff weight vector
 // *bol:  backoff level
 
-double lmtable::lprobx(ngram	ong,
-                       double	*lkp,
-                       double	*bop,
-                       int	*bol)
+double lmtable::lprobx(ngram    ong,
+                       double   *lkp,
+                       double   *bop,
+                       int  *bol)
 {
-	double		bo,
-	lbo,
-	pr;
-	int		ipr;
-	ngram		ng(dict),
-			ctx(dict);
+    double      bo,
+    lbo,
+    pr;
+    int     ipr;
+    ngram       ng(dict),
+            ctx(dict);
 
-	if(bol) *bol=0;
-	if(ong.size==0) {
-		if(lkp) *lkp=0;
-		return 0;	// lprob ritorna 0, prima lprobx usava LOGZERO
-	}
-	if(ong.size>maxlev) ong.size=maxlev;
-	ctx = ng = ong;
-	bo=0;
-	ctx.shift();
-	while(!get(ng)) { // back-off
+    if (bol) *bol=0;
+    if (ong.size==0) {
+        if (lkp) *lkp=0;
+        return 0;   // lprob ritorna 0, prima lprobx usava LOGZERO
+    }
+    if (ong.size>maxlev) ong.size=maxlev;
+    ctx = ng = ong;
+    bo=0;
+    ctx.shift();
+    while (!get(ng)) { // back-off
 
-		//OOV not included in dictionary
-		if(ng.size==1) {
-			pr = -log(UNIGRAM_RESOLUTION)/M_LN10;
-			if(lkp) *lkp=pr; // this is the innermost probability
-			pr += bo; //add all the accumulated back-off probability
-			return pr;
-		}
-		// backoff-probability
-		lbo = 0.0; //local back-off: default is logprob 0
-		if(get(ctx)){ //this can be replaced with (ng.lev==(ng.size-1))
-			ipr = ctx.bow;
-			lbo = isQtable?Bcenters[ng.size][ipr]:*(float*)&ipr;
-		}
-		if(bop) *bop++=lbo;
-		if(bol) ++*bol;
-		bo += lbo;
-		ng.size--;
-		ctx.size--;
-	}
-	ipr = ng.prob;
-	pr = isQtable?Pcenters[ng.size][ipr]:*((float*)&ipr);
-	if(lkp) *lkp=pr;
-	pr += bo;
-	return pr;
+        //OOV not included in dictionary
+        if (ng.size==1) {
+            pr = -log(UNIGRAM_RESOLUTION)/M_LN10;
+            if (lkp) *lkp=pr; // this is the innermost probability
+            pr += bo; //add all the accumulated back-off probability
+            return pr;
+        }
+        // backoff-probability
+        lbo = 0.0; //local back-off: default is logprob 0
+        if (get(ctx)){ //this can be replaced with (ng.lev==(ng.size-1))
+            ipr = ctx.bow;
+            lbo = isQtable?Bcenters[ng.size][ipr]:*(float*)&ipr;
+        }
+        if (bop) *bop++=lbo;
+        if (bol) ++*bol;
+        bo += lbo;
+        ng.size--;
+        ctx.size--;
+    }
+    ipr = ng.prob;
+    pr = isQtable?Pcenters[ng.size][ipr]:*((float*)&ipr);
+    if (lkp) *lkp=pr;
+    pr += bo;
+    return pr;
 }
 
 
 // FABIO
-int lmtable::wdprune(float	*thr)
+int lmtable::wdprune(float  *thr)
 {
-	int	l;
-	ngram	ng(lmtable::getDict(),0);
+    int l;
+    ngram   ng(lmtable::getDict(), 0);
 
-	ng.size=0;
-	for(l=2; l<=maxlev; l++) wdprune(thr, ng, 1, l, 0, cursize[1]);
-	return 0;
+    ng.size=0;
+    for (l=2; l<=maxlev; l++) wdprune(thr, ng, 1, l, 0, cursize[1]);
+    return 0;
 }
 
 // FABIO: LM pruning method
 
-int lmtable::wdprune(float	*thr, ngram	ng, int	ilev, int	elev, int	ipos, int	epos, double	tlk,
-                     double	bo, double	*ts, double	*tbs)
+int lmtable::wdprune(float  *thr, ngram ng, int ilev, int   elev, int   ipos, int   epos, double    tlk,
+                     double bo, double  *ts, double *tbs)
 {
-	LMT_TYPE	ndt=tbltype[ilev];
-	int		   ndsz=nodesize(ndt);
-	char		 *ndp;
-	float		 lk;
-	int i, ipr, ibo, k, nk;
+    LMT_TYPE    ndt=tbltype[ilev];
+    int        ndsz=nodesize(ndt);
+    char         *ndp;
+    float        lk;
+    int i, ipr, ibo, k, nk;
 
-	assert(ng.size==ilev-1);
-	assert(ipos>=0 && epos<=cursize[ilev] && ipos<epos);
+    assert(ng.size==ilev-1);
+    assert(ipos>=0 && epos<=cursize[ilev] && ipos<epos);
 
-	ng.pushc(0); //increase size of n-gram
+    ng.pushc(0); //increase size of n-gram
 
-	for(i=ipos, nk=0; i<epos; i++) {
+    for (i=ipos, nk=0; i<epos; i++) {
 
-		//scan table at next level ilev from position ipos
-		ndp = table[ilev]+(long long)i*ndsz;
-		*ng.wordp(1) = word(ndp);
+        //scan table at next level ilev from position ipos
+        ndp = table[ilev]+(long long)i*ndsz;
+        *ng.wordp(1) = word(ndp);
 
-		//get probability
-		ipr = prob(ndp, ndt);
-		if(ipr==NOPROB) continue;	// Has it been already pruned ??
-		lk = *(float*)&ipr;
+        //get probability
+        ipr = prob(ndp, ndt);
+        if (ipr==NOPROB) continue;   // Has it been already pruned ??
+        lk = *(float*)&ipr;
 
-		if(ilev<elev) { //there is an higher order
+        if (ilev<elev) { //there is an higher order
 
-			//get backoff-weight for next level
-			ibo = bow(ndp, ndt);
-			bo = *(float*)&ibo;
+            //get backoff-weight for next level
+            ibo = bow(ndp, ndt);
+            bo = *(float*)&ibo;
 
-			//get table boundaries for next level
-			int isucc = i>0 ? bound(ndp-ndsz, ndt) : 0;
-			int esucc = bound(ndp, ndt);
-			if(isucc>=esucc) continue; // no successors
+            //get table boundaries for next level
+            int isucc = i>0 ? bound(ndp-ndsz, ndt) : 0;
+            int esucc = bound(ndp, ndt);
+            if (isucc>=esucc) continue; // no successors
 
-			//look for n-grams to be pruned with this context (see
-			//back-off weight)
-		prune:	double ts=0, tbs=0;
-			k = wdprune(thr, ng, ilev+1, elev, isucc, esucc,
-				    tlk+lk, bo, &ts, &tbs);
-			//k  is the number of pruned n-grams with this context
-			if(ilev!=elev-1) continue;
-			if(ts>=1 || tbs>=1) {
-				cerr << "ng: " << ng
-					<<" ts=" << ts
-					<<" tbs=" << tbs
-					<<" k=" << k
-					<<" ns=" << esucc-isucc
-					<< "\n";
-				if(ts>=1) {
-					pscale(ilev+1, isucc, esucc,
-					       0.999999/ts);
-					goto prune;
-				}
-			}
-			// adjusts backoff:
-			// 1-sum_succ(pr(w|ng)) / 1-sum_succ(pr(w|bng))
-			bo = log((1-ts)/(1-tbs))/M_LN10;
-			*(float*)&ibo=bo;
-			bow(ndp, ndt, ibo);
-		} else { //we are at the highest level
+            //look for n-grams to be pruned with this context (see
+            //back-off weight)
+        prune:  double ts=0, tbs=0;
+            k = wdprune(thr, ng, ilev+1, elev, isucc, esucc,
+                    tlk+lk, bo, &ts, &tbs);
+            //k  is the number of pruned n-grams with this context
+            if (ilev!=elev-1) continue;
+            if (ts>=1 || tbs>=1) {
+                cerr << "ng: " << ng
+                    <<" ts=" << ts
+                    <<" tbs=" << tbs
+                    <<" k=" << k
+                    <<" ns=" << esucc-isucc
+                    << "\n";
+                if (ts>=1) {
+                    pscale(ilev+1, isucc, esucc,
+                           0.999999/ts);
+                    goto prune;
+                }
+            }
+            // adjusts backoff:
+            // 1-sum_succ(pr(w|ng)) / 1-sum_succ(pr(w|bng))
+            bo = log((1-ts)/(1-tbs))/M_LN10;
+            *(float*)&ibo=bo;
+            bow(ndp, ndt, ibo);
+        } else { //we are at the highest level
 
-			//get probability of lower order n-gram
-			ngram	bng = ng; --bng.size;
-			double blk = lprob(bng);
+            //get probability of lower order n-gram
+            ngram   bng = ng; --bng.size;
+            double blk = lprob(bng);
 
-			double wd = pow(10., tlk+lk) * (lk-bo-blk);
-			if(wd > thr[elev-1]) {	// kept
-				*ts += pow(10., lk);
-				*tbs += pow(10., blk);
-			} else {		// discarded
-				++nk;
-				prob(ndp, ndt, NOPROB);
-			}
-		}
-	}
-	return nk;
+            double wd = pow(10., tlk+lk) * (lk-bo-blk);
+            if (wd > thr[elev-1]) {  // kept
+                *ts += pow(10., lk);
+                *tbs += pow(10., blk);
+            } else {        // discarded
+                ++nk;
+                prob(ndp, ndt, NOPROB);
+            }
+        }
+    }
+    return nk;
 }
 
 int lmtable::pscale(int lev, int        ipos, int       epos, double s)
 {
-	LMT_TYPE        ndt=tbltype[lev];
-	int             ndsz=nodesize(ndt);
-	char            *ndp;
-	int             i, ipr;
+    LMT_TYPE        ndt=tbltype[lev];
+    int             ndsz=nodesize(ndt);
+    char            *ndp;
+    int             i, ipr;
 
-	s=log(s)/M_LN10;
-	ndp = table[lev]+(long long)ipos*ndsz;
-	for(i=ipos; i<epos; ndp+=ndsz,i++) {
-		ipr = prob(ndp, ndt);
-		if(ipr==NOPROB) continue;
-		*(float*)&ipr+=s;
-		prob(ndp, ndt, ipr);
-	}
-	return 0;
+    s=log(s)/M_LN10;
+    ndp = table[lev]+(long long)ipos*ndsz;
+    for (i=ipos; i<epos; ndp+=ndsz, i++) {
+        ipr = prob(ndp, ndt);
+        if (ipr==NOPROB) continue;
+        *(float*)&ipr+=s;
+        prob(ndp, ndt, ipr);
+    }
+    return 0;
 }
 
 //recompute table size by excluding pruned n-grams
-int lmtable::ngcnt(int		*cnt)
+int lmtable::ngcnt(int      *cnt)
 {
-	ngram	ng(lmtable::getDict(),0);
-	memset(cnt, 0, (maxlev+1)*sizeof(*cnt));
-	ngcnt(cnt, ng, 1, 0, cursize[1]);
-	return 0;
+    ngram   ng(lmtable::getDict(), 0);
+    memset(cnt, 0, (maxlev+1)*sizeof(*cnt));
+    ngcnt(cnt, ng, 1, 0, cursize[1]);
+    return 0;
 }
 
 //recursively compute size
-int lmtable::ngcnt(int		*cnt, ngram	ng, int		l, int		ipos, int		epos){
+int lmtable::ngcnt(int      *cnt, ngram ng, int     l, int      ipos, int       epos){
 
-	int		i, ipr, isucc, esucc;
-	char		*ndp;
-	LMT_TYPE	ndt=tbltype[l];
-	int		ndsz=nodesize(ndt);
+    int     i, ipr, isucc, esucc;
+    char        *ndp;
+    LMT_TYPE    ndt=tbltype[l];
+    int     ndsz=nodesize(ndt);
 
-	ng.pushc(0);
-	for(i=ipos; i<epos; i++) {
-		ndp = table[l]+(long long)i*ndsz;
-		*ng.wordp(1)=word(ndp);
-		ipr=prob(ndp, ndt);
-		if(ipr==NOPROB) continue;
-		++cnt[l];
-		if(l==maxlev) continue;
-		isucc = (i>0)?bound(ndp-ndsz, ndt):0;
-		esucc = bound(ndp, ndt);
-		if(isucc < esucc) ngcnt(cnt, ng, l+1, isucc, esucc);
-	}
-	return 0;
+    ng.pushc(0);
+    for (i=ipos; i<epos; i++) {
+        ndp = table[l]+(long long)i*ndsz;
+        *ng.wordp(1)=word(ndp);
+        ipr=prob(ndp, ndt);
+        if (ipr==NOPROB) continue;
+        ++cnt[l];
+        if (l==maxlev) continue;
+        isucc = (i>0)?bound(ndp-ndsz, ndt):0;
+        esucc = bound(ndp, ndt);
+        if (isucc < esucc) ngcnt(cnt, ng, l+1, isucc, esucc);
+    }
+    return 0;
 }
-
-

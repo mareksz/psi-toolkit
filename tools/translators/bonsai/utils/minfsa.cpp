@@ -8,8 +8,8 @@ poleng::bonsai::Word line_to_word(std::string line) {
     boost::sregex_token_iterator end;
 
     poleng::bonsai::Word w;
-    while(it != end)
-	w.push_back(boost::lexical_cast<int>(*it++));
+    while (it != end)
+    w.push_back(boost::lexical_cast<int>(*it++));
 
     return w;
 }
@@ -37,12 +37,12 @@ int main (int argc, char* args[]) {
 
     int c = 1;
     std::string line;
-    while(getline(std::cin,line)) {
+    while (getline(std::cin, line)) {
         poleng::bonsai::Word w = line_to_word(line);
-	fsa.add_word(w);
-	if(c % 100000 == 0)
-	    std::cerr << "Added " << c << " words - actual size: " << fsa.size() << std::endl;
-	c++;
+    fsa.add_word(w);
+    if (c % 100000 == 0)
+        std::cerr << "Added " << c << " words - actual size: " << fsa.size() << std::endl;
+    c++;
     }
     fsa.finalize();
 

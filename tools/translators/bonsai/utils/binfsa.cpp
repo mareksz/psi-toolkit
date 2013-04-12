@@ -27,7 +27,7 @@ int main (int argc, char* args[]) {
     }
 
     poleng::bonsai::rules::CompressedDAGBuilder cdb;
-    if(vm.count("infile")) {
+    if (vm.count("infile")) {
         std::ifstream ifs(vm["infile"].as<std::string>().c_str());
         cdb.compile(ifs, vm["outfile"].as<std::string>(), vm["mode"].as<int>());
     }

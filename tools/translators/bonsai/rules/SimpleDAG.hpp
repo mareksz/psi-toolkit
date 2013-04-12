@@ -19,33 +19,33 @@ namespace bonsai
 {
 
 namespace rules {
-      
-    class SimpleDAG { 
+
+    class SimpleDAG {
       private:
         typedef boost::dynamic_bitset<> BSet;
-        
+
         struct ArcSorter {
             bool operator()(Arc lhs, Arc rhs) const { return lhs.a < rhs.a; }
         } as;
-    
+
         typedef std::vector<Arc> Arcs;
         typedef boost::shared_ptr<Arcs> ArcsPtr;
         typedef std::vector<ArcsPtr> States;
-        
+
         States states;
-        
+
         std::set<State> end_states;
-        
+
         BSet starts;
-        
+
         inline State delta(State, Symbol);
         inline ArcIt linsearch(ArcIt, ArcIt, Symbol);
         inline ArcIt binsearch(ArcIt, ArcIt, Symbol);
         inline ArcIt find(State, Symbol);
-    
+
         void wordlist_rec(State, StateLanguage&,  std::set<State>&);
-        
-    public:  
+
+    public:
         Range row(State);
         void set_end_state(State);
         bool is_end_state(State);
@@ -54,24 +54,24 @@ namespace rules {
         void new_arc(State, State, Symbol, Weight);
         void print();
         void print_with_weights();
-        
+
         int size() {
             return states.size();
         }
-        
+
         SimpleDAG();
-        
+
         void reverse();
         void determinize();
         void minimize();
         void nd_union(SimpleDAG &);
         void det_union(SimpleDAG &);
-            
+
         bool in(Word &);
         int hash(Word &w);
-        
+
         WordList wordlist();
-        
+
         bool prefix(Word &);
         State common_prefix(Word &, int &);
     };

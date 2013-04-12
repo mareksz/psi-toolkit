@@ -50,9 +50,9 @@ protected:
   virtual int_type overflow (int_type c) {
     char z = c;
       if (c != EOF) {
-	if (write (fd, &z, 1) != 1) {
-	  return EOF;
-	}
+    if (write (fd, &z, 1) != 1) {
+      return EOF;
+    }
       }
       //cerr << "overflow: \n";
       //cerr << "pptr: " << (int) pptr() << "\n";
@@ -62,8 +62,8 @@ protected:
   // write multiple characters
   virtual
   std::streamsize xsputn (const char* s,
-			  std::streamsize num) {
-    return write(fd,s,num);
+              std::streamsize num) {
+    return write(fd, s, num);
 
   }
 
@@ -116,8 +116,8 @@ protected:
   // read multiple characters
   virtual
   std::streamsize xsgetn (char* s,
-			  std::streamsize num) {
-    return read(fd,s,num);
+              std::streamsize num) {
+    return read(fd, s, num);
   }
 
   static const int bufferSize = 10;    // size of the data buffer
@@ -128,8 +128,8 @@ public:
   // constructor
   fdbuf (int _fd) : fd(_fd) {
     setg (buffer+4,     // beginning of putback area
-	  buffer+4,     // read position
-	  buffer+4);    // end position
+      buffer+4,     // read position
+      buffer+4);    // end position
   }
 
 };
@@ -145,7 +145,7 @@ protected:
   int _cmd;
   openmode _mode;
   FILE* _FILE;
-  
+
 
   int swapbytes(char *p, int sz, int n);
 
@@ -154,32 +154,32 @@ public:
   char _cmdname[500];
 
   //! Creates and opens a  file/command stream in a specified nmode
-  mfstream (const char* name,openmode mode) : std::fstream() {
+  mfstream (const char* name, openmode mode) : std::fstream() {
     _cmdname[0]='\0';
     _mode=mode;
-    open(name,mode);
+    open(name, mode);
   }
-  
+
   //! Closes and destroys a file/command stream
   ~mfstream(){
     if (_cmd<2) close();
   }
 
-  //! Opens an existing mfstream 
-  void open(const char *name,openmode mode);
+  //! Opens an existing mfstream
+  void open(const char *name, openmode mode);
 
-  //! Closes an existing mfstream 
+  //! Closes an existing mfstream
   void close();
 
   //! Write function for machine-independent byte order
-  mfstream& writex(void *p, int sz,int n=1);
+  mfstream& writex(void *p, int sz, int n=1);
 
   //! Read function for machine-independent byte order
-  mfstream& readx(void *p, int sz,int n=1);
-  
+  mfstream& readx(void *p, int sz, int n=1);
+
   //! Write function at a given stream position for machine-independent byte order
-  mfstream& iwritex(streampos loc,void *ptr,int size,int n=1);
-  
+  mfstream& iwritex(streampos loc, void *ptr, int size, int n=1);
+
   //! Tells current position within a file
   streampos tellp(){
     if (_cmd==0) return (streampos) fstream::tellg();
@@ -189,7 +189,7 @@ public:
 
   //! Seeks a position within a file
   mfstream& seekp(streampos loc){
-    if (_cmd==0) 
+    if (_cmd==0)
       fstream::seekg(loc);
     else{
       cerr << "seekp not allowed on commands\n";
@@ -209,10 +209,10 @@ public:
 
     if (strlen(_cmdname)>0){
       char *a=new char[strlen(_cmdname)+1];
-      strcpy(a,_cmdname);
+      strcpy(a, _cmdname);
       cerr << "close/open " << a <<"\n";
       close();
-      open(a,ios::in);
+      open(a, ios::in);
     }
     else
       seekp(0);

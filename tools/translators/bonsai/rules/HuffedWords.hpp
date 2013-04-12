@@ -20,18 +20,18 @@ namespace bonsai
 {
 
 namespace rules {
-    
+
     class HuffedWords {
       private:
-	StringVector<> words;
-				    
+    StringVector<> words;
+
       public:
         HuffedWords();
-        
+
         void open(std::string); // read the huffman tree and keep it in memory (optionally: read first n entries into memory)
         WordTriples get_wordtriples(unsigned int);
     };
-    
+
 }
 
 }

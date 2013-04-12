@@ -31,38 +31,38 @@ typedef boost::shared_ptr<Alignment> AlignmentPtr;
 
 
 class Symbol {
-  protected: 
+  protected:
     Labels labels;
     Range  range;
     bool   nt;
-    
+
   public:
     Symbol(Labels, Range, bool);
     Symbol(Labels, Range);
     Symbol(Label, Range, bool);
     Symbol(Label, Range);
-    Symbol() : range(Range(-1,-1)), nt(false) {}
-    
+    Symbol() : range(Range(-1, -1)), nt(false) {}
+
     Label label() const;
     Label label(size_t i) const;
     Labels labelList() const;
-    
+
     SymbolIndex start() const;
     SymbolIndex end() const;
     bool is_nt() const;
-    
+
     std::string str() const;
-        
+
     template<typename Archive>
     void serialize(Archive & ar, const unsigned int) {
-	ar & labels;
-	ar & range;
-	ar & nt;
-    }	
+    ar & labels;
+    ar & range;
+    ar & nt;
+    }
 
     bool operator!=(Symbol &);
 
-    bool operator<(Symbol) const; 
+    bool operator<(Symbol) const;
 };
 
 typedef boost::shared_ptr<Symbol> SymbolPtr;
@@ -75,12 +75,12 @@ struct SymbolSorterMap {
 
 struct SymbolSorterMap2 {
     bool operator()(const Symbol &sym1, const Symbol &sym2) const {
-        if(sym1.str() != sym2.str())
-	    return sym1.str() < sym2.str();
-	else if(sym1.start() != sym2.start())
-	    return sym1.start() < sym2.start();
-	else
-	    return sym1.end() < sym2.end();  
+        if (sym1.str() != sym2.str())
+        return sym1.str() < sym2.str();
+    else if (sym1.start() != sym2.start())
+        return sym1.start() < sym2.start();
+    else
+        return sym1.end() < sym2.end();
     }
 };
 
@@ -89,7 +89,7 @@ struct SymbolSorterMap2 {
 //}
 
 class SList;
-typedef boost::shared_ptr<SList> SListPtr; 
+typedef boost::shared_ptr<SList> SListPtr;
 
 class SList : public std::vector<Symbol> {
   public:
@@ -100,7 +100,7 @@ class SList : public std::vector<Symbol> {
     std::string surface(int);
     int nt_index(size_t i);
     int nt_size();
-    
+
   private:
     std::vector<int> nt;
 

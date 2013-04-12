@@ -29,20 +29,20 @@
 
 using namespace std;
 
-dictionary::dictionary(char *filename,int size,char* isymb,char* oovlexfile){
+dictionary::dictionary(char *filename, int size, char* isymb, char* oovlexfile){
 
-  // unitialized memory 
+  // unitialized memory
   if (oovlexfile!=NULL)
-    oovlex=new dictionary(oovlexfile,size,isymb,NULL);
+    oovlex=new dictionary(oovlexfile, size, isymb, NULL);
   else
     oovlex=(dictionary *)NULL;
 
   htb = new htable(size/LOAD_FACTOR);
-  tb  = new dict_entry[size]; 
+  tb  = new dict_entry[size];
   st  = new strstack(size * 10);
 
   for (int i=0;i<size;i++) tb[i].freq=0;
-  
+
   is=(char*) NULL;
   intsymb(isymb);
 
@@ -50,31 +50,31 @@ dictionary::dictionary(char *filename,int size,char* isymb,char* oovlexfile){
   in_oov_lex=0;
   n  = 0;
   N  =  0;
-  dubv = 0; 
+  dubv = 0;
   lim = size;
   ifl=0;  //increment flag
 
   if (filename==NULL) return;
 
-  mfstream inp(filename,ios::in);
-  
+  mfstream inp(filename, ios::in);
+
   if (!inp){
     cerr << "cannot open " << filename << "\n";
     exit(1);
   }
-  
+
   char buffer[100];
-  
+
   inp >> setw(100) >> buffer;
-  
+
   inp.close();
-  
+
   if ((strncmp(buffer,"dict",4)==0) ||
       (strncmp(buffer,"DICT",4)==0))
     load(filename);
   else
     generate(filename);
-  
+
   cerr << "loaded \n";
 
 
@@ -87,34 +87,34 @@ void dictionary::generate(char *filename){
   char buffer[MAX_WORD];
   int k;
 
-  mfstream inp(filename,ios::in);
-  
+  mfstream inp(filename, ios::in);
+
   if (!inp){
     cerr << "cannot open " << filename << "\n";
     exit(1);
   }
 
   cerr << "dict:";
-  
+
   ifl=1; k=0;
   while (inp >> setw(MAX_WORD) >> buffer){
-    
+
     if (strlen(buffer)==(MAX_WORD-1)){
-      cerr << "dictionary: a too long word was read (" 
-	   << buffer << ")\n";
+      cerr << "dictionary: a too long word was read ("
+       << buffer << ")\n";
     };
-    
-    
+
+
     if (strlen(buffer)==0){
       cerr << "zero lenght word!\n";
       continue;
     }
 
-    //if (is && (strlen(buffer)==1) && !index(is,buffer[0]))  
-    if (is && (strlen(buffer)==1) && (index(is,buffer[0])!=NULL))  
+    //if (is && (strlen(buffer)==1) && !index(is, buffer[0]))
+    if (is && (strlen(buffer)==1) && (index(is, buffer[0])!=NULL))
       continue; //skip over the interruption symbol
 
-    incfreq(encode(buffer),1);
+    incfreq(encode(buffer), 1);
 
     if (!(++k % 1000000)) cerr << ".";
   }
@@ -131,8 +131,8 @@ void dictionary::load(char* filename){
   char *addr;
   int freqflag=0;
 
-  mfstream inp(filename,ios::in);
-  
+  mfstream inp(filename, ios::in);
+
   if (!inp){
     cerr << "\ncannot open " << filename << "\n";
     exit(1);
@@ -140,53 +140,53 @@ void dictionary::load(char* filename){
 
   cerr << "dict:";
 
-  inp.getline(header,100);
+  inp.getline(header, 100);
   if (strncmp(header,"DICT",4)==0)
     freqflag=1;
-  else 
+  else
     if (strncmp(header,"dict",4)!=0){
       cerr << "\ndictionary file " << filename << " has a wrong header\n";
       exit(1);
     }
-      
+
 
   while (inp >> setw(MAX_WORD) >> buffer){
-    
+
     if (strlen(buffer)==(MAX_WORD-1)){
-      cerr << "\ndictionary: a too long word was read (" 
-	   << buffer << ")\n";
-      exit(1); 
+      cerr << "\ndictionary: a too long word was read ("
+       << buffer << ")\n";
+      exit(1);
     };
-    
+
     tb[n].word=st->push(buffer);
     tb[n].code=n;
 
-    if (freqflag) 
+    if (freqflag)
       inp >> tb[n].freq;
     else
       tb[n].freq=0;
 
-    if ((addr=htb->search((char  *)&tb[n].word,HT_ENTER)))
+    if ((addr=htb->search((char  *)&tb[n].word, HT_ENTER)))
       if (addr!=(char *)&tb[n].word){
-        cerr << "dictionary::loadtxt wrong entry was found (" 
+        cerr << "dictionary::loadtxt wrong entry was found ("
         <<  buffer << ") in position " << n << "\n";
         exit(1);
       }
 
     N+=tb[n].freq;
 
-    if (strcmp(buffer,OOV())==0) oov_code=n;
+    if (strcmp(buffer, OOV())==0) oov_code=n;
 
     if (++n==lim) grow();
-      
+
   }
-  
+
   inp.close();
 }
 
 
 void dictionary::load(std::istream& inp){
-  
+
   char buffer[MAX_WORD];
   char *addr;
   int size;
@@ -194,33 +194,33 @@ void dictionary::load(std::istream& inp){
   inp >> size;
 
   for (int i=0;i<size;i++){
-    
+
     inp >> setw(MAX_WORD) >> buffer;
 
     if (strlen(buffer)==MAX_WORD-1){
-      cerr << "\ndictionary::load found word exceeding max length (" 
+      cerr << "\ndictionary::load found word exceeding max length ("
       << MAX_WORD << ")" << buffer << "\n";
       exit(1);
     };
-        
+
     tb[n].word=st->push(buffer);
     tb[n].code=n;
     inp >> tb[n].freq;
     N+=tb[n].freq;
 
-    if ((addr=htb->search((char  *)&tb[n].word,HT_ENTER)))
+    if ((addr=htb->search((char  *)&tb[n].word, HT_ENTER)))
       if (addr!=(char *)&tb[n].word){
-	      cerr << "dictionary::loadtxt wrong entry was found (" 
-	           <<  buffer << ") in position " << n << "\n";
+          cerr << "dictionary::loadtxt wrong entry was found ("
+               <<  buffer << ") in position " << n << "\n";
         exit(1);
       }
-    
-    if (strcmp(tb[n].word,OOV())==0)
+
+    if (strcmp(tb[n].word, OOV())==0)
       oov_code=n;
 
     if (++n==lim) grow();
   }
-  inp.getline(buffer,MAX_WORD-1);
+  inp.getline(buffer, MAX_WORD-1);
 }
 
 void dictionary::save(std::ostream& out){
@@ -230,19 +230,19 @@ void dictionary::save(std::ostream& out){
 }
 
 
-int cmpdictentry(const void *a,const void *b){
+int cmpdictentry(const void *a, const void *b){
   dict_entry *ae=(dict_entry *)a;
   dict_entry *be=(dict_entry *)b;
   if (be->freq-ae->freq)
-		return be->freq-ae->freq;
-	else
-		return strcmp(ae->word,be->word);
+        return be->freq-ae->freq;
+    else
+        return strcmp(ae->word, be->word);
 }
 
 dictionary::dictionary(dictionary* d, int sortflag){
-  
+
   //transfer values
-  
+
   n=d->n;        //total entries
   N=d->N;        //total frequency
   lim=d->lim;    //limit of entries
@@ -250,11 +250,11 @@ dictionary::dictionary(dictionary* d, int sortflag){
   ifl=0;         //increment flag=0;
   dubv=d->dubv;  //dictionary upperbound transferred
   in_oov_lex=0;  //does not copy oovlex;
-  
-    
+
+
   //creates a sorted copy of the table
-  
-  tb  = new dict_entry[lim]; 
+
+  tb  = new dict_entry[lim];
   htb = new htable(lim/LOAD_FACTOR);
   st  = new strstack(lim * 10);
 
@@ -263,21 +263,21 @@ dictionary::dictionary(dictionary* d, int sortflag){
     tb[i].freq=d->tb[i].freq;
     tb[i].word=st->push(d->tb[i].word);
   }
-  
-	if (sortflag){
-		//sort all entries according to frequency
-		cerr << "sorting dictionary ...";
-		qsort(tb,n,sizeof(dict_entry),cmpdictentry);
-		cerr << "done\n";
-	}
-	
+
+    if (sortflag){
+        //sort all entries according to frequency
+        cerr << "sorting dictionary ...";
+        qsort(tb, n, sizeof(dict_entry), cmpdictentry);
+        cerr << "done\n";
+    }
+
   for (int i=0;i<n;i++){
-  
+
     //eventually re-assign oov code
     if (d->oov_code==tb[i].code) oov_code=i;
 
     tb[i].code=i;
-    htb->search((char  *)&tb[i].word,HT_ENTER);
+    htb->search((char  *)&tb[i].word, HT_ENTER);
   };
 
 }
@@ -293,45 +293,45 @@ dictionary::~dictionary(){
 void dictionary::stat(){
   cout << "dictionary class statistics\n";
   cout << "size " << n
-       << " used memory " 
-       << (lim * sizeof(int) + 
-	   htb->used() + 
-	   st->used())/1024 << " Kb\n";
+       << " used memory "
+       << (lim * sizeof(int) +
+       htb->used() +
+       st->used())/1024 << " Kb\n";
 }
 
 void dictionary::grow(){
-  
-  delete htb;  
+
+  delete htb;
 
   cerr << "+\b";
 
   dict_entry *tb2=new dict_entry[lim+GROWTH_STEP];
-  
-  memcpy(tb2,tb,sizeof(dict_entry) * lim );
-  
+
+  memcpy(tb2, tb, sizeof(dict_entry) * lim );
+
   delete [] tb; tb=tb2;
-  
+
   htb=new htable((lim+GROWTH_STEP)/LOAD_FACTOR);
-  
+
   for (int i=0;i<lim;i++)
-    
-    htb->search((char *)&tb[i].word,HT_ENTER);
+
+    htb->search((char *)&tb[i].word, HT_ENTER);
 
   for (int i=lim;i<lim+GROWTH_STEP;i++) tb[i].freq=0;
-  
+
   lim+=GROWTH_STEP;
-  
+
 
 }
 
-void dictionary::save(char *filename,int freqflag){
-  
-  std::ofstream out(filename,ios::out);
+void dictionary::save(char *filename, int freqflag){
+
+  std::ofstream out(filename, ios::out);
 
   if (!out){
     cerr << "cannot open " << filename << "\n";
-  } 
-  
+  }
+
   // header
   if (freqflag)
     out << "DICTIONARY 0 " << n << "\n";
@@ -344,51 +344,51 @@ void dictionary::save(char *filename,int freqflag){
       out << " " << tb[i].freq;
     out << "\n";
   }
-	
+
   out.close();
 }
 
 
 int dictionary::getcode(const char *w){
-  dict_entry* ptr=(dict_entry *)htb->search((char *)&w,HT_FIND);
+  dict_entry* ptr=(dict_entry *)htb->search((char *)&w, HT_FIND);
   if (ptr==NULL) return -1;
   return ptr->code;
 }
 
 int dictionary::encode(const char *w){
-  
+
   //case of strange characters
   if (strlen(w)==0){cerr << "0";w=OOV();}
 
-	dict_entry* ptr;
-	
-	if ((ptr=(dict_entry *)htb->search((char *)&w,HT_FIND))!=NULL) 
+    dict_entry* ptr;
+
+    if ((ptr=(dict_entry *)htb->search((char *)&w, HT_FIND))!=NULL)
     return ptr->code;
   else{
     if (!ifl){ //do not extend dictionary
       if (oov_code==-1){ //did not use OOV yet
-	cerr << "starting to use OOV words [" << w << "]\n";
-	tb[n].word=st->push(OOV());
-	htb->search((char  *)&tb[n].word,HT_ENTER);
-	tb[n].code=n;
-	tb[n].freq=0;
-	oov_code=n;
-	if (++n==lim) grow();
+    cerr << "starting to use OOV words [" << w << "]\n";
+    tb[n].word=st->push(OOV());
+    htb->search((char  *)&tb[n].word, HT_ENTER);
+    tb[n].code=n;
+    tb[n].freq=0;
+    oov_code=n;
+    if (++n==lim) grow();
       }
       //if there is an oov lexicon, check if this word belongs to
       dict_entry* oovptr;
       if (oovlex){
-				if ((oovptr=(dict_entry *)oovlex->htb->search((char *)&w,HT_FIND))!=NULL){
-	in_oov_lex=1;
-	oov_lex_code=oovptr->code;
-				}else
-					in_oov_lex=0;
+                if ((oovptr=(dict_entry *)oovlex->htb->search((char *)&w, HT_FIND))!=NULL){
+    in_oov_lex=1;
+    oov_lex_code=oovptr->code;
+                }else
+                    in_oov_lex=0;
       }
-      return encode(OOV()); 
+      return encode(OOV());
     }
     else{ //extend dictionary
       tb[n].word=st->push((char *)w);
-      htb->search((char  *)&tb[n].word,HT_ENTER);
+      htb->search((char  *)&tb[n].word, HT_ENTER);
       tb[n].code=n;
       tb[n].freq=0;
       if (++n==lim) grow();
@@ -421,8 +421,8 @@ dict_entry* dictionary_iter::next() {
 
 
 /*
-main(int argc,char **argv){
-  dictionary d(argv[1],40000);
+main(int argc, char **argv){
+  dictionary d(argv[1], 40000);
   d.stat();
   cout << "ROMA" << d.decode(0) << "\n";
   cout << "ROMA:" << d.encode("ROMA") << "\n";

@@ -41,14 +41,14 @@ typedef struct{
 typedef unsigned int address;
 
 typedef enum {HT_FIND,    //!< search: find an entry
-	      HT_ENTER,   //!< search: enter an entry 
-	      HT_INIT,    //!< scan: start scan
-	      HT_CONT     //!< scan: continue scan
+          HT_ENTER,   //!< search: enter an entry
+          HT_INIT,    //!< scan: start scan
+          HT_CONT     //!< scan: continue scan
 } HT_ACTION;
 
 typedef enum {
-        STR,     //!< string 
-	      STRPTR,   //!< pointer to string
+        STR,     //!< string
+          STRPTR,   //!< pointer to string
         INTM,     //!< pointer to int
         INTPTR  //!< pointer to pointer to int
 }HTYPE;
@@ -59,24 +59,24 @@ class htable {
   int        size;            //!< table size
   int      keylen;            //!< key length
   HTYPE     htype;            //!< type of entry pointer
-  entry   **table;            //!< hash table  
-  int      scan_i;            //!< scan support 
-  entry   *scan_p;            //!< scan support 
+  entry   **table;            //!< hash table
+  int      scan_i;            //!< scan support
+  entry   *scan_p;            //!< scan support
   // statistics
-  long       keys;            //!< # of entries 
+  long       keys;            //!< # of entries
   long   accesses;            //!< # of accesses
   long collisions;            //!< # of collisions
 
   mempool  *memory;           //!<  memory pool
 
-  size_t (*keylenfunc)(const char*);          //!< function computing key length              
-  address (*hashfunc)(const char*);               //!< hash function 
-  int (*compfunc)(const char*, const char*);   //!< comparison function 
-  
+  size_t (*keylenfunc)(const char*);          //!< function computing key length
+  address (*hashfunc)(const char*);               //!< hash function
+  int (*compfunc)(const char*, const char*);   //!< comparison function
+
  public:
 
   //! Creates an hash table
-  htable(int n,int kl=0,HTYPE ht=STRPTR,size_t (*klf)(const char* )=NULL);
+  htable(int n, int kl=0, HTYPE ht=STRPTR, size_t (*klf)(const char* )=NULL);
 
   //! Destroys an and hash table
   ~htable();
@@ -91,21 +91,21 @@ class htable {
     return 0; //should never happen
   };
   address HashInt(char *key);
-  address HashStr(char *key);  
-  
+  address HashStr(char *key);
+
   //! Compares the keys of two entries
-  int Comp(char *Key1,char *Key2){
+  int Comp(char *Key1, char *Key2){
     switch (htype){
-      case INTM:case INTPTR: return CompInt(Key1,Key2);
+      case INTM:case INTPTR: return CompInt(Key1, Key2);
         break;
-      case STR:case STRPTR: return CompStr(Key1,Key2);
-    };    
+      case STR:case STRPTR: return CompStr(Key1, Key2);
+    };
     return 0; // should never happen
   }
 
-  int CompInt(char *Key1,char *Key2);
-  int CompStr(char *Key1,char *Key2);
-  
+  int CompInt(char *Key1, char *Key2);
+  int CompStr(char *Key1, char *Key2);
+
   //! Searches for an item
   char *search(char *item, HT_ACTION action);
 
@@ -114,19 +114,16 @@ class htable {
 
   //! Prints statistics
   void stat();
-  
+
   //! Print a map of memory use
   void map(std::ostream& co=std::cout, int cols=80);
 
   //! Returns amount of used memory
-  int used(){return 
-	       size * sizeof(entry **) + 
-	       memory->used();};
+  int used(){return
+           size * sizeof(entry **) +
+           memory->used();};
 };
 
 
 
 #endif
-
-
-

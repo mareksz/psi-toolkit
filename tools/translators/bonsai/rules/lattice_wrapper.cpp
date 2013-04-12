@@ -8,7 +8,7 @@
 bool isNonTerminal(Lattice::EdgeDescriptor edge, Lattice& lattice)
 {
     LayerTagCollection edgeTags = lattice.getEdgeLayerTags(edge);
-    if(lattice.getLayerTagManager().isThere(__TOKEN_TAG__, edgeTags))
+    if (lattice.getLayerTagManager().isThere(__TOKEN_TAG__, edgeTags))
     return false;
     return true;
 }
@@ -104,17 +104,17 @@ Lattice::EdgeSequence getSubTreeSymbols(Lattice::EdgeDescriptor node,
     std::queue<Lattice::EdgeDescriptor> queue;
     queue.push(node);
 
-    while(!queue.empty()) {
+    while (!queue.empty()) {
         Lattice::EdgeDescriptor currentEdge = queue.front();
         queue.pop();
 
         LayerTagCollection edgeTags = lattice.getEdgeLayerTags(currentEdge);
         std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(currentEdge);
 
-        if(partitions.size()) {
+        if (partitions.size()) {
             Lattice::Partition partition = partitions.front();
             Lattice::Partition::Iterator pIt(lattice, partition);
-            while(pIt.hasNext()) {
+            while (pIt.hasNext()) {
                 Lattice::EdgeDescriptor subEdge = pIt.next();
 
                 LayerTagCollection subEdgeTags = lattice.getEdgeLayerTags(subEdge);
@@ -124,7 +124,7 @@ Lattice::EdgeSequence getSubTreeSymbols(Lattice::EdgeDescriptor node,
                     seqBuilder.addEdge(subEdge);
                     queue.push(subEdge);
                 }
-                else if(lattice.getLayerTagManager().isThere(__TOKEN_TAG__, subEdgeTags)) {
+                else if (lattice.getLayerTagManager().isThere(__TOKEN_TAG__, subEdgeTags)) {
                     seqBuilder.addEdge(subEdge);
                 }
                 else {
@@ -143,10 +143,10 @@ void getChildSymbolsRec(Lattice::EdgeDescriptor node,
     LayerTagCollection edgeTags = lattice.getEdgeLayerTags(node);
     std::list<Lattice::Partition> partitions = lattice.getEdgePartitions(node);
 
-    if(partitions.size()) {
+    if (partitions.size()) {
     Lattice::Partition partition = partitions.front();
     Lattice::Partition::Iterator pIt(lattice, partition);
-    while(pIt.hasNext()) {
+    while (pIt.hasNext()) {
         Lattice::EdgeDescriptor subNode = pIt.next();
 
         LayerTagCollection subNodeTags = lattice.getEdgeLayerTags(subNode);
@@ -180,12 +180,12 @@ Lattice::EdgeSequence getTreeSymbols(
     Lattice::EdgeSequence topSymbols = getTopParseSequence(lattice, start, end);
     Lattice::EdgeSequence::Iterator topSymbolsIt(lattice, topSymbols);
 
-    while(topSymbolsIt.hasNext()) {
+    while (topSymbolsIt.hasNext()) {
         Lattice::EdgeDescriptor topEdge = topSymbolsIt.next();
         seqBuilder.addEdge(topEdge);
         Lattice::EdgeSequence subSymbols = getSubTreeSymbols(topEdge, lattice);
         Lattice::EdgeSequence::Iterator subSymbolsIt(lattice, subSymbols);
-        while(subSymbolsIt.hasNext()) {
+        while (subSymbolsIt.hasNext()) {
             Lattice::EdgeDescriptor subEdge = subSymbolsIt.next();
             seqBuilder.addEdge(subEdge);
         }
