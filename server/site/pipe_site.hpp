@@ -6,6 +6,8 @@
 #include "template_site.hpp"
 #include "file_storage.hpp"
 #include "file_recognizer.hpp"
+#include "encoding_converter.hpp"
+
 
 class PipeSite : public TemplateSite
 {
@@ -37,6 +39,8 @@ private:
     FileStorage fileStorage_;
     FileRecognizer fileRecognizer_;
 
+    void preparePipelineAndInput_(std::string& pipe, std::string& input);
+
     void clearPreviousFileFromOutput_();
     void createFileFromOutput_(const std::string& output);
     std::string generateOutput_(const std::string& rawOuput);
@@ -45,6 +49,8 @@ private:
     void tryToAddGuessingReader_(std::string& pipe);
 
     std::string encodeHTML_(const std::string& data);
+
+    EncodingConverter encodingConverter_;
 };
 
 #endif

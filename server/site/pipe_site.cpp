@@ -18,7 +18,8 @@ const std::string PipeSite::GUESSING_READER = "guessing-reader";
 PipeSite::PipeSite(PsiServer& server, const std::string & pipe, const std::string & text)
     : TemplateSite(server),
     initialText_(text.c_str()), initialPipe_(pipe.c_str()), initialOutput_(""),
-    fileStorage_(std::string(psiServer_.websiteRoot))
+    fileStorage_(std::string(psiServer_.websiteRoot)),
+    encodingConverter_("UTF-8")
 {
     registerIncludesAndActions_();
 }
@@ -114,14 +115,9 @@ std::string PipeSite::getInput_() {
 std::string PipeSite::runPipe_(std::string input) {
     std::string pipe = psiServer_.session()->getData("pipe-text");
 
-    boost::replace_all(pipe, " | ", " ! ");
-    if (inputFromFile_ == true) {
-        tryToAddGuessingReader_(pipe);
-    }
+    preparePipelineAndInput_(pipe, input);
 
-    if (input.empty()) input = initialText_;
-
-    std::stringstream iss(input);
+    std::istringstream iss(input);
     std::ostringstream oss;
 
     INFO("Constructing pipe [" << pipe << "]...");
@@ -131,6 +127,7 @@ std::string PipeSite::runPipe_(std::string input) {
 
     try {
         PipeRunner p(pipe);
+
         INFO("... running");
         p.run(iss, oss);
         INFO("... OK");
@@ -139,19 +136,27 @@ std::string PipeSite::runPipe_(std::string input) {
     }
     catch (std::exception& e) {
         oss << "There are some problems: " << e.what() << std::endl
-            << "Check the pipe-line specification and try once again.";
+            << "Check the pipe-line specification and try again.";
     }
 
     return oss.str();
 }
 
-void PipeSite::clearPreviousFileFromOutput_() {
-    psiServer_.session()->clearData("output-file");
-}
+void PipeSite::preparePipelineAndInput_(std::string& pipe, std::string& input) {
+    boost::replace_all(pipe, " | ", " ! ");
 
-void PipeSite::createFileFromOutput_(const std::string& output) {
-    std::string filename = fileStorage_.storeFile(output);
-    psiServer_.session()->setData("output-file", filename);
+    if (input.empty()) {
+        input = initialText_;
+        return;
+    }
+
+    if (inputFromFile_ == true) {
+        tryToAddGuessingReader_(pipe);
+
+        boost::replace_first(pipe, "--encoding-conversion ", " ");
+        boost::replace_first(pipe, "-c ", " ");
+        input = encodingConverter_.convert(input);
+    }
 }
 
 void PipeSite::tryToAddGuessingReader_(std::string& pipe) {
@@ -169,8 +174,17 @@ void PipeSite::tryToAddGuessingReader_(std::string& pipe) {
         }
     }
 
-    DEBUG("add guessing-reader to pipeline");
+    DEBUG("guessing-reader added to pipeline");
     pipe = GUESSING_READER + " ! " + pipe;
+}
+
+void PipeSite::clearPreviousFileFromOutput_() {
+    psiServer_.session()->clearData("output-file");
+}
+
+void PipeSite::createFileFromOutput_(const std::string& output) {
+    std::string filename = fileStorage_.storeFile(output);
+    psiServer_.session()->setData("output-file", filename);
 }
 
 std::string PipeSite::generateOutput_(const std::string& rawOutput) {

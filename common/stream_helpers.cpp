@@ -37,7 +37,7 @@ void setDataToIStream(std::istream& stream, std::string data) {
     }
 }
 
-std::string getDataWithoutTouchingIStream_(std::istream& stream) {
+std::string getDataWithoutTouchingIStream(std::istream& stream) {
     std::string data = getDataFromIStream(stream);
     setDataToIStream(stream, data);
 

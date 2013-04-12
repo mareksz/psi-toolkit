@@ -72,7 +72,7 @@ std::string GuessingReader::guessFileType(std::istream& input) {
         DEBUG("compressed archive format recognized, checking inside...");
 
         filetype = fileRecognizer_.recognizeCompressedFileFormat(
-            getDataWithoutTouchingIStream_(input));
+            getDataWithoutTouchingIStream(input));
     }
 
     return filetype;

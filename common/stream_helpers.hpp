@@ -8,6 +8,6 @@ std::string getStartingDataWithoutTouchingStream(std::istream& stream, int size)
 std::string getDataFromIStream(std::istream& stream);
 void setDataToIStream(std::istream& stream, std::string data);
 
-std::string getDataWithoutTouchingIStream_(std::istream& stream);
+std::string getDataWithoutTouchingIStream(std::istream& stream);
 
 #endif

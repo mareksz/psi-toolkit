@@ -779,5 +779,14 @@ void PipeRunner::convertInputStreamEncoding_(std::istream& stream) {
                                 ? encodingConverter_.convert(data)
                                 : encodingConverter_.convert(inputEncoding_, data);
 
+    DEBUG("======================================================1");
+    DEBUG(convertedData);
+    DEBUG("======================================================1");
+
     setDataToIStream(stream, convertedData);
+
+    DEBUG("======================================================2");
+    std::string newData = getDataWithoutTouchingIStream(stream);
+    DEBUG(newData);
+    DEBUG("======================================================2");
 }
