@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'celerity'
 require 'test/unit'
+require 'iconv'
 
 require 'config'
 
@@ -139,6 +140,16 @@ class PipeSiteTest < Test::Unit::TestCase
         assert output.text.include? text.gsub(' ', '_')
     end
 
+    def test_encoding_conversion_when_uploading_file
+        encoded_txt = set_file_input("file_windows-1251.txt")
+        txt = Iconv.conv("UTF-8", "windows-1251", encoded_txt)
+
+        set_pipe 'tokenize --lang ru'
+        submit
+
+        txt.split.each { |word| assert @browser.div(:id, 'output').text.include? word }
+    end
+
     private
 
     def set_pipe(txt)
@@ -151,6 +162,16 @@ class PipeSiteTest < Test::Unit::TestCase
         input = @browser.text_field(:name => 'input-text')
         input.set txt
         return input
+    end
+
+    def set_file_input(file_name)
+        return "" unless File.exists?(file_name)
+
+        switch_bookmark(:file)
+        input_file = @browser.file_field(:name => 'input-file')
+        input_file.set file_name
+
+        return File.read(file_name)
     end
 
     def submit
