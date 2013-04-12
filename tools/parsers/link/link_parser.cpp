@@ -238,7 +238,7 @@ void LinkParser::parse(Lattice & lattice) {
             Lattice::EdgeSequence::Builder builder(lattice);
             if (edgeDescription.children.empty()) {
                 isToken = true;
-                size_t i = edgeDescription.start;
+                int i = edgeDescription.start;
                 while (i < edgeDescription.end) {
                     Lattice::EdgeDescriptor e = lattice.firstOutEdge(
                         lattice.getVertexForRawCharIndex(i),
