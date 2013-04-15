@@ -83,4 +83,10 @@ public:
 };
 
 
+class TagsetConverterException : public PsiException {
+public:
+    TagsetConverterException(std::string message) : PsiException(message) { }
+};
+
+
 #endif

@@ -6,12 +6,13 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 
+#include "exceptions.hpp"
 #include "zvalue.hpp"
 
 
 const std::string UnumsuntRule::CATEGORY_MARKER = "CAT";
 const char UnumsuntRule::REFERENCE_MARKER = '$';
-const std::string UnumsuntRule::ALTERNATIVE_SEPARATOR = "|";
+const std::string UnumsuntRule::ALTERNATIVE_SEPARATORS = "|";
 const std::string UnumsuntRule::ANY_DESIGNATION = "0";
 const std::string UnumsuntRule::FALSE_DESIGNATION = "-1";
 
@@ -49,6 +50,17 @@ void UnumsuntRule::addCondition(std::string arg, std::string val) {
 
 
 void UnumsuntRule::addCommand(std::string arg, std::string val) {
+    if (val.find_first_of(ALTERNATIVE_SEPARATORS) != std::string::npos) {
+        if (numberOfBreedCommands_ == 0) {
+            numberOfBreedCommands_ = 1;
+        } else {
+            std::stringstream errorSs;
+            errorSs << "Tagset converter error: wrong command."
+                << "\nConverter rule cannot contain more than one alternative command."
+                << "\nPlease split the rule into separate rules.";
+            throw TagsetConverterException(errorSs.str());
+        }
+    }
     commands.push_back(StringPair(arg, val));
 }
 
@@ -97,7 +109,7 @@ bool UnumsuntRule::apply(
                 boost::split(
                     alternativeValues,
                     command.second,
-                    boost::is_any_of(ALTERNATIVE_SEPARATOR));
+                    boost::is_any_of(ALTERNATIVE_SEPARATORS));
                 for (size_t i = 0; i < alternativeValues.size(); ++i) {
                     boost::shared_ptr<AnnotationItem> itemCopy;
                     if (i == 0) {
