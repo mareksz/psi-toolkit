@@ -3,7 +3,9 @@
   <configuration
       name="pl-join-forms-and-valency"
       annotator="joiner"
-      options="--lang pl --left-mask form --right-mask valency --out-tags parse-terminal --take-right-text">
+      options="--lang pl --left-mask form --right-mask valency --out-tags parse-terminal --take-right-text"
+      description="A tool that combines form edges and valency edges.
+        It creates a kind of Cartesian product of edges in question.">
     <provided>
       <tag>parse-terminal</tag>
     </provided>
