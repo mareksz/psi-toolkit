@@ -22,6 +22,8 @@ public:
 
     operator std::string() const;
 
+    void addWord(std::string word);
+
     void addCondition(std::string arg, std::string val);
 
     /**
@@ -30,16 +32,19 @@ public:
      */
     void addCommand(std::string arg, std::string val);
 
-    void addWord(std::string word);
+    /**
+     * Remove all commands.
+     */
+    void clearCommands();
 
     bool apply(
         AnnotationItemManager & manager,
         std::vector< boost::shared_ptr<AnnotationItem> > & items);
 
 private:
+    std::set<std::string> words;
     std::vector<StringPair> conditions;
     std::vector<StringPair> commands;
-    std::set<std::string> words;
 
     /**
      * A rule cannot contain more than one alterantive ("breeding") command.

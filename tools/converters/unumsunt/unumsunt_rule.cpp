@@ -44,6 +44,11 @@ UnumsuntRule::operator std::string() const {
 }
 
 
+void UnumsuntRule::addWord(std::string word) {
+    words.insert(word);
+}
+
+
 void UnumsuntRule::addCondition(std::string arg, std::string val) {
     conditions.push_back(StringPair(arg, val));
 }
@@ -65,8 +70,9 @@ void UnumsuntRule::addCommand(std::string arg, std::string val) {
 }
 
 
-void UnumsuntRule::addWord(std::string word) {
-    words.insert(word);
+void UnumsuntRule::clearCommands() {
+    commands.clear();
+    numberOfBreedCommands_ = 0;
 }
 
 
