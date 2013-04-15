@@ -21,7 +21,9 @@ Annotator* Gobio::Factory::doCreateAnnotator(
         rulesPathString = rulesPath.string();
     }
 
-    return new Gobio(rulesPathString);
+    std::string terminalTag = options["terminal-tag"].as<std::string>();
+
+    return new Gobio(rulesPathString, terminalTag);
 }
 
 void Gobio::Factory::doAddLanguageIndependentOptionsHandled(
