@@ -57,7 +57,7 @@ std::list<std::string> SfstLemmatizer::getLayerTags() {
 }
 
 boost::program_options::options_description SfstLemmatizer::optionsHandled() {
-    boost::program_options::options_description desc(OPTION_LABEL);
+    boost::program_options::options_description desc(ProcessorFactory::OPTION_LABEL);
 
     LanguageDependentAnnotatorFactory::addLanguageDependentOptions(desc);
 
