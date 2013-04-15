@@ -47,7 +47,11 @@ void ConfigurationFinder::processConfiguration_(boost::property_tree::ptree& con
     std::string name = configurationNode.get<std::string>("<xmlattr>.name");
     std::string annotator = configurationNode.get<std::string>("<xmlattr>.annotator");
 
-    boost::optional<std::string> options = configurationNode.get_optional<std::string>("<xmlattr>.options");
+    boost::optional<std::string> options =
+        configurationNode.get_optional<std::string>("<xmlattr>.options");
+
+    boost::optional<std::string> description =
+        configurationNode.get_optional<std::string>("<xmlattr>.description");
 
     INFO("configuration: " << name);
     INFO("  annotator: " << annotator);
@@ -60,6 +64,11 @@ void ConfigurationFinder::processConfiguration_(boost::property_tree::ptree& con
     if (options) {
         INFO("  options: " << *options);
         factory->setOptions(*options);
+    }
+
+    if (description) {
+        INFO("  description: " << *description);
+        factory->setXmlDescription_(*description);
     }
 
     BOOST_FOREACH(boost::property_tree::ptree::value_type &v,

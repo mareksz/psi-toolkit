@@ -12,7 +12,7 @@ FromConfigurationAnnotatorFactory::FromConfigurationAnnotatorFactory(
 }
 
 void FromConfigurationAnnotatorFactory::setOptions(const std::string& optionsAsString) {
-
+    rawOptions_ = optionsAsString; //for documentation
     std::vector<std::string> processorArgs = splitPipeline(optionsAsString);
 
     int argc = processorArgs.size() + 1;
@@ -97,4 +97,16 @@ std::list<std::basic_string<char> >
 FromConfigurationAnnotatorFactory::doLanguagesHandled(const boost::program_options::variables_map&) const {
 
     return annotatorFactory_.languagesHandled(options_);
+}
+
+void FromConfigurationAnnotatorFactory::setXmlDescription_(std::string text) {
+    xmlDescription_ = text;
+}
+
+std::string
+FromConfigurationAnnotatorFactory::doGetDescription() {
+    return "This processor is an alias for "
+        "[" + annotatorFactory_.getName() + "](#" + annotatorFactory_.getName() + ") "
+        "with options `" + rawOptions_ + "`\n\n" +
+        xmlDescription_;
 }

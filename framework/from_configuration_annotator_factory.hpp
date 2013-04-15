@@ -10,6 +10,7 @@ public:
         AnnotatorFactory& annotatorFactory);
 
     void setOptions(const std::string& optionsAsString);
+    void setXmlDescription_ (std::string text);
     void setContinuation(const std::string& continuation);
     void setQualityScore(double qualityScore);
     void setEstimatedTime(double estimatedTime);
@@ -41,4 +42,7 @@ private:
     boost::optional<std::list<std::list<std::string> > > optionalLayerTags_;
     boost::optional<std::list<std::string> > providedLayerTags_;
 
+    std::string rawOptions_;
+    std::string xmlDescription_;
+    std::string doGetDescription();
 };
