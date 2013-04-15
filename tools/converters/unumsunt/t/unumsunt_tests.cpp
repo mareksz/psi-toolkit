@@ -137,6 +137,61 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( unumsunt_rule_with_alternative ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "cat");
+    rule.addCondition("A", "a");
+    rule.addCondition("B", "b");
+    rule.addCommand("X", "x");
+    rule.addCommand("A", "aa|aaa");
+
+    AnnotationItemManager aim;
+
+    std::vector< boost::shared_ptr<AnnotationItem> > items;
+    items.push_back(boost::shared_ptr<AnnotationItem>(
+        new AnnotationItem("cat")));
+    AnnotationItem & item = *(items.front());
+    aim.setValue(item, "A", "a");
+    aim.setValue(item, "B", "b");
+    aim.setValue(item, "C", "c");
+
+    BOOST_CHECK_EQUAL(items.size(), 1);
+
+    BOOST_CHECK(rule.apply(aim, items));
+
+    BOOST_CHECK_EQUAL(items.size(), 2);
+
+    BOOST_CHECK_EQUAL(item.getCategory(), "cat");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "aa");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "b");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "C"), "c");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "X"), "x");
+
+    AnnotationItem & item2 = *(items.back());
+
+    BOOST_CHECK_EQUAL(item2.getCategory(), "cat");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item2, "A"), "aaa");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item2, "B"), "b");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item2, "C"), "c");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item2, "X"), "x");
+
+}
+
+
+BOOST_AUTO_TEST_CASE( unumsunt_rule_with_more_alternatives ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "cat");
+    rule.addCondition("A", "a");
+    rule.addCondition("B", "b");
+    rule.addCommand("X", "x");
+    rule.addCommand("A", "aa|aaa");
+    BOOST_CHECK_THROW(rule.addCommand("B", "bb|bbb"), TagsetConverterException);
+
+}
+
+
 BOOST_AUTO_TEST_CASE( unumsunt_rule_change_category ) {
 
     UnumsuntRule rule;
