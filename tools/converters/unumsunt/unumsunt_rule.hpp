@@ -35,6 +35,12 @@ private:
     std::vector<StringPair> commands;
     std::set<std::string> words;
 
+    const static std::string CATEGORY_MARKER;
+    const static char REFERENCE_MARKER;
+    const static std::string ALTERNATIVE_SEPARATOR;
+    const static std::string ANY_DESIGNATION;
+    const static std::string FALSE_DESIGNATION;
+
 };
 
 
