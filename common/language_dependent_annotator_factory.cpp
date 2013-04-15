@@ -6,7 +6,7 @@ LanguageDependentAnnotatorFactory::~LanguageDependentAnnotatorFactory() {
 }
 
 boost::program_options::options_description LanguageDependentAnnotatorFactory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("Allowed options");
+    boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     addLanguageDependentOptions(optionsDescription);
 

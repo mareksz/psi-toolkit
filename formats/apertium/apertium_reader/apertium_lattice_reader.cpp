@@ -68,7 +68,7 @@ LatticeReader<std::istream>* ApertiumLatticeReader::Factory::doCreateLatticeRead
 }
 
 boost::program_options::options_description ApertiumLatticeReader::Factory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("Allowed options");
+    boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     optionsDescription.add_options()
         ("format", boost::program_options::value<std::string>()->default_value("html"),

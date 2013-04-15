@@ -206,7 +206,7 @@ std::list<std::list<std::string> > Mapper::requiredLayerTags(
 }
 
 boost::program_options::options_description Mapper::optionsHandled() {
-    boost::program_options::options_description desc("Allowed options");
+    boost::program_options::options_description desc(ProcessorFactory::OPTION_LABEL);
 
     LanguageDependentAnnotatorFactory::addLanguageDependentOptions(desc);
 

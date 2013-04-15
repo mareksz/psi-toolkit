@@ -127,7 +127,7 @@ LatticeReader<std::istream>* GuessingReader::Factory::doCreateLatticeReader(
 }
 
 boost::program_options::options_description GuessingReader::Factory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("Allowed options");
+    boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     optionsDescription.add_options()
         ("block-size", boost::program_options::value<int>()->default_value(DEFAULT_BLOCK_SIZE),

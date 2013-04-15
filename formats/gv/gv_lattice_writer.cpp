@@ -83,7 +83,7 @@ LatticeWriter<std::ostream>* GVLatticeWriter::Factory::doCreateLatticeWriter(
 }
 
 boost::program_options::options_description GVLatticeWriter::Factory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("Allowed options");
+    boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     optionsDescription.add_options()
         ("format", boost::program_options::value<std::string>()->default_value("svg"),

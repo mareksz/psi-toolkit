@@ -114,7 +114,7 @@ bool Morfologik::lemmatize(const std::string & word, AnnotationItemManager & man
 }
 
 boost::program_options::options_description Morfologik::optionsHandled() {
-    boost::program_options::options_description desc("Allowed options");
+    boost::program_options::options_description desc(ProcessorFactory::OPTION_LABEL);
 
     std::string dictionaryDescription = "set dictionary, one of "
         + boost::algorithm::join(DICTIONARIES, ", ");

@@ -111,7 +111,7 @@ std::list<std::string> BiLexicon::languagesHandled(
 }
 
 boost::program_options::options_description BiLexicon::optionsHandled() {
-    boost::program_options::options_description desc("Allowed options");
+    boost::program_options::options_description desc(ProcessorFactory::OPTION_LABEL);
 
     BiLanguageDependentAnnotatorFactory::addBiLanguageDependentOptions(desc);
 

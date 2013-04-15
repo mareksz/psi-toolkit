@@ -35,7 +35,7 @@ LatticeReader<std::istream>* NKJPLatticeReader::Factory::doCreateLatticeReader(
 }
 
 boost::program_options::options_description NKJPLatticeReader::Factory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("No options allowed.");
+    boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     optionsDescription.add_options();
 

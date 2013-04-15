@@ -44,7 +44,7 @@ LatticeWriter<std::ostream> * JSONLatticeWriter::Factory::doCreateLatticeWriter(
 }
 
 boost::program_options::options_description JSONLatticeWriter::Factory::doOptionsHandled() {
-    boost::program_options::options_description optionsDescription("Allowed options");
+    boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     optionsDescription.add_options()
         ("fallback-tags",

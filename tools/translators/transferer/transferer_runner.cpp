@@ -91,7 +91,7 @@ std::list<std::string> TransfererRunner::languagesHandled(
 }
 
 boost::program_options::options_description TransfererRunner::optionsHandled() {
-    boost::program_options::options_description desc("Allowed options");
+    boost::program_options::options_description desc(ProcessorFactory::OPTION_LABEL);
 
     BiLanguageDependentAnnotatorFactory::addBiLanguageDependentOptions(desc);
 

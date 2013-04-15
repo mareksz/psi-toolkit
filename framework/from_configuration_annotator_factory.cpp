@@ -107,6 +107,6 @@ std::string
 FromConfigurationAnnotatorFactory::doGetDescription() {
     return "This processor is an alias for "
         "[" + annotatorFactory_.getName() + "](#" + annotatorFactory_.getName() + ") "
-        "with options `" + rawOptions_ + "`\n\n" +
+        "with options `" + rawOptions_ + "`.\n\n" +
         xmlDescription_;
 }
