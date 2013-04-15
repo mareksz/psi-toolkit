@@ -124,6 +124,13 @@ boost::program_options::options_description HelpFormatter::getProcessorOptions(
     return MainFactoriesKeeper::getInstance().getProcessorFactory(processorName).optionsHandled();
 }
 
+bool HelpFormatter::areOptionsEmpty(boost::program_options::options_description options) {
+    std::stringstream optionsAsStream;
+    optionsAsStream << options;
+
+    return optionsAsStream.str() == (ProcessorFactory::OPTION_LABEL + ":\n");
+}
+
 std::vector<TestBatch> HelpFormatter::getProcessorUsingExamples(std::string processorName) {
     boost::filesystem::path processorFile =
         MainFactoriesKeeper::getInstance().getProcessorFactory(processorName).getFile();

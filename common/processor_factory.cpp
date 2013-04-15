@@ -116,3 +116,5 @@ std::string ProcessorFactory::getFileContent(boost::filesystem::path path) {
 
     return content.str();
 }
+
+const std::string ProcessorFactory::OPTION_LABEL = "Allowed options";

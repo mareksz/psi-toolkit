@@ -49,6 +49,7 @@ protected:
 
     boost::program_options::options_description getProcessorOptions(std::string processorName);
     std::vector<TestBatch> getProcessorUsingExamples(std::string processorName);
+    bool areOptionsEmpty(boost::program_options::options_description options);
 
     virtual void doFormatOneAlias(
         std::string aliasName,

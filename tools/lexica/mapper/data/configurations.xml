@@ -8,7 +8,8 @@
   <configuration
       name="pl-valency"
       annotator="mapper"
-      options="--lang pl --in-tags lexeme --out-tags valency --consider-text --clone-text --clone-category --add-attributes --binary %ITSDATA%/pl-valency.bin">
+      options="--lang pl --in-tags lexeme --out-tags valency --consider-text --clone-text --clone-category --add-attributes --binary %ITSDATA%/pl-valency.bin"
+      description="An example description of valency dictionary.">
     <provided>
       <tag>valency</tag>
     </provided>

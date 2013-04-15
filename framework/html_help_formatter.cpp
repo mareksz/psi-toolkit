@@ -37,7 +37,9 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
         formatUsingExamples_(usingExamples, output);
     }
 
-    formatAllowedOptions_(options, output);
+    if (!areOptionsEmpty(options)) {
+        formatAllowedOptions_(options, output);
+    }
     output << "</div>" << std::endl;
 }
 

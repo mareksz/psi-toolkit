@@ -86,6 +86,8 @@ public:
 
     virtual ~ProcessorFactory();
 
+    static const std::string OPTION_LABEL;
+
 private:
 
     virtual Processor* doCreateProcessor(
