@@ -3,7 +3,8 @@
   <configuration
       name="morfologik-to-gobio-converter"
       annotator="tagset-converter"
-      options="--lang pl">
+      options="--lang pl"
+      description="A tool for converting Morfologik tags to Gobio tags.">
     <provided>
       <tag>gobio-tagset</tag>
     </provided>

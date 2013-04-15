@@ -3,13 +3,14 @@
   <configuration
       name="generate-lexdb-forms-en"
       annotator="mapper"
-      options="--lang pl --in-tags form --out-tags token --consider-text --consider-category --clone-attributes --binary %ITSDATA%/en-lexdb-generation-forms.bin">
+      options="--lang pl --in-tags form --out-tags token --consider-text --consider-category --clone-attributes --binary %ITSDATA%/en-lexdb-generation-forms.bin"
+      description="A lexicon of lexdb forms for English.">
   </configuration>
   <configuration
       name="pl-valency"
       annotator="mapper"
       options="--lang pl --in-tags lexeme --out-tags valency --consider-text --clone-text --clone-category --add-attributes --binary %ITSDATA%/pl-valency.bin"
-      description="An example description of valency dictionary.">
+      description="A valency lexicon for Polish.">
     <provided>
       <tag>valency</tag>
     </provided>
