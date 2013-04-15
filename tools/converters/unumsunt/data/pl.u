@@ -70,8 +70,12 @@
 #@val    pot przypuszczający
 #@val    impt    rozkazujący
 CAT = rzeczownik -> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
-Rp = mo, L = 1 -> R = mż, R1 = mż
+CAT = rzeczownik, L = 1, Rp = mo -> R = mż, R1 = mż
+CAT = rzeczownik, L = 2, Rp = mnż -> R = mno, R1 = mno
 CAT = przymiotnik -> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = any
+CAT = przymiotnik, R = mnż -> R = mnż|mno
+CAT = przymiotnik, R = mo -> R = mo|mż
+CAT = przymiotnik, R = m -> R = mo|mno|mż|mnż
 mój twój nasz wasz -> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = po_przymiotnik -> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek -> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
