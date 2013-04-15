@@ -234,7 +234,6 @@ void Unumsunt::convertTags(Lattice & lattice) {
         std::vector< boost::shared_ptr<AnnotationItem> > items;
         items.push_back(boost::shared_ptr<AnnotationItem>(
             new AnnotationItem(targetCategory, sourceAI.getTextAsStringFrag())));
-        AnnotationItem & targetAI = *(items.front());
 
         std::list< std::pair<std::string, zvalue> > avs
             = lattice.getAnnotationItemManager().getValuesAsZvalues(sourceAI);
@@ -245,13 +244,25 @@ void Unumsunt::convertTags(Lattice & lattice) {
                 lattice.getAnnotationItemManager().zvalueToString(av.second)
             );
             if (ami == attr_map_.end() && vmi == val_map_.end()) {
-                lattice.getAnnotationItemManager().setValue(targetAI, av.first, av.second);
+                lattice.getAnnotationItemManager().setValue(
+                    *(items.front()),
+                    av.first,
+                    av.second);
             } else if (ami != attr_map_.end() && vmi == val_map_.end()) {
-                lattice.getAnnotationItemManager().setValue(targetAI, ami->second, av.second);
+                lattice.getAnnotationItemManager().setValue(
+                    *(items.front()),
+                    ami->second,
+                    av.second);
             } else if (ami == attr_map_.end() && vmi != val_map_.end()) {
-                lattice.getAnnotationItemManager().setValue(targetAI, av.first, vmi->second);
+                lattice.getAnnotationItemManager().setValue(
+                    *(items.front()),
+                    av.first,
+                    vmi->second);
             } else {
-                lattice.getAnnotationItemManager().setValue(targetAI, ami->second, vmi->second);
+                lattice.getAnnotationItemManager().setValue(
+                    *(items.front()),
+                    ami->second,
+                    vmi->second);
             }
         }
 
@@ -273,16 +284,29 @@ void Unumsunt::convertTags(Lattice & lattice) {
                     builder.addEdge(ri->second);
                 }
             }
-            replacements_.insert(std::pair<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>(
-                edge,
-                lattice.addEdge(
-                    lattice.getEdgeSource(edge),
-                    lattice.getEdgeTarget(edge),
-                    targetAI,
-                    targetTags,
-                    builder.build()
-                )
-            ));
+            if (items.size() == 1) {
+                replacements_.insert(std::pair<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>(
+                    edge,
+                    lattice.addEdge(
+                        lattice.getEdgeSource(edge),
+                        lattice.getEdgeTarget(edge),
+                        *(items.front()),
+                        targetTags,
+                        builder.build()
+                    )
+                ));
+            } else {
+                BOOST_FOREACH(boost::shared_ptr<AnnotationItem> pitem, items) {
+                    lattice.addEdge(
+                        lattice.getEdgeSource(edge),
+                        lattice.getEdgeTarget(edge),
+                        *pitem,
+                        targetTags,
+                        builder.build()
+                    );
+                }
+                // TODO update replacements_
+            }
         }
 
     }
