@@ -1,8 +1,8 @@
 ## Is the graphical user interface available offline?
 
-Yes, but currently the GUI is available only for Linux users.
-If you install one of the PSI Linux packages, you will get the same webservice
-as you see now to work offline by simple running:
+Yes, but, currently, the GUI is available only for Linux users.
+After installing one of the PSI Linux packages, you will get the same webservice
+as this and you will be able to run it offline by command:
 
     $ psi-server
 
@@ -28,3 +28,14 @@ languages for each processor.
 You can filter the display of PSI-lattice by using the `tag` option of
 `simple-writer`.
 See page [Working with PSI-lattice](/help/tutorial.html#header-11) for details.
+
+
+## Which types of character set are supported?
+
+The PSI-Toolkit has a native support for text in UTF-8 character encoding
+system, but there are also libraries for automatic detection and conversion of
+character set integrated into `psi-pipe` command. Please, check its
+`--list-encoding` and `--encoding-conversion` options.
+
+Additionally, for all files sending to PSI-Server the conversion to
+UTF-8 is enabled.

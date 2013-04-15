@@ -21,11 +21,8 @@ The easiest way is to use our web-service called [PSI-Server](/).
 You may also download the [Linux packages](/download.html), install them at
 your computer and use locally with the command-line program `psi-pipe`.
 
-<!--
 The installation process is described in the [Installation guide]
 (/help/install.html).
--->
-
 Note that after installing PSI-Toolkit from the precompiled packages you will
 also get your own instance of PSI-Server (identical to this one). You can
 launch the server locally by simple typing the `psi-server` command. Then, the
@@ -189,11 +186,12 @@ Here are two examples: ([run example](/pipe.psis?pipe-text=tokenize+!+write-simp
 
 ## Command-line usage ##
 
-After successful installation of the PSI-Toolkit package, you may use a command-line program called `psi-pipe`.
+After successful installation of the PSI-Toolkit package, you may use a
+command-line program called `psi-pipe`.
 
 You can pass any command pipeline as an argument for the `psi-pipe`
-program. To pass the input text to the standard input you need to use the `echo`
-command. Apply the vertical bar `|` to pipe `echo` and `psi-pipe`.
+program. To pass the input text to the standard input you need to use the
+`echo` command. Apply the vertical bar `|` to pipe `echo` and `psi-pipe`.
 
     $ echo "Piękna gra trwała długo." | psi-pipe lemmatize ! write-simple --tags lemma
 
