@@ -192,6 +192,36 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule_with_more_alternatives ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( unumsunt_rule_clear ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "cat");
+    rule.addCondition("A", "a");
+    rule.addCondition("B", "b");
+    rule.addCommand("X", "x");
+    rule.addCommand("A", "aa|aaa");
+    rule.clearCommands();
+
+    AnnotationItemManager aim;
+
+    std::vector< boost::shared_ptr<AnnotationItem> > items;
+    items.push_back(boost::shared_ptr<AnnotationItem>(
+        new AnnotationItem("cat")));
+    AnnotationItem & item = *(items.front());
+    aim.setValue(item, "A", "a");
+    aim.setValue(item, "B", "b");
+    aim.setValue(item, "C", "c");
+
+    BOOST_CHECK(rule.apply(aim, items));
+    BOOST_CHECK_EQUAL(item.getCategory(), "cat");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "A"), "a");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "B"), "b");
+    BOOST_CHECK_EQUAL(aim.getValueAsString(item, "C"), "c");
+    BOOST_CHECK_EQUAL(aim.getValue(item, "X"), NULL_ZVALUE);
+
+}
+
+
 BOOST_AUTO_TEST_CASE( unumsunt_rule_change_category ) {
 
     UnumsuntRule rule;
