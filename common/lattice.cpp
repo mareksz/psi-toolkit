@@ -185,7 +185,7 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         EdgeSequence::Iterator sequenceIter(*this, sequence);
         while (sequenceIter.hasNext()) {
             if (sequenceIter.next() == edge) {
-                throw EdgeSelfReferenceException("Cannot add an edge referencing itself.");
+                throw EdgeSelfReferenceException("Cannot add an edge referencing itself:" + annotationItem.getText() + "/" + annotationItem.getCategory());
             }
         }
         LayerTagCollection oldTags = getEdgeLayerTags(edge);
