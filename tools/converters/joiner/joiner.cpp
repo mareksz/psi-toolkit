@@ -159,6 +159,9 @@ void Joiner::Worker::doRun() {
     LayerTagMask rightMask = tagManager.getAlternativeMaskFromTagNames(
         processor_.rightMaskSpecification_);
 
+    lattice_.addTagMaskIndex_(leftMask);
+    lattice_.addTagMaskIndex_(rightMask);
+
     LayerTagCollection providedTags = tagManager.createTagCollection(
         processor_.outTags_);
 
@@ -166,6 +169,8 @@ void Joiner::Worker::doRun() {
 
     while (leftIter.hasNext()) {
         Lattice::EdgeDescriptor edge = leftIter.next();
+
+//        std::cerr << "LEFT: " << lattice_.getAnnotationText(edge) << std::endl;
 
         boost::optional<Lattice::EdgeDescriptor> parent = lattice_.getParent(edge);
 
