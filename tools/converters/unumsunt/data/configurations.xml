@@ -6,10 +6,13 @@
       options="--lang pl"
       description="A tool for converting Morfologik tags to Gobio tags.">
     <provided>
+      <tag>lexeme</tag>
+      <tag>form</tag>
       <tag>gobio-tagset</tag>
     </provided>
     <required>
       <tags>
+        <tag>form</tag>
         <tag>morfologik-tagset</tag>
       </tags>
     </required>
