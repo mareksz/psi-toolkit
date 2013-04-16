@@ -5,7 +5,7 @@
 @cat    adj przymiotnik
 @cat    adjp    po_przymiotnik
 @cat    adv przysłówek
-@cat    brev    rzeczownik
+#@cat    brev    rzeczownik
 @cat    conj    spójnik
 @cat    interj  wykrzyknienie
 @cat    num liczebnik_główny
