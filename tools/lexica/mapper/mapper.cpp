@@ -171,16 +171,13 @@ std::list<std::list<std::string> > Mapper::requiredLayerTags() {
 std::list<std::string> Mapper::providedLayerTags(
     const boost::program_options::variables_map& options) {
 
-    std::list<std::string> outTags;
+    if (!options.count("out-tags"))
+        return providedLayerTags();
 
-    if (options.count("out-tags") > 0) {
-        std::string outTagsString = options["out-tags"].as<std::string>();
-        std::list<std::string> outTags
-            = LayerTagManager::splitCollectionSpecification(outTagsString);
-    }
-    else {
-        throw Exception("missing --out-tags");
-    }
+    std::string outTagsString = options["out-tags"].as<std::string>();
+
+    std::list<std::string> outTags
+        = LayerTagManager::splitCollectionSpecification(outTagsString);
 
     outTags.push_back("mapper");
     return outTags;
@@ -197,12 +194,8 @@ std::list<std::list<std::string> > Mapper::requiredLayerTags(
         return
             boost::assign::list_of(inTags);
     }
-    else {
-        throw Exception("missing --in-tags");
-    }
 
-    return
-        boost::assign::list_of(std::list<std::string>());
+    return requiredLayerTags();
 }
 
 boost::program_options::options_description Mapper::optionsHandled() {

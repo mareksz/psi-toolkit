@@ -137,10 +137,22 @@ std::list<std::string> BiLexicon::providedLayerTags() {
         (std::string("!translation"));
 }
 
+std::list<std::string> BiLexicon::providedLayerTags(
+    const boost::program_options::variables_map& /*options*/) {
+
+    return providedLayerTags();
+}
+
 std::list<std::list<std::string> > BiLexicon::requiredLayerTags() {
     return
         boost::assign::list_of(
             boost::assign::list_of(std::string("lexeme")));
+}
+
+std::list<std::list<std::string> > BiLexicon::requiredLayerTags(
+    const boost::program_options::variables_map& /*options*/) {
+
+    return requiredLayerTags();
 }
 
 std::list<std::string> BiLexicon::tagsToOperateOn() {
