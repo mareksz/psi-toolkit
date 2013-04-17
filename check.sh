@@ -13,7 +13,7 @@ CPPCHECK_EXCLUDE="-i ${TARGET_DIR}/bindings/perl -i ${TARGET_DIR}/bindings/pytho
 EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tools/translators/bonsai/irstlm"
 
 # Regexp for automatically generated files by bison etc.
-AUTO_GENERATED_FILES="tools/parsers/gobio/translator/lex.grlex.cpp|tools/parsers/gobio/translator/grparser.bis.cpp"
+AUTO_GENERATED_FILES=".*tools/parsers/gobio/translator/lex.grlex.cpp|.*tools/parsers/gobio/translator/grparser.bis.cpp"
 
 mkdir -p $TARGET_DIR
 
