@@ -1,0 +1,1 @@
+lamerlemma --level 2 ! mapper --lang pl --in-tags lexeme --out-tags fake-tags-conversion,lexeme --consider-category --plain-text-lexicon %ITSDATA%/../m/fake-tags-conversion/fake-tags-conversion-lexicon.txt --clone-text
