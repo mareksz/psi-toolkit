@@ -1,0 +1,1 @@
+tokenize ! mapper --lang pl --in-tags token --out-tags fake-translation --consider-text --plain-text-lexicon %ITSDATA%/../m/fake-translation/fake-translation-lexicon.txt --unknown-clone-attributes --unknown-clone-text ! write-simple --tag fake-translation
