@@ -10,7 +10,7 @@ FILE_EXTS="cpp|hpp|h|c"
 CPPCHECK_EXCLUDE="-i ${TARGET_DIR}/bindings/perl -i ${TARGET_DIR}/bindings/python -i ${TARGET_DIR}/bindings/ruby -i tools/parsers/gobio/translator/lex.grlex.cpp"
 
 # Regexp for all external libraries incorporated into PSI-Toolkit
-EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tool/translators/bonsai/irstlm"
+EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tools/translators/bonsai/irstlm"
 
 VERA_EXCLUDE="(${TARGET_DIR}|${EXTERNAL_LIBS})"
 
