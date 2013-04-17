@@ -89,6 +89,9 @@ public:
 
         virtual std::list<std::list<std::string> > doRequiredLayerTags();
 
+        virtual std::list<std::list<std::string> > doRequiredLayerTags(
+            const boost::program_options::variables_map& options);
+
         virtual std::list<std::list<std::string> > doOptionalLayerTags();
 
         virtual std::list<std::string> doProvidedLayerTags();

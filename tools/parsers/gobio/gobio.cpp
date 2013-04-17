@@ -48,8 +48,24 @@ boost::filesystem::path Gobio::Factory::doGetFile() const {
 
 std::list<std::list<std::string> > Gobio::Factory::doRequiredLayerTags() {
     return boost::assign::list_of
-        (boost::assign::list_of(std::string("gobio-tagset")));
+        (boost::assign::list_of(std::string("gobio-tagset")))
+        (boost::assign::list_of(DEFAULT_TERMINAL_TAG));
 }
+
+std::list<std::list<std::string> > Gobio::Factory::doRequiredLayerTags(
+    const boost::program_options::variables_map& options) {
+
+    if (options.count("terminal-tag")) {
+        std::string terminalTag = options["terminal-tag"].as<std::string>();
+
+        return boost::assign::list_of
+            (boost::assign::list_of(std::string("gobio-tagset")))
+            (boost::assign::list_of(std::string(terminalTag)));
+    }
+
+    return doRequiredLayerTags();
+}
+
 
 std::list<std::list<std::string> > Gobio::Factory::doOptionalLayerTags() {
     return std::list<std::list<std::string> >();
@@ -104,7 +120,7 @@ void Gobio::parse(Lattice & lattice) {
         true
     );
 
-    Chart ch(lattice, av_ai_converter);
+    Chart ch(lattice, av_ai_converter, terminalTag_);
     Agenda agenda;
     Parser parser(ch, combinator, agenda);
 

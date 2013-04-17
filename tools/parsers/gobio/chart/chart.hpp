@@ -69,7 +69,7 @@ public:
 
     typedef I<edge_descriptor, category_type> marked_edges_index_type;
 
-    chart(Lattice & lattice, AV_AI_Converter & av_ai_converter);
+    chart(Lattice & lattice, AV_AI_Converter & av_ai_converter, const std::string& terminalTag);
 
     vertex_descriptor add_vertex();
 
