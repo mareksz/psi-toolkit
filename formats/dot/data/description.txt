@@ -1,7 +1,6 @@
 DOT Writer presents the results as a directed graph, described in
 [DOT language](http://www.graphviz.org/content/dot-language) used by
 [GraphViz](http://www.graphviz.org) software.
-
 The same effect can be achieved using `gv-writer --format canon` but dot-writer
 does not use the GraphViz library to generate the output.
 

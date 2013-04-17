@@ -1,10 +1,12 @@
-A shallow parser based on the Spejd shallow parser originally developed
-at IPI PAN (http://zil.ipipan.waw.pl/Spejd/). For input, Puddle requires morphologically anotated text as produced, for instance, by the morfologik processor. It may also serve as a disambiguation tool itself or can be used chained with a POS-tagger (e.g. metagger processor).
+A shallow parser based on the Spejd shallow parser originally developed at IPI
+PAN (http://zil.ipipan.waw.pl/Spejd/). For input, Puddle requires
+morphologically anotated text as produced, for instance, by the morfologik
+processor. It may also serve as a disambiguation tool itself or can be used
+chained with a POS-tagger (e.g. metagger processor).
 
-### Remarks ###
+Note that text needs to be annotated morphologically before passing it to
+puddle.
 
-Note that text needs to be annotated morphologically before passing it to puddle.
-
-Currently, rules and tagsets are available for Polish only and used by default if not specified otherwise. The Polish parsing rules are for demonstration purposes only and are by no means complete. 
-
-For other languages, you need to provide custom rules and tag sets that are compatible with the morphological processer employed in before puddle in the processing pipeline. A tutorial on the rule format and tagsets is currently being prepared. See the Polish rule and tag sets for examples.
+Currently, rules and tagsets are available for Polish only and used by default
+if not specified otherwise. The Polish parsing rules are for demonstration
+purposes only and are by no means complete.
