@@ -43,7 +43,7 @@ cd ..
 cppcheck -D__cplusplus -D__GNUC__=3 -f --xml . --enable=all echo `find . -type d ! -path './.git*' ! -path "./${TARGET_DIR}"'*' | perl -ne 'chomp; print "-I$_ "'` ${CPPCHECK_EXCLUDE} 2> cppcheck-result-all.xml
 
 if $SKIP_STYLE_CHECKING_IN_EXTERNAL_LIBS; then
-    egrep -v "file=\"${EXTERNAL_LIBS}/.*(${FILE_EXTS})\" .*severity=\"style\"" cppcheck-result-all.xml > cppcheck-result.xml
+    egrep -v "file=\"(${EXTERNAL_LIBS})/.*(${FILE_EXTS})\" .*severity=\"style\"" cppcheck-result-all.xml > cppcheck-result.xml
 else
     cp cppcheck-result-all.xml cppcheck-result.xml
 fi
