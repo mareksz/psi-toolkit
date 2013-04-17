@@ -12,6 +12,9 @@ CPPCHECK_EXCLUDE="-i ${TARGET_DIR}/bindings/perl -i ${TARGET_DIR}/bindings/pytho
 # Regexp for all external libraries incorporated into PSI-Toolkit
 EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tools/translators/bonsai/irstlm"
 
+# Regexp for automatically generated files by bison etc.
+AUTO_GENERATED_FILES="tools/parsers/gobio/translator/lex.grlex.cpp|tools/parsers/gobio/translator/grparser.bis.cpp"
+
 VERA_EXCLUDE="(${TARGET_DIR}|${EXTERNAL_LIBS})"
 
 mkdir -p $TARGET_DIR
@@ -43,7 +46,7 @@ cd ..
 cppcheck -D__cplusplus -D__GNUC__=3 -f --xml . --enable=all echo `find . -type d ! -path './.git*' ! -path "./${TARGET_DIR}"'*' | perl -ne 'chomp; print "-I$_ "'` ${CPPCHECK_EXCLUDE} 2> cppcheck-result-all.xml
 
 if $SKIP_STYLE_CHECKING_IN_EXTERNAL_LIBS; then
-    egrep -v "file=\"(${EXTERNAL_LIBS})/.*(${FILE_EXTS})\" .*severity=\"style\"" cppcheck-result-all.xml > cppcheck-result.xml
+    egrep -v "file=\"(${EXTERNAL_LIBS}|${AUTO_GENERATED_FILES}).*\" severity=\"style\"" cppcheck-result-all.xml > cppcheck-result.xml
 else
     cp cppcheck-result-all.xml cppcheck-result.xml
 fi
