@@ -1,0 +1,15 @@
+## beg. len.  text         tags                  annot.text  annotations
+01 0000 07    Piękny       !pl,token             Piękny      T
+02 0000 07    Piękny       !pl,lamerlemma,lamerlemma-tagset,normalization piękny term[1]
+03 0000 07    Piękny       !pl,lamerlemma,lamerlemma-tagset,lemma piękny word[2]
+04 0000 07    Piękny       !pl,lamerlemma,lamerlemma-tagset,lexeme piękny+adj adj[3]
+05 0000 07    Piękny       !pl,fake-tags-conversion,lexeme piękny+adj przymiotnik[4]
+06 0007 01    _            !pl,token             _           B
+07 0008 03    dom          !pl,token             dom         T
+08 0008 03    dom          !pl,lamerlemma,lamerlemma-tagset,normalization dom term[7]
+09 0008 03    dom          !pl,lamerlemma,lamerlemma-tagset,lemma dom word[8]
+10 0008 03    dom          !pl,lamerlemma,lamerlemma-tagset,lexeme dom+subst subst,gender=m3[9]
+11 0008 03    dom          !pl,fake-tags-conversion,lexeme dom+subst rzeczownik[10]
+12 0000 12    Piękny_dom.  frag,txt-reader       Piękny_dom. FRAG[]
+13 0000 12    Piękny_dom.  !pl,lang-guesser,text Piękny_dom. TEXT[12]
+14 0011 01    .            !pl,token             .           I

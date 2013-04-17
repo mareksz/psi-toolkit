@@ -1,18 +1,3 @@
 Splits texts into segments (i.e. sentences) according to rules defined
 in an SRX (Segmentation Rules Exchange) file. In terms of psi-toolkit
 lattices `segment` edges are extracted from `frag` edges.
-
-By default, slightly modified SRX files from Translatica Machine
-Translation system are used (for Polish, English, Russian, German,
-French and Italian). Another SRX file can be specified with the
-`--rules` option.
-
-Maximum sentence length can be set with `--sentence-length-hard-limit`
-and `--sentence-length-soft-limit`.
-
-Known deviations from the SRX standard (cf.
-<http://www.gala-global.org/oscarStandards/srx/srx20.html>)
-
-  * regexps in SRX files are interpreted as PCRE regexps,
-  * `\G` metacharacter is not handled,
-  * `segmentsubflows` attribute is not handled in any way.

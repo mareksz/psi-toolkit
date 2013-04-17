@@ -1,0 +1,4 @@
+For other languages, you need to provide custom rules and tag sets that are
+compatible with the morphological processer employed in before puddle in the
+processing pipeline. A tutorial on the rule format and tagsets is currently
+being prepared. See the Polish rule and tag sets for examples.

@@ -1,0 +1,26 @@
+By default, the dictionary text file format consists of 2 to 4 tab-separated
+columns with the following meaning:
+
+  1. word form - (required) the inflected word form, may be repeated,
+  2. lemma - (required) the base form, may be repeated,
+  3. part-of-speech tag - (optional) a single part of speech tag and several,
+  optional tag related features,
+  4. morfological features - (optional) zero or more morphological features.
+
+The most simple format consists of two columns contain only word forms and
+lemmas (tab as primary separator):
+
+    Ala\tAl Ala\tAla Alego\tAl Alę\tAla Aly\tAla ma\tmieć ma\tmój
+
+The same with part-of-speech tags and some morphological features (single space
+as secondary separator):
+
+    Ala\tAl\tsubst\tcase=acc gender=m1 number=sg Ala\tAla\tsubst\tcase=nom gender=f number=sg ma\tmieć\tverb\tnumber=sg aspect=imperf person=ter tense=fin ma\tmój\tadj\tcase=nom gender=f number=sg degree=pos
+
+If the text file contains part-of-speech and/or morphological information, this
+has to be stated explicitly with `--pos` and `--morpho` respectively to include
+this data in the analysis or the construction of a binary version. This
+information will be saved in the binary version. The `--morpho` option implies
+`--pos`. The default separators (tab for columns, space for inner-column
+features) can be changed with `--primary-separator` and `--secondary-separator`
+respectivly.

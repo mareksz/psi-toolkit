@@ -1,5 +1,7 @@
-Bonsai is a tree-to-string decoder for statistical machine translation. It requires its input sentences to be parsed before translation. For predefined translation rules, it is best to use default options without modification, as the weights have already been optimized.
+Bonsai is a tree-to-string decoder for statistical machine translation. It
+requires its input sentences to be parsed before translation. For predefined
+translation rules, it is best to use default options without modification, as
+the weights have already been optimized.
 
-Currently there are no ready-made translation rules and language model available. Come back soon for updates on that topic. 
-
-It is possible to create your own translation rule set using any parser integrated with psi-toolkit and the training-specific tools described in the bonsai tutorial. This, however, is an advanced topic, recommended for people with some experience in statistical machine translation. It is also quite resource and time-intensive.
+Currently there are no ready-made translation rules and language model
+available. Come back soon for updates on that topic.

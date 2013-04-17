@@ -1,0 +1,5 @@
+It is possible to create your own translation rule set using any parser
+integrated with PSI-Toolkit and the training-specific tools described in the
+bonsai tutorial. This, however, is an advanced topic, recommended for people
+with some experience in statistical machine translation. It is also quite
+resource and time-intensive.

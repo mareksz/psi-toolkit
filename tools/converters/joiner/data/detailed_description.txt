@@ -1,0 +1,11 @@
+In a way, joiner generates a sort of *left outer join* for edges
+("outer" means that a new edge is generated also for "left" edges, for
+which no "right" edges were found, outer join can be switched off with
+`--no-outer-join` option).
+
+By default the new edge inherits the text and the category field from
+the "left" edge and inherits attributes from both the "left" and
+"right" edges. This could be changed with appropriate options.
+
+Generated edges are labelled with tags specified with the `--out-tags`
+option.
