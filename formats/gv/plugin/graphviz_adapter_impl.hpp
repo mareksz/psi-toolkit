@@ -5,6 +5,8 @@
 
 #include <map>
 
+#include "config.hpp"
+
 // Fixes warnings "... not defined" from GraphViz include files
 
 #ifndef _BLD_cdt
@@ -21,6 +23,10 @@
 
 #ifndef _PACKAGE_ast
 #define _PACKAGE_ast 0
+#endif
+
+#if GRAPHVIZ_CGRAPH
+#define WITH_CGRAPH
 #endif
 
 #include <gvc.h>

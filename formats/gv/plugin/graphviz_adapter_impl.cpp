@@ -3,8 +3,6 @@
 
 #include <cassert>
 
-#include "config.hpp"
-
 
 GraphvizAdapterImpl::GraphvizAdapterImpl() :
     gvc_(NULL),
