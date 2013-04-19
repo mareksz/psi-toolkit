@@ -55,7 +55,7 @@ void PsiRequestHandler::handle_request(
 
     INFO("Request headers: ");
     for (unsigned int i = 0; i < req_modified.headers.size(); i++) {
-        INFO(i << ": " << (std::string)req_modified.headers[i].name << " => "
+        INFO("  " << i << ": " << (std::string)req_modified.headers[i].name << ": "
             << (std::string)req_modified.headers[i].value);
     }
 
@@ -74,7 +74,7 @@ void PsiRequestHandler::handle_request(
 
     INFO("Answer headers: ");
     for (unsigned int i = 0; i < rep.headers.size(); i++) {
-        INFO((unsigned long)i << ": " << (std::string)rep.headers[i].name << " => "
+        INFO("  " << (unsigned long)i << ": " << (std::string)rep.headers[i].name << ": "
             << (std::string)rep.headers[i].value);
     }
 }

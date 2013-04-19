@@ -47,7 +47,6 @@ bool SessionManager::isSession(std::string & id) {
 Session * SessionManager::getSession(std::string & id) {
     std::map<std::string, Session>::iterator found = sessions_.find(id);
 
-    //Session * session = new Session(generateNewId());
     if (found != sessions_.end()) {
         return &(found->second);
     }

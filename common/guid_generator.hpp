@@ -15,7 +15,7 @@ private:
 
     int _length;
     bool _withDate;
-    int _randomLength;
+    int _lengthOfRandomPart;
     int _counter;
 
     std::string randomString(int len);
@@ -23,9 +23,9 @@ private:
 
     std::string nextNumber();
     std::string zeroPadNumber(int num);
-    
+
     int determineLength(int len) const;
-    int determineRandomLength() const;
+    int determineLengthOfRandomPart() const;
 
 };
 

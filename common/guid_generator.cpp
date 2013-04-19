@@ -1,18 +1,19 @@
 #include "guid_generator.hpp"
+#include "logging.hpp"
 
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
 
 #define GUID_MIN_SIZE 16
-#define GUID_DATE_SIZE 7
+#define GUID_DATE_SIZE 6
 #define GUID_PAD_SIZE 4
 #define GUID_SEPARATOR '-'
 
 GUIDGenerator::GUIDGenerator(int length, bool with_date)
  : _length(determineLength(length)),
    _withDate(with_date),
-   _randomLength(determineRandomLength()),
+   _lengthOfRandomPart(determineLengthOfRandomPart()),
    _counter(0) {  }
 
 std::string GUIDGenerator::getGUID()
@@ -26,7 +27,7 @@ std::string GUIDGenerator::getGUID()
     guid += nextNumber();
     guid += GUID_SEPARATOR;
 
-    guid += randomString(_randomLength);
+    guid += randomString(_lengthOfRandomPart);
 
     return guid;
 }
@@ -38,9 +39,9 @@ std::string GUIDGenerator::nextNumber()
 
 std::string GUIDGenerator::currentDateTime()
 {
-    char buff[GUID_DATE_SIZE];
+    char buff[GUID_DATE_SIZE + 1];
     time_t now = time(NULL);
-    strftime(buff, GUID_DATE_SIZE, "%y%m%d", localtime(&now));
+    strftime(buff, GUID_DATE_SIZE + 1, "%y%m%d", localtime(&now));
 
     return std::string(buff);
 }
@@ -83,7 +84,7 @@ int GUIDGenerator::determineLength(int len) const
     return len < GUID_MIN_SIZE ? GUID_MIN_SIZE : len;
 }
 
-int GUIDGenerator::determineRandomLength() const
+int GUIDGenerator::determineLengthOfRandomPart() const
 {
     int currSize = _withDate ? GUID_PAD_SIZE + GUID_DATE_SIZE + 2 : GUID_PAD_SIZE + 1;
     return _length - currSize;

@@ -36,9 +36,6 @@
         void checkForAction(http::server3::request& req);
 
         Session * session();
-        //bool hasValue(const char* name);
-        //std::string findValue(const char* name);
-        //void saveValue(const char* name, std::string value);
 
         std::string websiteRoot;
 
