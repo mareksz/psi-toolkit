@@ -40,7 +40,7 @@ std::string markdownString2String(const std::string& s) {
     sd_markdown_render(ob, ib->data, ib->size, markdown);
     sd_markdown_free(markdown);
 
-    fwrite(ob->data, 1, ob->size, stderr);
+    //fwrite(ob->data, 1, ob->size, stderr);
     std::string ret(reinterpret_cast<char*>(ob->data), ob->size);
 
     bufrelease(ib);
