@@ -19,10 +19,10 @@ PipeSite::PipeSite(PsiServer& server, const std::string& pipe, const std::string
     : TemplateSite(server),
     initialText_(text.c_str()),
     initialPipe_(pipe.c_str()),
-    initialOutput_(""),
     fileStorage_(std::string(psiServer_.websiteRoot)),
     encodingConverter_("UTF-8")
 {
+    initialOutput_ = runPipe_(initialPipe_, initialText_, false),
     registerIncludesAndActions_();
 }
 
@@ -58,10 +58,40 @@ char * PipeSite::outputText() {
     return stringToChar(generateOutput_(output));
 }
 
+std::string PipeSite::getInput_() {
+    std::string input = psiServer_.session()->getData("input-text");
+    std::string isFile = psiServer_.session()->getData("radio-file");
+
+    if (isFile == "on") {
+        input = psiServer_.session()->getData("input-file");
+        inputFromFile_ = true;
+    }
+    else {
+        inputFromFile_ = false;
+    }
+
+    if (input.empty()) {
+        input = initialText_;
+    }
+
+    return input;
+}
+
+std::string PipeSite::getPipe_() {
+    std::string pipe = psiServer_.session()->getData("pipe-text");
+
+    if (pipe.empty()) {
+        pipe = initialPipe_;
+    }
+
+    return pipe;
+}
+
 char * PipeSite::actionPipe() {
     std::string input = getInput_();
+    std::string pipe = getPipe_();
 
-    std::string output = runPipe_(input);
+    std::string output = runPipe_(pipe, input);
     psiServer_.session()->setData("output-text", output);
 
     if (initialOutput_.empty())
@@ -94,28 +124,9 @@ std::string PipeSite::getOrSetDefaultData_(const char* name, std::string initial
     return psiServer_.session()->getData(name);
 }
 
-std::string PipeSite::getInput_() {
-    std::string input = psiServer_.session()->getData("input-text");
-    std::string isFile = psiServer_.session()->getData("radio-file");
-
-    if (isFile == "on") {
-        input = psiServer_.session()->getData("input-file");
-        inputFromFile_ = true;
-    }
-    else {
-        inputFromFile_ = false;
-    }
-
-    if (input.empty()) {
-        input = initialText_;
-    }
-
-    return input;
-}
-
-std::string PipeSite::runPipe_(std::string input) {
-    std::string pipe = psiServer_.session()->getData("pipe-text");
-
+std::string PipeSite::runPipe_(std::string pipe,
+                               std::string input,
+                               bool withSession /* = true */) {
     preparePipelineAndInput_(pipe, input);
 
     std::istringstream iss(input);
@@ -124,7 +135,9 @@ std::string PipeSite::runPipe_(std::string input) {
     INFO("Constructing pipe [" << pipe << "]...");
     INFO("Input: " << input);
 
-    clearPreviousFileFromOutput_();
+    if (withSession) {
+        clearPreviousFileFromOutput_();
+    }
 
     try {
         PipeRunner p(pipe);
@@ -133,7 +146,9 @@ std::string PipeSite::runPipe_(std::string input) {
         p.run(iss, oss);
         INFO("... OK");
 
-        createFileFromOutput_(oss.str());
+        if (withSession) {
+            createFileFromOutput_(oss.str());
+        }
     }
     catch (std::exception& e) {
         oss << "There are some problems: " << e.what() << std::endl

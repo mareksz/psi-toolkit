@@ -33,8 +33,9 @@ private:
     std::string getOrSetDefaultData_(const char* name, std::string initialValue);
 
     std::string getInput_();
+    std::string getPipe_();
     bool inputFromFile_;
-    std::string runPipe_(std::string);
+    std::string runPipe_(std::string pipe, std::string input, bool withSession = true);
 
     FileStorage fileStorage_;
     FileRecognizer fileRecognizer_;
