@@ -45,7 +45,7 @@
     Combinator combinator; \
     registrar<std::string> reg; \
     AV_AI_Converter av_ai_converter(aim, reg, reg); \
-    Chart ch(lattice, av_ai_converter);
+    Chart ch(lattice, av_ai_converter, "form");
 
 
 #ifdef RUN_PARSER_TEST
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE( helpers ) {
 
     registrar<std::string> reg;
     AV_AI_Converter av_ai_converter(aim, reg, reg);
-    Chart ch(lattice, av_ai_converter);
+    Chart ch(lattice, av_ai_converter, "form");
 
     BOOST_CHECK_EQUAL(count_vertices(ch), 7);
     BOOST_CHECK_EQUAL(count_out_edges(ch), 6);

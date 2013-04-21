@@ -72,7 +72,7 @@ std::list<std::list<std::string> > Joiner::Factory::doRequiredLayerTags(
 
     std::list<std::list<std::string> > rightTags =
         LayerTagManager::splitMaskSpecification(
-            options["left-mask"].as<std::string>());
+            options["right-mask"].as<std::string>());
 
 
     std::list<std::list<std::string> > tags;

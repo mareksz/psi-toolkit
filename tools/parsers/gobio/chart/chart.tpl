@@ -14,7 +14,8 @@
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 chart<C,S,V,R,I>::chart(
     Lattice & lattice,
-    AV_AI_Converter & av_ai_converter
+    AV_AI_Converter & av_ai_converter,
+    const std::string& terminalTag
 ) :
     lattice_(lattice),
     av_ai_converter_(av_ai_converter),
@@ -23,7 +24,7 @@ chart<C,S,V,R,I>::chart(
     inputTagMask_(lattice.getLayerTagManager().anyTag())
 {
     std::vector<LayerTagCollection> altTags;
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("form"));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection(terminalTag));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lemma"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lexeme"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));

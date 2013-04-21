@@ -18,7 +18,7 @@
     registrar<std::string> reg; \
     AV_AI_Converter av_ai_converter((LATTICE).getAnnotationItemManager(), reg, reg); \
     typedef chart<std::string, double, int, int_rule> simple_chart; \
-    simple_chart (CH)((LATTICE), av_ai_converter);
+    simple_chart (CH)((LATTICE), av_ai_converter, "form");
 
 
 class int_rule {

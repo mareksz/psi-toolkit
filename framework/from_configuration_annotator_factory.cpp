@@ -73,17 +73,17 @@ FromConfigurationAnnotatorFactory::doCreateAnnotator(
 
 std::list<std::list<std::basic_string<char> > >
 FromConfigurationAnnotatorFactory::doRequiredLayerTags() {
-    return requiredLayerTags_.get_value_or(annotatorFactory_.requiredLayerTags());
-
+    return requiredLayerTags_.get_value_or(annotatorFactory_.requiredLayerTags(options_));
 }
+
 std::list<std::list<std::basic_string<char> > >
 FromConfigurationAnnotatorFactory::doOptionalLayerTags() {
-    return optionalLayerTags_.get_value_or(annotatorFactory_.optionalLayerTags());
+    return optionalLayerTags_.get_value_or(annotatorFactory_.optionalLayerTags(options_));
 }
 
 std::list<std::basic_string<char> >
 FromConfigurationAnnotatorFactory::doProvidedLayerTags() {
-    return providedLayerTags_.get_value_or(annotatorFactory_.providedLayerTags());
+    return providedLayerTags_.get_value_or(annotatorFactory_.providedLayerTags(options_));
 }
 
 AnnotatorFactory::LanguagesHandling

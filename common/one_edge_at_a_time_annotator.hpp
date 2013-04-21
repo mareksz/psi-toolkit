@@ -50,6 +50,12 @@ public:
             return T::requiredLayerTags();
         }
 
+        virtual std::list<std::list<std::string> > doRequiredLayerTags(
+            const boost::program_options::variables_map& options) {
+
+            return T::requiredLayerTags(options);
+        }
+
         virtual std::list<std::list<std::string> > doOptionalLayerTags() {
             return std::list<std::list<std::string> >();
         }
@@ -57,6 +63,13 @@ public:
         virtual std::list<std::string> doProvidedLayerTags() {
             return T::providedLayerTags();
         }
+
+        virtual std::list<std::string> doProvidedLayerTags(
+            const boost::program_options::variables_map& options) {
+
+            return T::providedLayerTags(options);
+        }
+
     };
 
     class Worker : public LatticeWorker {

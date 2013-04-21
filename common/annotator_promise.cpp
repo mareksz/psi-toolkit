@@ -11,15 +11,15 @@ Processor* AnnotatorPromise::doCreateProcessor() {
 }
 
 std::list<std::list<std::string> > AnnotatorPromise::doRequiredLayerTags() {
-    return dynamic_cast<AnnotatorFactory*>(factory_)->requiredLayerTags();
+    return dynamic_cast<AnnotatorFactory*>(factory_)->requiredLayerTags(options_);
 }
 
 std::list<std::list<std::string> > AnnotatorPromise::doOptionalLayerTags() {
-    return dynamic_cast<AnnotatorFactory*>(factory_)->optionalLayerTags();
+    return dynamic_cast<AnnotatorFactory*>(factory_)->optionalLayerTags(options_);
 }
 
 std::list<std::string> AnnotatorPromise::doProvidedLayerTags() {
-    return dynamic_cast<AnnotatorFactory*>(factory_)->providedLayerTags();
+    return dynamic_cast<AnnotatorFactory*>(factory_)->providedLayerTags(options_);
 }
 
 AnnotatorFactory::LanguagesHandling AnnotatorPromise::doLanguagesHandling() const {

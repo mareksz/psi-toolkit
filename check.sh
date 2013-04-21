@@ -13,9 +13,7 @@ CPPCHECK_EXCLUDE="-i ${TARGET_DIR}/bindings/perl -i ${TARGET_DIR}/bindings/pytho
 EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tools/translators/bonsai/irstlm"
 
 # Regexp for automatically generated files by bison etc.
-AUTO_GENERATED_FILES="tools/parsers/gobio/translator/lex.grlex.cpp|tools/parsers/gobio/translator/grparser.bis.cpp"
-
-VERA_EXCLUDE="(${TARGET_DIR}|${EXTERNAL_LIBS})"
+AUTO_GENERATED_FILES=".*tools/parsers/gobio/translator/lex.grlex.cpp|.*tools/parsers/gobio/translator/grparser.bis.cpp"
 
 mkdir -p $TARGET_DIR
 
@@ -54,6 +52,8 @@ fi
 rm cppcheck-result-all.xml
 
 # Running Vera++
+VERA_EXCLUDE="(${TARGET_DIR}|${EXTERNAL_LIBS}|${AUTO_GENERATED_FILES})"
+
 find . -regextype posix-extended -regex ".*\.(${FILE_EXTS})" ! -regex "\./${VERA_EXCLUDE}/.*" ! -path './common/config.hpp' | vera++ - -profile psi -showrules 2>&1 | ./vera++2cppcheck.pl > vera++-result.xml
 
 # Running server tests
