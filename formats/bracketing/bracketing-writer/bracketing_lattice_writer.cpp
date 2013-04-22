@@ -194,7 +194,7 @@ void BracketingLatticeWriter::Worker::doRun() {
 
     std::set<EdgeData> * * edgeStore = new std::set<EdgeData> * [latticeSize];
     for (size_t i = 0; i < latticeSize; i++) {
-        edgeStore[i] = new std::set<EdgeData> [latticeSize];
+        edgeStore[i] = new std::set<EdgeData>[latticeSize];
     }
 
     std::string * * printedBrackets = new std::string * [latticeSize];
@@ -273,6 +273,8 @@ EdgeData BracketingLatticeWriter::Worker::getEdgeData_(Lattice::EdgeDescriptor e
     std::map<std::string, std::string> avMap;
     avMap = lattice_.getAnnotationItemManager().getAVMap(annotationItem);
     return EdgeData(
+        lattice_,
+        edge,
         processor_.intersectOnlyTags(tags),
         annotationItem.getCategory(),
         annotationItem.getText(),
