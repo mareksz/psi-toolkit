@@ -627,6 +627,7 @@ endif(USE_BONSAI_PARSEGRAPH)
 
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
     set_target_properties(fex PROPERTIES COMPILE_FLAGS "-fPIC")
+    set_target_properties(tiniconv PROPERTIES COMPILE_FLAGS "-fPIC")
 endif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 
 add_subdirectory(tests)
@@ -771,7 +772,7 @@ function(download_and_unpack URL FILE CHECKSUM DESTINATION)
 
     if (NOT "${CHECKSUM}" STREQUAL "${_file_md5}")
        message(FATAL_ERROR
-             "Wrong MD5 checksum for ${URL}")
+             "Wrong MD5 checksum for ${URL} (${CHECKSUM} expected ${_file_md5})")
     endif()
 
     file(REMOVE "${_tmp_archive_file}")
