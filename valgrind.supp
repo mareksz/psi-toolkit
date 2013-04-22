@@ -135,8 +135,7 @@
    Memcheck:Leak
    ...
    fun:agopen
-   fun:aginitlib
-   fun:gvContext
+   ...
 }
 {
    graphviz addr4 fcconfig
