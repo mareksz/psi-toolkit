@@ -131,6 +131,14 @@
    fun:dot_layout
 }
 {
+   graphviz leak agopen
+   Memcheck:Leak
+   ...
+   fun:agopen
+   fun:aginitlib
+   fun:gvContext
+}
+{
    graphviz addr4 fcconfig
    Memcheck:Addr4
    ...
