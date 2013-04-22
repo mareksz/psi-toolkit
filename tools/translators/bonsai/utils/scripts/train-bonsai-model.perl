@@ -20,6 +20,8 @@ if ($SCRIPTS_ROOTDIR eq '') {
     $SCRIPTS_ROOTDIR = dirname(__FILE__);
 }
 
+my $BONSAI_BIN_DIR = "$SCRIPTS_ROOTDIR/../build/binaries";
+
 my($_EXTERNAL_BINDIR, $_ROOT_DIR, $_CORPUS_DIR, $_GIZA_E2F, $_GIZA_F2E, $_MODEL_DIR, $_TEMP_DIR, $_SORT_BUFFER_SIZE, $_SORT_BATCH_SIZE,  $_SORT_COMPRESS, $_SORT_PARALLEL, $_CORPUS,
    $_CORPUS_COMPRESSION, $_FIRST_STEP, $_LAST_STEP, $_F, $_E, $_MAX_PHRASE_LENGTH,
    $_LEXICAL_FILE, $_NO_LEXICAL_WEIGHTING, $_LEXICAL_COUNTS, $_VERBOSE, $_ALIGNMENT,
@@ -95,18 +97,9 @@ $_HELP = 1
 		       'unknown-word-label-file=s' => \$_UNKNOWN_WORD_LABEL_FILE,
 		       'extract-options=s' => \@_EXTRACT_OPTIONS,
 		       'score-options=s' => \@_SCORE_OPTIONS,
-		       'no-word-alignment' => \$_OMIT_WORD_ALIGNMENT,
 		       'config=s' => \$_CONFIG,
-		       'max-lexical-reordering' => \$_MAX_LEXICAL_REORDERING,
 		       'do-steps=s' => \$_DO_STEPS,
-		       'memscore:s' => \$_MEMSCORE,
 		       'dictionary=s' => \$_DICTIONARY,
-		       'additional-ini=s' => \@_ADDITIONAL_INI, 
-		       'additional-ini-file=s' => \$_ADDITIONAL_INI_FILE, 
-		       'baseline-alignment-model=s{8}' => \@_BASELINE_ALIGNMENT_MODEL,
-		       'baseline-extract=s' => \$_BASELINE_EXTRACT,
-		       'baseline-corpus=s' => \$_BASELINE_CORPUS,
-		       'baseline-alignment=s' => \$_BASELINE_ALIGNMENT,
 		       'cores=i' => \$_CORES,
            'instance-weights-file=s' => \$_INSTANCE_WEIGHTS_FILE,
            'lmodel-oov-feature' => \$_LMODEL_OOV_FEATURE,
@@ -270,22 +263,23 @@ my $__SORT_PARALLEL = "";
 $__SORT_PARALLEL = "--parallel $_SORT_PARALLEL" if $_SORT_PARALLEL;
 
 # supporting scripts/binaries from this package
-my $PHRASE_EXTRACT = "$SCRIPTS_ROOTDIR/../build/binaries/extract";
+my $PHRASE_EXTRACT = "$BONSAI_BIN_DIR/extract";
 $PHRASE_EXTRACT = "$SCRIPTS_ROOTDIR/extract-parallel.perl $_CORES $SPLIT_EXEC \"$SORT_EXEC $__SORT_BUFFER_SIZE $__SORT_BATCH_SIZE $__SORT_COMPRESS $__SORT_PARALLEL\" $PHRASE_EXTRACT";
 
-my $RULE_EXTRACT = "$SCRIPTS_ROOTDIR/../build/binaries/extract-rules";
+my $RULE_EXTRACT = "$BONSAI_BIN_DIR/extract-rules";
 $RULE_EXTRACT = "$SCRIPTS_ROOTDIR/extract-parallel.perl $_CORES $SPLIT_EXEC \"$SORT_EXEC $__SORT_BUFFER_SIZE $__SORT_BATCH_SIZE $__SORT_COMPRESS $__SORT_PARALLEL\" $RULE_EXTRACT";
 
-my $LEXICAL_REO_SCORER = "$SCRIPTS_ROOTDIR/../build/binaries/lexical-reordering-score";
-my $SYMAL = "$SCRIPTS_ROOTDIR/../build/binaries/symal";
+my $LEXICAL_REO_SCORER = "$BONSAI_BIN_DIR/lexical-reordering-score";
+my $SYMAL = "$BONSAI_BIN_DIR/symal";
 my $GIZA2BAL = "$SCRIPTS_ROOTDIR/giza2bal.pl";
 
-my $PHRASE_SCORE = "$SCRIPTS_ROOTDIR/../build/binaries/score";
+my $PHRASE_SCORE = "$BONSAI_BIN_DIR/score";
 $PHRASE_SCORE = "$SCRIPTS_ROOTDIR/score-parallel.perl $_CORES \"$SORT_EXEC $__SORT_BUFFER_SIZE $__SORT_BATCH_SIZE $__SORT_COMPRESS $__SORT_PARALLEL\" $PHRASE_SCORE";
 
-my $PHRASE_CONSOLIDATE = "$SCRIPTS_ROOTDIR/../build/binaries/consolidate";
+my $PHRASE_CONSOLIDATE = "$BONSAI_BIN_DIR/consolidate";
 
 my $CONVERT2BONSAI = "perl $SCRIPTS_ROOTDIR/moses2bonsai.perl";
+my $BINARIZE = "perl $SCRIPTS_ROOTDIR/binarize-rules.perl";
 
 # utilities
 my $ZCAT = "gzip -cd";
@@ -304,6 +298,8 @@ my $___CORPUS_DIR  = $___ROOT_DIR."/corpus";
 $___CORPUS_DIR = $_CORPUS_DIR if $_CORPUS_DIR;
 die("ERROR: use --corpus to specify corpus") unless $_CORPUS || !($STEPS[1] || $STEPS[4] || $STEPS[5] || $STEPS[8]);
 my $___CORPUS      = $_CORPUS;
+
+my $___BINARY_DIR  = $___ROOT_DIR."/binary";
 
 # check the final-alignment-model switch
 my $___FINAL_ALIGNMENT_MODEL = undef;
@@ -448,8 +444,16 @@ die("ERROR: format for decoding steps is \"t0,g0,t1,g1:t2\", you provided $___DE
 &get_lexical_factored()    if $STEPS[4];
 &extract_phrase_factored() if $STEPS[5];
 &score_phrase_factored()   if $STEPS[6];
+&binarize_bonsai()   	   if $STEPS[7];
 
 ### (1) PREPARE CORPUS
+
+sub binarize_bonsai {
+    print STDERR "(7) binarizing bonsai rules @ ".`date`;
+    safesystem("mkdir -p $___BINARY_DIR") or die("ERROR: could not create corpus dir $___BINARY_DIR");
+    my $file = "$___MODEL_DIR/rule-table.gz";
+    safesystem("$ZCAT $file | $BINARIZE --bindir $BONSAI_BIN_DIR --scriptdir $SCRIPTS_ROOTDIR --prefix $___BINARY_DIR/$___F-$___E");
+}
 
 sub prepare {
     print STDERR "(1) preparing corpus @ ".`date`;
@@ -1275,8 +1279,6 @@ sub score_phrase {
 
     if ($___PHRASE_SCORER eq "phrase-extract") {
         &score_phrase_phrase_extract($ttable_file,$lexical_file,$extract_file);
-    } elsif ($___PHRASE_SCORER eq "memscore") {
-        &score_phrase_memscore($ttable_file,$lexical_file,$extract_file);
     } else {
         die "ERROR: Unknown phrase scorer: ".$___PHRASE_SCORER;
     }
