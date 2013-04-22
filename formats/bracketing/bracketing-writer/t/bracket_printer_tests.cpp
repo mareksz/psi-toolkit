@@ -12,9 +12,12 @@
 
 
 void testBracketPrinter(std::string pattern, std::string output) {
-    AnnotationItemManager manager;
-    Lattice lattice(manager);
-    Lattice::EdgeDescriptor edge;
+    AnnotationItemManager aim;
+    Lattice lattice(aim, "a");
+    lattice.addSymbols(lattice.getFirstVertex(), lattice.getLastVertex());
+    Lattice::EdgeDescriptor edge = lattice.firstOutEdge(
+        lattice.getFirstVertex(),
+        lattice.getLayerTagManager().anyTag());
     std::vector<std::string> vs = boost::assign::list_of(pattern);
     BracketPrinter bp(vs, ",", ",", "=");
     std::set<std::string> tags = boost::assign::list_of("symbol")("token")("segment");
