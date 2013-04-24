@@ -30,11 +30,14 @@ public:
 
     private:
         class Worker : public LatticeWorker {
-            public:
-                Worker(Detok& processor, Lattice& lattice);
-            private:
-                virtual void doRun();
-                Detok& processor_;
+        public:
+            Worker(Detok& processor, Lattice& lattice);
+        private:
+            bool shouldBePrecededBySpace_(const std::string& text);
+            bool shouldBeFollowedBySpace_(const std::string& text);
+
+            virtual void doRun();
+            Detok& processor_;
         };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);

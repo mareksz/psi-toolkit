@@ -1,3 +1,7 @@
-UNDER CONSTRUCTION!!!
-
-Simple detokenizer.
+A simple detokenizer, usually used at the end of the process of
+translation. It composes the final text from token edges of a given
+language. Tokens are put in the order induced by the values of the
+`SurfacePosition` attribute (not the original order in the lattice!).
+Usually tokens are joined using spaces except for some puncuation
+marks (e.g. no space is inserted before a comma or after an opening
+bracket).

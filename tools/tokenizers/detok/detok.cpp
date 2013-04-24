@@ -12,7 +12,7 @@ Annotator* Detok::Factory::doCreateAnnotator(
 }
 
 void Detok::Factory::doAddLanguageIndependentOptionsHandled(
-    boost::program_options::options_description& optionsDescription) {
+    boost::program_options::options_description& /*optionsDescription*/) {
 }
 
 std::string Detok::Factory::doGetName() const {
@@ -77,17 +77,19 @@ void Detok::Worker::doRun() {
          orderMapIter != orderMap.end();
          ++orderMapIter) {
 
-        int position = (*orderMapIter).first;
         Lattice::EdgeDescriptor edge = (*orderMapIter).second;
 
-        INFO("TOKEN: " << lattice_.getAnnotationText(edge));
+        std::string tokenText = lattice_.getAnnotationText(edge);
+
+        INFO("JOINING TOKEN: " << tokenText);
 
         if (firstToken)
             firstToken = false;
-        else
+        else if (shouldBePrecededBySpace_(tokenText)
+                 && shouldBeFollowedBySpace_(finalText))
             finalText += " ";
 
-        finalText += lattice_.getAnnotationText(edge);
+        finalText += tokenText;
     }
 
     Lattice::VertexDescriptor fromVertex = lattice_.addLooseVertex();
@@ -104,6 +106,41 @@ void Detok::Worker::doRun() {
         lattice_.getLayerTagManager().createSingletonTagCollectionWithLangCode(
             "text", "en"));
 }
+
+bool Detok::Worker::shouldBePrecededBySpace_(const std::string& text) {
+    if (text.empty())
+        return false;
+
+    switch(text[0]) {
+    case '.':
+    case ',':
+    case ';':
+    case ':':
+    case ')':
+    case ']':
+    case '}':
+    case '!':
+    case '?':
+        return false;
+    }
+
+    return true;
+}
+
+bool Detok::Worker::shouldBeFollowedBySpace_(const std::string& text) {
+    if (text.empty())
+        return false;
+
+    switch(text[text.length()-1]) {
+    case '(':
+    case '[':
+    case '{':
+        return false;
+    }
+
+    return true;
+}
+
 
 std::string Detok::doInfo() {
     return "detokenizer";
