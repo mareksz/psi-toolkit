@@ -7,13 +7,24 @@ use File::Temp qw(tempfile tempdir);
 my $name = "rules";
 my $copy = 0;
 
+my $BIN_DIR = ".";
+my $SCRIPT_DIR = ".";
+
 GetOptions(
+    "bindir=s" => \$BIN_DIR,
+    "scriptdir=s" => \$SCRIPT_DIR,
     "prefix=s" => \$name,
     "copy" => \$copy,
 );
 
 $ENV{LC_ALL} = "C";
 my $size = "4G";
+
+my $BINFSA   = "$BIN_DIR/binfsa";
+my $MINFSA   = "$BIN_DIR/minfsa";
+my $TXT2MONO = "$BIN_DIR/txt2monotonic";
+my $TXT2SVEC = "$BIN_DIR/txt2stringvector";
+my $STR2NUM  = "perl $SCRIPT_DIR/string2nums.perl";
 
 my $tempdir = tempdir( CLEANUP => 1 );
 
@@ -29,9 +40,6 @@ my ($src_sym_h, $src_sym_file) = tempfile( DIR => $tempdir );
 my ($trg_sym_h, $trg_sym_file) = tempfile( DIR => $tempdir );
 
 my ($log_sv_h, $log_sv) = tempfile( DIR => $tempdir );
-
-#my ($src_sym_h, $src_sym_file) = tempfile( DIR => $tempdir );
-#my ($trg_sym_h, $trg_sym_file) = tempfile( DIR => $tempdir );
 
 my %src;
 my %trg;
@@ -67,10 +75,6 @@ while(<$sorter>) {
     
     my ($trg, $probs, $aln) = $trg_part =~ /^(.+)\s\[(\S+)\]\s\[(\S*)\]$/;
     
-    #print $trg, "\n";
-    #print $probs, "\n";
-    #print $aln, "\n";
-    
     my @trg = split(/\s/, $trg);
     my @probs = split(/\,/, $probs);
     my @aln = $aln =~ /(\d+)/g;
@@ -80,8 +84,6 @@ while(<$sorter>) {
             $trg{$token} = scalar keys %trg;
         }
     }
-    
-    #print STDERR $trg_part, "\n";
     
     print $src_h $src_part."\n";
     
@@ -139,7 +141,7 @@ if($copy) {
 print STDERR "Combining elements to packed StringVector\n";
 
 my ($tempMonotonic_h, $tempMonotonic) = tempfile( DIR => $tempdir );
-`./txt2monotonic $tempMonotonic < $src_bytes_file`;
+`$TXT2MONO $tempMonotonic < $src_bytes_file`;
 
 `perl -e 'print pack("C", 0)' > $name.trg.huf`;
 `cat $tempMonotonic >> $name.trg.huf`;
@@ -165,8 +167,8 @@ if($copy) {
 
 print STDERR "Generating symbol maps\n";
 
-`./txt2stringvector $name.src.sym < $src_sym_file`;
-`./txt2stringvector $name.trg.sym < $trg_sym_file`;
+`$TXT2SVEC $name.src.sym < $src_sym_file`;
+`$TXT2SVEC $name.trg.sym < $trg_sym_file`;
 
 print STDERR "Mapping rules symbols to integers\n";
 
@@ -174,7 +176,7 @@ my (undef, $src_nums) = tempfile( DIR => $tempdir );
 my (undef, $trg_nums) = tempfile( DIR => $tempdir );
 
 print STDERR "Mapping source rule symbols to integers\n";
-`cat $src_rule_file | uniq | ./string2nums.pl --symbol_list $src_sym_file > $src_nums`;
+`cat $src_rule_file | uniq | $STR2NUM --symbol_list $src_sym_file > $src_nums`;
 
 if($copy) {
     `cp $src_nums $name.src.nums`;
@@ -183,10 +185,10 @@ if($copy) {
 my ($src_fsa_txt_h, $src_fsa_txt_file) = tempfile( DIR => $tempdir );
 
 print STDERR "Minimizing and sorting source rule automaton\n";
-`cat $src_nums | ./minfsa | sort -k1,1n -k3,3n -S $size > $src_fsa_txt_file`;
+`cat $src_nums | $MINFSA | sort -k1,1n -k3,3n -S $size > $src_fsa_txt_file`;
 
 print STDERR "Binarizing and resorting automaton by access counts\n";
-`cat $src_fsa_txt_file | ./binfsa -o $name.src.idx`;
+`cat $src_fsa_txt_file | $BINFSA -o $name.src.idx`;
 
 if($copy) {
     `cp $src_fsa_txt_file $name.src.fsa.txt`;

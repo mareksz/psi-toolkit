@@ -22,7 +22,7 @@ set(GRAPHVIZ_FOUND TRUE)
 # Paths
 
 find_path(GRAPHVIZ_INCLUDE_DIR
-    NAMES gvc.h cgraph.h graph.h cdt.h
+    NAMES gvc.h graph.h cgraph.h cdt.h
     HINTS ${GRAPHVIZ_PKG_INCLUDE_DIRS}
     PATHS /usr/include /usr/local/include
 )
@@ -44,7 +44,7 @@ if (NOT GRAPHVIZ_GVC_LIBRARY)
 endif (NOT GRAPHVIZ_GVC_LIBRARY)
 
 find_library(GRAPHVIZ_GRAPH_LIBRARY
-    NAMES cgraph graph
+    NAMES graph cgraph
     HINTS ${GRAPHVIZ_PKG_LIBRARY_DIRS}
     PATHS /usr/lib /usr/local/lib
 )

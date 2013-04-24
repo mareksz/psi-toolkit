@@ -36,7 +36,8 @@ public:
         std::string avPairsSeparator,
         std::string avSeparator,
         std::vector<std::string> showAttributes,
-        bool showSymbolEdges
+        bool showSymbolEdges,
+        bool skipBlank
     );
 
     std::string getOpeningBracket() const { return openingBracket_; }
@@ -50,6 +51,7 @@ public:
     std::map<std::string, std::string> filterAttributes(std::map<std::string, std::string> avMap);
 
     bool isShowSymbolEdges() const { return showSymbolEdges_; }
+    bool isSkipBlank() const { return skipBlank_; }
 
 private:
     virtual std::string doInfo();
@@ -84,6 +86,7 @@ private:
     std::string avSeparator_;
     std::set<std::string> showAttributes_;
     bool showSymbolEdges_;
+    bool skipBlank_;
 
 };
 

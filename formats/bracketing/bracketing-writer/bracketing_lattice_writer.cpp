@@ -44,7 +44,8 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
         quoter.unescape(options["av-pairs-separator"].as<std::string>()),
         quoter.unescape(options["av-separator"].as<std::string>()),
         showAttributes,
-        !options.count("skip-symbol-edges")
+        !options.count("skip-symbol-edges"),
+	options.count("skip-blank")
     );
 }
 
@@ -78,7 +79,9 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
             boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "the attributes to be shown")
         ("skip-symbol-edges",
-            "skips symbol edges");
+            "skips symbol edges")
+        ("skip-blank",
+	    "skips blank edges");
 
     return optionsDescription;
 }
@@ -103,7 +106,8 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     std::string avPairsSeparator,
     std::string avSeparator,
     std::vector<std::string> showAttributes,
-    bool showSymbolEdges
+    bool showSymbolEdges,
+    bool skipBlank
 ) :
     openingBracket_(openingBracket),
     closingBracket_(closingBracket),
@@ -113,7 +117,8 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     avPairsSeparator_(avPairsSeparator),
     avSeparator_(avSeparator),
     showAttributes_(showAttributes.begin(), showAttributes.end()),
-    showSymbolEdges_(showSymbolEdges)
+    showSymbolEdges_(showSymbolEdges),
+    skipBlank_(skipBlank)
 { }
 
 
@@ -189,7 +194,7 @@ void BracketingLatticeWriter::Worker::doRun() {
 
     std::set<EdgeData> * * edgeStore = new std::set<EdgeData> * [latticeSize];
     for (size_t i = 0; i < latticeSize; i++) {
-        edgeStore[i] = new std::set<EdgeData> [latticeSize];
+        edgeStore[i] = new std::set<EdgeData>[latticeSize];
     }
 
     std::string * * printedBrackets = new std::string * [latticeSize];
@@ -207,6 +212,10 @@ void BracketingLatticeWriter::Worker::doRun() {
             tagNames.size() == 1 &&
             tagNames.front() == "symbol" &&
             !processor_.isShowSymbolEdges()
+        ) continue;
+        if (
+            processor_.isSkipBlank() &&
+            lattice_.isBlank(edge)
         ) continue;
         if (!processor_.areSomeInFilter(tagNames)) continue;
         int begin = lattice_.getEdgeBeginIndex(edge);
@@ -264,6 +273,8 @@ EdgeData BracketingLatticeWriter::Worker::getEdgeData_(Lattice::EdgeDescriptor e
     std::map<std::string, std::string> avMap;
     avMap = lattice_.getAnnotationItemManager().getAVMap(annotationItem);
     return EdgeData(
+        lattice_,
+        edge,
         processor_.intersectOnlyTags(tags),
         annotationItem.getCategory(),
         annotationItem.getText(),

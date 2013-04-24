@@ -5,7 +5,7 @@
 #include "StringVector.hpp"
 
 int main(int argc, char** args) {
-    StringVector<> sv;
+    poleng::bonsai::StringVector<> sv;
 
     std::string line;
     while (std::cin >> line)

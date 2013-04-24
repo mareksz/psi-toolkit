@@ -627,6 +627,7 @@ endif(USE_BONSAI_PARSEGRAPH)
 
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
     set_target_properties(fex PROPERTIES COMPILE_FLAGS "-fPIC")
+    set_target_properties(tiniconv PROPERTIES COMPILE_FLAGS "-fPIC")
 endif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 
 add_subdirectory(tests)
@@ -771,7 +772,7 @@ function(download_and_unpack URL FILE CHECKSUM DESTINATION)
 
     if (NOT "${CHECKSUM}" STREQUAL "${_file_md5}")
        message(FATAL_ERROR
-             "Wrong MD5 checksum for ${URL}")
+             "Wrong MD5 checksum for ${URL} (${CHECKSUM} expected ${_file_md5})")
     endif()
 
     file(REMOVE "${_tmp_archive_file}")
@@ -781,7 +782,16 @@ function(download_and_unpack URL FILE CHECKSUM DESTINATION)
 endfunction(download_and_unpack)
 
 if(DOWNLOAD_DATA)
+    download_artifact("tools/lexica/bilexicon/data/depl.bin")
+    download_artifact("tools/lexica/bilexicon/data/enpl.bin")
+    download_artifact("tools/lexica/bilexicon/data/espl.bin")
+    download_artifact("tools/lexica/bilexicon/data/frpl.bin")
+    download_artifact("tools/lexica/bilexicon/data/itpl.bin")
+    download_artifact("tools/lexica/bilexicon/data/plde.bin")
     download_artifact("tools/lexica/bilexicon/data/plen.bin")
+    download_artifact("tools/lexica/bilexicon/data/ples.bin")
+    download_artifact("tools/lexica/bilexicon/data/plfr.bin")
+    download_artifact("tools/lexica/bilexicon/data/plit.bin")
     download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
     download_artifact("tools/lexica/mapper/data/pl-valency.bin")
 
