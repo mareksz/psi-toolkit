@@ -1,6 +1,7 @@
 <span id="select-output-type">
-  Change ouptput format type:
+  Change output format:
   <select id="output-type-select">
+    <option value="">---</option>
     <option value="gv-writer">graphic</option>
     <option value="simple-writer">simple text</option>
     <option value="bracketing-writer">tagged text</option>
