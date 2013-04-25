@@ -228,14 +228,16 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 .alias-item { margin-left:24px; }
 
 .help-examples, .help-opts, .help-alias, .help-langs { margin-left:24px; }
+.help-example { display:none; }
 .example-desc { margin-top:6px; }
 .in-out { margin-bottom:25px; }
 .in-out > pre, .in-out > a { padding-left:35px; }
 .in-out > a { display:block; }
 .in, .out { float:left; font-weight:bold; margin-right:5px; }
 
-.help-toggler { color:#004767; float:right; font-size:.9em; text-decoration:none; cursor:pointer; }
-.help-toggler:hover { text-decoration:underline; }
+.toggler { color:#004767; font-size:.9em; text-decoration:none; cursor:pointer; }
+.toggler:hover { text-decoration:underline; }
+.help-toggler { float:right; }
 
 img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
     width:770px; }

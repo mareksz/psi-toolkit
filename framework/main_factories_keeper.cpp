@@ -99,16 +99,16 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addAlias("spellcheck", "spell");
 
 #if HAVE_LIBMAGIC
-    keeper_.addAlias("guess-input", "guessing-reader");
+    keeper_.addAlias("guess-input",  "guessing-reader");
     keeper_.addAlias("guess-format", "guessing-reader");
 #endif
 
-    keeper_.addAlias("guess-lang", "lang-guesser");
+    keeper_.addAlias("guess-lang",     "lang-guesser");
     keeper_.addAlias("guess-language", "lang-guesser");
 
-    keeper_.addAlias("read", "txt-reader");
-    keeper_.addAlias("read-txt", "txt-reader");
-    keeper_.addAlias("read-text", "txt-reader");
+    keeper_.addAlias("read",        "txt-reader");
+    keeper_.addAlias("read-txt",    "txt-reader");
+    keeper_.addAlias("read-text",   "txt-reader");
     keeper_.addAlias("text-reader", "txt-reader");
 
 #if HAVE_POPPLER
@@ -123,26 +123,27 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addAlias("read-doc", "doc-reader");
 #endif
 
-    keeper_.addAlias("read-html", "apertium-reader");
-
     keeper_.addAlias("read-nkjp", "nkjp-reader");
 
     keeper_.addAlias("read-utt", "utt-reader");
 
-    keeper_.addAlias("read-psi", "psi-reader");
-    keeper_.addAlias("read-lattice", "psi-reader");
+    keeper_.addAlias("lattice-reader", "psi-reader");
+    keeper_.addAlias("read-psi",       "psi-reader");
+    keeper_.addAlias("read-lattice",   "psi-reader");
 
-    keeper_.addAlias("write-psi", "psi-writer");
+    keeper_.addAlias("write-psi",     "psi-writer");
     keeper_.addAlias("write-lattice", "psi-writer");
 
-    keeper_.addAlias("write", "simple-writer");
+    keeper_.addAlias("write",        "simple-writer");
     keeper_.addAlias("write-simple", "simple-writer");
 
 #if HAVE_GRAPHVIZ
-    keeper_.addAlias("write-graph", "gv-writer");
-    keeper_.addAlias("write-chart", "gv-writer");
-    keeper_.addAlias("graph", "gv-writer");
-    keeper_.addAlias("draw", "gv-writer");
+    keeper_.addAlias("chart-writer", "gv-writer");
+    keeper_.addAlias("graph-writer", "gv-writer");
+    keeper_.addAlias("write-graph",  "gv-writer");
+    keeper_.addAlias("write-chart",  "gv-writer");
+    keeper_.addAlias("graph",        "gv-writer");
+    keeper_.addAlias("draw",         "gv-writer");
 #endif
 
     keeper_.addAlias("write-dot", "dot-writer");

@@ -1,6 +1,7 @@
 $(document).ready(function(){
     bindBibtexToggle();
     bindDetailedDescriptionToggle();
+    bindHelpExamplesToggle();
 });
 
 function bindBibtexToggle() {
@@ -18,6 +19,20 @@ function bindDetailedDescriptionToggle() {
             }
             else {
                 button.text('[show more]');
+            }
+        })
+    });
+}
+
+function bindHelpExamplesToggle() {
+    $('.example-toggler').click(function() {
+        var button = $(this);
+        button.parent().siblings('.help-example').toggle('fast', function() {
+            if ($(this).is(":visible")) {
+                button.text('[hide]');
+            }
+            else {
+                button.text('[show]');
             }
         })
     });

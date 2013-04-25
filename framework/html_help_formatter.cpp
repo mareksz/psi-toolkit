@@ -54,7 +54,7 @@ void HtmlHelpFormatter::formatDescription_(std::string description,
             output << "<div class=\"help-details\" style=\"display:none;\">"
                 << markdownString2String(details)
                 << "</div>" << std::endl
-                << "<span class=\"help-toggler\">[show more]</span>" << std::endl;
+                << "<span class=\"toggler help-toggler\">[show more]</span>" << std::endl;
         }
 
         output << "</div>" << std::endl;
@@ -78,7 +78,10 @@ void HtmlHelpFormatter::formatAliases_(std::list<std::string> aliases, std::ostr
 
 void HtmlHelpFormatter::formatUsingExamples_(std::vector<TestBatch> batches, std::ostream& output) {
     output << "<div class=\"help-examples\">"
-        << "<h3>" << EXAMPLES_HEADER << "</h3>" << std::endl;
+        << "<h3>" << EXAMPLES_HEADER
+            << " <span class=\"toggler example-toggler\">[show]</span>"
+        << "</h3>"
+        << std::endl;
 
     for (unsigned int i = 0; i < batches.size(); i++) {
         output << "<div class=\"help-example\">";
