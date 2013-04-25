@@ -8,16 +8,50 @@
 
 typedef std::map<std::string, std::string> string_map;
 
-ShallowAliaser::ShallowAliaser() {
-    initializeAliases_();
-}
+std::map<std::string, std::string> ShallowAliaser::ALIASES =
+    boost::assign::map_list_of
+        ("docx-reader", "apertium-reader --format docx")
+        ("read-docx",   "apertium-reader --format docx")
+        ("xlsx-reader", "apertium-reader --format xlsx")
+        ("read-xlsx",   "apertium-reader --format xlsx")
+        ("pptx-reader", "apertium-reader --format pptx")
+        ("read-pptx",   "apertium-reader --format pptx")
+        ("html-reader", "apertium-reader --format html")
+        ("read-html",   "apertium-reader --format html")
+
+        ("write-tokens",    "simple-writer --tags token")
+        ("get-tokens",      "simple-writer --tags token")
+        ("write-segments",  "simple-writer --tags segment")
+        ("get-segments",    "simple-writer --tags segment")
+
+        ("xml-writer", "bracketing-writer --skip-symbol-edges --opening-bracket \n"
+            "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
+            " --av-separator : --av-pairs-separator ;")
+        ("write-xml", "bracketing-writer --skip-symbol-edges --opening-bracket \n"
+            "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
+            " --av-separator : --av-pairs-separator ;")
+        ("get-xml", "bracketing-writer --skip-symbol-edges --opening-bracket \n"
+            "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
+            " --av-separator : --av-pairs-separator ;")
+
+        ("write-tree",  "gv-writer --tree")
+        ("get-tree",    "gv-writer --tree")
+        ("draw-tree",   "gv-writer --tree")
+
+        ("write-parse-tree",    "gv-writer --tree --tags parse")
+        ("get-parse-tree",      "gv-writer --tree --tags parse")
+        ("draw-parse-tree",     "gv-writer --tree --tags parse")
+        ;
+
+
+ShallowAliaser::ShallowAliaser() { }
 
 std::string ShallowAliaser::replace(const std::string& pipeline) {
     std::string result = std::string(" " + pipeline + " ");
 
     // FIXME: optimize using regexps
-    BOOST_FOREACH(const string_map::value_type& pair, aliases_) {
-        boost::replace_all(result, pair.first, pair.second);
+    BOOST_FOREACH(const string_map::value_type& pair, ALIASES) {
+        boost::replace_all(result, " " + pair.first + " ", " " + pair.second + " ");
     }
 
     boost::algorithm::trim(result);
@@ -35,22 +69,25 @@ std::vector<std::string> ShallowAliaser::replace(std::vector<std::string> pipeli
     return result;
 }
 
-void ShallowAliaser::initializeAliases_() {
-    addReadReaderAlias("docx", "apertium-reader --format docx");
-    addReadReaderAlias("xlsx", "apertium-reader --format xlsx");
-    addReadReaderAlias("pptx", "apertium-reader --format pptx");
-    addReadReaderAlias("html", "apertium-reader --format html");
+std::set<std::string> ShallowAliaser::getAllAliases() {
+    std::set<std::string> aliases;
 
-    addWriteGetAlias("tokens",   "simple-writer --tags token");
-    addWriteGetAlias("segments", "simple-writer --tags segment");
+    BOOST_FOREACH(const string_map::value_type& pair, ALIASES) {
+        aliases.insert(boost::algorithm::trim_copy(pair.first));
+    }
 
-    addWriteWriterGetAlias("xml", "bracketing-writer --skip-symbol-edges --opening-bracket \n"
-        "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
-        " --av-separator : --av-pairs-separator ;");
-
-    addWriteGetDrawAlias("tree", "gv-writer --tree");
-    addWriteGetDrawAlias("parse-tree", "gv-writer --tree --tags parse");
+    return aliases;
 }
+
+bool ShallowAliaser::hasAlias(const std::string& alias) {
+    return ALIASES.count(alias);
+}
+
+std::string ShallowAliaser::getProcessorNameForAlias(const std::string& alias) {
+    return ALIASES[alias];
+}
+
+/* adding new aliases dynamically */
 
 void ShallowAliaser::addReadReaderAlias(std::string alias, std::string expand) {
     addAlias_("read-" + alias, expand);
@@ -73,5 +110,5 @@ void ShallowAliaser::addWriteGetDrawAlias(std::string alias, std::string expand)
 }
 
 void ShallowAliaser::addAlias_(std::string key, std::string value) {
-    aliases_.insert(std::pair<std::string, std::string>(" " + key + " ", " " + value + " "));
+    ALIASES.insert(std::pair<std::string, std::string>(key, value));
 }

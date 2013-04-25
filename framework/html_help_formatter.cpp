@@ -4,6 +4,7 @@
 
 #include "html_help_formatter.hpp"
 #include "logging.hpp"
+#include "shallow_aliaser.hpp"
 
 #include "sundown/cpp/stringwrapper.hpp"
 
@@ -217,16 +218,23 @@ void HtmlHelpFormatter::doFormatOneAlias(
     std::list<std::string> processorNames,
     std::ostream& output) {
 
-    if (processorNames.empty()) return;
+    if (processorNames.empty())
+        return;
 
     output << "<div class=\"alias-item\">" << aliasName << " &rarr; ";
 
     unsigned int i = 0;
+
     BOOST_FOREACH(std::string processorName, processorNames) {
-        output << "<a href=\"/help/documentation.html#" << processorName << "\">"
-               << processorName << "</a>";
-        if (++i != processorNames.size()) output << ", ";
+        output << "<a href=\"/help/documentation.html#"
+            << getProcessorNameWithoutOptions(processorName) << "\">"
+            << processorName << "</a>";
+
+        if (++i != processorNames.size())
+            output << ", ";
     }
+
+
     output << "</div>" << std::endl;
 }
 

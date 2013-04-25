@@ -2,10 +2,12 @@
 #include <fstream>
 
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "help_formatter.hpp"
 #include "its_data.hpp"
 #include "configurator.hpp"
+#include "shallow_aliaser.hpp"
 
 void HelpFormatter::formatHelps(std::ostream& output) {
     std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
@@ -57,13 +59,30 @@ bool HelpFormatter::formatProcessorHelpsByName(std::string aliasOrProcessorName,
 void HelpFormatter::formatAliases(std::ostream& output) {
     std::set<std::string> aliases = MainFactoriesKeeper::getInstance().getAliasNames();
 
+    BOOST_FOREACH(std::string alias, ShallowAliaser::getAllAliases()) {
+        aliases.insert(alias);
+    }
+
+    std::list<std::string> processorNames;
+
     BOOST_FOREACH(std::string alias, aliases) {
-        formatOneAlias(alias, output);
+        if (ShallowAliaser::hasAlias(alias)) {
+            processorNames.push_back(ShallowAliaser::getProcessorNameForAlias(alias));
+        }
+        else {
+            processorNames = getProcessorNamesForAlias(alias);
+        }
+
+        formatOneAlias(alias, processorNames, output);
+
+        processorNames.clear();
     }
 }
 
-void HelpFormatter::formatOneAlias(std::string aliasName, std::ostream& output) {
-    doFormatOneAlias(aliasName, getProcessorNamesForAlias(aliasName), output);
+void HelpFormatter::formatOneAlias(std::string aliasName,
+                                   std::list<std::string> processorNames,
+                                   std::ostream& output) {
+    doFormatOneAlias(aliasName, processorNames, output);
 }
 
 void HelpFormatter::formatDescription(std::ostream& output) {
@@ -189,4 +208,15 @@ std::list<std::string> HelpFormatter::getLanguagesHandledForProcessor(
     }
 
     return std::list<std::string>();
+}
+
+std::string HelpFormatter::getProcessorNameWithoutOptions(const std::string& name) {
+    std::string trimmedName = boost::algorithm::trim_left_copy(name);
+    size_t pos = trimmedName.find_first_of(' ');
+
+    if (pos != std::string::npos) {
+        return trimmedName.substr(0, pos);
+    }
+
+    return trimmedName;
 }

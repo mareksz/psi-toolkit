@@ -18,8 +18,10 @@ public:
     bool formatProcessorHelpsByName(std::string aliasOrProcessorName, std::ostream& output);
 
     void formatAliases(std::ostream& output);
-    void formatOneAlias(std::string aliasName, std::ostream& output);
-    void formatAliasesForProcessor(std::string processorName);
+    void formatOneAlias(
+        std::string aliasName,
+        std::list<std::string> processorNames,
+        std::ostream& output);
 
     void formatDescription(std::ostream& output);
     void formatTutorial(std::ostream& output);
@@ -71,6 +73,7 @@ protected:
 
     std::list<std::string> getLanguagesHandledForProcessor(std::string processorName);
 
+    std::string getProcessorNameWithoutOptions(const std::string& name);
 };
 
 #endif

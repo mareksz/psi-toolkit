@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <set>
 
 class ShallowAliaser {
 
@@ -19,12 +20,14 @@ public:
     void addWriteGetAlias(std::string, std::string);
     void addWriteGetDrawAlias(std::string, std::string);
 
+    static std::set<std::string> getAllAliases();
+    static bool hasAlias(const std::string&);
+    static std::string getProcessorNameForAlias(const std::string& alias);
+
 private:
 
-    std::map<std::string, std::string> aliases_;
-
+    static std::map<std::string, std::string> ALIASES;
     void addAlias_(std::string, std::string);
-    void initializeAliases_();
 };
 
 #endif
