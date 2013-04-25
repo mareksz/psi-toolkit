@@ -7,12 +7,12 @@
 #include <boost/foreach.hpp>
 
 
-std::set< std::vector<std::string> > BracketPrinter::print(
+std::set< std::vector<EdgePrintData> > BracketPrinter::print(
     std::set<EdgeData> edgeDataSet
 ) {
-    std::set< std::vector<std::string> > result;
+    std::set< std::vector<EdgePrintData> > result;
     BOOST_FOREACH(EdgeData edgeData, edgeDataSet) {
-        std::vector<std::string> resultElement;
+        std::vector<EdgePrintData> resultElement;
         EdgeData thisEdgeData;
         std::set<EdgeData> edgeDataSubset;
         std::string separator;
@@ -132,7 +132,7 @@ std::set< std::vector<std::string> > BracketPrinter::print(
                     i++;
                 }
             }
-            resultElement.push_back(resSs.str());
+            resultElement.push_back(EdgePrintData(edgeData, resSs.str()));
         }
         if (!subpattern.empty()) {
             BOOST_FOREACH(EdgeData edgeData2, edgeDataSet) {
@@ -171,19 +171,19 @@ std::set< std::vector<std::string> > BracketPrinter::print(
                 avPairsSeparator_,
                 avSeparator_
             );
-            std::set< std::vector<std::string> > joinProduct
+            std::set< std::vector<EdgePrintData> > joinProduct
                 = subprinter.print(edgeDataSubset);
             std::stringstream joinSs;
-            BOOST_FOREACH(std::vector<std::string> vs, joinProduct) {
+            BOOST_FOREACH(std::vector<EdgePrintData> vs, joinProduct) {
                 if (!joinSs.str().empty()) {
                     joinSs << separator;
                 }
-                joinSs << vs[0];
+                joinSs << vs[0].text;
             }
-            BOOST_FOREACH(std::string & s, resultElement) {
-                size_t found = s.find("%*****");
+            BOOST_FOREACH(EdgePrintData & s, resultElement) {
+                size_t found = s.text.find("%*****");
                 if (found != std::string::npos) {
-                    s.replace(found, 6, joinSs.str());
+                    s.text.replace(found, 6, joinSs.str());
                 }
             }
         }

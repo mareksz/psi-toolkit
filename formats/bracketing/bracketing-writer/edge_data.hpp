@@ -47,10 +47,11 @@ struct EdgeData {
     { }
 
     bool operator<(const EdgeData & other) const {
-        if (parent && other.source && *parent == *other.source) {
-            return true;
-        }
-        return false;
+        return category < other.category ||
+            text < other.text ||
+            score < other.score ||
+            tags < other.tags ||
+            avMap < other.avMap;
     }
 };
 

@@ -11,6 +11,7 @@
 #include <boost/foreach.hpp>
 
 #include "edge_data.hpp"
+#include "edge_print_data.hpp"
 
 
 class BracketPrinter {
@@ -29,7 +30,7 @@ public:
         avSeparator_(avSeparator)
     { }
 
-    std::set< std::vector<std::string> > print(
+    std::set< std::vector<EdgePrintData> > print(
         std::set<EdgeData> edgeDataSet
     );
 

@@ -9,6 +9,7 @@
 
 #include "bracket_printer.hpp"
 #include "edge_data.hpp"
+#include "edge_print_data.hpp"
 
 
 void testBracketPrinter(std::string pattern, std::string output) {
@@ -26,9 +27,9 @@ void testBracketPrinter(std::string pattern, std::string output) {
     EdgeData edgeData(lattice, edge, tags, "Noun-Phrase", "Żółta jaźń", avMap, -1.5);
     std::set<EdgeData> edgeDataSet;
     edgeDataSet.insert(edgeData);
-    std::set< std::vector<std::string> > printed = bp.print(edgeDataSet);
-    BOOST_FOREACH(std::vector<std::string> p, printed) {
-        BOOST_CHECK_EQUAL(p[0], output);
+    std::set< std::vector<EdgePrintData> > printed = bp.print(edgeDataSet);
+    BOOST_FOREACH(std::vector<EdgePrintData> p, printed) {
+        BOOST_CHECK_EQUAL(p[0].text, output);
     }
 }
 
