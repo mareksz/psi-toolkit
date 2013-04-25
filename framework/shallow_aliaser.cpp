@@ -28,7 +28,11 @@ std::string ShallowAliaser::replace(const std::string& pipeline) {
 }
 
 std::vector<std::string> ShallowAliaser::replace(std::vector<std::string> pipeline) {
-    std::vector<std::string> result;
+    for (size_t i = 0; i < pipeline.size(); ++i) {
+        if (pipeline[i].find(" ") != std::string::npos) {
+            pipeline[i] = "\"" + pipeline[i] + "\"";
+        }
+    }
 
     std::string pipelineAsString = boost::algorithm::join(pipeline, " ");
     std::string resultAsString = replace(pipelineAsString);
