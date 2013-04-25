@@ -29,6 +29,10 @@ std::string ShallowAliaser::replace(const std::string& pipeline) {
 
 std::vector<std::string> ShallowAliaser::replace(std::vector<std::string> pipeline) {
     for (size_t i = 0; i < pipeline.size(); ++i) {
+        boost::replace_all(pipeline[i], "\\", "\\\\\\\\");
+        boost::replace_all(pipeline[i], "\\\\\\\\n", "\\\\n");
+        boost::replace_all(pipeline[i], "\\\\\\\\\\\\n", "\\\\\\\\n");
+        boost::replace_all(pipeline[i], "\"", "\\\"");
         if (pipeline[i].find(" ") != std::string::npos) {
             pipeline[i] = "\"" + pipeline[i] + "\"";
         }
