@@ -1,40 +1,20 @@
 
 <edge tags="!pl,lang-guesser,text" category="TEXT" attrs="">
 <edge tags="frag,txt-reader" category="FRAG" attrs="">
-<edge tags="!pl,form,lamerlemma,lamerlemma-tagset" category="verb" attrs="aspect:perf;gender:m1;number:pl;person:ter;tense:praet">
-<edge tags="!pl,lamerlemma,lamerlemma-tagset,lemma" category="word" attrs="">
-<edge tags="!pl,lamerlemma,lamerlemma-tagset,lexeme" category="verb" attrs="aspect:perf">
 <edge tags="!pl,lamerlemma,lamerlemma-tagset,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">Zanucili</edge>
 </edge>
-</edge>
-</edge>
-</edge>
 
 <edge tags="!pl,token" category="B" attrs=""> </edge>
 
-<edge tags="!pl,form,lamerlemma,lamerlemma-tagset" category="adj" attrs="case:acc;degree:pos;gender:f;number:sg">
-<edge tags="!pl,form,lamerlemma,lamerlemma-tagset" category="adj" attrs="case:inst;degree:pos;gender:f;number:sg">
-<edge tags="!pl,lamerlemma,lamerlemma-tagset,lemma" category="word" attrs="">
-<edge tags="!pl,lamerlemma,lamerlemma-tagset,lexeme" category="adj" attrs="">
 <edge tags="!pl,lamerlemma,lamerlemma-tagset,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">rzewną</edge>
 </edge>
-</edge>
-</edge>
-</edge>
-</edge>
 
 <edge tags="!pl,token" category="B" attrs=""> </edge>
 
-<edge tags="!pl,form,lamerlemma,lamerlemma-tagset" category="subst" attrs="case:acc;gender:f;number:sg">
-<edge tags="!pl,lamerlemma,lamerlemma-tagset,lemma" category="word" attrs="">
-<edge tags="!pl,lamerlemma,lamerlemma-tagset,lexeme" category="subst" attrs="gender:f">
 <edge tags="!pl,lamerlemma,lamerlemma-tagset,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">melodię</edge>
-</edge>
-</edge>
-</edge>
 </edge>
 </edge>
 </edge>

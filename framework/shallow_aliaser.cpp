@@ -3,7 +3,10 @@
 #include <boost/algorithm/string.hpp>
 
 #include "shallow_aliaser.hpp"
+
 #include <iostream>
+
+#include "split_pipeline.hpp"
 
 
 typedef std::map<std::string, std::string> string_map;
@@ -59,14 +62,20 @@ std::string ShallowAliaser::replace(const std::string& pipeline) {
 }
 
 std::vector<std::string> ShallowAliaser::replace(std::vector<std::string> pipeline) {
-    std::vector<std::string> result;
+    for (size_t i = 0; i < pipeline.size(); ++i) {
+        boost::replace_all(pipeline[i], "\\", "\\\\\\\\");
+        boost::replace_all(pipeline[i], "\\\\\\\\n", "\\\\n");
+        boost::replace_all(pipeline[i], "\\\\\\\\\\\\n", "\\\\\\\\n");
+        boost::replace_all(pipeline[i], "\"", "\\\"");
+        if (pipeline[i].find(" ") != std::string::npos) {
+            pipeline[i] = "\"" + pipeline[i] + "\"";
+        }
+    }
 
     std::string pipelineAsString = boost::algorithm::join(pipeline, " ");
     std::string resultAsString = replace(pipelineAsString);
 
-    boost::split(result, resultAsString, boost::is_any_of(" "));
-
-    return result;
+    return splitPipeline(resultAsString);
 }
 
 std::set<std::string> ShallowAliaser::getAllAliases() {
