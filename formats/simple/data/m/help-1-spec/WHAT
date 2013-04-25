@@ -1,1 +1,1 @@
-segment ! tokenize --lang en ! simple-writer --tags symbol --sep / --spec token || segment \n
+segment ! tokenize --lang en ! simple-writer --tags symbol --sep / --spec token || segment \\n
