@@ -45,7 +45,8 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
         quoter.unescape(options["av-separator"].as<std::string>()),
         showAttributes,
         !options.count("skip-symbol-edges"),
-        !options.count("with-blank")
+        !options.count("with-blank"),
+        options.count("tree")
     );
 }
 
@@ -81,7 +82,9 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
         ("skip-symbol-edges",
             "skip symbol edges")
         ("with-blank",
-            "do not skip edges with whitespace text");
+            "do not skip edges with whitespace text")
+        ("tree",
+            "print the longest edge and all its descendants");
 
     return optionsDescription;
 }
@@ -107,7 +110,8 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     std::string avSeparator,
     std::vector<std::string> showAttributes,
     bool showSymbolEdges,
-    bool skipBlank
+    bool skipBlank,
+    bool tree
 ) :
     openingBracket_(openingBracket),
     closingBracket_(closingBracket),
@@ -118,7 +122,8 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     avSeparator_(avSeparator),
     showAttributes_(showAttributes.begin(), showAttributes.end()),
     showSymbolEdges_(showSymbolEdges),
-    skipBlank_(skipBlank)
+    skipBlank_(skipBlank),
+    tree_(tree)
 { }
 
 

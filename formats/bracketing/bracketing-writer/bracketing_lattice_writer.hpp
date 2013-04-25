@@ -37,7 +37,8 @@ public:
         std::string avSeparator,
         std::vector<std::string> showAttributes,
         bool showSymbolEdges,
-        bool skipBlank
+        bool skipBlank,
+        bool tree
     );
 
     std::string getOpeningBracket() const { return openingBracket_; }
@@ -52,6 +53,7 @@ public:
 
     bool isShowSymbolEdges() const { return showSymbolEdges_; }
     bool isSkipBlank() const { return skipBlank_; }
+    bool isTree() const { return tree_; }
 
 private:
     virtual std::string doInfo();
@@ -87,6 +89,7 @@ private:
     std::set<std::string> showAttributes_;
     bool showSymbolEdges_;
     bool skipBlank_;
+    bool tree_;
 
 };
 
