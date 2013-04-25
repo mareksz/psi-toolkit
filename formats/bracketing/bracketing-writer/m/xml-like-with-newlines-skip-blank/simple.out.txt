@@ -1,0 +1,11 @@
+
+<token_cats="T"_sep="\n">Kupiłem</token>
+ 
+<token_cats="T"_sep="\n">bardzo</token>
+ 
+<token_cats="T"_sep="\n">drogi</token>
+ 
+<token_cats="T"_sep="\n">samochód</token>
+
+<token_cats="I"_sep="\n">.</token>
+

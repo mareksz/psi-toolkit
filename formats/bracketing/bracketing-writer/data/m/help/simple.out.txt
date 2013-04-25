@@ -4,15 +4,11 @@
 <edge tags="!pl,lamerlemma,lamerlemma-tagset,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">Zanucili</edge>
 </edge>
-
-<edge tags="!pl,token" category="B" attrs=""> </edge>
-
+ 
 <edge tags="!pl,lamerlemma,lamerlemma-tagset,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">rzewną</edge>
 </edge>
-
-<edge tags="!pl,token" category="B" attrs=""> </edge>
-
+ 
 <edge tags="!pl,lamerlemma,lamerlemma-tagset,normalization" category="term" attrs="">
 <edge tags="!pl,token" category="T" attrs="">melodię</edge>
 </edge>

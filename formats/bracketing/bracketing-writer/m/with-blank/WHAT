@@ -1,0 +1,1 @@
+tokenize --lang en ! bracketing-writer --filter token --with-blank
