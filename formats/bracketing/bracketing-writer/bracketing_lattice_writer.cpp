@@ -45,7 +45,7 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
         quoter.unescape(options["av-separator"].as<std::string>()),
         showAttributes,
         !options.count("skip-symbol-edges"),
-	options.count("skip-blank")
+        !options.count("with-blank")
     );
 }
 
@@ -79,9 +79,9 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
             boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "the attributes to be shown")
         ("skip-symbol-edges",
-            "skips symbol edges")
-        ("skip-blank",
-	    "skips blank edges");
+            "skip symbol edges")
+        ("with-blank",
+            "do not skip edges with whitespace text");
 
     return optionsDescription;
 }
