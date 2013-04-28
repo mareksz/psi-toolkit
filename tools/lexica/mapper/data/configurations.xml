@@ -9,6 +9,14 @@
     </provided>
   </configuration>
   <configuration
+      name="generate-lexdb-forms-es"
+      annotator="mapper"
+      options="--lang pl --in-tags form --out-tags token --consider-text --consider-category --clone-attributes --binary %ITSDATA%/es-lexdb-generation-forms.bin"
+      description="A lexicon of lexdb forms for Spanish.">
+    <provided>
+    </provided>
+  </configuration>
+  <configuration
       name="pl-valency"
       annotator="mapper"
       options="--lang pl --in-tags gobio-tagset,lexeme --out-tags gobio-tagset,valency --consider-text --clone-text --clone-category --add-attributes --binary %ITSDATA%/pl-valency.bin"
