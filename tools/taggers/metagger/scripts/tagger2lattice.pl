@@ -76,7 +76,7 @@ while(<STDIN>) {
     print "    ";
     print "$token";
     print "    ";
-    print "!$LANG,normalization    $norm    term[$PREV]";
+    print "!$LANG,normalization,train    $norm    term[$PREV]";
     print "\n";
     
     $PREV = $EDGES;
@@ -86,7 +86,7 @@ while(<STDIN>) {
     print "    ";
     print "$token";
     print "    ";
-    print "!$LANG,lemma    $lemma    word[$PREV]";
+    print "!$LANG,lemma,train    $lemma    word[$PREV]";
     print "\n";
     
     $PREV = $EDGES;
@@ -96,7 +96,7 @@ while(<STDIN>) {
     print "    ";
     print "$token";
     print "    ";
-    print "!$LANG,lexeme    $lemma+$tag    ${tag}[$PREV]";
+    print "!$LANG,lexeme,train    $lemma+$tag    ${tag}[$PREV]";
     print "\n";
         
     $PREV = $EDGES;
@@ -106,7 +106,7 @@ while(<STDIN>) {
     print "    ";
     print "$token";
     print "    ";
-    print "!$LANG,form    $lemma    ${tag}[$PREV]";
+    print "!$LANG,form,train    $lemma    ${tag}[$PREV]";
     print "\n";
     
     $START += $LENGTH;
