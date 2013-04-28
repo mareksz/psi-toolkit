@@ -1,0 +1,40 @@
+
+FP => AP
+{
+        warning("HERE FP");
+}
+
+P => A
+{
+        warning("HERE P");
+
+        if (@.R = ż)
+           Gender := fem;
+        else
+           Gender := masc;
+
+        Num := @.L;
+}
+
+FR => GNP
+{
+        warning("HERE FR");
+}
+
+R => N
+{
+        warning("HERE R");
+
+        Gender := fem;
+        Num := @.L;
+}
+
+sub N::surface()
+{
+        if (Gender == fem)
+           $gendercode = 4;
+        else
+           $gendercode = 1;
+
+        return (Equiv + "+subst") & get_morpho_es(0, $gendercode, Num, 0, 0);
+}

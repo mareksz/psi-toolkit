@@ -380,6 +380,7 @@ class Transferer
         BUILDINDECL(get_morpho);
         BUILDINDECL(get_morpho_ru);
         BUILDINDECL(get_morpho_de);
+        BUILDINDECL(get_morpho_es);
         BUILDINDECL(get_option);
         BUILDINDECL(inherit);
         BUILDINDECL(insert_after);

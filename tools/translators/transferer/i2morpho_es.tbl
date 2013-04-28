@@ -1,0 +1,576 @@
+# Rzeczowniki pospolite
+
+1100:NCMS
+1200:NCMP
+4100:NCFS
+4200:NCFP
+
+# Rzeczowniki wlasne
+
+1100:NPMS
+1200:NPMP
+2100:NPFS
+2200:NPFP
+
+#Przymiotniki stopnia rownego
+
+1100:AMS
+1200:AMP
+4100:AFS
+4200:AFP
+
+#Przymiotniki stopnia wyzszego i najwyzszego
+
+0100:AS
+0200:AP
+
+#Przymiotniki stopnia absolutnego
+
+1100:AMS
+1200:AMP
+2100:AFS
+2200:AFP
+
+#Czasowniki zwykle, bezokoliczniki, z podwojna zbitka
+
+0000:VMNT
+
+#Czasowniki zwykle, bezokoliczniki, ze zbitka celownikowa
+
+0000:VMND
+
+#Czasowniki zwykle, bezokoliczniki, ze zbitka biernikowa
+
+0000:VMNA
+
+#Czasowniki zwykle, bezokoliczniki
+
+0000:VMN
+
+#Czasowniki zwykle, imieslowy
+
+1100:VMPSM
+1200:VMPPM
+2100:VMPSF
+2200:VMPPF
+
+#Czasowniki zwykle, gerundium, ze zbitka podwojna
+
+0000:VMGT
+
+#Czasowniki zwykle, gerundium, ze zbitka celownikowa
+
+0000:VMGD
+
+#Czasowniki zwykle, gerundium, ze zbitka biernikowa
+
+0000:VMGA
+
+#Czasowniki zwykle, gerundium
+
+0000:VMG
+
+#Czasowniki zwykle, tryb oznajmujacy, czas terazniejszy
+
+0110:VMIP1S
+0120:VMIP2S
+0130:VMIP3S
+
+0210:VMIP1P
+0220:VMIP2P
+0230:VMIP3P
+
+#Czasowniki zwykle, tryb laczny, czas terazniejszy
+0110:VMSPS
+0120:VMSP2S
+0130:VMSPS
+
+0210:VMSP1P
+0220:VMSP2P
+0230:VMSP3P
+
+#Czasowniki zwykle, tryb oznajmujacy, czas przyszly
+
+0110:VMIF1S
+0120:VMIF2S
+0130:VMIF3S
+
+0210:VMIF1P
+0220:VMIF2P
+0230:VMIF3P
+
+#Czasowniki zwykle, tryb oznajmujacy, czas imperfecto
+
+0110:VMIIS
+0120:VMII2S
+0130:VMIIS
+
+0210:VMII1P
+0220:VMII2P
+0230:VMII3P
+
+#Czasowniki zwykle, tryb laczny, czas imperfecto
+
+0110:VMSIS
+0120:VMSI2S
+0130:VMSIS
+
+0210:VMSI1P
+0220:VMSI2P
+0230:VMSI3P
+
+#Czasowniki zwykle, tryb oznajmujacy, czas przeszly
+
+0110:VMIS1S
+0120:VMIS2S
+0130:VMIS3S
+
+0210:VMIS1P
+0220:VMIS2P
+0230:VMIS3P
+
+#Czasowniki zwykle, tryb warunkowy
+
+0110:VMCS
+0120:VMC2S
+0130:VMCS
+
+0210:VMC1P
+0220:VMC2P
+0230:VMC3P
+
+#Czasowniki posilkowe, bezokoliczniki, ze zbitka podwojna
+
+0000:VANT
+
+#Czasowniki posilkowe, bezokoliczniki, ze zbitka celownikowa
+
+0000:VAND
+
+#Czasowniki posilkowe, bezokoliczniki, ze zbitka biernikowa
+
+0000:VANA
+
+#Czasowniki posilkowe, bezokoliczniki
+
+0000:VAN
+
+#Czasowniki posilkowe, imieslowy
+
+1100:VAPSM
+1200:VAPPM
+2100:VAPSF
+2200:VAPPF
+
+#Czasowniki posilkowe, gerundium, ze zbitka podwojna
+
+0000:VAGT
+
+#Czasowniki posilkowe, gerundium, ze zbitka celownikowa
+
+0000:VAGD
+
+#Czasowniki posilkowe, gerundium, ze zbitka biernikowa
+
+0000:VAGA
+
+#Czasowniki posilkowe, gerundium
+
+0000:VAG
+
+#Czasowniki posilkowe, tryb oznajmujacy, czas terazniejszy
+
+0110:VAIP1S
+0120:VAIP2S
+0130:VAIP3S
+
+0210:VAIP1P
+0220:VAIP2P
+0230:VAIP3P
+
+#Czasowniki posilkowe, tryb laczny, czas terazniejszy
+0110:VASPS
+0120:VASP2S
+0130:VASPS
+
+0210:VASP1P
+0220:VASP2P
+0230:VASP3P
+
+#Czasowniki posilkowe, tryb oznajmujacy, czas przeszly
+
+0110:VAIS1S
+0120:VAIS2S
+0130:VAIS3S
+
+0210:VAIS1P
+0220:VAIS2P
+0230:VAIS3P
+
+#Czasowniki posilkowe, tryb oznajmujacy, czas imperfecto
+
+0110:VAIIS
+0120:VAII2S
+0130:VAIIS
+
+0210:VAII1P
+0220:VAII2P
+0230:VAII3P
+
+#Czasowniki posilkowe, tryb laczny, czas imperfecto
+
+0110:VASIS
+0120:VASI2S
+0130:VASIS
+
+0210:VASI1P
+0220:VASI2P
+0230:VASI3P
+
+#Czasowniki posilkowe, tryb oznajmujacy, czas przyszly
+
+0110:VAIF1S
+0120:VAIF2S
+0130:VAIF3S
+
+0210:VAIF1P
+0220:VAIF2P
+0230:VAIF3P
+
+#Czasowniki posilkowe, tryb warunkowy
+
+0110:VACS
+0120:VAC2S
+0130:VACS
+
+0210:VAC1P
+0220:VAC2P
+0230:VAC3P
+
+#Czasowniki modalne, bezokoliczniki, ze zbitka podwojna
+
+0000:VONT
+
+#Czasowniki modalne, bezokoliczniki, ze zbitka celownikowa
+
+0000:VOND
+
+#Czasowniki modalne, bezokoliczniki, ze zbitka biernikowa
+
+0000:VONA
+
+#Czasowniki modalne, bezokoliczniki
+
+0000:VON
+
+#Czasowniki modalne, imieslowy
+
+1100:VOPSM
+1200:VOPPM
+
+2100:VOPSF
+2200:VOPPF
+
+#Czasowniki modalne, gerundium, ze zbitka podwojna
+
+0000:VOGT
+
+#Czasowniki modalne, gerundium, ze zbitka celownikowa
+
+0000:VOGD
+
+#Czasowniki modalne, gerundium, ze zbitka biernikowa
+
+0000:VOGA
+
+#Czasowniki modalne, gerundium
+
+0000:VOG
+
+#Czasowniki modalne, tryb oznajmujacy, czas terazniejszy
+
+0110:VOIP1S
+0120:VOIP2S
+0130:VOIP3S
+
+0210:VOIP1P
+0220:VOIP2P
+0230:VOIP3P
+
+#Czasowniki modalne, tryb laczny, czas terazniejszy
+
+0110:VOSPS
+0120:VOSP2S
+0130:VOSPS
+
+0210:VOSP1P
+0220:VOSP2P
+0230:VOSP3P
+
+#Czasowniki modalne, tryb oznajmujacy, czas przeszly
+
+0110:VOIS1S
+0120:VOIS2S
+0130:VOIS3S
+
+0210:VOIS1P
+0220:VOIS2P
+0230:VOIS3P
+
+#Czasowniki modalne, tryb oznajmujacy, czas imperfecto
+
+0110:VOIIS
+0120:VOII2S
+0130:VOIIS
+
+0210:VOII1P
+0220:VOII2P
+0230:VOII3P
+
+#Czasowniki modalne, tryb laczny, czas imperfecto
+
+0110:VOSIS
+0120:VOSI2S
+0130:VOSIS
+
+0210:VOSI1P
+0220:VOSI2P
+0230:VOSI3P
+
+#Czasowniki modalne, tryb oznajmujacy, czas przyszly
+
+0110:VOIF1S
+0120:VOIF2S
+0130:VOIF3S
+
+0210:VOIF1P
+0220:VOIF2P
+0230:VOIF3P
+
+#Czasowniki modalne, tryb warunkowy
+
+0110:VOCS
+0120:VOC2P
+0130:VOCS
+
+0210:VOC1P
+0220:VOC2P
+0230:VOC3P
+
+#Zaimki osobowe, mianownik
+
+0110:PP1SN
+0120:PP2SN
+0130:PP3SN
+
+0230:PP3PN
+
+
+1110:PP1MP
+1120:PP2MP
+1130:PP3MS
+1230:PP3MP
+
+2130:PP3FS
+2210:PP1FP
+2220:PP2FP
+2230:PP3FP
+
+#Zaimki osobowe, zbitki
+
+0110:PP1SO
+0120:PP2SO
+0130:PP3SO
+
+#Zaimki zwrotne
+
+0110:P1S
+0120:P2S
+0030:P3
+
+#Zaimki osobowe, celownik
+
+0130:PP3SD
+0230:PP3PD
+
+1130:PP3FSA
+1230:PP3FPA
+
+2130:PP3MSA
+2230:PP3MPA
+
+#Zaimki osobowe, biernik
+
+0210:P1P
+0220:P2P
+
+#Zaimki wskazujace
+
+1100:PDMS
+1200:PDMP
+
+2100:PDFS
+2200:PDFP
+
+#Zaimki wzgledne
+
+0000:PR
+
+0100:PRS
+0200:PRP
+
+1100:PRMS
+1200:PRMP
+
+2100:PRFS
+2200:PRFP
+
+#Zaimki pytajace
+
+0000:PI
+0100:PTS
+0200:PTP
+
+#Zaimki dzierzawcze
+
+1130:PS3MS
+1230:PS3MP
+
+2130:PS3FS
+2230:PS3FP
+
+#Zaimki dzierzawcze, wlasciciel pojedynczy
+
+1110:PS1MSS
+1120:PS2MSS
+1210:PS1MPS
+1220:PS2MPS
+
+2110:PS1FSS
+2120:PS2FSS
+2210:PS1FPS
+2220:PS2FPS
+
+#Zaimki dzierzawcze, wlasciciel mnogi
+
+1110:PS1MSP
+1120:PS2MSP
+1210:PS1MPP
+1220:PS2MPP
+
+2110:PS1FSP
+2120:PS2FSP
+2210:PS1FPP
+2220:PS2FPP
+
+#Zaimki nieokreslone
+
+0000:PI
+
+1100:PIMS
+1200:PIMP
+
+2100:PIFS
+2200:PIFP
+
+#Okreslniki dzierzawcze, wlasciciel pojedynczy
+
+0110:DS1SS
+0120:DS2SS
+
+0210:DS1PS
+0220:DS2PS
+
+#Okreslniki dzierzawcze, wlasciciel mnogi
+
+0130:DS3S
+0230:DS3P
+
+1110:DS1MSP
+1120:DS2MSP
+1210:DS1MPP
+1220:DS2MPP
+
+2110:DS1FSP
+2120:DS2FSP
+2210:DS1FPP
+2220:DS2FPP
+
+#Okreslniki wskazujace
+
+1100:DDMS
+1200:DDMP
+
+2100:DDFS
+2200:DDFP
+
+#Okreslniki nieokreslone
+
+0000:DI
+
+1100:DIMS
+1200:DIMP
+
+2100:DIFS
+2200:DIFP
+
+#Okreslniki pytajace
+
+1100:DTMS
+1200:DTMP
+
+2100:DTFS
+2200:DTFP
+
+#Rodzajniki nieokreslone
+
+1100:TIMS
+1200:TIMP
+
+2100:TIFS
+2200:TIFP
+
+#Rodzajniki okreslone
+
+1100:TDMS
+1200:TDMP
+
+2100:TDFS
+2200:TDFP
+
+#Przyslowki ogolne
+
+0000:RG
+
+#Przyslowki intensyfikujace
+
+0000:RP
+
+#Slowa pomocnicze (en, de)
+
+0000:SP
+
+#Spojniki
+0000:C
+
+#Liczebniki porzadkowe
+
+1100:MOMS
+1200:MOMP
+
+2100:MOFS
+2200:MOFP
+
+#Liczebniki kardynalne
+
+0200:MCP
+
+1100:MCMS
+1200:MCMP
+
+2100:MCFS
+2200:MCFP
+
+#Wykrzyknienia
+
+0000:I

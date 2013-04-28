@@ -793,6 +793,7 @@ if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/bilexicon/data/plfr.bin")
     download_artifact("tools/lexica/bilexicon/data/plit.bin")
     download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
+    download_artifact("tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
     download_artifact("tools/lexica/mapper/data/pl-valency.bin")
 
     if (HAVE_SFST)

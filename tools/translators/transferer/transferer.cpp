@@ -1789,7 +1789,23 @@ BUILDINDEF(get_morpho_de)
   return z_sym_fac->get_symbol(current_holder_, i2morpho_de[P][r][l][o][p], false);
 }
 
+BUILDINDEF(get_morpho_es)
+{
+#include "i2morpho_es.i"
+  ;
 
+  int P = ZVALUE_TO_INTEGER(FIRST_ARG);
+  int r = ZVALUE_TO_INTEGER(SECOND_ARG);
+  int l = ZVALUE_TO_INTEGER(THIRD_ARG);
+  int o = ZVALUE_TO_INTEGER(FOURTH_ARG);
+  int p = ZVALUE_TO_INTEGER(FIFTH_ARG);
+
+  if (P < 0 || P > I2MORPHO_ES_MAX || r < 0 || r > 5 || l < 0 || l > 2 ||
+     o < 0 || o > 3 || p < 0 || p > 7)
+      return z_sym_fac->get_symbol(current_holder_, i2morpho_es[0][0][0][0][0], false);
+
+  return z_sym_fac->get_symbol(current_holder_, i2morpho_es[P][r][l][o][p], false);
+}
 
 BUILDINDEF(get_option)
 {
