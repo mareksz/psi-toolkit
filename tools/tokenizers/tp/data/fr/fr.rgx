@@ -3,7 +3,7 @@
 # This file is part of Translatica tokenization rules.
 
 # Translatica tokenization rules can be redistributed and/or modified
-# under the terms of the GNU Lesser General Public Licence as
+#q under the terms of the GNU Lesser General Public Licence as
 # published by the Free Software Foundation.
 
 @def MULTI \@rule multiDot/X := (?:[a-zàâçéèêëîïôûùüÿ]\.){3,}(?!\p{L}) | ([A-ZÀÂÇÉÈÊËÎÏÔÛÙÜŸ]\.){2,}
@@ -12,17 +12,17 @@
 
 @include "common"
 
-@rule ord/X := \d*(?:1st|2nd|3rd|\dth)(?!\p{L})
+@rule ord/X := \d*(?:1er|2er|3er|\der)(?!\p{L})
 
 #LM dodane przeze mnie poniżej:
 
-@def postprons t-elle|t-elles|t-en|t-en|t-il|t-ils|t-on|t-telle|t-un|t-une|t-y|t-y|aucun|autre|autres|ce|ce|ceci|cela|celle|celui|ceux|combien|comment|con|dont|elle|elles|en|en|eux|il|ils|je|la|le|les|les|leur|leur|leurs|lui|me|moi|même|mêmes|ne|nous|nul|nulle|on|où|personne|plusieurs|pourquoi|puisque|quand|que|quel|quelle|quelles|qui|quoi|rien|se|se|soi|te|tel|telle|telles|toi|tous|tout|toute|toutes|tu|un|une|uns|vous|y|y|ça
-@def elisions c|d|j|l|m|n|s|t|qu|ct|ch|chaqu|jusqu|lorsqu|presqu|puisqu|quelqu|quéqu|quiconqu|quoiqu|vot|ç            # aujourd'hui nie rozdzielam
+@def postprons t-elle|t-elles|t-en|t-en|t-il|t-ils|t-on|t-telle|t-un|t-une|t-y|t-y|aucun|autre|autres|ce|ce|ceci|cela|celle|celui|ceux|combien|comment|con|dont|elle|elles|en|en|eux|il|ils|je|la|le|les|les|leur|leur|leurs|lui|me|moi|ne|nous|nul|nulle|on|où|personne|plusieurs|pourquoi|puisque|quand|que|quel|quelle|quelles|qui|quoi|rien|se|se|soi|te|tel|telle|telles|toi|tous|tout|toute|toutes|tu|un|une|uns|vous|y|y|ça
+@def elisions [cC]|[dD]|[Jj]|[lL]|[Mm}|[Nn]|[Ss]|[Tt]|[Qq]u|ct|ch|chaqu|jusqu|lorsqu|presqu|puisqu|quelqu|quéqu|quiconqu|quoiqu|vot|ç|aujourd            # aujourd'hui nie rozdzielam
 
-@rule elision/T := (?:elisions)['’]
+@rule elision/T := \b(?:elisions)['’]
 @rule postpron/T := \-(?:postprons)\b
 
-@rule pre_elision/T := ([\p{L}\p{M}~\@\#\$%\^\&\*\/\\\-\+_])+(?=(?:elisions)['’]) # TODO: patrz nizej
+#@rule pre_elision/T := ([\p{L}\p{M}~\@\#\$%\^\&\*\/\\\-\+_])+(?=(?:elisions)['’]) # TODO: patrz nizej
 
 @rule pre_postpron/T := ([\p{L}\p{M}~\@\#\$%\^\&\*\/\\\+_])+(?=\-(?:postprons)\b) # TODO: trzeba dodac 'litery' inne jeszcze
 

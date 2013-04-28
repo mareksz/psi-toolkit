@@ -538,7 +538,7 @@ set(TESTS_TARGETS common-tests framework-tests utf8case-tests
     formats-simple-tests formats-apertium-tests
     tools-tokenizers-tp-tests tools-segmenters-srx-tests tools-datastructures-psi_query-tests
     tools-recognizers-langguesser-tests tools-parsers-gobio-tests tools-parsers-puddle-tests
-    tools-taggers-metagger-tests tools-converters-unumsunt-tests tools-translators-transferer-tests)
+     tools-converters-unumsunt-tests tools-translators-transferer-tests)
 
 
 set(TARGETS ${BASE_TARGETS} psi-pipe)

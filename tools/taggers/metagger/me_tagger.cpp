@@ -4,9 +4,12 @@
 Annotator* MeTagger::Factory::doCreateAnnotator(
         const boost::program_options::variables_map& options) {
     std::string lang = options["lang"].as<std::string>();
-
+    bool train = false;
+    
     LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
     std::string modelPathString = "";
+    std::string trainPathString = "";
+    
     if (options.count("model")) {
         std::string modelFilename = options["model"].as<std::string>();
         if (!options.count("train")) {
@@ -14,29 +17,17 @@ Annotator* MeTagger::Factory::doCreateAnnotator(
             modelPath = fileFetcher.getOneFile(modelFilename);
             modelPathString = modelPath.string();
         } else {
+            train = true;
             modelPathString = modelFilename;
+            trainPathString
+                = options["train-tags"].as<std::string>();
         }
     }
+    
     MeTagger* tagger = new MeTagger(
-            lang,
-            options.count("train"),
-            modelPathString != "" ? modelPathString : DEFAULT_MODEL_FILE,
-            options.count("iterations") ? options["iterations"].as<int>()
-                : DEFAULT_ITERATIONS,
-            options.count("unknown-pos")
-                ? options["unknown-pos"].as<std::string>()
-                : DEFAULT_UNKNOWN_POS_LABEL,
-            options.count("cardinal-number-pos")
-                ? options["cardinal-number-pos"].as<std::string>()
-                : DEFAULT_CARDINAL_NUMBER_POS_LABEL,
-            options.count("proper-noun-pos")
-                ? options["proper-noun-pos"].as<std::string>()
-                : DEFAULT_PROPER_NOUN_POS_LABEL,
-            options.count("open-class-labels")
-                ? options["open-class-labels"].as<std::vector<std::string> >()
-                : std::vector<std::string>(),
-            options.count("save-text-model-files")
-            );
+            lang, modelPathString != "" ? modelPathString : DEFAULT_MODEL_FILE,
+            train, trainPathString);
+    
     if (!options.count("train")) {
         tagger->loadModel(tagger->getModelFile());
     }
@@ -54,17 +45,13 @@ void MeTagger::Factory::doAddLanguageIndependentOptionsHandled(
         ("unknown-pos", boost::program_options::value<std::string>()
          ->default_value(DEFAULT_UNKNOWN_POS_LABEL),
             "unknown part of speech label")
-        ("cardinal-number-pos", boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_CARDINAL_NUMBER_POS_LABEL),
-            "cardinal number part of speech label")
-        ("proper-noun-pos", boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_PROPER_NOUN_POS_LABEL),
-            "proper noun part of speech label")
         ("open-class-labels",
          boost::program_options::value<std::vector<std::string> >()
          ->multitoken(), "open class labels")
         ("train", "training mode")
-        ("save-text-model-files", "saves text model files in training model")
+        ("train-tags", boost::program_options::value<std::string>(),
+         "train tags file")
+        ("save-model", "saves model in training mode")
         ;
 }
 
@@ -77,7 +64,10 @@ boost::filesystem::path MeTagger::Factory::doGetFile() const {
 }
 
 std::list<std::list<std::string> > MeTagger::Factory::doRequiredLayerTags() {
-    return std::list<std::list<std::string> >();
+    return boost::assign::list_of(
+        boost::assign::list_of
+            (std::string("lemma"))
+    );
 }
 
 std::list<std::list<std::string> > MeTagger::Factory::doOptionalLayerTags() {
@@ -89,24 +79,20 @@ std::list<std::string> MeTagger::Factory::doProvidedLayerTags() {
 }
 
 const std::string MeTagger::Factory::DEFAULT_MODEL_FILE
-= "%ITSDATA%/%LANG%/%LANG%.blm";
-const int MeTagger::Factory::DEFAULT_ITERATIONS = 50;
-const std::string MeTagger::Factory::DEFAULT_UNKNOWN_POS_LABEL = "ign";
-const std::string MeTagger::Factory::DEFAULT_CARDINAL_NUMBER_POS_LABEL = "card";
-const std::string MeTagger::Factory::DEFAULT_PROPER_NOUN_POS_LABEL = "name";
+= "%ITSDATA%/%LANG%.blm";
+const int MeTagger::Factory::DEFAULT_ITERATIONS = 100;
+const std::string MeTagger::Factory::DEFAULT_UNKNOWN_POS_LABEL = "unknown";
 
 LatticeWorker* MeTagger::doCreateLatticeWorker(Lattice& lattice) {
     return new Worker(*this, lattice);
 }
 
 MeTagger::Worker::Worker(MeTagger& processor, Lattice& lattice):
-    LatticeWorker(lattice), processor_(processor) {
-    }
+    LatticeWorker(lattice), processor_(processor) {  }
 
 void MeTagger::Worker::doRun() {
     if (processor_.training()) {
         processor_.train(lattice_);
-        processor_.saveModel(processor_.getModelFile());
     }
     else
         processor_.tag(lattice_);
@@ -116,88 +102,72 @@ std::string MeTagger::doInfo() {
     return "maximum entropy pos tagger";
 }
 
-MeTagger::MeTagger(const std::string& langCode, bool trainMode_, std::string modelFile_,
-        int iterations_, std::string unknownPosLabel_,
-        std::string cardinalNumberPosLabel_, std::string properNounPosLabel_,
-        std::vector<std::string> openClassLabels_,
-        bool saveTextFile_) :
+MeTagger::MeTagger(const std::string& langCode, const std::string& modelFile,
+                   bool trainMode, const std::string& trainFile) :
     langCode_(langCode),
-    openForEvents(false), posModelLoaded(false),
-    trainMode(trainMode_), trainIterations(iterations_), modelFile(modelFile_),
-    unknownPosLabel(unknownPosLabel_),
-    cardinalNumberPosLabel(cardinalNumberPosLabel_),
-    properNounPosLabel(properNounPosLabel_),
-    openClassLabels(openClassLabels_),
-    saveTextFile(saveTextFile_),
-    rxUpperCaseFirst("^\\p{Lu}"),
-    rxUpperCaseAll("^\\p{Lu}+$"),
-    rxContainsNumber("\\d"),
-    rxIsNumber("^\\d+([.,]\\d+)(%)?$"),
-    rxContainsLetter("\\p{L}"),
-    rxContainsPunct("[.,;:?!<>%&'\\-\"/()\\[\\]+=_*$#@~|{}\\\\]") {
+    openForEvents_(false), posModelLoaded_(false),
+    trainMode_(trainMode), trainIterations_(100), trainTagsFile_(trainFile),
+    modelFile_(modelFile),
+    tokenNo_(0),
+    unknownPosLabel_("unknown"),
+    rxUpperCaseFirst_("^\\p{Lu}"),
+    rxUpperCaseAll_("^\\p{Lu}+$"),
+    rxContainsNumber_("\\d"),
+    rxIsNumber_("^\\d+([.,]\\d+)(%)?$"),
+    rxContainsLetter_("\\p{L}"),
+    rxContainsPunct_("[.,;:?!<>%&'\\-\"/()\\[\\]+=_*$#@~|{}\\\\]"),
+    rxHasFix_("\\-$") {
+        
+        if (training()) {
+            prepareTraining();
+        }  
+    }
+    
+MeTagger::~MeTagger() {
+    if (training()) {
+        finalizeTraining();
+        saveModel(getModelFile());
+    }   
 }
 
 bool MeTagger::training() {
-    return trainMode;
-}
-
-std::string MeTagger::getModelFile() {
-    return modelFile;
+    return trainMode_;
 }
 
 void MeTagger::saveModel(std::string path) {
-    m.save(path, !saveTextFile);
+
+    model_.save(path, true);
 }
 
-void MeTagger::loadModel(std::string path) {
-    m.load(path);
-    posModelLoaded = true;
+void MeTagger::prepareTraining() {
+    readOutcomes();
 }
 
-void MeTagger::tag(Lattice &lattice) {
-    if (!posModelLoaded) {
-        std::cerr << "no model loaded. metagger will do nothing" << std::endl;
-        return;
-    }
-    LayerTagMask segmentMask = lattice.getLayerTagManager().getMaskWithLangCode(
-        "segment", langCode_);
-    Lattice::EdgesSortedBySourceIterator segmentIt =
-        lattice.edgesSortedBySource(segmentMask);
-    if (!segmentIt.hasNext()) {
-        TokenEdgesMap tokenEdgesMap = createTokenEdgesMap(lattice,
-                lattice.getFirstVertex(), lattice.getLastVertex()
-                    );
-        tagSegment(lattice, tokenEdgesMap);
-    }
-    while (segmentIt.hasNext()) {
-        Lattice::EdgeDescriptor segment = segmentIt.next();
-
-        TokenEdgesMap tokenEdgesMap = createTokenEdgesMap(lattice,
-                lattice.getEdgeSource(segment), lattice.getEdgeTarget(segment)
-                    );
-        tagSegment(lattice, tokenEdgesMap);
-    }
-}
-
-void MeTagger::tagSegment(Lattice &lattice, TokenEdgesMap tokenEdgesMap) {
-    std::vector<Outcome> tags = getTokenTags(lattice, tokenEdgesMap);
-    applyTokenTags(lattice, tokenEdgesMap, tags);
+void MeTagger::finalizeTraining() {
+    model_.end_add_event();
+    openForEvents_ = false;
+    maxent::verbose = 1;
+    model_.train(100);
+    maxent::verbose = 0;
 }
 
 void MeTagger::train(Lattice &lattice) {
     addSampleSentences(lattice);
-    m.end_add_event();
-    openForEvents = false;
-    maxent::verbose = 1;
-    m.train(trainIterations);
-    maxent::verbose = 0;
+}
+
+void MeTagger::readOutcomes() {
+    std::ifstream in(trainTagsFile_.c_str());
+    Outcome tag;
+    while(in >> tag)
+        outcomes_.push_back(tag);
 }
 
 void MeTagger::addSampleSentences(Lattice &lattice) {
-    if (! openForEvents) {
-        m.begin_add_event();
-        openForEvents = true;
+    if (!openForEvents_) {
+        model_.begin_add_event();
+        openForEvents_ = true;
     }
+    
     LayerTagMask segmentMask = lattice.getLayerTagManager().getMaskWithLangCode(
         "segment", langCode_);
     Lattice::EdgesSortedBySourceIterator segmentIt =
@@ -220,18 +190,63 @@ void MeTagger::addSampleSentences(Lattice &lattice) {
 
 void MeTagger::addSampleSegment(Lattice &lattice,
         TokenEdgesMap tokenEdgesMap) {
+    
     for (TokenEdgesMap::iterator tokenIt = tokenEdgesMap.begin();
             tokenIt != tokenEdgesMap.end(); ++ tokenIt) {
         int tokenIndex = tokenIt->first;
         Lattice::EdgeDescriptor token = tokenIt->second;
-        std::string prevTag = getPrevTag(lattice, tokenEdgesMap, tokenIndex);
+        
         Context context = createContext(lattice, tokenEdgesMap,
                 tokenIndex, 2);
-        if (prevTag != "") {
+        
+        if (tokenIndex > 0) {
+            Outcome prevTag = outcomes_[tokenIndex-1];
             context.push_back(Feature("prevtag=" + prevTag));
         }
-        addCurrentTag(lattice, token, context);
+       
+        Outcome currentTag = outcomes_[tokenIndex];
+        
+        model_.add_event(context, currentTag);
     }
+}
+
+std::string MeTagger::getModelFile() {
+    return modelFile_;
+}
+
+void MeTagger::loadModel(std::string path) {
+    model_.load(path);
+    posModelLoaded_ = true;
+}
+
+void MeTagger::tag(Lattice &lattice) {
+    if (!posModelLoaded_) {
+        std::cerr << "no model loaded. metagger will do nothing" << std::endl;
+        return;
+    }
+    LayerTagMask segmentMask = lattice.getLayerTagManager().getMaskWithLangCode(
+        "segment", langCode_);
+    Lattice::EdgesSortedBySourceIterator segmentIt =
+        lattice.edgesSortedBySource(segmentMask);
+    if (!segmentIt.hasNext()) {
+        TokenEdgesMap tokenEdgesMap = createTokenEdgesMap(lattice,
+                lattice.getFirstVertex(), lattice.getLastVertex()
+                    );
+        tagSegment(lattice, tokenEdgesMap);
+    }
+    while (segmentIt.hasNext()) {
+        Lattice::EdgeDescriptor segment = segmentIt.next();
+    
+        TokenEdgesMap tokenEdgesMap = createTokenEdgesMap(lattice,
+                lattice.getEdgeSource(segment), lattice.getEdgeTarget(segment)
+                    );
+        tagSegment(lattice, tokenEdgesMap);
+    }
+}
+
+void MeTagger::tagSegment(Lattice &lattice, TokenEdgesMap tokenEdgesMap) {
+    std::vector<Outcome> tags = getTokenTags(lattice, tokenEdgesMap);
+    applyTokenTags(lattice, tokenEdgesMap, tags);
 }
 
 MeTagger::TokenEdgesMap MeTagger::createTokenEdgesMap(
@@ -240,8 +255,11 @@ MeTagger::TokenEdgesMap MeTagger::createTokenEdgesMap(
     TokenEdgesMap tokenEdgesMap;
     LayerTagMask tokenMask = lattice.getLayerTagManager().getMaskWithLangCode(
         "token", langCode_);
-    int tokenCount = 0;
     Lattice::VertexDescriptor vertex = start;
+    
+    if(!training())
+        tokenNo_ = 0;
+    
     while (vertex < end) {
         Lattice::InOutEdgesIterator tokenIt = lattice.outEdges(vertex, tokenMask);
         if (! tokenIt.hasNext()) {
@@ -253,11 +271,12 @@ MeTagger::TokenEdgesMap MeTagger::createTokenEdgesMap(
 
             if (!lattice.isBlank(token)) { //skip white spaces
                 tokenEdgesMap.insert(std::pair<int, Lattice::EdgeDescriptor>(
-                            tokenCount,
+                            tokenNo_,
                             token
                             ));
-                tokenCount ++;
+                tokenNo_ ++;
             }
+            //std::cerr << tokenNo_ << std::endl;
             vertex = lattice.getEdgeTarget(token);
         }
     }
@@ -299,21 +318,21 @@ MeTagger::Context MeTagger::createContext(Lattice &lattice,
         context.push_back(Feature("curr_has_lemma=" + lemma));
     }
 
-    if (RegExp::PartialMatch(currentOrth, rxUpperCaseFirst))
+    if (RegExp::PartialMatch(currentOrth, rxUpperCaseFirst_))
         context.push_back("UpperCaseFirst");
-    if (RegExp::PartialMatch(currentOrth, rxUpperCaseAll))
+    if (RegExp::PartialMatch(currentOrth, rxUpperCaseAll_))
         context.push_back("UpperCaseAll");
-    if (RegExp::PartialMatch(currentOrth, rxContainsNumber))
+    if (RegExp::PartialMatch(currentOrth, rxContainsNumber_))
         context.push_back("ContainsNumber");
-    if (RegExp::PartialMatch(currentOrth, rxIsNumber))
+    if (RegExp::PartialMatch(currentOrth, rxIsNumber_))
         context.push_back("IsNumber");
-    if (RegExp::PartialMatch(currentOrth, rxContainsLetter))
+    if (RegExp::PartialMatch(currentOrth, rxContainsLetter_))
         context.push_back("ContainsLetter");
-    if (RegExp::PartialMatch(currentOrth, rxContainsPunct) &&
-            RegExp::PartialMatch(currentOrth, rxContainsNumber))
+    if (RegExp::PartialMatch(currentOrth, rxContainsPunct_) &&
+            RegExp::PartialMatch(currentOrth, rxContainsNumber_))
         context.push_back("ContainsPunctAndNumber");
-    if (!RegExp::PartialMatch(currentOrth, rxContainsLetter) &&
-            !RegExp::PartialMatch(currentOrth, rxContainsNumber))
+    if (!RegExp::PartialMatch(currentOrth, rxContainsLetter_) &&
+            !RegExp::PartialMatch(currentOrth, rxContainsNumber_))
         context.push_back("ContainsNoLetterAndNoNumber");
 
     if (currentOrth.size() > 6) {
@@ -406,29 +425,31 @@ MeTagger::Context MeTagger::createContext(Lattice &lattice,
     uniq.insert( context.begin(), context.end() );
     context.clear();
     context.insert( context.begin(), uniq.begin(), uniq.end() );
-
+    
     return context;
 }
 
 std::vector<MeTagger::Outcome> MeTagger::getTokenTags(Lattice &lattice,
         TokenEdgesMap tokenEdgesMap) {
     std::vector<Outcome> tags;
+    
     for (TokenEdgesMap::iterator tokenIt = tokenEdgesMap.begin();
             tokenIt != tokenEdgesMap.end(); ++ tokenIt) {
         int tokenIndex = tokenIt->first;
         Lattice::EdgeDescriptor token = tokenIt->second;
         std::string prevTag = "";
-        if (tokenIndex > 0) {
-            prevTag = tags[tokenIndex - 1];
+        if (!tags.empty()) {
+            prevTag = tags.back();
         }
         Context context = createContext(lattice, tokenEdgesMap,
                 tokenIndex, 2);
         if (prevTag != "") {
             context.push_back(Feature("prevtag=" + prevTag));
         }
-
+    
         Outcome bestTag = getBestTag(lattice, token, context);
         tags.push_back(bestTag);
+        
     }
     return tags;
 }
@@ -446,24 +467,16 @@ MeTagger::Outcome MeTagger::getBestTag(Lattice &lattice,
         lattice.outEdges(currentVertex, formMask);
     while (formIt.hasNext()) {
         Lattice::EdgeDescriptor form = formIt.next();
-        if (getFormPartOfSpeech(lattice, form) == unknownPosLabel) {
+        if (getFormPartOfSpeech(lattice, form) == unknownPosLabel_) {
             std::string currentOrth = lattice.getEdgeText(token);
-            std::vector<std::string> openClasses;
-            if (RegExp::PartialMatch(currentOrth, rxContainsPunct)
-                    || RegExp::PartialMatch(currentOrth, rxContainsNumber)) {
-                openClasses.push_back(cardinalNumberPosLabel);
-                openClasses.push_back(properNounPosLabel);
-            } else {
-                openClasses = openClassLabels;
-            }
-            if (!openClasses.empty()) {
+            if (!openClasses_.empty()) {
                 for (std::vector<std::string>::iterator openClassIt =
-                        openClasses.begin();
-                        openClassIt != openClasses.end();
+                        openClasses_.begin();
+                        openClassIt != openClasses_.end();
                         ++ openClassIt) {
                     Outcome openClassTag(*openClassIt);
-
-                    double prob = m.eval(context, openClassTag);
+        
+                    double prob = model_.eval(context, openClassTag);
                     if ( prob > bestProb ) {
                         bestTag  = openClassTag;
                         bestProb = prob;
@@ -472,7 +485,7 @@ MeTagger::Outcome MeTagger::getBestTag(Lattice &lattice,
             }
         } else {
             Outcome tag( getFormMorphoTag(lattice, form) );
-            double prob = m.eval(context, tag);
+            double prob = model_.eval(context, tag);
             if (prob > bestProb) {
                 bestTag = tag;
                 bestProb = prob;
@@ -480,54 +493,10 @@ MeTagger::Outcome MeTagger::getBestTag(Lattice &lattice,
         }
     }
     if (bestTag == "empty") {
-        bestTag = m.predict(context);
+        bestTag = model_.predict(context);
     }
 
     return bestTag;
-}
-
-std::string MeTagger::getPrevTag(Lattice &lattice, TokenEdgesMap tokenEdgesMap,
-        int tokenIndex) {
-    LayerTagMask formMask = lattice.getLayerTagManager().getMaskWithLangCode(
-        "form", langCode_);
-    std::string prevTag = "";
-    if (tokenIndex > 0) {
-        int prevIndex = tokenIndex - 1;
-        TokenEdgesMap::iterator prevIt =
-            tokenEdgesMap.find(prevIndex);
-        if (prevIt != tokenEdgesMap.end()) {
-            Lattice::EdgeDescriptor prevToken = prevIt->second;
-            Lattice::VertexDescriptor prevVertex =
-                lattice.getEdgeSource(prevToken);
-            Lattice::InOutEdgesIterator prevFormIt =
-                lattice.outEdges(prevVertex, formMask);
-            while (prevFormIt.hasNext()) {
-                Lattice::EdgeDescriptor prevForm = prevFormIt.next();
-                if (isDiscarded(lattice, prevForm))
-                    continue;
-                prevTag = getFormMorphoTag(lattice, prevForm);
-            }
-        }
-    }
-    return prevTag;
-}
-
-void MeTagger::addCurrentTag(Lattice &lattice, Lattice::EdgeDescriptor token,
-        MeTagger::Context context) {
-    LayerTagMask formMask = lattice.getLayerTagManager().getMaskWithLangCode(
-        "form", langCode_);
-    Lattice::VertexDescriptor currentVertex =
-        lattice.getEdgeSource(token);
-    Lattice::InOutEdgesIterator formIt =
-        lattice.outEdges(currentVertex, formMask);
-    while (formIt.hasNext()) {
-        Lattice::EdgeDescriptor form = formIt.next();
-        if (isDiscarded(lattice, form))
-            continue;
-        Outcome currentTag = getFormMorphoTag(lattice, form);
-        m.add_event(context, currentTag);
-        break;
-    }
 }
 
 void MeTagger::applyTokenTags(Lattice &lattice, TokenEdgesMap tokenEdgesMap,
@@ -661,11 +630,11 @@ std::string MeTagger::getFormPartOfSpeech(Lattice &lattice,
                         lemma_pos.find(LEMMA_CATEGORY_SEPARATOR) + 1,
                         std::string::npos);
             } else {
-                return unknownPosLabel;
+                return unknownPosLabel_;
             }
         }
     }
-    return unknownPosLabel;
+    return unknownPosLabel_;
 }
 
 std::string MeTagger::getFormMorphoTag(Lattice &lattice,
