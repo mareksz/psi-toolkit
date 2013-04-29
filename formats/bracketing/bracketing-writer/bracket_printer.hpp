@@ -30,7 +30,7 @@ public:
         avSeparator_(avSeparator)
     { }
 
-    std::set< std::vector<EdgePrintData> > print(
+    std::set<EdgePrintData> print(
         std::set<EdgeData> edgeDataSet
     );
 

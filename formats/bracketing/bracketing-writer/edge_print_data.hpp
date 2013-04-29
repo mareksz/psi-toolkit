@@ -13,23 +13,31 @@
 struct EdgePrintData {
     boost::optional<Lattice::EdgeDescriptor> source;
     boost::optional<Lattice::EdgeDescriptor> parent;
-    std::string text;
-
-    EdgePrintData() :
-        text("")
-    { }
+    std::vector<std::string> printedElements;
 
     EdgePrintData(
-        EdgeData & data,
-        std::string a_text
+        EdgeData & data
     ) :
         source(data.source),
-        parent(data.parent),
-        text(a_text)
+        parent(data.parent)
     { }
 
+    void addPrintedElement(std::string printedElement) {
+        printedElements.push_back(printedElement);
+    }
+
+    void swap(EdgePrintData & other) {
+        printedElements.swap(other.printedElements);
+        boost::optional<Lattice::EdgeDescriptor> tmpSource = source;
+        source = other.source;
+        other.source = tmpSource;
+        boost::optional<Lattice::EdgeDescriptor> tmpParent = parent;
+        parent = other.parent;
+        other.parent = tmpParent;
+    }
+
     bool operator<(const EdgePrintData & other) const {
-        return text < other.text;
+        return printedElements < other.printedElements;
     }
 };
 

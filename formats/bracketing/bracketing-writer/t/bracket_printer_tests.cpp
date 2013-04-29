@@ -27,9 +27,9 @@ void testBracketPrinter(std::string pattern, std::string output) {
     EdgeData edgeData(lattice, edge, tags, "Noun-Phrase", "Żółta jaźń", avMap, -1.5);
     std::set<EdgeData> edgeDataSet;
     edgeDataSet.insert(edgeData);
-    std::set< std::vector<EdgePrintData> > printed = bp.print(edgeDataSet);
-    BOOST_FOREACH(std::vector<EdgePrintData> p, printed) {
-        BOOST_CHECK_EQUAL(p[0].text, output);
+    std::set<EdgePrintData> printed = bp.print(edgeDataSet);
+    BOOST_FOREACH(EdgePrintData epd, printed) {
+        BOOST_CHECK_EQUAL(epd.printedElements[0], output);
     }
 }
 

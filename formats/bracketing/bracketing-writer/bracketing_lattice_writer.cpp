@@ -232,15 +232,15 @@ void BracketingLatticeWriter::Worker::doRun() {
     for (size_t i = 0; i < latticeSize; i += symbolLength(latticeText, i)) {
         for (size_t j = 0; j < latticeSize; j += symbolLength(latticeText, j)) {
             if (i < j) {
-                std::set< std::vector<EdgePrintData> > printed
+                std::set<EdgePrintData> printed
                     = bracketPrinter.print(edgeStore[i][j]);
-                std::vector< std::vector<EdgePrintData> > vprinted(printed.begin(), printed.end());
+                std::vector<EdgePrintData> vprinted(printed.begin(), printed.end());
                 for (size_t a = 0; a < vprinted.size(); ++a) {
                     for (size_t b = a + 1; b < vprinted.size(); ++b) {
                         if (
-                            vprinted[a][0].source &&
-                            vprinted[b][0].parent &&
-                            *(vprinted[a][0].source) == *(vprinted[b][0].parent)
+                            vprinted[a].source &&
+                            vprinted[b].parent &&
+                            *(vprinted[a].source) == *(vprinted[b].parent)
                         ) {
                             vprinted[a].swap(vprinted[b]);
                             a = 0;
@@ -248,9 +248,9 @@ void BracketingLatticeWriter::Worker::doRun() {
                         }
                     }
                 }
-                BOOST_FOREACH(std::vector<EdgePrintData> p, vprinted) {
-                    printedBrackets[i][j] = printedBrackets[i][j] + p[0].text;
-                    printedBrackets[j][i] = p[1].text + printedBrackets[j][i];
+                BOOST_FOREACH(EdgePrintData epd, vprinted) {
+                    printedBrackets[i][j] = printedBrackets[i][j] + epd.printedElements[0];
+                    printedBrackets[j][i] = epd.printedElements[1] + printedBrackets[j][i];
                 }
             }
         }
