@@ -17,7 +17,9 @@ in the `--opening/closing-bracket` (but not inside join operators)
 *active elements*. (E.g. for the specification `<edge tags="%T"
 category="%c">` the tags and the category are active elements). Edges
 covering the same span with same values of active elements will be
-*collapsed* (i.e. only one bracket pair will be generated).
+*collapsed* (i.e. only one bracket pair will be generated). This is
+the default behavior, however it can be reverted by the option
+`--no-collapse`.
 
 The alternative values of the elements of an edge description that are
 not active can be given with a join operator. A join operator has two
@@ -44,3 +46,7 @@ given with `--av-pairs-separator` option. The attribute and its value
 are separated with `=`, an alternative separator can be given with
 `--av-separator`. The attribute to be shown can be chosen with the
 `--show-attributes` option.
+
+By default, symbol edges are displayed but blank edges are omitted.
+Both these behaviors can be changed by using options
+`--skip-symbol-edges` and `--with-blank` respectively.
