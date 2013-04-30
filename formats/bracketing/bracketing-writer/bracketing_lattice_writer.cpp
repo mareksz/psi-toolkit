@@ -47,7 +47,7 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
         showAttributes,
         !options.count("skip-symbol-edges"),
         !options.count("with-blank"),
-        options.count("tree")
+        !options.count("no-merge")
     );
 }
 
@@ -84,8 +84,8 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
             "skip symbol edges")
         ("with-blank",
             "do not skip edges with whitespace text")
-        ("tree",
-            "print the longest edge and all its descendants");
+        ("no-merge",
+            "do not merge duplicate edge labels");
 
     return optionsDescription;
 }
@@ -112,7 +112,7 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     std::vector<std::string> showAttributes,
     bool showSymbolEdges,
     bool skipBlank,
-    bool tree
+    bool mergeDuplicate
 ) :
     openingBracket_(openingBracket),
     closingBracket_(closingBracket),
@@ -124,7 +124,7 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     showAttributes_(showAttributes.begin(), showAttributes.end()),
     showSymbolEdges_(showSymbolEdges),
     skipBlank_(skipBlank),
-    tree_(tree)
+    mergeDuplicate_(mergeDuplicate)
 { }
 
 
