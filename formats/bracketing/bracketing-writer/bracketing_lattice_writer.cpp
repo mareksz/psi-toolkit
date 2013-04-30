@@ -1,12 +1,10 @@
 #include "bracketing_lattice_writer.hpp"
 
 
-#include <algorithm>
 #include <iterator>
+#include <utility>
 
 #include "bracketing_quoter.hpp"
-#include "edge_print_data.hpp"
-#include "string_helpers.hpp"
 
 
 std::string BracketingLatticeWriter::getFormatName() {
@@ -184,98 +182,11 @@ BracketingLatticeWriter::Worker::Worker(BracketingLatticeWriter& processor,
 
 void BracketingLatticeWriter::Worker::doRun() {
 
-    std::vector<std::string> patterns;
-    patterns.push_back(processor_.getOpeningBracket());
-    patterns.push_back(processor_.getClosingBracket());
-
-    BracketPrinter bracketPrinter(
-        patterns,
-        processor_.getTagSeparator(),
-        processor_.getAVPairsSeparator(),
-        processor_.getAVSeparator()
-    );
-
-    std::string latticeText = lattice_.getAllText();
-    size_t latticeSize = latticeText.length() + 1;
-
-    std::set<EdgeData> * * edgeStore = new std::set<EdgeData> * [latticeSize];
-    for (size_t i = 0; i < latticeSize; i++) {
-        edgeStore[i] = new std::set<EdgeData>[latticeSize];
+    if (processor_.isMergeDuplicate()) {
+        doRun_< std::set<EdgeData>, std::set<EdgePrintData> >();
+    } else {
+        doRun_< std::vector<EdgeData>, std::vector<EdgePrintData> >();
     }
-
-    std::string * * printedBrackets = new std::string * [latticeSize];
-    for (size_t i = 0; i < latticeSize; i++) {
-        printedBrackets[i] = new std::string [latticeSize];
-    }
-
-    Lattice::EdgesSortedBySourceIterator ei
-        = lattice_.edgesSortedBySource(lattice_.getLayerTagManager().anyTag());
-    while (ei.hasNext()) {
-        Lattice::EdgeDescriptor edge = ei.next();
-        std::list<std::string> tagNames
-            = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
-        if (
-            tagNames.size() == 1 &&
-            tagNames.front() == "symbol" &&
-            !processor_.isShowSymbolEdges()
-        ) continue;
-        if (
-            processor_.isSkipBlank() &&
-            lattice_.isBlank(edge)
-        ) continue;
-        if (!processor_.areSomeInFilter(tagNames)) continue;
-        int begin = lattice_.getEdgeBeginIndex(edge);
-        int end = lattice_.getEdgeEndIndex(edge);
-        edgeStore[begin][end].insert(getEdgeData_(edge));
-    }
-
-    for (size_t i = 0; i < latticeSize; i += symbolLength(latticeText, i)) {
-        for (size_t j = 0; j < latticeSize; j += symbolLength(latticeText, j)) {
-            if (i < j) {
-                std::set<EdgePrintData> printed
-                    = bracketPrinter.print(edgeStore[i][j]);
-                std::vector<EdgePrintData> vprinted(printed.begin(), printed.end());
-                for (size_t a = 0; a < vprinted.size(); ++a) {
-                    for (size_t b = a + 1; b < vprinted.size(); ++b) {
-                        if (
-                            vprinted[a].source &&
-                            vprinted[b].parent &&
-                            *(vprinted[a].source) == *(vprinted[b].parent)
-                        ) {
-                            vprinted[a].swap(vprinted[b]);
-                            a = 0;
-                            b = 1;
-                        }
-                    }
-                }
-                BOOST_FOREACH(EdgePrintData epd, vprinted) {
-                    printedBrackets[i][j] = printedBrackets[i][j] + epd.printedElements[0];
-                    printedBrackets[j][i] = epd.printedElements[1] + printedBrackets[j][i];
-                }
-            }
-        }
-    }
-
-    for (size_t i = 0; i < latticeSize; i += symbolLength(latticeText, i)) {
-        for (
-            size_t j = ((i + latticeSize) - 1) % latticeSize;
-            j != i;
-            j = ((j + latticeSize) - 1) % latticeSize
-        ) {
-            print_(printedBrackets[i][j]);
-        }
-        print_(latticeText.substr(i, symbolLength(latticeText, i)));
-    }
-
-    for (size_t i = 0; i < latticeSize; i++) {
-        delete [] printedBrackets[i];
-    }
-    delete [] printedBrackets;
-
-    for (size_t i = 0; i < latticeSize; i++) {
-        delete [] edgeStore[i];
-    }
-    delete [] edgeStore;
 
 }
 
