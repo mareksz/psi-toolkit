@@ -65,14 +65,25 @@ public:
     //Converter & master stuff:
 
     zvalue stringToZvalue(std::string s) const;
+
+    /**
+     * converts zvalue to string with LITERAL representation of special values (DEFAULT, NULL)
+     */
     std::string zvalueToString(zvalue z) const;
 
     bool is_int(zvalue value) const;
     bool is_string(zvalue value) const;
 
     int to_int(zvalue value) const;
+
+    /**
+     * converts zvalue to string with VERBOSE representation of special values (nil, fail)
+     */
     std::string to_string(zvalue value) const;
 
+    /**
+     * alias for zvalueToString
+     */
     std::string string_representation(zvalue value) const;
 
     zvalue from_int(int i);
