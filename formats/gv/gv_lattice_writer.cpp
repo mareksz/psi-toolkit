@@ -292,20 +292,22 @@ void GVLatticeWriter::Worker::doRun() {
                 int partitionNumber = 0;
                 std::list<Lattice::Partition> partitions = lattice_.getEdgePartitions(edge);
                 BOOST_FOREACH(Lattice::Partition partition, partitions) {
-                    std::stringstream partSs;
                     ++partitionNumber;
-                    if (partitions.size() > 1) {
-                        partSs << "(" << partitionNumber << ") ";
-                    }
                     Lattice::Partition::Iterator ei(lattice_, partition);
                     while (ei.hasNext()) {
                         Lattice::EdgeUsage eu = ei.nextUsage();
                         Lattice::EdgeDescriptor ed = eu.getEdge();
                         zvalue role = eu.getRole();
-                        partSs << role;
                         std::map<Lattice::EdgeDescriptor, int>::iterator
                             moi = edgeOrdinalMap.find(ed);
                         if (moi != edgeOrdinalMap.end()) {
+                            std::stringstream partSs;
+                            if (partitions.size() > 1) {
+                                partSs << "(" << partitionNumber << ")";
+                            }
+                            if (!NULLP(role)) {
+                                partSs << lattice_.getAnnotationItemManager().to_string(role);
+                            }
                             std::stringstream edSs;
                             edSs << moi->second;
                             m = processor_.getAdapter()->addNode(edSs.str());
