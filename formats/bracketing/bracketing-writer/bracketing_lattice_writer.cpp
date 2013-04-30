@@ -45,7 +45,7 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
         showAttributes,
         !options.count("skip-symbol-edges"),
         !options.count("with-blank"),
-        !options.count("no-merge")
+        !options.count("no-collapse")
     );
 }
 
@@ -82,8 +82,8 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
             "skip symbol edges")
         ("with-blank",
             "do not skip edges with whitespace text")
-        ("no-merge",
-            "do not merge duplicate edge labels");
+        ("no-collapse",
+            "do not collapse duplicate edge labels");
 
     return optionsDescription;
 }
@@ -110,7 +110,7 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     std::vector<std::string> showAttributes,
     bool showSymbolEdges,
     bool skipBlank,
-    bool mergeDuplicate
+    bool collapseDuplicate
 ) :
     openingBracket_(openingBracket),
     closingBracket_(closingBracket),
@@ -122,7 +122,7 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     showAttributes_(showAttributes.begin(), showAttributes.end()),
     showSymbolEdges_(showSymbolEdges),
     skipBlank_(skipBlank),
-    mergeDuplicate_(mergeDuplicate)
+    collapseDuplicate_(collapseDuplicate)
 { }
 
 
@@ -182,7 +182,7 @@ BracketingLatticeWriter::Worker::Worker(BracketingLatticeWriter& processor,
 
 void BracketingLatticeWriter::Worker::doRun() {
 
-    if (processor_.isMergeDuplicate()) {
+    if (processor_.isCollapseDuplicate()) {
         doRun_< std::set<EdgeData>, std::set<EdgePrintData> >();
     } else {
         doRun_< std::vector<EdgeData>, std::vector<EdgePrintData> >();

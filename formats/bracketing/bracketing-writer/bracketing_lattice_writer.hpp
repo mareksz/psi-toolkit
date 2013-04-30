@@ -43,7 +43,7 @@ public:
         std::vector<std::string> showAttributes,
         bool showSymbolEdges,
         bool skipBlank,
-        bool mergeDuplicate
+        bool collapseDuplicate
     );
 
     std::string getOpeningBracket() const { return openingBracket_; }
@@ -58,7 +58,7 @@ public:
 
     bool isShowSymbolEdges() const { return showSymbolEdges_; }
     bool isSkipBlank() const { return skipBlank_; }
-    bool isMergeDuplicate() const { return mergeDuplicate_; }
+    bool isCollapseDuplicate() const { return collapseDuplicate_; }
 
 private:
     virtual std::string doInfo();
@@ -97,7 +97,7 @@ private:
     std::set<std::string> showAttributes_;
     bool showSymbolEdges_;
     bool skipBlank_;
-    bool mergeDuplicate_;
+    bool collapseDuplicate_;
 
 };
 
