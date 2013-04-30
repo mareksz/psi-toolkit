@@ -1,0 +1,1 @@
+<conj><TEXT><FRAG><conj><word><term><T><'a>a</'a></T></term></word></conj></FRAG></TEXT></conj>
