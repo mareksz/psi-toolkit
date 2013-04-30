@@ -43,6 +43,22 @@ public:
         return print_< std::vector<EdgeData>, std::vector<EdgePrintData> >(edgeDataVector);
     }
 
+    template <typename Element>
+    static void insertElementIntoContainer(
+        std::set<Element> & aSet,
+        Element & anElement
+    ) {
+        aSet.insert(anElement);
+    }
+
+    template <typename Element>
+    static void insertElementIntoContainer(
+        std::vector<Element> & aVector,
+        Element & anElement
+    ) {
+        aVector.push_back(anElement);
+    }
+
 private:
 
     template <typename InputContainer, typename OutputContainer>
@@ -65,22 +81,6 @@ private:
             case '>': return '<';
             default: return c;
         }
-    }
-
-    template <typename Element>
-    void insertElementIntoContainer_(
-        std::set<Element> & aSet,
-        Element & anElement
-    ) {
-        aSet.insert(anElement);
-    }
-
-    template <typename Element>
-    void insertElementIntoContainer_(
-        std::vector<Element> & aVector,
-        Element & anElement
-    ) {
-        aVector.push_back(anElement);
     }
 
 };
@@ -239,7 +239,7 @@ OutputContainer BracketPrinter::print_(InputContainer edgeDataContainer) {
                         continue;
                     }
                 }
-                insertElementIntoContainer_<EdgeData>(edgeDataSubcontainer, edgeData2);
+                insertElementIntoContainer<EdgeData>(edgeDataSubcontainer, edgeData2);
             }
             std::vector<std::string> subpatterns
                 = boost::assign::list_of(subpattern);
@@ -265,7 +265,7 @@ OutputContainer BracketPrinter::print_(InputContainer edgeDataContainer) {
                 }
             }
         }
-        insertElementIntoContainer_<EdgePrintData>(result, resultElement);
+        insertElementIntoContainer<EdgePrintData>(result, resultElement);
     }
     return result;
 }
