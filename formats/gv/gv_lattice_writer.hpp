@@ -23,7 +23,8 @@ public:
         std::string outputFormat,
         bool tree,
         bool align,
-        bool showSymbolEdges
+        bool showSymbolEdges,
+        bool disambig
     );
 
     ~GVLatticeWriter();
@@ -60,6 +61,7 @@ public:
     bool isTree() const { return tree_; }
     bool isAlign() const { return align_; }
     bool isShowSymbolEdges() const { return showSymbolEdges_; }
+    bool isDisambig() const { return disambig_; }
 
 private:
     virtual std::string doInfo();
@@ -90,6 +92,7 @@ private:
     bool tree_;
     bool align_;
     bool showSymbolEdges_;
+    bool disambig_;
 
     GraphvizAdapterInterface * adapter_;
 

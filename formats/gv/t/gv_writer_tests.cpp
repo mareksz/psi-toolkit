@@ -29,7 +29,8 @@ BOOST_AUTO_TEST_CASE( gv_lattice_writer_simple ) {
         "dot", // output format
         false, // tree
         false, // align
-        true // show symbol edges
+        true, // show symbol edges
+        false // disambig
     ));
 
     BOOST_CHECK_EQUAL(writer->getFormatName(), "GraphViz");
@@ -67,7 +68,8 @@ BOOST_AUTO_TEST_CASE( gv_lattice_writer_advanced ) {
         "dot", // output format
         false, // tree
         false, // align
-        true // show symbol edges
+        true, // show symbol edges
+        false // disambig
     ));
 
     std::stringstream outSs;
@@ -102,7 +104,8 @@ BOOST_AUTO_TEST_CASE( dot_lattice_writer_tree ) {
         "dot", // output format
         true, // tree
         false, // align
-        true // show symbol edges
+        true, // show symbol edges
+        false // disambig
     ));
 
     std::stringstream outSs;

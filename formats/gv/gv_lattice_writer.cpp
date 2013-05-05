@@ -20,7 +20,8 @@ GVLatticeWriter::GVLatticeWriter(
     std::string outputFormat,
     bool tree,
     bool align,
-    bool showSymbolEdges
+    bool showSymbolEdges,
+    bool disambig
 ) :
     showTags_(showTags),
     color_(color),
@@ -28,7 +29,8 @@ GVLatticeWriter::GVLatticeWriter(
     outputFormat_(outputFormat),
     tree_(tree),
     align_(align),
-    showSymbolEdges_(showSymbolEdges)
+    showSymbolEdges_(showSymbolEdges),
+    disambig_(disambig)
 {
     adapter_ = dynamic_cast<GraphvizAdapterInterface*>(
         PluginManager::getInstance().createPluginAdapter("graphviz")
@@ -78,7 +80,8 @@ LatticeWriter<std::ostream>* GVLatticeWriter::Factory::doCreateLatticeWriter(
         options["format"].as<std::string>(),
         options.count("tree"),
         !options.count("no-align"),
-        options.count("show-symbol-edges")
+        options.count("show-symbol-edges"),
+        options.count("disambig")
     );
 }
 
@@ -86,6 +89,8 @@ boost::program_options::options_description GVLatticeWriter::Factory::doOptionsH
     boost::program_options::options_description optionsDescription(OPTION_LABEL);
 
     optionsDescription.add_options()
+        ("disambig",
+            "choose only one partition")
         ("format", boost::program_options::value<std::string>()->default_value("svg"),
             "choose output format")
         ("no-align",
