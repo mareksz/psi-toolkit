@@ -656,6 +656,8 @@ public:
 
     int addTagMaskIndex_(LayerTagMask tagMask);
 
+    static const std::string SYMBOL_TAG_NAME;
+
 private:
 
     struct IsBlank {
@@ -822,7 +824,6 @@ private:
 
     std::list<Partition> emptyPartitionList_;
 
-    static const std::string SYMBOL_TAG_NAME;
     static const std::string DISCARDED_TAG_NAME;
 };
 
