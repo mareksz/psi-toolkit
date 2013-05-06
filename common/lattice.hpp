@@ -465,6 +465,11 @@ public:
     void discard(EdgeDescriptor edge);
 
     /**
+     * Check if the given edge is discarded.
+     */
+    bool isDiscarded(EdgeDescriptor edge);
+
+    /**
      * Returns outgoing edges which has at least one layer tag from `mask`.
      */
     InOutEdgesIterator outEdges(
@@ -816,6 +821,9 @@ private:
     LayerTagCollection discardedTag_;
 
     std::list<Partition> emptyPartitionList_;
+
+    static const std::string SYMBOL_TAG_NAME;
+    static const std::string DISCARDED_TAG_NAME;
 };
 
 
