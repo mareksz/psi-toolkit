@@ -4,11 +4,16 @@
 
 #include "string_helpers.hpp"
 
+
+const std::string Lattice::SYMBOL_TAG_NAME = "symbol";
+const std::string Lattice::DISCARDED_TAG_NAME = "discarded";
+
+
 Lattice::Lattice(AnnotationItemManager & annotationItemManager) :
     annotationItemManager_(annotationItemManager),
     nLooseVertices_(0),
-    symbolTag_(layerTagManager_.createSingletonTagCollection("symbol")),
-    discardedTag_(layerTagManager_.createSingletonTagCollection("discarded"))
+    symbolTag_(layerTagManager_.createSingletonTagCollection(SYMBOL_TAG_NAME)),
+    discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME))
 {
     resizeImplicitEdgesStructures_();
 }
@@ -16,8 +21,8 @@ Lattice::Lattice(AnnotationItemManager & annotationItemManager) :
 Lattice::Lattice(AnnotationItemManager & annotationItemManager, const std::string & text) :
     annotationItemManager_(annotationItemManager),
     nLooseVertices_(0),
-    symbolTag_(layerTagManager_.createSingletonTagCollection("symbol")),
-    discardedTag_(layerTagManager_.createSingletonTagCollection("discarded"))
+    symbolTag_(layerTagManager_.createSingletonTagCollection(SYMBOL_TAG_NAME)),
+    discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME))
 {
     appendString(text);
 }
@@ -185,7 +190,10 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         EdgeSequence::Iterator sequenceIter(*this, sequence);
         while (sequenceIter.hasNext()) {
             if (sequenceIter.next() == edge) {
-                throw EdgeSelfReferenceException("Cannot add an edge referencing itself:" + annotationItem.getText() + "/" + annotationItem.getCategory());
+                std::stringstream errorSs;
+                errorSs << "Cannot add an edge referencing itself: "
+                    << annotationItem.getText() << "/" << annotationItem.getCategory();
+                throw EdgeSelfReferenceException(errorSs.str());
             }
         }
         LayerTagCollection oldTags = getEdgeLayerTags(edge);
@@ -343,6 +351,10 @@ Lattice::EdgeDescriptor Lattice::addPartitionToEdge(
 
 void Lattice::discard(EdgeDescriptor edge) {
     addPartitionToEdge(edge, discardedTag_, EdgeSequence(), -(std::numeric_limits<Score>::max)());
+}
+
+bool Lattice::isDiscarded(EdgeDescriptor edge) {
+    return layerTagManager_.isThere(DISCARDED_TAG_NAME, getEdgeLayerTags(edge));
 }
 
 Lattice::InOutEdgesIterator Lattice::outEdges(
@@ -971,7 +983,7 @@ Lattice::EdgeUsage Lattice::EdgeSequence::Iterator::nextUsage() {
         return Lattice::EdgeUsage(
             lattice_.firstOutEdge(
                 lattice_.getVertexForRawCharIndex(currentSymbol),
-                lattice_.getLayerTagManager().getMask("symbol")));
+                lattice_.getLayerTagManager().getMask(SYMBOL_TAG_NAME)));
     } else {
         if (ei_ == edgeSequence_.links.end()) {
             throw NoEdgeException("EdgeSequence::Iterator has no next edges.");
@@ -984,7 +996,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::firstEdge(Lattice & lattice) cons
     if (links.empty()) {
         return lattice.firstOutEdge(
             lattice.getVertexForRawCharIndex(begin),
-            lattice.getLayerTagManager().getMask("symbol")
+            lattice.getLayerTagManager().getMask(SYMBOL_TAG_NAME)
         );
     } else {
         return links.front().getEdge();
@@ -995,7 +1007,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::lastEdge(Lattice & lattice) const
     if (links.empty()) {
         return lattice.firstInEdge(
             lattice.getVertexForRawCharIndex(end),
-            lattice.getLayerTagManager().getMask("symbol")
+            lattice.getLayerTagManager().getMask(SYMBOL_TAG_NAME)
         );
     } else {
         return links.back().getEdge();
@@ -1013,7 +1025,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t
 
         return lattice.firstOutEdge(
             lattice.getVertexForRawCharIndex(foundIter - latticeText),
-            lattice.getLayerTagManager().getMask("symbol")
+            lattice.getLayerTagManager().getMask(SYMBOL_TAG_NAME)
         );
     } else {
         return links[index].getEdge();
