@@ -43,7 +43,8 @@ public:
         std::vector<std::string> showAttributes,
         bool showSymbolEdges,
         bool skipBlank,
-        bool collapseDuplicate
+        bool collapseDuplicate,
+        bool disambig
     );
 
     std::string getOpeningBracket() const { return openingBracket_; }
@@ -59,6 +60,7 @@ public:
     bool isShowSymbolEdges() const { return showSymbolEdges_; }
     bool isSkipBlank() const { return skipBlank_; }
     bool isCollapseDuplicate() const { return collapseDuplicate_; }
+    bool isDisambig() const { return disambig_; }
 
 private:
     virtual std::string doInfo();
@@ -98,6 +100,7 @@ private:
     bool showSymbolEdges_;
     bool skipBlank_;
     bool collapseDuplicate_;
+    bool disambig_;
 
 };
 
