@@ -133,18 +133,27 @@ void BracketingLatticeWriter::Worker::doRun_() {
         = lattice_.edgesSortedBySource(lattice_.getLayerTagManager().anyTag());
     while (ei.hasNext()) {
         Lattice::EdgeDescriptor edge = ei.next();
+        if (lattice_.isDiscarded(edge)) {
+            continue;
+        }
+        if (
+            processor_.isSkipBlank() &&
+            lattice_.isBlank(edge)
+        ) {
+            continue;
+        }
         std::list<std::string> tagNames
             = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
         if (
             tagNames.size() == 1 &&
             tagNames.front() == "symbol" &&
             !processor_.isShowSymbolEdges()
-        ) continue;
-        if (
-            processor_.isSkipBlank() &&
-            lattice_.isBlank(edge)
-        ) continue;
-        if (!processor_.areSomeInFilter(tagNames)) continue;
+        ) {
+            continue;
+        }
+        if (!processor_.areSomeInFilter(tagNames)) {
+            continue;
+        }
         int begin = lattice_.getEdgeBeginIndex(edge);
         int end = lattice_.getEdgeEndIndex(edge);
         EdgeData edgeData = getEdgeData_(edge);
