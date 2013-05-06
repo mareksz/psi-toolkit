@@ -7,6 +7,8 @@
 #include <stack>
 #include <vector>
 
+#include <boost/foreach.hpp>
+
 #include "aligning_writer_worker.hpp"
 #include "bracket_printer.hpp"
 #include "edge_data.hpp"
@@ -43,7 +45,8 @@ public:
         std::vector<std::string> showAttributes,
         bool showSymbolEdges,
         bool skipBlank,
-        bool collapseDuplicate
+        bool collapseDuplicate,
+        bool disambig
     );
 
     std::string getOpeningBracket() const { return openingBracket_; }
@@ -59,6 +62,7 @@ public:
     bool isShowSymbolEdges() const { return showSymbolEdges_; }
     bool isSkipBlank() const { return skipBlank_; }
     bool isCollapseDuplicate() const { return collapseDuplicate_; }
+    bool isDisambig() const { return disambig_; }
 
 private:
     virtual std::string doInfo();
@@ -71,14 +75,19 @@ private:
 
         virtual void doRun();
 
-        template <typename EdgeDataContainer, typename EdgePrintDataContainer>
-        void doRun_();
-
         virtual ~Worker();
     private:
         BracketingLatticeWriter& processor_;
 
         EdgeData getEdgeData_(Lattice::EdgeDescriptor edge);
+
+        bool shouldBeSkipped_(Lattice::EdgeDescriptor edge);
+
+        template <typename EdgeDataContainer, typename EdgePrintDataContainer>
+        void doRun_();
+
+        template <typename EdgeDataContainer>
+        void collectEdges_(EdgeDataContainer & container, Lattice::EdgeDescriptor edge);
     };
 
     virtual WriterWorker<std::ostream>* doCreateWriterWorker(
@@ -98,6 +107,7 @@ private:
     bool showSymbolEdges_;
     bool skipBlank_;
     bool collapseDuplicate_;
+    bool disambig_;
 
 };
 
@@ -129,35 +139,63 @@ void BracketingLatticeWriter::Worker::doRun_() {
         printedBrackets[i] = new std::string [latticeSize];
     }
 
-    Lattice::EdgesSortedBySourceIterator ei
-        = lattice_.edgesSortedBySource(lattice_.getLayerTagManager().anyTag());
-    while (ei.hasNext()) {
-        Lattice::EdgeDescriptor edge = ei.next();
-        if (lattice_.isDiscarded(edge)) {
-            continue;
+    if (processor_.isDisambig()) {
+
+        EdgeDataContainer collectedEdges;
+        Lattice::VertexDescriptor currentVertex = lattice_.getFirstVertex();
+        while (true) {
+            Lattice::InOutEdgesIterator ei = lattice_.allOutEdges(currentVertex);
+            if (ei.hasNext()) {
+                Lattice::EdgeDescriptor bestEdge = ei.next();
+                while (ei.hasNext()) {
+                    Lattice::EdgeDescriptor currentEdge = ei.next();
+                    if (shouldBeSkipped_(currentEdge)) {
+                        continue;
+                    }
+                    try {
+                        if (lattice_.getEdgeEndIndex(currentEdge) >
+                                lattice_.getEdgeEndIndex(bestEdge)) {
+                            bestEdge = currentEdge;
+                        }
+                    } catch (WrongVertexException) { }
+                }
+                while (true) {
+                    std::vector<Lattice::EdgeDescriptor> children
+                        = lattice_.getChildren(bestEdge, lattice_.getLayerTagManager().anyTag());
+                    if (children.empty() || shouldBeSkipped_(children.front())) {
+                        break;
+                    } else {
+                        bestEdge = children.front();
+                    }
+                }
+                collectEdges_<EdgeDataContainer>(collectedEdges, bestEdge);
+                currentVertex = lattice_.getEdgeTarget(bestEdge);
+            } else {
+                break;
+            }
         }
-        if (
-            processor_.isSkipBlank() &&
-            lattice_.isBlank(edge)
-        ) {
-            continue;
+
+        BOOST_FOREACH(EdgeData ed, collectedEdges) {
+            int begin = lattice_.getEdgeBeginIndex(*ed.source);
+            int end = lattice_.getEdgeEndIndex(*ed.source);
+            BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], ed);
         }
-        std::list<std::string> tagNames
-            = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
-        if (
-            tagNames.size() == 1 &&
-            tagNames.front() == "symbol" &&
-            !processor_.isShowSymbolEdges()
-        ) {
-            continue;
+
+    } else {
+
+        Lattice::EdgesSortedBySourceIterator ei
+            = lattice_.edgesSortedBySource(lattice_.getLayerTagManager().anyTag());
+        while (ei.hasNext()) {
+            Lattice::EdgeDescriptor edge = ei.next();
+            if (shouldBeSkipped_(edge)) {
+                continue;
+            }
+            int begin = lattice_.getEdgeBeginIndex(edge);
+            int end = lattice_.getEdgeEndIndex(edge);
+            EdgeData edgeData = getEdgeData_(edge);
+            BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], edgeData);
         }
-        if (!processor_.areSomeInFilter(tagNames)) {
-            continue;
-        }
-        int begin = lattice_.getEdgeBeginIndex(edge);
-        int end = lattice_.getEdgeEndIndex(edge);
-        EdgeData edgeData = getEdgeData_(edge);
-        BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], edgeData);
+
     }
 
     for (size_t i = 0; i < latticeSize; i += symbolLength(latticeText, i)) {
@@ -207,6 +245,25 @@ void BracketingLatticeWriter::Worker::doRun_() {
     }
     delete [] edgeStore;
 
+}
+
+
+template <typename EdgeDataContainer>
+void BracketingLatticeWriter::Worker::collectEdges_(
+    EdgeDataContainer & container,
+    Lattice::EdgeDescriptor edge
+) {
+    if (!shouldBeSkipped_(edge)) {
+        EdgeData edgeData = getEdgeData_(edge);
+        BracketPrinter::insertElementIntoContainer(container, edgeData);
+    }
+    std::list<Lattice::Partition> partitions = lattice_.getEdgePartitions(edge);
+    if (!partitions.empty()) {
+        Lattice::Partition::Iterator ei(lattice_, partitions.front());
+        while (ei.hasNext()) {
+            collectEdges_(container, ei.next());
+        }
+    }
 }
 
 

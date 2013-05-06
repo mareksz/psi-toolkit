@@ -45,7 +45,8 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
         showAttributes,
         !options.count("skip-symbol-edges"),
         !options.count("with-blank"),
-        !options.count("no-collapse")
+        !options.count("no-collapse"),
+        options.count("disambig")
     );
 }
 
@@ -83,7 +84,9 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
         ("with-blank",
             "do not skip edges with whitespace text")
         ("no-collapse",
-            "do not collapse duplicate edge labels");
+            "do not collapse duplicate edge labels")
+        ("disambig",
+            "choose only one partition");
 
     return optionsDescription;
 }
@@ -110,7 +113,8 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     std::vector<std::string> showAttributes,
     bool showSymbolEdges,
     bool skipBlank,
-    bool collapseDuplicate
+    bool collapseDuplicate,
+    bool disambig
 ) :
     openingBracket_(openingBracket),
     closingBracket_(closingBracket),
@@ -122,7 +126,8 @@ BracketingLatticeWriter::BracketingLatticeWriter(
     showAttributes_(showAttributes.begin(), showAttributes.end()),
     showSymbolEdges_(showSymbolEdges),
     skipBlank_(skipBlank),
-    collapseDuplicate_(collapseDuplicate)
+    collapseDuplicate_(collapseDuplicate),
+    disambig_(disambig)
 { }
 
 
@@ -212,4 +217,27 @@ EdgeData BracketingLatticeWriter::Worker::getEdgeData_(Lattice::EdgeDescriptor e
         processor_.filterAttributes(avMap),
         lattice_.getEdgeScore(edge)
     );
+}
+
+
+bool BracketingLatticeWriter::Worker::shouldBeSkipped_(Lattice::EdgeDescriptor edge) {
+    if (lattice_.isDiscarded(edge)) {
+        return true;
+    }
+    if (processor_.isSkipBlank() && lattice_.isBlank(edge)) {
+        return true;
+    }
+    std::list<std::string> tagNames = lattice_.getLayerTagManager().getTagNames(
+        lattice_.getEdgeLayerTags(edge));
+    if (
+        tagNames.size() == 1 &&
+        tagNames.front() == Lattice::SYMBOL_TAG_NAME &&
+        !processor_.isShowSymbolEdges()
+    ) {
+        return true;
+    }
+    if (!processor_.areSomeInFilter(tagNames)) {
+        return true;
+    }
+    return false;
 }

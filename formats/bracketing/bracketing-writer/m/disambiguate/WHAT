@@ -1,0 +1,1 @@
+tokenize --lang pl ! lamerlemma --lang pl ! bracketing-writer --no-collapse --skip-symbol-edges --filter lamerlemma --opening-bracket "%c[" --disambig
