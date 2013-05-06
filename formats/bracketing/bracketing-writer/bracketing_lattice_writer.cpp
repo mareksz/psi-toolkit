@@ -218,3 +218,26 @@ EdgeData BracketingLatticeWriter::Worker::getEdgeData_(Lattice::EdgeDescriptor e
         lattice_.getEdgeScore(edge)
     );
 }
+
+
+bool BracketingLatticeWriter::Worker::shouldBeSkipped_(Lattice::EdgeDescriptor edge) {
+    if (lattice_.isDiscarded(edge)) {
+        return true;
+    }
+    if (processor_.isSkipBlank() && lattice_.isBlank(edge)) {
+        return true;
+    }
+    std::list<std::string> tagNames = lattice_.getLayerTagManager().getTagNames(
+        lattice_.getEdgeLayerTags(edge));
+    if (
+        tagNames.size() == 1 &&
+        tagNames.front() == Lattice::SYMBOL_TAG_NAME &&
+        !processor_.isShowSymbolEdges()
+    ) {
+        return true;
+    }
+    if (!processor_.areSomeInFilter(tagNames)) {
+        return true;
+    }
+    return false;
+}

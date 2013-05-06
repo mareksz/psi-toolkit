@@ -81,6 +81,8 @@ private:
 
         EdgeData getEdgeData_(Lattice::EdgeDescriptor edge);
 
+        bool shouldBeSkipped_(Lattice::EdgeDescriptor edge);
+
         template <typename EdgeDataContainer, typename EdgePrintDataContainer>
         void doRun_();
 
@@ -147,6 +149,9 @@ void BracketingLatticeWriter::Worker::doRun_() {
                 Lattice::EdgeDescriptor bestEdge = ei.next();
                 while (ei.hasNext()) {
                     Lattice::EdgeDescriptor currentEdge = ei.next();
+                    if (shouldBeSkipped_(currentEdge)) {
+                        continue;
+                    }
                     try {
                         if (lattice_.getEdgeEndIndex(currentEdge) >
                                 lattice_.getEdgeEndIndex(bestEdge)) {
@@ -173,28 +178,7 @@ void BracketingLatticeWriter::Worker::doRun_() {
             = lattice_.edgesSortedBySource(lattice_.getLayerTagManager().anyTag());
         while (ei.hasNext()) {
             Lattice::EdgeDescriptor edge = ei.next();
-            if (lattice_.isDiscarded(edge)) {
-                continue;
-            }
-            if (
-                processor_.isSkipBlank() &&
-                lattice_.isBlank(edge)
-            ) {
-                continue;
-            }
-            if (processor_.isDisambig()) {
-                // TODO
-            }
-            std::list<std::string> tagNames
-                = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
-            if (
-                tagNames.size() == 1 &&
-                tagNames.front() == "symbol" &&
-                !processor_.isShowSymbolEdges()
-            ) {
-                continue;
-            }
-            if (!processor_.areSomeInFilter(tagNames)) {
+            if (shouldBeSkipped_(edge)) {
                 continue;
             }
             int begin = lattice_.getEdgeBeginIndex(edge);
@@ -260,12 +244,13 @@ void BracketingLatticeWriter::Worker::collectEdges_(
     EdgeDataContainer & container,
     Lattice::EdgeDescriptor edge
 ) {
+    if (!shouldBeSkipped_(edge)) {
+        EdgeData edgeData = getEdgeData_(edge);
+        BracketPrinter::insertElementIntoContainer(container, edgeData);
+    }
     Lattice::Partition::Iterator ei(lattice_, lattice_.getEdgePartitions(edge).front());
     while (ei.hasNext()) {
-        Lattice::EdgeDescriptor ed = ei.next();
-        EdgeData edgeData = getEdgeData_(ed);
-        BracketPrinter::insertElementIntoContainer(container, edgeData);
-        collectEdges_(container, ed);
+        collectEdges_(container, ei.next()); // TODO - segfault
     }
 }
 
