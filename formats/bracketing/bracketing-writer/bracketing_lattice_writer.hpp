@@ -159,6 +159,15 @@ void BracketingLatticeWriter::Worker::doRun_() {
                         }
                     } catch (WrongVertexException) { }
                 }
+                while (true) {
+                    std::vector<Lattice::EdgeDescriptor> children
+                        = lattice_.getChildren(bestEdge, lattice_.getLayerTagManager().anyTag());
+                    if (children.empty() || shouldBeSkipped_(children.front())) {
+                        break;
+                    } else {
+                        bestEdge = children.front();
+                    }
+                }
                 collectEdges_<EdgeDataContainer>(collectedEdges, bestEdge);
                 currentVertex = lattice_.getEdgeTarget(bestEdge);
             } else {
@@ -248,9 +257,12 @@ void BracketingLatticeWriter::Worker::collectEdges_(
         EdgeData edgeData = getEdgeData_(edge);
         BracketPrinter::insertElementIntoContainer(container, edgeData);
     }
-    Lattice::Partition::Iterator ei(lattice_, lattice_.getEdgePartitions(edge).front());
-    while (ei.hasNext()) {
-        collectEdges_(container, ei.next()); // TODO - segfault
+    std::list<Lattice::Partition> partitions = lattice_.getEdgePartitions(edge);
+    if (!partitions.empty()) {
+        Lattice::Partition::Iterator ei(lattice_, partitions.front());
+        while (ei.hasNext()) {
+            collectEdges_(container, ei.next());
+        }
     }
 }
 
