@@ -1,0 +1,3 @@
+01 0000 01    a            edge                  a           leaf
+02 0000 01    a            edge                  a           root[1]
+03 0000 01    a            edge,discarded        a           discard
