@@ -161,6 +161,12 @@ void BracketingLatticeWriter::Worker::doRun_() {
             }
         }
 
+        BOOST_FOREACH(EdgeData ed, collectedEdges) {
+            int begin = lattice_.getEdgeBeginIndex(*ed.source);
+            int end = lattice_.getEdgeEndIndex(*ed.source);
+            BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], ed);
+        }
+
     } else {
 
         Lattice::EdgesSortedBySourceIterator ei
@@ -254,9 +260,14 @@ void BracketingLatticeWriter::Worker::collectEdges_(
     EdgeDataContainer & container,
     Lattice::EdgeDescriptor edge
 ) {
-    // TODO
+    Lattice::Partition::Iterator ei(lattice_, lattice_.getEdgePartitions(edge).front());
+    while (ei.hasNext()) {
+        Lattice::EdgeDescriptor ed = ei.next();
+        EdgeData edgeData = getEdgeData_(ed);
+        BracketPrinter::insertElementIntoContainer(container, edgeData);
+        collectEdges_(container, ed);
+    }
 }
-
 
 
 #endif
