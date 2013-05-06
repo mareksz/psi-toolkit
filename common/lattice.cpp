@@ -521,6 +521,9 @@ const AnnotationItem Lattice::getEdgeAnnotationItem(Lattice::EdgeDescriptor edge
     if (edge.isExplicit()) {
         return graph_[edge.descriptor].item;
     }
+    if (edge.implicitIndex < 0 || edge.implicitIndex > allText_.length()) {
+        throw WrongEdgeException("Invalid edge");
+    }
     std::string::iterator iter = allText_.begin() + edge.implicitIndex;
     std::string::iterator end = allText_.end();
     std::string symbol;
