@@ -1,0 +1,1 @@
+subst[subst[word[term[Ala]]]] verb[verb[word[term[ma]]]] subst[subst[word[term[kota]]]].
