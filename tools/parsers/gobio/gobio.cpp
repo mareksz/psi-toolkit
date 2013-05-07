@@ -226,22 +226,23 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
         combinator.get_master().string_representation(tb->root()).c_str());
     if (strcmp(zcat->to_string(), "NULL_ZVALUE")) {
         result->setCategory(zcat);
-    } else {
+    } else if(tb->is_supported()) {
         result->setCategory(
             sym_fac_->get_symbol(
                 leafSymbolToCategory_(
                     combinator.get_symbol_registrar().get_obj(
                         ch.edge_category(
                             tb->supporting_edge()).get_cat())).c_str()));
-    }
-
-    result->setSegmentInfo(
-        ch.edge_source(tb->supporting_edge()),
-        ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
-
-    result->setOrigin(tb->supporting_edge());
+    } else
+        result->setCategory(sym_fac_->get_symbol("???"));
 
     if (tb->is_supported()) {
+        result->setSegmentInfo(
+            ch.edge_source(tb->supporting_edge()),
+            ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
+
+        result->setOrigin(tb->supporting_edge());
+
         Atom def = combinator.get_master().false_value();
         const Category & avm = ch.edge_category(tb->supporting_edge());
         for (int ai = 0; ai < avm.nb_attrs(); ++ai) {
