@@ -123,7 +123,7 @@ boost::program_options::options_description LamerLemma::optionsHandled() {
 double LamerLemma::getQualityScore(
     const boost::program_options::variables_map& options) {
 
-    return -10.0;
+    return 0.0;
 }
 
 std::string LamerLemma::getName() {

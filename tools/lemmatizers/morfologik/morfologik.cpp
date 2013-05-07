@@ -134,7 +134,7 @@ boost::program_options::options_description Morfologik::optionsHandled() {
 double Morfologik::getQualityScore(
     const boost::program_options::variables_map& options) {
 
-    return 0.0;
+    return -10.0;
 }
 
 
