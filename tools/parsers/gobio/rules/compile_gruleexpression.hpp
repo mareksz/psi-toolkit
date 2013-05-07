@@ -12,6 +12,13 @@
 
 #include "hash_wrapper.hpp"
 
+
+namespace gobio_constants {
+    const int NIL_NUMBER = 0;
+    const int FALSE_NUMBER = -1;
+}
+
+
 template<class T, class S, class M>
 void compile_gruleexpression(
     const GRuleExpression* original_expr,

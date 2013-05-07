@@ -62,6 +62,12 @@ T expr_to_constant(
     switch(expr->expr_type)
     {
     case GRuleExpression::NUMBER:
+    if (expr->number == gobio_constants::NIL_NUMBER) {
+        return master.any_value();
+    }
+    if (expr->number == gobio_constants::FALSE_NUMBER) {
+        return master.false_value();
+    }
     return master.from_int(expr->number);
 
     case GRuleExpression::ATOM:
