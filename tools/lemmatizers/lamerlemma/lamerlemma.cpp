@@ -120,6 +120,11 @@ boost::program_options::options_description LamerLemma::optionsHandled() {
     return desc;
 }
 
+double LamerLemma::getQualityScore(
+    const boost::program_options::variables_map& options) {
+
+    return -10.0;
+}
 
 std::string LamerLemma::getName() {
     return "lamerlemma";
@@ -182,7 +187,7 @@ std::list<std::string> LamerLemma::getLayerTags() {
     std::list<std::string> layerTags;
 
     layerTags.push_back("lamerlemma");
-    layerTags.push_back("lamerlemma-tagset");
+    layerTags.push_back("morfologik-tagset");
 
     return layerTags;
 }

@@ -43,6 +43,9 @@ public:
 
     static boost::program_options::options_description optionsHandled();
 
+    static double getQualityScore(
+        const boost::program_options::variables_map& options);
+
 private:
     Dictionary dict_;
     std::string langCode_;

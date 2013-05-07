@@ -21,6 +21,9 @@ public:
 
     static boost::program_options::options_description optionsHandled();
 
+    static double getQualityScore(
+        const boost::program_options::variables_map& options);
+
     static std::string getName();
 
     static std::list<std::string> getLayerTags();

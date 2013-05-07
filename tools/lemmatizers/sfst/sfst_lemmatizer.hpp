@@ -82,6 +82,9 @@ public:
         const boost::program_options::variables_map& options,
         std::ostream & message);
 
+    static double getQualityScore(
+        const boost::program_options::variables_map& options);
+
     bool lemmatize(
         const std::string & word,
         AnnotationItemManager & manager,

@@ -105,6 +105,12 @@ bool SfstLemmatizer::checkRequirements(
 
 }
 
+double SfstLemmatizer::getQualityScore(
+    const boost::program_options::variables_map& options) {
+
+    return 0.0;
+}
+
 bool SfstLemmatizer::lemmatize(
     const std::string & word,
     AnnotationItemManager & manager, LemmatizerOutputIterator & iterator) {

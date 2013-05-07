@@ -1,7 +1,7 @@
 01 0000 01    a            frag,txt-reader       a           FRAG[]
 02 0000 01    a            !pl,lang-guesser,text a           TEXT[1]
 03 0000 01    a            !pl,token             a           T
-04 0000 01    a            !pl,lamerlemma,lamerlemma-tagset,normalization a term[3]
-05 0000 01    a            !pl,lamerlemma,lamerlemma-tagset,lemma a word[4]
-06 0000 01    a            !pl,lamerlemma,lamerlemma-tagset,lexeme a+conj conj[5]
-07 0000 01    a            !pl,form,lamerlemma,lamerlemma-tagset a conj,=1[6]
+04 0000 01    a            !pl,lamerlemma,morfologik-tagset,normalization a term[3]
+05 0000 01    a            !pl,lamerlemma,morfologik-tagset,lemma a word[4]
+06 0000 01    a            !pl,lamerlemma,morfologik-tagset,lexeme a+conj conj[5]
+07 0000 01    a            !pl,form,lamerlemma,morfologik-tagset a conj,=1[6]

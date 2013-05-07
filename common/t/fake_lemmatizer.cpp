@@ -29,6 +29,11 @@ boost::program_options::options_description FakeLemmatizer::optionsHandled() {
     return desc;
 }
 
+double FakeLemmatizer::getQualityScore(
+    const boost::program_options::variables_map& options) {
+
+    return 0.0;
+}
 
 std::string FakeLemmatizer::getName() {
     return "lex-fake";

@@ -131,6 +131,13 @@ boost::program_options::options_description Morfologik::optionsHandled() {
     return desc;
 }
 
+double Morfologik::getQualityScore(
+    const boost::program_options::variables_map& options) {
+
+    return 0.0;
+}
+
+
 void Morfologik::stemsOnLemmaLevel_(const std::string & word,
                                     LemmatizerOutputIterator & outputIterator) {
 

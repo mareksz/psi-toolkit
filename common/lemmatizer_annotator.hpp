@@ -89,6 +89,13 @@ public:
 
             return L::checkRequirements(options, message);
         }
+
+        virtual double doGetQualityScore(
+            const boost::program_options::variables_map& options) const {
+
+            return L::getQualityScore(options);
+        }
+
     };
 
     class Worker : public LatticeWorker {
