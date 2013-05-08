@@ -77,7 +77,7 @@ boost::program_options::options_description ApertiumLatticeReader::Factory::doOp
             "specification file path")
         ("unzip-data", boost::program_options::value<bool>()->default_value(true),
             "unzip compressed file formats like .pptx or .xlsx")
-        ("keep-tags", boost::program_options::value<bool>()->default_value(false),
+        ("keep-tags", boost::program_options::bool_switch()->default_value(false),
             "keep formatting tags");
 
     return optionsDescription;
