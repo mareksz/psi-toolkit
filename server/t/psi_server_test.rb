@@ -12,6 +12,10 @@ class PsiServerTest < Test::Unit::TestCase
     @browser = Celerity::Browser.new
   end
 
+  def teardown
+    @browser.close
+  end
+
   def test_server_address
     assert_nothing_raised(NativeException) do
       @browser.goto $server_address
@@ -37,7 +41,9 @@ class PsiServerTest < Test::Unit::TestCase
     assert all_text.include? 'lemmatize'
     assert all_text.include? 'tokenize'
 
-    number_of_aliases = @browser.divs.count{ |div| div.attribute_value(:class) == 'alias-item' }
+    number_of_aliases = @browser.divs.count do |div|
+      div.attribute_value(:class) == 'alias-item'
+    end
     assert number_of_aliases > MIN_NUMBER_OF_ALIASES
   end
 
