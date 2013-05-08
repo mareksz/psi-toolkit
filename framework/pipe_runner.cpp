@@ -260,7 +260,8 @@ bool PipeRunner::parseIntoPipelineSpecification_(
     size_t startingIndex = (isTheFirstArgProgramName ? 1 : 0);
 
     if (startingIndex >= args.size()) {
-        showEmptyPipeWarningMessage_();
+        throw Exception("no pipeline specified, try this: "
+                        "psi-pipe tokenize ! write-simple");
         return false;
     }
 
@@ -284,14 +285,6 @@ bool PipeRunner::parseIntoPipelineSpecification_(
     }
 
     return true;
-}
-
-void PipeRunner::showEmptyPipeWarningMessage_() {
-    std::cerr << "no pipeline specified, try this: "
-              << "psi-pipe tokenize ! write-simple --tags token"
-              << std::endl;
-    std::cerr << "see --help option for details..." << std::endl;
-    exit(1);
 }
 
 ProcessorPromiseAlternativeSequence

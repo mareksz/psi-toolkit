@@ -41,7 +41,10 @@ char * JsonSite::actionJson() {
 
     try {
         PipeRunner p(pipe);
+
+        INFO("... running via API");
         p.run(iss, oss);
+        INFO("... OK");
 
         if (isJavascriptOutput_(pipe)) {
             addKeyValuePairToOutput_(OUTPUT_KEY_NAME, oss.str());
@@ -52,8 +55,7 @@ char * JsonSite::actionJson() {
         addKeyValuePairToOutput_(ERROR_KEY_NAME, "null", true);
     }
     catch (std::exception& e) {
-        oss << "There are some problems: " << e.what()
-            << "Check the pipe-line specification and try once again.";
+        oss << "There are some problems: " << e.what();
 
         addKeyValuePairToOutput_(OUTPUT_KEY_NAME, "null");
         addKeyValuePairToOutputAsString_(ERROR_KEY_NAME, oss.str(), true);

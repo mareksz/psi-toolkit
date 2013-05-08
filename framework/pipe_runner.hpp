@@ -78,7 +78,6 @@ private:
     bool parseIntoPipelineSpecification_(
         std::vector<std::string> args, bool isTheFirstArgProgramName,
         PipelineSpecification& pipelineSpec);
-    void showEmptyPipeWarningMessage_();
 
     boost::program_options::variables_map tryOptions_(
         ProcessorFactory* factory,
