@@ -22,7 +22,7 @@ You may also download the [Linux packages](/download.html), install them at
 your computer and use locally with the command-line program `psi-pipe`.
 
 The installation process is described in the [Installation guide]
-(/help/install.html).
+(/help/installation.html).
 Note that after installing PSI-Toolkit from the precompiled packages you will
 also get your own instance of PSI-Server (identical to this one). You can
 launch the server locally by simple typing the `psi-server` command. Then, the
@@ -40,7 +40,7 @@ of three tasks: `read`, `annotate` and `write` separated  by the `!` character:
     a reader ! a sequence of processors ! a writer
 
 The list of all available readers, processors and writers is available in
-[Documentation] (/help.documentation.html). You may find exemplary command
+[Documentation] (/help/documentation.html). You may find exemplary command
 pipelines in [Getting started](/help/start.html).
 
 
@@ -67,7 +67,7 @@ following pipeline is used:
 
     read-text ! tokenize ! lemmatize ! write-simple --tags lemma
 
-The result is: ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmatize+!+write-simple&input-text=Piękna+gra+trwała+długo.)):
+The result is ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmatize+!+write-simple+--tags+lemma&input-text=Piękna+gra+trwała+długo.)):
 
     piękno|piękny
     gra|grać
@@ -93,12 +93,12 @@ You may find all available options for each processor in [Documentation]
 
 Actually, you do not have to specify all processors in your command. If you
 "forget" a processor, the pipeline will be supplemented by the default
-processor. For example, a simple command:
+processor. For example, a simple command ([run example]
+(/pipe.psis?pipe-text=tokenize&input-text=Piękna+gra+trwała+długo.)):
 
     tokenize
 
-returns exactly the same results as a more sophisticated one:([run example]
-(/pipe.psis?pipe-text=tokenize&input-text=Piękna+gra+trwała+długo.))
+returns exactly the same results as a more sophisticated one:
 
     read-text ! tokenize ! write-simple
 
@@ -142,7 +142,7 @@ along with descriptions of each processor.
 
 Readers process input either from keyboard or from a file. Respective
 PSI-Toolkit readers process various text formats: `txt`, `html`, `doc`, `docx`,
-`xlsx`, `pptx` and `pdf`, e.g. `reader-pdf` reads pdf files . You may also try
+`xlsx`, `pptx` and `pdf`, e.g. `pdf-reader` reads pdf files . You may also try
 using `guessing-reader` to automatically recognize the input file format.
 
 
@@ -174,7 +174,7 @@ For the input: _Piękna gra trwała długo._ it returns:
     10 0026 01    .            !pl,token             .           I
 
 For the detailed description of the PSI-format see [PSI-format]
-(/help/documentation.html).
+(/help/psi-format.html).
 
 Remember that you can filter the display of the PSI-lattice by using the tag
 option of `simple-writer`.
