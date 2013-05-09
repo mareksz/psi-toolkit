@@ -289,4 +289,6 @@ img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
 input.gsc-input { font-size:14px !important; height:auto !important; }
 input.gsc-search-button { width:auto !important; }
 
+.new-content { color:#e00; font-style:italic; font-weight:bold; vertical-align:super; }
+
 @media (max-width:1200px) { #github-ribbon{ display:none; } }
