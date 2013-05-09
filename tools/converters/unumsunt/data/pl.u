@@ -79,11 +79,9 @@ CAT = przymiotnik, R = m -> R = mo|mno|mż|mnż
 mój twój nasz wasz -> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = po_przymiotnik -> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek -> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
-CAT = spójnik -> Sem1=any, S = any
-CAT = spójnik, albo -> Typ=albo,Ps1=9,Ps3=0,Ps4=0,Ps5=1,Ps2=0,Length=1,Amb=1
-CAT = spójnik, lub -> spójnik,Ps1=0,Ps3=0,Ps4=0,Ps5=0,Ps2=0,Length=1,Amb=1
-CAT = spójnik, oraz -> spójnik,Ps1=0,Ps3=0,Ps4=0,Ps5=0,Ps2=0,Length=1,Amb=1
-CAT = wykrzyknienie -> Lenght = 1, Amb = 1,Sem1=any, S = any
+CAT = spójnik -> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1
+CAT = spójnik, albo -> Typ=albo,Ps5=1
+CAT = wykrzyknienie -> Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny -> R = $Rp, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny, jeden jedna jedno jedni jedne -> Typ = kwant
 CAT = liczebnik_główny, dwa dwie trzy cztery -> Typ = zg
