@@ -43,8 +43,8 @@ struct UnumsuntRuleGrammar : public qi::grammar<
     UnumsuntRuleGrammar() : UnumsuntRuleGrammar::base_type(start) {
 
         start
-            %= +(qi::char_ - ',' - '-') % ','
-            >> qi::lit("->")
+            %= +(qi::char_ - ',' - '>') % ','
+            >> qi::lit(">>")
             >> +(qi::char_ - ',') % ',';
 
     }
