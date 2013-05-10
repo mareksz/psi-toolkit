@@ -44,12 +44,10 @@ class HelpSiteTest < Test::Unit::TestCase
     assert !aliases.empty?
   end
 
-
   private
 
   def divs_with_class(class_name)
     @browser.divs.select{ |div| div.attribute_value(:class) == class_name }
   end
-
 
 end
