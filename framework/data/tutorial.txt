@@ -35,7 +35,8 @@ A typical use case consists in delivering text for processing and specifying
 what you want to be done e.g. `tokenize` or `lemmatize`.
 The text should be firstly read, then processed (annotated) and finally
 displayed or written to a file. Therefore a typical PSI command  is a sequence
-of three tasks: `read`, `annotate` and `write` separated  by the `!` character:
+of three tasks: `read`, `annotate` and `write` separated  by the `!` character
+(notice that spaces around `!` character are obligatory):
 
     a reader ! a sequence of processors ! a writer
 

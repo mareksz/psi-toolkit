@@ -30,6 +30,18 @@ You can filter the display of PSI-lattice by using the `tag` option of
 See page [Working with PSI-lattice](/help/tutorial.html#header-11) for details.
 
 
+## How to extract grammatical classes for each word in a sentence?
+
+One of the possible solutions is to run the PSI-Toolkit with the following 
+pipeline: 
+
+    lemmatize ! write --tags lexeme --fallback-tags token
+    
+It returns the list of all known lemmas and its grammatical classes for each 
+token, or it simply returns token if lemmas is not found. The order of obtained
+lexemes is exactly the same as the token's order for the `tokenize` command.
+
+
 ## Which types of character set are supported?
 
 The PSI-Toolkit has a native support for text in UTF-8 character encoding
