@@ -13,6 +13,7 @@ task :test, :host, :port do |t, args|
     require 'index_site_test'
     require 'pipe_site_test'
     require 'help_site_test'
+    require 'tutorial_site_test'
     require 'json_site_test'
 end
 
