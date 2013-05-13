@@ -165,12 +165,12 @@ void Joiner::Worker::doRun() {
     LayerTagCollection providedTags = tagManager.createTagCollection(
         processor_.outTags_);
 
+    LayerTagCollection providedTagsPlane = tagManager.onlyPlaneTags(providedTags);
+
     Lattice::EdgesSortedBySourceIterator leftIter(lattice_, leftMask);
 
     while (leftIter.hasNext()) {
         Lattice::EdgeDescriptor edge = leftIter.next();
-
-//        std::cerr << "LEFT: " << lattice_.getAnnotationText(edge) << std::endl;
 
         boost::optional<Lattice::EdgeDescriptor> parent = lattice_.getParent(edge);
 
@@ -226,9 +226,29 @@ void Joiner::Worker::doRun() {
 
         if (!foundRightEdge && processor_.outerJoin_) {
 
-            lattice_.addPartitionToEdge(
-                edge,
-                providedTags);
+            LayerTagCollection edgePlane = tagManager.onlyPlaneTags(
+                lattice_.getEdgeLayerTags(edge));
+
+            // if this is the same plane, we have to avoid circular
+            // references
+            if (providedTagsPlane == edgePlane)
+                lattice_.addPartitionToEdge(
+                    edge,
+                    providedTags);
+            else {
+                Lattice::EdgeSequence::Builder builder(lattice_);
+                builder.addEdge(edge);
+
+                Lattice::VertexDescriptor fromVertex = lattice_.getEdgeSource(edge);
+                Lattice::VertexDescriptor toVertex = lattice_.getEdgeTarget(edge);
+
+                lattice_.addEdge(
+                    fromVertex,
+                    toVertex,
+                    lattice_.getEdgeAnnotationItem(edge),
+                    providedTags,
+                    builder.build());
+            }
         }
     }
 }
