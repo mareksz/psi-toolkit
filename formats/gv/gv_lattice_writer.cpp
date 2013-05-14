@@ -218,14 +218,21 @@ void GVLatticeWriter::Worker::doRun() {
 
         while (ei.hasNext()) {
             Lattice::EdgeDescriptor edge = ei.next();
+            if (edgeOrdinalMap.find(edge) != edgeOrdinalMap.end()) {
+                continue;
+            }
             std::list<std::string> tagNames
                 = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
             if (
                 tagNames.size() == 1 &&
                 tagNames.front() == "symbol" &&
                 !processor_.isShowSymbolEdges()
-            ) continue;
-            if (!processor_.areSomeInFilter(tagNames)) continue;
+            ) {
+                continue;
+            }
+            if (!processor_.areSomeInFilter(tagNames)) {
+                continue;
+            }
             printEdge(edge, quoter, ordinal, edgeOrdinalMap, vertexNodes, startVertices);
         }
 
@@ -355,6 +362,20 @@ void GVLatticeWriter::Worker::printEdge(
                 zvalue role = eu.getRole();
                 std::map<Lattice::EdgeDescriptor, int>::iterator
                     moi = edgeOrdinalMap.find(ed);
+                if (moi == edgeOrdinalMap.end()) {
+                    std::list<std::string> subedgeTagNames
+                        = lattice_.getLayerTagManager().getTagNames(
+                            lattice_.getEdgeLayerTags(ed));
+                    if (
+                        (subedgeTagNames.size() != 1 ||
+                            subedgeTagNames.front() != "symbol" ||
+                            processor_.isShowSymbolEdges()) &&
+                        processor_.areSomeInFilter(subedgeTagNames)
+                    ) {
+                        printEdge(ed, quoter, ordinal, edgeOrdinalMap, vertexNodes, startVertices);
+                    }
+                }
+                moi = edgeOrdinalMap.find(ed);
                 if (moi != edgeOrdinalMap.end()) {
                     std::stringstream partSs;
                     if (!processor_.isDisambig() && partitions.size() > 1) {
