@@ -10,7 +10,6 @@
 
 #include "lattice.hpp"
 #include "plugin_manager.hpp"
-#include "psi_quoter.hpp"
 
 
 GVLatticeWriter::GVLatticeWriter(
@@ -218,154 +217,16 @@ void GVLatticeWriter::Worker::doRun() {
         }
 
         while (ei.hasNext()) {
-
             Lattice::EdgeDescriptor edge = ei.next();
-
             std::list<std::string> tagNames
                 = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
-
             if (
                 tagNames.size() == 1 &&
                 tagNames.front() == "symbol" &&
                 !processor_.isShowSymbolEdges()
             ) continue;
-
             if (!processor_.areSomeInFilter(tagNames)) continue;
-
-            Lattice::VertexDescriptor source = lattice_.getEdgeSource(edge);
-            Lattice::VertexDescriptor target = lattice_.getEdgeTarget(edge);
-
-            std::stringstream edgeIdSs;
-            std::stringstream edgeLabelSs;
-
-            const AnnotationItem& annotationItem = lattice_.getEdgeAnnotationItem(edge);
-            if (lattice_.isLooseVertex(source) || lattice_.isLooseVertex(target)) {
-                edgeLabelSs << quoter.escape(annotationItem.getText());
-            } else {
-                edgeLabelSs << quoter.escape(lattice_.getEdgeText(edge));
-            }
-
-            std::string tagStr("");
-            std::stringstream colorSs;
-            colorSs << std::setbase(16);
-
-            if (processor_.isShowTags() || processor_.isColor()) {
-                BOOST_FOREACH(std::string tagName, tagNames) {
-                    if (!processor_.isInFilter(tagName)) continue;
-                    if (!tagStr.empty()) {
-                        tagStr += ",";
-                        colorSs << ":";
-                    }
-                    tagStr += tagName;
-                    if (processor_.isColor()) {
-                        const std::collate<char>& coll
-                            = std::use_facet<std::collate<char> >(std::locale());
-                        unsigned int color
-                            = coll.hash(tagName.data(), tagName.data() + tagName.length())
-                                & 0xffffff;
-                        if ((color & 0xe0e0e0) == 0xe0e0e0) {
-                            color &= 0x7f7f7f;
-                        } // darken if too bright
-                        colorSs << "#" << std::setbase(16) << color;
-                    }
-                }
-            }
-
-            if (processor_.isShowTags()) {
-                edgeLabelSs << " (" << tagStr << ")";
-            }
-
-            edgeLabelSs << " " << annotationItem.getCategory();
-
-            int n;
-            int m;
-            int e;
-
-            if (processor_.isTree()) {
-
-                ++ordinal;
-                edgeOrdinalMap[edge] = ordinal;
-                edgeIdSs << ordinal;
-
-                n = processor_.getAdapter()->addNode(edgeIdSs.str());
-                processor_.getAdapter()->setNodeLabel(n, edgeLabelSs.str());
-
-                if (processor_.isColor()) {
-                    processor_.getAdapter()->setNodeColor(n, colorSs.str());
-                }
-
-                int partitionNumber = 0;
-                std::list<Lattice::Partition> partitions = lattice_.getEdgePartitions(edge);
-                BOOST_FOREACH(Lattice::Partition partition, partitions) {
-                    ++partitionNumber;
-                    if (processor_.isDisambig() && partitionNumber > 1) {
-                        break;
-                    }
-                    Lattice::Partition::Iterator ei(lattice_, partition);
-                    while (ei.hasNext()) {
-                        Lattice::EdgeUsage eu = ei.nextUsage();
-                        Lattice::EdgeDescriptor ed = eu.getEdge();
-                        zvalue role = eu.getRole();
-                        std::map<Lattice::EdgeDescriptor, int>::iterator
-                            moi = edgeOrdinalMap.find(ed);
-                        if (moi != edgeOrdinalMap.end()) {
-                            std::stringstream partSs;
-                            if (!processor_.isDisambig() && partitions.size() > 1) {
-                                partSs << "(" << partitionNumber << ")";
-                            }
-                            if (!NULLP(role)) {
-                                partSs << lattice_.getAnnotationItemManager().to_string(role);
-                            }
-                            std::stringstream edSs;
-                            edSs << moi->second;
-                            m = processor_.getAdapter()->addNode(edSs.str());
-                            e = processor_.getAdapter()->addEdge(n, m);
-                            processor_.getAdapter()->setEdgeLabel(e, partSs.str());
-                        }
-                    }
-                }
-
-            } else {
-
-                std::stringstream nSs;
-                int nIx;
-                if (lattice_.isLooseVertex(source)) {
-                    nIx = lattice_.getLooseVertexIndex(source);
-                    nSs << "L" << nIx;
-                } else {
-                    nIx = lattice_.getVertexRawCharIndex(source);
-                    nSs << nIx;
-                }
-                n = processor_.getAdapter()->addNode(nSs.str());
-                if (processor_.isAlign() && !lattice_.isLooseVertex(source)) {
-                    vertexNodes.insert(std::pair<int, int>(nIx, n));
-                    startVertices.insert(nIx);
-                }
-
-                std::stringstream mSs;
-                int mIx;
-                if (lattice_.isLooseVertex(target)) {
-                    mIx = lattice_.getLooseVertexIndex(target);
-                    mSs << "L" << mIx;
-                } else {
-                    mIx = lattice_.getVertexRawCharIndex(target);
-                    mSs << mIx;
-                }
-                m = processor_.getAdapter()->addNode(mSs.str());
-                if (processor_.isAlign() && !lattice_.isLooseVertex(target)) {
-                    vertexNodes.insert(std::pair<int, int>(mIx, m));
-                }
-
-                e = processor_.getAdapter()->addEdge(n, m);
-
-                processor_.getAdapter()->setEdgeLabel(e, edgeLabelSs.str());
-
-                if (processor_.isColor()) {
-                    processor_.getAdapter()->setEdgeColor(e, colorSs.str());
-                }
-
-            }
-
+            printEdge(edge, quoter, ordinal, edgeOrdinalMap, vertexNodes, startVertices);
         }
 
         if (processor_.isAlign() && !processor_.isTree()) {
@@ -400,6 +261,155 @@ void GVLatticeWriter::Worker::doRun() {
 
         std::remove(tmpFile);
         free(tmpFile);
+
+    }
+
+}
+
+
+void GVLatticeWriter::Worker::printEdge(
+    Lattice::EdgeDescriptor edge,
+    PsiQuoter &quoter,
+    int &ordinal,
+    std::map<Lattice::EdgeDescriptor, int> &edgeOrdinalMap,
+    std::map<int, int> &vertexNodes,
+    std::set<int> &startVertices
+) {
+
+    std::list<std::string> tagNames
+        = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
+
+    Lattice::VertexDescriptor source = lattice_.getEdgeSource(edge);
+    Lattice::VertexDescriptor target = lattice_.getEdgeTarget(edge);
+
+    std::stringstream edgeIdSs;
+    std::stringstream edgeLabelSs;
+
+    const AnnotationItem& annotationItem = lattice_.getEdgeAnnotationItem(edge);
+    if (lattice_.isLooseVertex(source) || lattice_.isLooseVertex(target)) {
+        edgeLabelSs << quoter.escape(annotationItem.getText());
+    } else {
+        edgeLabelSs << quoter.escape(lattice_.getEdgeText(edge));
+    }
+
+    std::string tagStr("");
+    std::stringstream colorSs;
+    colorSs << std::setbase(16);
+
+    if (processor_.isShowTags() || processor_.isColor()) {
+        BOOST_FOREACH(std::string tagName, tagNames) {
+            if (!processor_.isInFilter(tagName)) continue;
+            if (!tagStr.empty()) {
+                tagStr += ",";
+                colorSs << ":";
+            }
+            tagStr += tagName;
+            if (processor_.isColor()) {
+                const std::collate<char>& coll
+                    = std::use_facet<std::collate<char> >(std::locale());
+                unsigned int color
+                    = coll.hash(tagName.data(), tagName.data() + tagName.length())
+                        & 0xffffff;
+                if ((color & 0xe0e0e0) == 0xe0e0e0) {
+                    color &= 0x7f7f7f;
+                } // darken if too bright
+                colorSs << "#" << std::setbase(16) << color;
+            }
+        }
+    }
+
+    if (processor_.isShowTags()) {
+        edgeLabelSs << " (" << tagStr << ")";
+    }
+
+    edgeLabelSs << " " << annotationItem.getCategory();
+
+    int n;
+    int m;
+    int e;
+
+    if (processor_.isTree()) {
+
+        ++ordinal;
+        edgeOrdinalMap[edge] = ordinal;
+        edgeIdSs << ordinal;
+
+        n = processor_.getAdapter()->addNode(edgeIdSs.str());
+        processor_.getAdapter()->setNodeLabel(n, edgeLabelSs.str());
+
+        if (processor_.isColor()) {
+            processor_.getAdapter()->setNodeColor(n, colorSs.str());
+        }
+
+        int partitionNumber = 0;
+        std::list<Lattice::Partition> partitions = lattice_.getEdgePartitions(edge);
+        BOOST_FOREACH(Lattice::Partition partition, partitions) {
+            ++partitionNumber;
+            if (processor_.isDisambig() && partitionNumber > 1) {
+                break;
+            }
+            Lattice::Partition::Iterator ei(lattice_, partition);
+            while (ei.hasNext()) {
+                Lattice::EdgeUsage eu = ei.nextUsage();
+                Lattice::EdgeDescriptor ed = eu.getEdge();
+                zvalue role = eu.getRole();
+                std::map<Lattice::EdgeDescriptor, int>::iterator
+                    moi = edgeOrdinalMap.find(ed);
+                if (moi != edgeOrdinalMap.end()) {
+                    std::stringstream partSs;
+                    if (!processor_.isDisambig() && partitions.size() > 1) {
+                        partSs << "(" << partitionNumber << ")";
+                    }
+                    if (!NULLP(role)) {
+                        partSs << lattice_.getAnnotationItemManager().to_string(role);
+                    }
+                    std::stringstream edSs;
+                    edSs << moi->second;
+                    m = processor_.getAdapter()->addNode(edSs.str());
+                    e = processor_.getAdapter()->addEdge(n, m);
+                    processor_.getAdapter()->setEdgeLabel(e, partSs.str());
+                }
+            }
+        }
+
+    } else {
+
+        std::stringstream nSs;
+        int nIx;
+        if (lattice_.isLooseVertex(source)) {
+            nIx = lattice_.getLooseVertexIndex(source);
+            nSs << "L" << nIx;
+        } else {
+            nIx = lattice_.getVertexRawCharIndex(source);
+            nSs << nIx;
+        }
+        n = processor_.getAdapter()->addNode(nSs.str());
+        if (processor_.isAlign() && !lattice_.isLooseVertex(source)) {
+            vertexNodes.insert(std::pair<int, int>(nIx, n));
+            startVertices.insert(nIx);
+        }
+
+        std::stringstream mSs;
+        int mIx;
+        if (lattice_.isLooseVertex(target)) {
+            mIx = lattice_.getLooseVertexIndex(target);
+            mSs << "L" << mIx;
+        } else {
+            mIx = lattice_.getVertexRawCharIndex(target);
+            mSs << mIx;
+        }
+        m = processor_.getAdapter()->addNode(mSs.str());
+        if (processor_.isAlign() && !lattice_.isLooseVertex(target)) {
+            vertexNodes.insert(std::pair<int, int>(mIx, m));
+        }
+
+        e = processor_.getAdapter()->addEdge(n, m);
+
+        processor_.getAdapter()->setEdgeLabel(e, edgeLabelSs.str());
+
+        if (processor_.isColor()) {
+            processor_.getAdapter()->setEdgeColor(e, colorSs.str());
+        }
 
     }
 
