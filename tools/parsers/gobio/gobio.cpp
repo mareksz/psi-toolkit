@@ -82,7 +82,7 @@ const std::string Gobio::Factory::DEFAULT_RULE_FILE
     = "%ITSDATA%/%LANG%/rules.g";
 
 const std::string Gobio::Factory::DEFAULT_TERMINAL_TAG
-    = "form";
+    = "parse-terminal";
 
 LatticeWorker* Gobio::doCreateLatticeWorker(Lattice & lattice) {
     return new Worker(*this, lattice);
