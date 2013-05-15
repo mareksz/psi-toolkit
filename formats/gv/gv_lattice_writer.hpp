@@ -12,6 +12,8 @@
 #include "aligning_writer_worker.hpp"
 #include "plugin/graphviz_adapter_interface.hpp"
 
+#include "psi_quoter.hpp"
+
 
 class GVLatticeWriter : public LatticeWriter<std::ostream> {
 
@@ -73,6 +75,14 @@ private:
                Lattice& lattice);
 
         virtual void doRun();
+
+        void printEdge(
+            Lattice::EdgeDescriptor edge,
+            PsiQuoter &quoter,
+            int &ordinal,
+            std::map<Lattice::EdgeDescriptor, int> &edgeOrdinalMap,
+            std::map<int, int> &vertexNodes,
+            std::set<int> &startVertices);
 
         virtual ~Worker();
     private:

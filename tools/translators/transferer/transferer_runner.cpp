@@ -114,7 +114,7 @@ std::list<std::list<std::string> > TransfererRunner::requiredLayerTags() {
 
 std::list<std::string> TransfererRunner::tagsToOperateOn() {
     return boost::assign::list_of
-        (std::string("parse"))(LayerTagManager::getLanguageTag(langCode_));
+        (std::string("!parse"))(std::string("parse"))(LayerTagManager::getLanguageTag(langCode_));
 }
 
 void TransfererRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {

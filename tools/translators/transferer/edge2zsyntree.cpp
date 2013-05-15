@@ -22,6 +22,7 @@ EdgeToZsyntreeConverter::EdgeToZsyntreeConverter(Lattice& latticeArg)
      holder(latticeArg.getAnnotationItemManager().getZObjectsHolderPtr()),
      lexemeTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("lexeme")),
      formTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("form")),
+     parseTerminalTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("parse-terminal")),
      equivMask_(lattice.getLayerTagManager().getMask("bilexicon")) {
 }
 
@@ -300,9 +301,21 @@ finish:
 zsyntree* EdgeToZsyntreeConverter::generateEquivTree_(
     Lattice::EdgeDescriptor edge) {
 
-    const std::list<Lattice::Partition>& partitions = lattice.getEdgePartitions(edge);
+    const std::list<Lattice::Partition>& superPartitions = lattice.getEdgePartitions(edge);
 
-    // we are going down twice (for the lexeme) and up (for the equivalent)
+    // we are going down three times (for the lexeme) and up (for the equivalent)
+    BOOST_FOREACH(Lattice::Partition superPartition, superPartitions) {
+        Lattice::Partition::Iterator superPartitionIter(lattice, superPartition);
+
+        while (superPartitionIter.hasNext()) {
+            Lattice::EdgeDescriptor superParent = superPartitionIter.next();
+
+            if (createIntersection(
+                    parseTerminalTag_, lattice.getEdgeLayerTags(superParent)).isNonempty()) {
+
+                const std::list<Lattice::Partition>& partitions
+                    = lattice.getEdgePartitions(superParent);
+
     BOOST_FOREACH(Lattice::Partition partition, partitions) {
         Lattice::Partition::Iterator partitionIter(lattice, partition);
 
@@ -337,6 +350,8 @@ zsyntree* EdgeToZsyntreeConverter::generateEquivTree_(
             }
         }
     }
+
+    } } }
 
     return NULL;
 }

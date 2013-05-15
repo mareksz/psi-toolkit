@@ -25,5 +25,6 @@ private:
 
     LayerTagCollection lexemeTag_;
     LayerTagCollection formTag_;
+    LayerTagCollection parseTerminalTag_;
     LayerTagMask equivMask_;
 };
