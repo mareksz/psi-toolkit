@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <boost/foreach.hpp>
 
 template<class T>
 unsigned int levenshteinDistance(const T &s1, const T & s2) {
