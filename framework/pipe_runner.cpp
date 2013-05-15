@@ -150,6 +150,7 @@ void PipeRunner::setRunnerOptionsDescription_() {
     runnerOptionsDescription_.add_options()
         ("help", boost::program_options::value<std::string>()->implicit_value("info"),
          "Produce help message for each processor")
+        ("processors", "List available processors")
         ("aliases", "Show aliases, i.e. alternative names for processors")
         ("line-by-line,l", "Process input line by line")
         ("list-languages", "List languages handled for each processor specified")
@@ -178,6 +179,16 @@ bool PipeRunner::stopAfterExecutingRunnerOptions_() {
                       << "To get detailed information about individual processor "
                          "use `--help name` option."
                       << std::endl;
+        }
+        return true;
+    }
+
+    if (runnerOptions_.count("processors")) {
+        std::cout << "Processors:" << std::endl;
+
+        BOOST_FOREACH(std::string processorName,
+                      MainFactoriesKeeper::getInstance().getProcessorNames()) {
+            std::cout << processorName << std::endl;
         }
         return true;
     }
