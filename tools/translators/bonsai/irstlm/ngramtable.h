@@ -39,9 +39,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
 #define DEFCODESIZE  (int)2
 #endif
 
+#ifndef SHORTSIZE
 #define SHORTSIZE (int)2
+#endif
+
+#ifndef PTRSIZE
 #define PTRSIZE   (int)sizeof(char *)
+#endif
+
+#ifndef INTSIZE
 #define INTSIZE   (int)4
+#endif
+
 #define CHARSIZE  (int)1
 
 

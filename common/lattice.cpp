@@ -1032,7 +1032,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t
     }
 }
 
-zvalue Lattice::EdgeSequence::nthRole(Lattice & lattice, size_t index) const {
+zvalue Lattice::EdgeSequence::nthRole(Lattice & /*lattice*/, size_t index) const {
     if (links.empty()) {
         return NULL_ZVALUE;
     } else {

@@ -121,7 +121,7 @@ boost::program_options::options_description LamerLemma::optionsHandled() {
 }
 
 double LamerLemma::getQualityScore(
-    const boost::program_options::variables_map& options) {
+    const boost::program_options::variables_map& /*options*/) {
 
     return 0.0;
 }

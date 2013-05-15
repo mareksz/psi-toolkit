@@ -45,9 +45,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
 #define  LMTCODESIZE  (int)3
 #endif
 
+#ifndef SHORTSIZE
 #define SHORTSIZE (int)2
+#endif
+
+#ifndef PTRSIZE
 #define PTRSIZE   (int)sizeof(char *)
+#endif
+
+#ifndef INTSIZE
 #define INTSIZE   (int)4
+#endif
+
 #define CHARSIZE  (int)1
 
 #define PROBSIZE  (int)4 //use float
@@ -116,7 +125,7 @@ class lmtable{
 public:
 
 #ifdef TRACE_CACHE
-    std::fstream* cacheout;
+  std::fstream* cacheout;
   int sentence_id;
 #endif
 
@@ -134,7 +143,7 @@ public:
     if (probcache){
       std::cerr << "Prob Cache: "; probcache->stat();
       delete probcache;
-#if TRACE_CACHE
+#ifdef TRACE_CACHE
       cacheout->close();
       delete cacheout;
 #endif
@@ -215,8 +224,8 @@ public:
   void loadbinheader(std::istream& inp, const char* header);
   void loadbincodebook(std::istream& inp, int l);
 
-  void filter(const char* lmfile){};
-  void filter2(const char* lmfile, int buffMb=512){
+  void filter(const char* /*lmfile*/){};
+  void filter2(const char* /*lmfile*/, int /*buffMb=512*/){
     std::cerr << "function is no more available\n";
     exit(0);
   };
