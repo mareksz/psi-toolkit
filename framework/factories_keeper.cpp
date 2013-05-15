@@ -2,6 +2,7 @@
 
 #include "logging.hpp"
 #include <boost/foreach.hpp>
+#include "edit_distance.hpp"
 
 void FactoriesKeeper::takeProcessorFactory(ProcessorFactory* processorFactory) {
     DEBUG("registering processor " << processorFactory->getName());
@@ -43,12 +44,18 @@ ProcessorFactory& FactoriesKeeper::getProcessorFactory(std::string processorName
     if (nameToFactoryMap_.count(processorName))
         return *nameToFactoryMap_[processorName];
 
-    throw UnknownProcessorException(processorName);
+    throw UnknownProcessorException(processorName, getClosestKnownProcessorName(processorName));
 }
 
 FactoriesKeeper::UnknownProcessorException::UnknownProcessorException(
     const std::string& processorName)
     :Exception(std::string("unknown processor `") + processorName + "`") {
+}
+
+FactoriesKeeper::UnknownProcessorException::UnknownProcessorException(
+    const std::string& processorName, const std::string& alternativeName)
+    :Exception(std::string("unknown processor `") + processorName +
+               std::string("`, did you mean `") + alternativeName + "`?") {
 }
 
 std::vector<std::string> FactoriesKeeper::getProcessorNames() {
@@ -89,7 +96,7 @@ FactoriesKeeper::getProcessorFactoriesForName(std::string name) {
         return returnedList;
     }
 
-    throw UnknownProcessorException(name);
+    throw UnknownProcessorException(name, getClosestKnownProcessorName(name));
 }
 
 void FactoriesKeeper::checkAnnotator_(ProcessorFactory* processorFactory) {
@@ -117,4 +124,12 @@ bool FactoriesKeeper::isTagRequiredByAnnotator_(
             if (requiredTag == tag)
                 return true;
     return false;
+}
+
+std::string FactoriesKeeper::getClosestKnownProcessorName(const std::string& unknownName) {
+    std::vector<std::string> processors = getProcessorNames();
+    std::set<std::string> aliases = getAliasNames();
+    processors.insert(processors.end(), aliases.begin(), aliases.end());
+
+    return findTheMostSimilarString(unknownName, processors);
 }

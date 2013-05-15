@@ -41,6 +41,8 @@ public:
     class UnknownProcessorException : public Exception {
     public:
         UnknownProcessorException(const std::string& processorName);
+        UnknownProcessorException(const std::string& processorName,
+            const std::string& alternativeName);
 
         virtual ~UnknownProcessorException() throw() {}
     };
@@ -52,6 +54,8 @@ private:
 
     std::map<std::string, boost::shared_ptr<ProcessorFactory> > nameToFactoryMap_;
     Aliaser aliaser_;
+
+    std::string getClosestKnownProcessorName(const std::string& referenceName);
 };
 
 
