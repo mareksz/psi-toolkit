@@ -26,7 +26,8 @@ class HelpSiteTest < Test::Unit::TestCase
     descriptions = divs_with_class('help-desc')
     assert !descriptions.empty?
 
-    assert_equal titles.size, descriptions.size
+    assert_equal titles.size, descriptions.size,
+      "different number of titles and descriptions"
   end
 
   def test_some_processors_have_option_list

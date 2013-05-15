@@ -44,7 +44,8 @@ class PsiServerTest < Test::Unit::TestCase
     number_of_aliases = @browser.divs.count do |div|
       div.attribute_value(:class) == 'alias-item'
     end
-    assert number_of_aliases > MIN_NUMBER_OF_ALIASES
+    assert number_of_aliases > MIN_NUMBER_OF_ALIASES,
+      "too few aliases (#{number_of_aliases})"
   end
 
   def test_download_site_works
@@ -53,7 +54,10 @@ class PsiServerTest < Test::Unit::TestCase
     end
 
     @browser.div(:id => 'downloads').uls.each do |ul|
-      ul.as.each { |link| assert link.href.start_with?('http://mrt.wmi.amu.edu.pl:8080/job') }
+      ul.as.each do |link|
+        assert link.href.start_with?('http://mrt.wmi.amu.edu.pl:8080/job'),
+          "download link #{link} addresses to wrong site"
+      end
     end
   end
 
