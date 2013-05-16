@@ -23,12 +23,12 @@ LatticeWriter<std::ostream>* BracketingLatticeWriter::Factory::doCreateLatticeWr
 
     if (options.count("show-only-tags")) {
         showOnlyTags = options["show-only-tags"].as< std::vector<std::string> >();
-    } else if (options.count("filter")) {
-        showOnlyTags = options["filter"].as< std::vector<std::string> >();
+    } else if (options.count("tags")) {
+        showOnlyTags = options["tags"].as< std::vector<std::string> >();
     }
 
-    if (options.count("filter")) {
-        filter = options["filter"].as< std::vector<std::string> >();
+    if (options.count("tags")) {
+        filter = options["tags"].as< std::vector<std::string> >();
     }
     if (options.count("show-attributes")) {
         showAttributes = options["show-attributes"].as< std::vector<std::string> >();
@@ -67,7 +67,7 @@ boost::program_options::options_description BracketingLatticeWriter::Factory::do
         ("show-only-tags",
             boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "limits the tag names that will appear in `%T` substitions")
-        ("filter",
+        ("tags",
             boost::program_options::value< std::vector<std::string> >()->multitoken(),
             "filters the edges by tags")
         ("av-pairs-separator",

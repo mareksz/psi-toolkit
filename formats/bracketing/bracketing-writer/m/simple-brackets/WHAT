@@ -1,1 +1,1 @@
-morfologik ! puddle --lang pl ! bracketing-writer --filter parse --opening-bracket %c[ --closing-bracket ]
+morfologik ! puddle --lang pl ! bracketing-writer --tags parse --opening-bracket %c[ --closing-bracket ]

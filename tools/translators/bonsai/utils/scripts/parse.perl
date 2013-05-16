@@ -10,7 +10,7 @@ use File::Temp qw(tempdir);
 
 my $PSIBUILD = "/home/marcinj/Poleng/Psi/psi-toolkit/build";
 my $PSIFRAMEWORK = "$PSIBUILD/framework";
-my $PARSE = "$PSIFRAMEWORK/psi-pipe --line-by-line puddle --lang pl ! bracketing-writer --skip-symbol-edges --opening-bracket '<tree_label=\"%c\">' --closing-bracket \"</tree>\" --filter parse lexeme frag";
+my $PARSE = "$PSIFRAMEWORK/psi-pipe --line-by-line puddle --lang pl ! bracketing-writer --skip-symbol-edges --opening-bracket '<tree_label=\"%c\">' --closing-bracket \"</tree>\" --tags parse lexeme frag";
 
 my $input  = File::Spec->rel2abs($ARGV[0]);
 my $output = File::Spec->rel2abs($ARGV[1]);

@@ -36,8 +36,8 @@ acceptable.
 The string that will substitute `%T` is obtained by joining tags with
 commas. An alternative separator can be given with `--tag-separator`.
 The tag names that will appear in `%T` substitions can be limited with
-the `--show-only-tags` options, if `--filter` is specified and
-`--show-only-tags` was not given, the `--filter` will be assumed for
+the `--show-only-tags` options, if `--tags` is specified and
+`--show-only-tags` was not given, the `--tags` will be assumed for
 `--show-only-tags`.
 
 The string that will substtitue `%A` is obtainted by joining the
