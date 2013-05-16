@@ -22,14 +22,18 @@ Annotator* Gobio::Factory::doCreateAnnotator(
     }
 
     std::string terminalTag = options["terminal-tag"].as<std::string>();
+    int edgeNumberLimit = options["edge-number-limit"].as<int>();
 
-    return new Gobio(rulesPathString, terminalTag);
+    return new Gobio(rulesPathString, terminalTag, edgeNumberLimit);
 }
 
 void Gobio::Factory::doAddLanguageIndependentOptionsHandled(
     boost::program_options::options_description& optionsDescription
 ) {
     optionsDescription.add_options()
+        ("edge-number-limit",
+        boost::program_options::value<int>()->default_value(DEFAULT_EDGE_NUMBER_LIMIT),
+        "maximal number of edges inserted between each two vertices")
         ("rules",
         boost::program_options::value<std::string>()->default_value(DEFAULT_RULE_FILE),
         "file with rules in text format")
@@ -84,6 +88,9 @@ const std::string Gobio::Factory::DEFAULT_RULE_FILE
 const std::string Gobio::Factory::DEFAULT_TERMINAL_TAG
     = "parse-terminal";
 
+const int Gobio::Factory::DEFAULT_EDGE_NUMBER_LIMIT
+    = 1000;
+
 LatticeWorker* Gobio::doCreateLatticeWorker(Lattice & lattice) {
     return new Worker(*this, lattice);
 }
@@ -100,8 +107,8 @@ std::string Gobio::doInfo() {
     return "gobio parser";
 }
 
-Gobio::Gobio(std::string rulesPath, std::string terminalTag)
-    : rulesPath_(rulesPath), terminalTag_(terminalTag) {
+Gobio::Gobio(std::string rulesPath, std::string terminalTag, int edgeNumberLimit)
+    : rulesPath_(rulesPath), terminalTag_(terminalTag), edgeNumberLimit_(edgeNumberLimit) {
 }
 
 void Gobio::parse(Lattice & lattice) {
@@ -120,7 +127,7 @@ void Gobio::parse(Lattice & lattice) {
         true
     );
 
-    Chart ch(lattice, av_ai_converter, terminalTag_);
+    Chart ch(lattice, av_ai_converter, terminalTag_, edgeNumberLimit_);
     Agenda agenda;
     Parser parser(ch, combinator, agenda);
 

@@ -100,9 +100,13 @@ public:
 
     public:
         static const std::string DEFAULT_TERMINAL_TAG;
+        static const int DEFAULT_EDGE_NUMBER_LIMIT;
     };
 
-    Gobio(std::string rulesPath, std::string terminalTag = Factory::DEFAULT_TERMINAL_TAG);
+    Gobio(
+        std::string rulesPath,
+        std::string terminalTag = Factory::DEFAULT_TERMINAL_TAG,
+        int edgeNumberLimit = Factory::DEFAULT_EDGE_NUMBER_LIMIT);
 
     void parse(Lattice &lattice);
 
@@ -123,6 +127,8 @@ private:
     std::string rulesPath_;
 
     std::string terminalTag_;
+
+    int edgeNumberLimit_;
 
     zvalue edgeToZsyntree_(
         Chart & ch,
