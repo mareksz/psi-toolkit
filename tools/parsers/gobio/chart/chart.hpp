@@ -69,7 +69,11 @@ public:
 
     typedef I<edge_descriptor, category_type> marked_edges_index_type;
 
-    chart(Lattice & lattice, AV_AI_Converter & av_ai_converter, const std::string& terminalTag);
+    chart(
+        Lattice & lattice,
+        AV_AI_Converter & av_ai_converter,
+        const std::string& terminalTag,
+        int edgeNumberLimit = 1000);
 
     vertex_descriptor add_vertex();
 
@@ -215,6 +219,8 @@ private:
 
     typedef Lattice::HashFun hash_fun;
     typedef Lattice::VertexPairHashFun vertex_pair_hash_fun;
+
+    int edgeNumberLimit_;
 
 public:
     struct vertex_hash_fun
