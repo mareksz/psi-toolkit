@@ -124,13 +124,12 @@ private:
 
     std::string terminalTag_;
 
-    zsymbolfactory * sym_fac_;
-
     zvalue edgeToZsyntree_(
         Chart & ch,
         Combinator & combinator,
         Edge edge,
         std::vector<Combinator::rule_holder> & local_rules,
+        zsymbolfactory * sym_fac,
         zobjects_holder * holder
     );
 
@@ -142,6 +141,7 @@ private:
         std::vector<Combinator::rule_holder> & local_rules,
         boost::shared_ptr< tree_specification<zvalue> > spec,
         bool is_main,
+        zsymbolfactory * sym_fac,
         zobjects_holder * holder
     );
 

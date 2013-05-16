@@ -101,11 +101,11 @@ std::string Gobio::doInfo() {
 }
 
 Gobio::Gobio(std::string rulesPath, std::string terminalTag)
-    : rulesPath_(rulesPath), terminalTag_(terminalTag), sym_fac_(NULL) {
+    : rulesPath_(rulesPath), terminalTag_(terminalTag) {
 }
 
 void Gobio::parse(Lattice & lattice) {
-    sym_fac_ = lattice.getAnnotationItemManager().getSymbolFactory();
+    zsymbolfactory * sym_fac = lattice.getAnnotationItemManager().getSymbolFactory();
 
     AnnotationItemManager & aim = lattice.getAnnotationItemManager();
 
@@ -149,6 +149,7 @@ void Gobio::parse(Lattice & lattice) {
             combinator,
             edge,
             local_rules,
+            sym_fac,
             lattice.getAnnotationItemManager().getZObjectsHolderPtr()
         );
         results.push_back(zv);
@@ -170,6 +171,7 @@ zvalue Gobio::edgeToZsyntree_(
     Combinator & combinator,
     Edge edge,
     std::vector<Combinator::rule_holder> & local_rules,
+    zsymbolfactory * sym_fac,
     zobjects_holder * holder
 ) {
     std::pair<Chart::partition_iterator, Chart::partition_iterator> pits
@@ -196,6 +198,7 @@ zvalue Gobio::edgeToZsyntree_(
         local_rules,
         core_spec,
         true,
+        sym_fac,
         holder);
 }
 
@@ -208,6 +211,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
     std::vector<Combinator::rule_holder> & local_rules,
     boost::shared_ptr< tree_specification<zvalue> > spec,
     bool is_main,
+    zsymbolfactory * sym_fac,
     zobjects_holder * holder
 ) {
     zsyntree * result = zsyntree::generate(holder);
@@ -222,19 +226,19 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             spec,
             is_main);
 
-    zsymbol * zcat = sym_fac_->get_symbol(
+    zsymbol * zcat = sym_fac->get_symbol(
         combinator.get_master().string_representation(tb->root()).c_str());
     if (strcmp(zcat->to_string(), "NULL_ZVALUE")) {
         result->setCategory(zcat);
     } else if(tb->is_supported()) {
         result->setCategory(
-            sym_fac_->get_symbol(
+            sym_fac->get_symbol(
                 leafSymbolToCategory_(
                     combinator.get_symbol_registrar().get_obj(
                         ch.edge_category(
                             tb->supporting_edge()).get_cat())).c_str()));
     } else
-        result->setCategory(sym_fac_->get_symbol("???"));
+        result->setCategory(sym_fac->get_symbol("???"));
 
     if (tb->is_supported()) {
         result->setSegmentInfo(
@@ -248,7 +252,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
         for (int ai = 0; ai < avm.nb_attrs(); ++ai) {
             if (combinator.get_master().is_true(avm.get_attr(ai, def))) {
                 result->setAttr(
-                    sym_fac_->get_symbol(
+                    sym_fac->get_symbol(
                         combinator.get_attribute_registrar().get_obj(ai).c_str()),
                         avm.get_attr(ai, def));
             }
@@ -264,12 +268,13 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             local_rules,
             tb->child_spec(i),
             false,
+            sym_fac,
             holder);
         if (ZSYNTREEP(sub_zv)) {
             result->addSubtree(
                 ZSYNTREEC(sub_zv),
                 (combinator.get_master().is_true(tb->child_label(i))
-                ? sym_fac_->get_symbol(
+                ? sym_fac->get_symbol(
                     combinator.get_master().string_representation(tb->child_label(i)).c_str())
                 : NULL));
         }
