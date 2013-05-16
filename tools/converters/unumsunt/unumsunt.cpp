@@ -212,6 +212,8 @@ Unumsunt::Unumsunt(
 
 void Unumsunt::convertTags(Lattice & lattice) {
 
+    std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements;
+
     LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMask(sourceTagset_);
     LayerTagCollection tagTargetTagset
         = lattice.getLayerTagManager().createTagCollectionFromList(
@@ -285,15 +287,15 @@ void Unumsunt::convertTags(Lattice & lattice) {
             while (pi.hasNext()) {
                 Lattice::EdgeDescriptor partitionEdge = pi.next();
                 std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>::iterator ri
-                    = replacements_.find(partitionEdge);
-                if (ri == replacements_.end()) {
+                    = replacements.find(partitionEdge);
+                if (ri == replacements.end()) {
                     builder.addEdge(partitionEdge);
                 } else {
                     builder.addEdge(ri->second);
                 }
             }
             if (items.size() == 1) {
-                replacements_.insert(std::pair<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>(
+                replacements.insert(std::pair<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>(
                     edge,
                     lattice.addEdge(
                         lattice.getEdgeSource(edge),

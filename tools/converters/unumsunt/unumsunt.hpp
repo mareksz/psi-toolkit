@@ -140,8 +140,6 @@ private:
 
     std::vector<UnumsuntRule> aux_rules_;
 
-    std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements_;
-
 };
 
 
