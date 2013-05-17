@@ -38,7 +38,7 @@ sub _test_excpetions_unknown_pipe_command {
     my $command = "tp-tokenizer --lang pl ! unknown-perl-simple-writer --tags token";
 
     my $text_to_process = 'Ala ma kota.';
-    my $expected_exception = "unknown processor `unknown-perl-simple-writer`";
+    my $expected_exception = "unknown processor `unknown-perl-simple-writer`, did you mean `perl-simple-writer`?";
 
     _run_test_on_command_run_for_perl_with_exception(
         $command, $text_to_process, $expected_exception);
