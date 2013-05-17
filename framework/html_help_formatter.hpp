@@ -10,6 +10,7 @@
 class HtmlHelpFormatter : public HelpFormatter {
 
 public:
+    HtmlHelpFormatter();
     ~HtmlHelpFormatter();
 
     void formatPipelineExamplesInJSON(std::ostream& output);

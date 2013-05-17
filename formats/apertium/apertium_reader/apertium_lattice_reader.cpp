@@ -54,12 +54,12 @@ LatticeReader<std::istream>* ApertiumLatticeReader::Factory::doCreateLatticeRead
     ProcessorFileFetcher fileFetcher(__FILE__);
     boost::filesystem::path specificationFile = fileFetcher.getOneFile(specFilePath);
 
-    bool unzipData;
+    bool unzipData = true;
     if (options.count("unzip-data")) {
         unzipData = options["unzip-data"].as<bool>();
     }
 
-    bool keepTags;
+    bool keepTags = false;
     if (options.count("keep-tags")) {
         keepTags = options["keep-tags"].as<bool>();
     }

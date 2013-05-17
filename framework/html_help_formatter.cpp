@@ -11,6 +11,8 @@
 std::set<std::string> HtmlHelpFormatter::extensionsForRandomExamples_ =
     boost::assign::list_of("txt")("html");
 
+HtmlHelpFormatter::HtmlHelpFormatter() { }
+
 void HtmlHelpFormatter::doFormatOneProcessorHelp(
     std::string processorName,
     std::string description,

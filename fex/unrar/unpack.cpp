@@ -134,7 +134,7 @@ void Unpack::CopyString(unsigned int Length, unsigned int Distance)
 
 int Unpack::DecodeNumber(struct Decode *Dec)
 {
-    unsigned int Bits;
+    unsigned int Bits = 0;
     unsigned int BitField=getbits() & 0xfffe;
     if (BitField<Dec->DecodeLen[8])
         if (BitField<Dec->DecodeLen[4])
