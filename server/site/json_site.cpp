@@ -1,6 +1,8 @@
 #include <string>
 #include <boost/bind.hpp>
 #include <boost/assign.hpp>
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "json_site.hpp"
 #include "pipe_runner.hpp"
@@ -10,6 +12,16 @@ const std::string JsonSite::PIPE_KEY_NAME = "pipe";
 const std::string JsonSite::INPUT_KEY_NAME = "input";
 const std::string JsonSite::OUTPUT_KEY_NAME = "output";
 const std::string JsonSite::ERROR_KEY_NAME = "error";
+
+std::map<std::string, std::string> JsonSite::ESCAPED_CHARS =
+    boost::assign::map_list_of
+        ("/", "\\/")
+        ("\"", "\\\"")
+        ("\n", "\\n")
+        ("\r", "\\r")
+        ("\t", "\\t")
+        ("\b", "\\b")
+        ;
 
 const std::vector<std::string> JsonSite::JSON_WRITERS = boost::assign::list_of
     ("json-simple-writer");
@@ -31,10 +43,10 @@ char * JsonSite::actionJson() {
     output_ << "{ " << std::endl;
 
     std::string pipe = psiServer_.session()->getData(PIPE_KEY_NAME);
-    addKeyValuePairToOutputAsString_(PIPE_KEY_NAME, pipe);
+    addKeyValuePairToOutputAsString_(PIPE_KEY_NAME, escape_(pipe));
 
     std::string input = psiServer_.session()->getData(INPUT_KEY_NAME);
-    addKeyValuePairToOutputAsString_(INPUT_KEY_NAME, input);
+    addKeyValuePairToOutputAsString_(INPUT_KEY_NAME, escape_(input));
 
     std::stringstream iss(input);
     std::ostringstream oss;
@@ -76,7 +88,19 @@ void JsonSite::addKeyValuePairToOutputAsString_(std::string key, std::string val
 
 bool JsonSite::isJavascriptOutput_(std::string pipe) {
     BOOST_FOREACH(std::string jsonWriter, JSON_WRITERS) {
-        if (pipe.find(jsonWriter) != std::string::npos) return true;
+        if (pipe.find(jsonWriter) != std::string::npos)
+            return true;
     }
     return false;
+}
+
+std::string JsonSite::escape_(const std::string& text) {
+    std::string escapedText(text);
+
+    typedef std::map<std::string, std::string> string_map;
+    BOOST_FOREACH(const string_map::value_type& pair, ESCAPED_CHARS) {
+        boost::replace_all(escapedText, pair.first, pair.second);
+    }
+
+    return escapedText;
 }

@@ -31,6 +31,8 @@ private:
     static const std::string OUTPUT_KEY_NAME;
     static const std::string ERROR_KEY_NAME;
 
+    static std::map<std::string, std::string> ESCAPED_CHARS;
+    std::string escape_(const std::string &);
 };
 
 #endif

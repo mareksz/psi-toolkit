@@ -46,7 +46,7 @@ pre > code { display:block }
 html, body { height:100%; margin:0; padding:0; }
 #body { min-height:100%; position:relative; }
 #content { padding-bottom:320px; }
-footer { bottom:0; height:272px; position:absolute; width:100%; } /* 300 - 2*24 */
+footer { bottom:0; height:275px; position:absolute; width:100%; } /* 300 - 2*24 */
 
 #content > div.wrapper { margin:32px auto; }
 

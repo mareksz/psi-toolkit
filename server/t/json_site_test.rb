@@ -2,6 +2,7 @@ require 'rubygems'
 require 'celerity'
 require 'test/unit'
 require 'uri'
+require 'pp'
 
 require 'config'
 
@@ -54,6 +55,18 @@ class JsonSiteTest < Test::Unit::TestCase
         assert hash['output'].kind_of?(Array)
         assert_equal hash['output'], ['Ala', 'ma', 'kota']
         assert hash['error'].nil?
+    end
+
+    def test_character_escaping_in_json
+        input = "Ala\tma \"kota\" i\npsa! /"
+        json_request("tokenize --lang pl ! json-simple-writer", input)
+
+        result = {}
+        assert_nothing_raised(Exception) do
+            result = browser_json_content_as_hash
+        end
+
+        assert_equal result['input'], input
     end
 
     private
