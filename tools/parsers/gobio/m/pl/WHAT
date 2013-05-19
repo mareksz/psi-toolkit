@@ -1,1 +1,1 @@
-gobio --lang pl --terminal-tag parse-terminal ! bracketing-writer --tags parse --opening-bracket %c[
+--line-by-line gobio --lang pl --terminal-tag parse-terminal ! bracketing-writer --tags parse --opening-bracket %c[
