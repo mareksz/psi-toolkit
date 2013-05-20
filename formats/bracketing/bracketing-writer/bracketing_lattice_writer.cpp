@@ -200,7 +200,10 @@ BracketingLatticeWriter::Worker::~Worker() {
 }
 
 
-EdgeData BracketingLatticeWriter::Worker::getEdgeData_(Lattice::EdgeDescriptor edge) {
+EdgeData BracketingLatticeWriter::Worker::getEdgeData_(
+    Lattice::EdgeDescriptor edge,
+    std::string role
+) {
     AnnotationItem annotationItem = lattice_.getEdgeAnnotationItem(edge);
     std::set<std::string> tags;
     std::list<std::string> tagsList
@@ -215,7 +218,8 @@ EdgeData BracketingLatticeWriter::Worker::getEdgeData_(Lattice::EdgeDescriptor e
         annotationItem.getCategory(),
         annotationItem.getText(),
         processor_.filterAttributes(avMap),
-        lattice_.getEdgeScore(edge)
+        lattice_.getEdgeScore(edge),
+        role
     );
 }
 

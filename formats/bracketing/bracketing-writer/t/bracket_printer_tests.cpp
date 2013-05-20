@@ -24,7 +24,7 @@ void testBracketPrinter(std::string pattern, std::string output) {
     std::set<std::string> tags = boost::assign::list_of("symbol")("token")("segment");
     std::map<std::string, std::string> avMap
         = boost::assign::map_list_of("case", "Nominative")("number", "singular");
-    EdgeData edgeData(lattice, edge, tags, "Noun-Phrase", "Żółta jaźń", avMap, -1.5);
+    EdgeData edgeData(lattice, edge, tags, "Noun-Phrase", "Żółta jaźń", avMap, -1.5, "#");
     std::set<EdgeData> edgeDataSet;
     edgeDataSet.insert(edgeData);
     std::set<EdgePrintData> printed = bp.print(edgeDataSet);
@@ -49,6 +49,10 @@ BOOST_AUTO_TEST_CASE( bracket_printer_simple ) {
     testBracketPrinter(
         "<%c case=%a[case] number=%a`number`>%t</%c %a> %a",
         "<Noun-Phrase case=Nominative number=singular>Żółta jaźń</Noun-Phrase %a> %a"
+    );
+    testBracketPrinter(
+        "<%c role=%r>%t</%c>",
+        "<Noun-Phrase role=#>Żółta jaźń</Noun-Phrase>"
     );
 }
 

@@ -79,7 +79,9 @@ private:
     private:
         BracketingLatticeWriter& processor_;
 
-        EdgeData getEdgeData_(Lattice::EdgeDescriptor edge);
+        EdgeData getEdgeData_(
+            Lattice::EdgeDescriptor edge,
+            std::string role = "");
 
         bool shouldBeSkipped_(Lattice::EdgeDescriptor edge);
 
@@ -87,7 +89,10 @@ private:
         void doRun_();
 
         template <typename EdgeDataContainer>
-        void collectEdges_(EdgeDataContainer & container, Lattice::EdgeDescriptor edge);
+        void collectEdges_(
+            EdgeDataContainer & container,
+            Lattice::EdgeDescriptor edge,
+            zvalue role = NULL_ZVALUE);
     };
 
     virtual WriterWorker<std::ostream>* doCreateWriterWorker(
@@ -168,7 +173,7 @@ void BracketingLatticeWriter::Worker::doRun_() {
                         bestEdge = children.front();
                     }
                 }
-                collectEdges_<EdgeDataContainer>(collectedEdges, bestEdge);
+                collectEdges_<EdgeDataContainer>(collectedEdges, bestEdge, NULL_ZVALUE);
                 currentVertex = lattice_.getEdgeTarget(bestEdge);
             } else {
                 break;
@@ -251,17 +256,21 @@ void BracketingLatticeWriter::Worker::doRun_() {
 template <typename EdgeDataContainer>
 void BracketingLatticeWriter::Worker::collectEdges_(
     EdgeDataContainer & container,
-    Lattice::EdgeDescriptor edge
+    Lattice::EdgeDescriptor edge,
+    zvalue role
 ) {
     if (!shouldBeSkipped_(edge)) {
-        EdgeData edgeData = getEdgeData_(edge);
+        EdgeData edgeData = getEdgeData_(
+            edge,
+            NULLP(role) ? "" : (lattice_.getAnnotationItemManager().to_string(role)));
         BracketPrinter::insertElementIntoContainer(container, edgeData);
     }
     std::list<Lattice::Partition> partitions = lattice_.getEdgePartitions(edge);
     if (!partitions.empty()) {
         Lattice::Partition::Iterator ei(lattice_, partitions.front());
         while (ei.hasNext()) {
-            collectEdges_(container, ei.next());
+            Lattice::EdgeUsage eu = ei.nextUsage();
+            collectEdges_(container, eu.getEdge(), eu.getRole());
         }
     }
 }

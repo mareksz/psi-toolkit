@@ -198,6 +198,13 @@ OutputContainer BracketPrinter::print_(InputContainer edgeDataContainer) {
                             }
                         }
                         break;
+                    case 'r':
+                        {
+                            resSs << edgeData.role;
+                            thisEdgeData.role = edgeData.role;
+                            i += 2;
+                        }
+                        break;
                     default:
                         {
                             resSs << '%';
