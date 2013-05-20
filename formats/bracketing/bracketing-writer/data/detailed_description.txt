@@ -9,6 +9,7 @@ following expressions have a special meaning when given in
   * `%A` - all edge attributes,
   * `%a[...]` - the value of the given attribute,
   * `%s` - score,
+  * `%r` - edge role (only in `--disambig` mode)
   * `%*[...][...]`, `%*(...)(...)%`, `%*<...><...>` or
     `%*{...}{...}` - join operators (see below).
 
