@@ -133,6 +133,7 @@ Transferer::Transferer(ScriptFactory* sf
     registerBuildIn(&Transferer::get_dvalueI, "get_dvalue", 1);
     registerBuildIn(&Transferer::get_morphoI, "get_morpho", 5);
     registerBuildIn(&Transferer::get_morpho_deI, "get_morpho_de", 5);
+    registerBuildIn(&Transferer::get_morpho_esI, "get_morpho_es", 5);
     registerBuildIn(&Transferer::get_morpho_ruI, "get_morpho_ru", 5);
     registerBuildIn(&Transferer::get_optionI, "get_option", 1);
     registerBuildIn(&Transferer::inheritI, "inherit", 2);
