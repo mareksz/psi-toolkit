@@ -782,6 +782,7 @@ function(download_and_unpack URL FILE CHECKSUM DESTINATION)
 endfunction(download_and_unpack)
 
 if(DOWNLOAD_DATA)
+    download_artifact("tools/parsers/gobio/data/pl/rules.g")
     download_artifact("tools/lexica/bilexicon/data/depl.bin")
     download_artifact("tools/lexica/bilexicon/data/enpl.bin")
     download_artifact("tools/lexica/bilexicon/data/espl.bin")

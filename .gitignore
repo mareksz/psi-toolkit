@@ -22,3 +22,4 @@ tools/lexica/bilexicon/data/*.bin
 tools/lexica/mapper/data/*.bin
 tools/taggers/metagger/t/files/pl.blm
 bindings/python/Test/test.pyc
+tools/parsers/gobio/data/pl/rules.g
