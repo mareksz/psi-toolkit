@@ -68,7 +68,7 @@ following pipeline is used:
 
     read-text ! tokenize ! lemmatize ! write-simple --tags lemma
 
-The result is ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+!+lemmatize+!+write-simple+--tags+lemma&input-text=Piękna+gra+trwała+długo.)):
+The result is ([run example](/pipe.psis?pipe-text=read-text+!+tokenize+--lang+pl+!+lemmatize+!+write-simple+--tags+lemma&input-text=Piękna+gra+trwała+długo.)):
 
     piękno|piękny
     gra|grać

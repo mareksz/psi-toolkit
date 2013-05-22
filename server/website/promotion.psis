@@ -28,7 +28,7 @@ $runner->run_for_perl('PSI-Toolkit is Skynet.');
       </section>
 
       <section>
-      <h2>Ubuntu packages!</h2>
+      <h2><a href="/download.html">Ubuntu packages!</a></h2>
       <p>
 No more wasting time trying to compile strange, cumbersome toolkits for natural language processing! PSI-Toolkit is packaged for popular Linux distributions:
         <br />
