@@ -44,7 +44,8 @@ class TutorialSiteTest < Test::Unit::TestCase
       assert_not_equal psi.status_code, 404,
         "link [#{link}] returns Error 404"
       assert !psi.text.downcase.include?('there are some problems'),
-        "example [#{link}] is not working, getting page: [#{psi.text}]"
+        "example [#{link}] is not working," +
+        "getting page: [#{psi.div(:id => 'content').text}]"
     end
   end
 
