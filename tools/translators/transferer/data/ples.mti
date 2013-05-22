@@ -2,6 +2,8 @@
 FP => AP
 {
         warning("HERE FP");
+   if(Degree = superlative)
+        Def := "el mas";
 }
 
 P => A
@@ -31,10 +33,16 @@ R => N
 
 sub N::surface()
 {
+        warning("HERE N SURFACE");
         if (Gender == fem)
-           $gendercode = 4;
+           $gendercode := 4;
         else
-           $gendercode = 1;
-
-        return (Equiv + "+subst") & get_morpho_es(0, $gendercode, Num, 0, 0);
+           $gendercode := 1;
+        
+        if (Num == 2)
+            $numcode := 2;
+        else
+            $numcode := 1;
+            
+        return (Equiv + "+subst") & get_morpho_es(0, $gendercode, $numcode, 0, 0);
 }
