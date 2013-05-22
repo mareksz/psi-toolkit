@@ -173,7 +173,7 @@ function isOutputType(type) {
 }
 
 function bindChangeOutputType() {
-    var WRITER_PART_REGEXP = '(!|\|) +([a-z\-]+-writer|write[a-z\-]*|draw|graph).*';
+    var WRITER_PART_REGEXP = ' *(!|\|) +([a-z\-]+-writer|write[a-z\-]*|draw|graph).*';
 
     $('#select-output-type').change(function() {
         var selectedWriter = $(this).find(':selected').attr('value');
@@ -183,9 +183,9 @@ function bindChangeOutputType() {
 
         var currentPipeline = $('input[name=pipe-text]').val();
         var matchWriter = currentPipeline.match(WRITER_PART_REGEXP);
-
-        var newPipeline = currentPipeline.substring(0, matchWriter.index);
-        newPipeline += '! ' + selectedWriter;
+        var newPipeline = (!matchWriter) ? currentPipeline
+                                         : currentPipeline.substring(0, matchWriter.index);
+        newPipeline += ' ! ' + selectedWriter;
 
         $('input[name=pipe-text]').val(newPipeline);
         $('input[name=output-type]').val(selectedWriter);
