@@ -30,8 +30,7 @@ SessionManager* SessionManager::Instance() {
     return sessionManagerInstance_;
 }
 
-SessionManager::SessionManager() : guidGenerator(sessionIdLength, true) {
-    currentSessionId = "";
+SessionManager::SessionManager() : currentSessionId_(""), guidGenerator(sessionIdLength, true) {
 }
 
 
@@ -64,11 +63,11 @@ Session * SessionManager::newSession() {
 }
 
 Session * SessionManager::currentSession() {
-    return getSession(currentSessionId);
+    return getSession(currentSessionId_);
 }
 
 void SessionManager::setCurrentSession(std::string id) {
-    currentSessionId = id;
+    currentSessionId_ = id;
 }
 
 void SessionManager::addSession(Session * session) {

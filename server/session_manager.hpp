@@ -28,7 +28,7 @@ public:
 
 private:
 
-    std::string currentSessionId;
+    std::string currentSessionId_;
 
     static std::string cookieIdentifier;
     static int sessionIdLength;

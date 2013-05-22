@@ -35,15 +35,21 @@ void FromConfigurationAnnotatorFactory::setOptions(const std::string& optionsAsS
     options_ = options;
 }
 
-void FromConfigurationAnnotatorFactory::setRequiredLayerTags(std::list<std::list<std::string> > requiredLayerTags) {
+void FromConfigurationAnnotatorFactory::setRequiredLayerTags(
+    std::list<std::list<std::string> > requiredLayerTags) {
+
     requiredLayerTags_ = requiredLayerTags;
 }
 
-void FromConfigurationAnnotatorFactory::setOptionalLayerTags(std::list<std::list<std::string> > optionalLayerTags) {
+void FromConfigurationAnnotatorFactory::setOptionalLayerTags(
+    std::list<std::list<std::string> > optionalLayerTags) {
+
     optionalLayerTags_ = optionalLayerTags;
 }
 
-void FromConfigurationAnnotatorFactory::setProvidedLayerTags(std::list<std::string> providedLayerTags) {
+void FromConfigurationAnnotatorFactory::setProvidedLayerTags(
+    std::list<std::string> providedLayerTags) {
+
     providedLayerTags_ = providedLayerTags;
 }
 
@@ -94,7 +100,8 @@ FromConfigurationAnnotatorFactory::doLanguagesHandling(
 }
 
 std::list<std::basic_string<char> >
-FromConfigurationAnnotatorFactory::doLanguagesHandled(const boost::program_options::variables_map&) const {
+FromConfigurationAnnotatorFactory::doLanguagesHandled(
+    const boost::program_options::variables_map&) const {
 
     return annotatorFactory_.languagesHandled(options_);
 }

@@ -135,9 +135,6 @@ std::pair<int, int> ApertiumDeformatter::getMatchedStringIndexes_(
 std::string ApertiumDeformatter::decompressFiles_(const std::string &compressed) {
     DEBUG("decompressing file...");
 
-    FileRecognizer fileRecognizer;
-    std::string filetype = fileRecognizer.recognizeCompressedFileFormat(compressed);
-
     typedef std::map<std::string, std::string> string_to_string_map;
 
     FileExtractor fileExtractor;

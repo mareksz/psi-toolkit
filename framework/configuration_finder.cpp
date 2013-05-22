@@ -86,7 +86,9 @@ void ConfigurationFinder::processConfiguration_(boost::property_tree::ptree& con
     factoryKeeper_.takeProcessorFactory(factory);
 }
 
-std::list<std::string> ConfigurationFinder::getListOfTags_(boost::property_tree::ptree& configurationNode) {
+std::list<std::string> ConfigurationFinder::getListOfTags_(
+    boost::property_tree::ptree& configurationNode) {
+
     std::list<std::string> listOfTags_;
 
     BOOST_FOREACH(boost::property_tree::ptree::value_type &v,

@@ -11,7 +11,7 @@
 std::set<std::string> HtmlHelpFormatter::extensionsForRandomExamples_ =
     boost::assign::list_of("txt")("html");
 
-HtmlHelpFormatter::HtmlHelpFormatter() { }
+HtmlHelpFormatter::HtmlHelpFormatter() : fileStorage_(NULL) { }
 
 void HtmlHelpFormatter::doFormatOneProcessorHelp(
     std::string processorName,
@@ -249,8 +249,8 @@ std::string HtmlHelpFormatter::escapeHTML_(const std::string& text) {
     std::string buffer;
     buffer.reserve(text.size());
 
-    for(size_t pos = 0; pos != text.size(); ++pos) {
-        switch(text[pos]) {
+    for (size_t pos = 0; pos != text.size(); ++pos) {
+        switch (text[pos]) {
             case '&':  buffer.append("&amp;");      break;
             case '\"': buffer.append("&quot;");     break;
             case '\'': buffer.append("&apos;");     break;

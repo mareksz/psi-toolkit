@@ -46,6 +46,7 @@ PipeRunner::PipeRunner(int argc, char* argv[])
 PipeRunner::PipeRunner(std::vector<std::string> args)
     : justInformation_(false),
     lineByLine_(false),
+    encodingConversion_(false),
     runnerOptionsDescription_("PipeRunner options") {
 
     parseIntoFinalPipeline_<std::istream, std::ostream>(args, false);

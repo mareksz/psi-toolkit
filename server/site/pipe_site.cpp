@@ -19,6 +19,7 @@ PipeSite::PipeSite(PsiServer& server, const std::string& pipe, const std::string
     : TemplateSite(server),
     initialText_(text.c_str()),
     initialPipe_(pipe.c_str()),
+    inputFromFile_(false),
     fileStorage_(std::string(psiServer_.websiteRoot)),
     encodingConverter_("UTF-8")
 {
@@ -240,8 +241,8 @@ std::string PipeSite::encodeHTML_(const std::string& data) {
     std::string buffer;
     buffer.reserve(data.size());
 
-    for(size_t pos = 0; pos != data.size(); ++pos) {
-        switch(data[pos]) {
+    for (size_t pos = 0; pos != data.size(); ++pos) {
+        switch (data[pos]) {
             case '&':  buffer.append("&amp;");      break;
             case '\"': buffer.append("&quot;");     break;
             case '\'': buffer.append("&apos;");     break;

@@ -26,8 +26,10 @@ private:
     virtual std::list<std::list<std::basic_string<char> > > doRequiredLayerTags();
     virtual std::list<std::list<std::basic_string<char> > > doOptionalLayerTags();
     virtual std::list<std::basic_string<char> > doProvidedLayerTags();
-    virtual LanguagesHandling doLanguagesHandling(const boost::program_options::variables_map&) const;
-    virtual std::list<std::basic_string<char> > doLanguagesHandled(const boost::program_options::variables_map&) const;
+    virtual LanguagesHandling doLanguagesHandling(
+        const boost::program_options::variables_map&) const;
+    virtual std::list<std::basic_string<char> > doLanguagesHandled(
+        const boost::program_options::variables_map&) const;
 
     std::string name_;
     AnnotatorFactory& annotatorFactory_;

@@ -15,7 +15,9 @@ connection::connection(boost::asio::io_service& io_service,
     request_handler& handler)
   : strand_(io_service),
     socket_(io_service),
-    request_handler_(handler)
+    request_handler_(handler),
+    request_(),
+    reply_()
 {
 }
 

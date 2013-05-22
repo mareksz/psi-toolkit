@@ -16,7 +16,7 @@ namespace poleng {
 
             class Action {
                 public:
-                    Action() { type = "abstract"; }
+                    Action() : type("abstract") { }
                     virtual ~Action() { }
                     virtual bool test(Lattice&, std::string, int,
                             RuleTokenSizes&,

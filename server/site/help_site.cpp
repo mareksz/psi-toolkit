@@ -3,9 +3,9 @@
 
 HelpSite::HelpSite(PsiServer& server)
     : TemplateSite(server),
-    fileStorage_(std::string(psiServer_.websiteRoot))
+    fileStorage_(std::string(psiServer_.websiteRoot)),
+    htmlHelpFormatter_()
 {
-    htmlHelpFormatter_ = HtmlHelpFormatter();
     htmlHelpFormatter_.setFileStorage(&fileStorage_);
 
     psiServer_.registerIncludeCode(
