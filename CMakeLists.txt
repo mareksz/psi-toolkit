@@ -796,6 +796,13 @@ if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
     download_artifact("tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
     download_artifact("tools/lexica/mapper/data/pl-valency.bin")
+    
+    download_artifact("tools/lemmatizers/lamerlemma/data/pl.bin")
+    download_artifact("tools/lemmatizers/lamerlemma/data/fr.bin")
+    download_artifact("tools/lemmatizers/lamerlemma/data/de.bin")
+    download_artifact("tools/lemmatizers/lamerlemma/data/en.bin")
+    download_artifact("tools/lemmatizers/lamerlemma/data/es.bin")
+    download_artifact("tools/lemmatizers/lamerlemma/data/it.bin")
 
     if (HAVE_SFST)
        file(MAKE_DIRECTORY "${psi-toolkit_SOURCE_DIR}/tools/lemmatizers/sfst/data")
@@ -806,13 +813,6 @@ if(DOWNLOAD_DATA)
            "0d8a94791fce28f862e2890406e81727"
            "tools/lemmatizers/sfst/data/tr.a")
     endif()
-
-    download_and_unpack(
-    "http://amu.edu.pl/~junczys/data/lamerlemma/pl.tar.gz"
-    "pl/pl.bin"
-    "9b02332be66db383ce67974f1d327d2e"
-    "tools/lemmatizers/lamerlemma/data/pl.bin"
-    )
 
 endif(DOWNLOAD_DATA)
 
