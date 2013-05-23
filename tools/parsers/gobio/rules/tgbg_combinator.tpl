@@ -2239,7 +2239,7 @@ void tgbg_combinator<T, S, M, X, E>::compile_rule_(int rule_ix)
         apply_hooks_(rule_ix);
 
         assert(!find_loops(*(rh.compiled_expr)));
-//        assert(!find_extras(*(rh.compiled_expr)));
+        assert(!find_extras(*(rh.compiled_expr)));
 
         if (rh.g_rule->extra_expr)
         {
