@@ -45,7 +45,10 @@ void sort_edges(Ch& chart, std::vector<typename Ch::edge_descriptor>& edges)
 
 
 template<class Ch, class K>
-std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::go(Ch& chart,K& combinator,const std::vector<typename longest_left_to_right_chooser<Ch,K>::rule_holder>& /*local_rules*/)
+std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::go(
+    Ch& chart,
+    K& combinator,
+    const std::vector<typename longest_left_to_right_chooser<Ch,K>::rule_holder>& local_rules)
 {
     chart.sort_topologically();
 
@@ -79,7 +82,7 @@ std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::g
     {
         int topo_i = chart.topological_index(chart.edge_target(*ei));
 
-        // typename Ch::score_type max_preference;
+        typename Ch::score_type max_preference;
         // typename Ch::score_type max_score;
         typename std::vector<typename Ch::edge_descriptor>::iterator max_e;
         bool candidate_found = false;
@@ -113,40 +116,39 @@ std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::g
                   chart.edge_category(*ej),
                   chart.edge_variant_category(final_vit)))
             ++final_vit;
+// */
 
-            if(final_vit != vits.second)
-            {
+            // if(final_vit != vits.second)
+            // {
+
             boost::shared_ptr<
-                tree_branch<typename K::atom_type, Ch,typename K::equivalent_type> > tb
-                = extract_tree_branch<typename K::atom_type, Ch, K>(
-                chart,
-                *ej,
-                combinator,
-                local_rules);
+                tree_branch<typename K::atom_type, Ch, typename K::equivalent_type> > tb
+                    = extract_tree_branch<typename K::atom_type, Ch, K>(
+                        chart,
+                        *ej,
+                        combinator,
+                        local_rules);
 
-            if(tb)
-            {
+            if (tb) {
                 typename Ch::score_type j_preference
-                = combinator.get_preference(tb->root());
-                typename Ch::score_type j_score
-                = chart.variant_score(final_vit);
+                    = combinator.get_preference(tb->root());
+                // typename Ch::score_type j_score
+                // = chart.variant_score(final_vit);
 
-                if(!candidate_found ||
-                   j_preference > max_preference ||
-                   (j_preference == max_preference && j_score > max_score))
-                {
-                candidate_found = true;
-                max_preference = j_preference;
-                max_score = j_score;
-                max_e = ej;
+                if (
+                    !candidate_found
+                    || j_preference > max_preference
+                   // || (j_preference == max_preference && j_score > max_score)
+                ) {
+                    candidate_found = true;
+                    max_preference = j_preference;
+                    // max_score = j_score;
+                    max_e = ej;
                 }
             }
-            }
-// */
-            if (!candidate_found) {
-                candidate_found = true;
-                max_e = ej;
-            }
+
+            // }
+
         }
         }
 

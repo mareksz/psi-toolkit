@@ -1,1 +1,1 @@
-FC[FR[R[żołnierz]] C[widzi] FR[R[most]]]
+FC:[FR:podmiot[R:#[żołnierz]] C:#[widzi] FR:dop1[R:#[most]]]
