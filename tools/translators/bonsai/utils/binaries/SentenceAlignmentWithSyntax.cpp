@@ -75,6 +75,3 @@ bool SentenceAlignmentWithSyntax::processSourceSentence(const char * sourceStrin
 }
 
 } // namespace
-
-
-

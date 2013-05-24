@@ -15,9 +15,9 @@
 
 using namespace std;
 
-#define MAX_WORD 10000 // maximum lengthsource/target strings 
+#define MAX_WORD 10000 // maximum lengthsource/target strings
 #define MAX_M 400      // maximum length of source strings
-#define MAX_N 400      // maximum length of target strings 
+#define MAX_N 400      // maximum length of target strings
 
 #define UNION                      1
 #define INTERSECT                  2
@@ -67,10 +67,10 @@ int verbose=0;
 
 int lc = 0;
 
-int getals(fstream& inp,int& m, int *a,int& n, int *b)
+int getals(fstream& inp, int& m, int *a, int& n, int *b)
 {
   char w[MAX_WORD], dummy[10];
-  int i,j,freq;
+  int i, j, freq;
   if (inp >> freq) {
     ++lc;
     //target sentence
@@ -121,7 +121,7 @@ int getals(fstream& inp,int& m, int *a,int& n, int *b)
 
 
 //compute union alignment
-int prunionalignment(fstream& out,int m,int *a,int n,int* b)
+int prunionalignment(fstream& out, int m, int *a, int n, int* b)
 {
 
   ostringstream sout;
@@ -150,7 +150,7 @@ int prunionalignment(fstream& out,int m,int *a,int n,int* b)
 
 //Compute intersection alignment
 
-int printersect(fstream& out,int m,int *a,int n,int* b)
+int printersect(fstream& out, int m, int *a, int n, int* b)
 {
 
   ostringstream sout;
@@ -174,7 +174,7 @@ int printersect(fstream& out,int m,int *a,int n,int* b)
 
 //Compute target-to-source alignment
 
-int printtgttosrc(fstream& out,int m,int *a,int n,int* b)
+int printtgttosrc(fstream& out, int m, int *a, int n, int* b)
 {
 
   ostringstream sout;
@@ -198,7 +198,7 @@ int printtgttosrc(fstream& out,int m,int *a,int n,int* b)
 
 //Compute source-to-target alignment
 
-int printsrctotgt(fstream& out,int m,int *a,int n,int* b)
+int printsrctotgt(fstream& out, int m, int *a, int n, int* b)
 {
 
   ostringstream sout;
@@ -226,58 +226,58 @@ int printsrctotgt(fstream& out,int m,int *a,int n,int* b)
 //to represent the grow alignment as the unionalignment of a
 //directed and inverted alignment
 
-int printgrow(fstream& out,int m,int *a,int n,int* b, bool diagonal=false,bool final=false,bool bothuncovered=false)
+int printgrow(fstream& out, int m, int *a, int n, int* b, bool diagonal=false, bool final=false, bool bothuncovered=false)
 {
 
   ostringstream sout;
 
-  vector <pair <int,int> > neighbors; //neighbors
+  vector <pair <int, int> > neighbors; //neighbors
 
-  pair <int,int> entry;
+  pair <int, int> entry;
 
-  neighbors.push_back(make_pair(-1,-0));
-  neighbors.push_back(make_pair(0,-1));
-  neighbors.push_back(make_pair(1,0));
-  neighbors.push_back(make_pair(0,1));
+  neighbors.push_back(make_pair(-1, -0));
+  neighbors.push_back(make_pair(0, -1));
+  neighbors.push_back(make_pair(1, 0));
+  neighbors.push_back(make_pair(0, 1));
 
 
   if (diagonal) {
-    neighbors.push_back(make_pair(-1,-1));
-    neighbors.push_back(make_pair(-1,1));
-    neighbors.push_back(make_pair(1,-1));
-    neighbors.push_back(make_pair(1,1));
+    neighbors.push_back(make_pair(-1, -1));
+    neighbors.push_back(make_pair(-1, 1));
+    neighbors.push_back(make_pair(1, -1));
+    neighbors.push_back(make_pair(1, 1));
   }
 
 
-  int i,j;
+  int i, j;
   size_t o;
 
 
   //covered foreign and english positions
 
-  memset(fa,0,(m+1)*sizeof(int));
-  memset(ea,0,(n+1)*sizeof(int));
+  memset(fa, 0, (m+1)*sizeof(int));
+  memset(ea, 0, (n+1)*sizeof(int));
 
   //matrix to quickly check if one point is in the symmetric
   //alignment (value=2), direct alignment (=1) and inverse alignment
 
-  for (int i=1; i<=n; i++) memset(A[i],0,(m+1)*sizeof(int));
+  for (int i=1; i<=n; i++) memset(A[i], 0, (m+1)*sizeof(int));
 
-  set <pair <int,int> > currentpoints; //symmetric alignment
-  set <pair <int,int> > unionalignment; //union alignment
+  set <pair <int, int> > currentpoints; //symmetric alignment
+  set <pair <int, int> > unionalignment; //union alignment
 
-  pair <int,int> point; //variable to store points
-  set<pair <int,int> >::const_iterator k; //iterator over sets
+  pair <int, int> point; //variable to store points
+  set<pair <int, int> >::const_iterator k; //iterator over sets
 
   //fill in the alignments
   for (j=1; j<=m; j++) {
     if (a[j]) {
-      unionalignment.insert(make_pair(a[j],j));
+      unionalignment.insert(make_pair(a[j], j));
       if (b[a[j]]==j) {
         fa[j]=1;
         ea[a[j]]=1;
         A[a[j]][j]=2;
-        currentpoints.insert(make_pair(a[j],j));
+        currentpoints.insert(make_pair(a[j], j));
       } else
         A[a[j]][j]=-1;
     }
@@ -285,7 +285,7 @@ int printgrow(fstream& out,int m,int *a,int n,int* b, bool diagonal=false,bool f
 
   for (i=1; i<=n; i++)
     if (b[i] && a[b[i]]!=i) { //not intersection
-      unionalignment.insert(make_pair(i,b[i]));
+      unionalignment.insert(make_pair(i, b[i]));
       A[i][b[i]]=1;
     }
 
@@ -411,7 +411,7 @@ int main(int argc, char** argv)
                 "o", CMDSTRINGTYPE, &output,
                 "v", CMDENUMTYPE,  &verbose, BoolEnum,
                 "verbose", CMDENUMTYPE,  &verbose, BoolEnum,
-                
+
                 (char*)NULL);
 
   GetParams(&argc, &argv, (char*)NULL);
@@ -424,8 +424,8 @@ int main(int argc, char** argv)
 
   }
 
-  fstream inp(input,ios::in);
-  fstream out(output,ios::out);
+  fstream inp(input, ios::in);
+  fstream out(output, ios::out);
 
   if (!inp.is_open()) {
     cerr << "cannot open " << input << "\n";
@@ -438,7 +438,7 @@ int main(int argc, char** argv)
   }
 
 
-  int a[MAX_M],b[MAX_N],m,n;
+  int a[MAX_M], b[MAX_N], m, n;
   fa=new int[MAX_M+1];
   ea=new int[MAX_N+1];
 
@@ -450,16 +450,16 @@ int main(int argc, char** argv)
   switch (alignment) {
   case UNION:
     cerr << "symal: computing union alignment\n";
-    while(getals(inp,m,a,n,b)) {
-      prunionalignment(out,m,a,n,b);
+    while (getals(inp, m, a, n, b)) {
+      prunionalignment(out, m, a, n, b);
       sents++;
     }
     cerr << "Sents: " << sents << endl;
     break;
   case INTERSECT:
     cerr << "symal: computing intersect alignment\n";
-    while(getals(inp,m,a,n,b)) {
-      printersect(out,m,a,n,b);
+    while (getals(inp, m, a, n, b)) {
+      printersect(out, m, a, n, b);
       sents++;
     }
     cerr << "Sents: " << sents << endl;
@@ -469,15 +469,15 @@ int main(int argc, char** argv)
          << diagonal << ") final ("<< final << ")"
          <<  "both-uncovered (" << bothuncovered <<")\n";
 
-    while(getals(inp,m,a,n,b))
-      printgrow(out,m,a,n,b,diagonal,final,bothuncovered);
+    while (getals(inp, m, a, n, b))
+      printgrow(out, m, a, n, b, diagonal, final, bothuncovered);
 
     break;
   case TGTTOSRC:
     cerr << "symal: computing target-to-source alignment\n";
 
-    while(getals(inp,m,a,n,b)) {
-      printtgttosrc(out,m,a,n,b);
+    while (getals(inp, m, a, n, b)) {
+      printtgttosrc(out, m, a, n, b);
       sents++;
     }
     cerr << "Sents: " << sents << endl;
@@ -485,8 +485,8 @@ int main(int argc, char** argv)
   case SRCTOTGT:
     cerr << "symal: computing source-to-target alignment\n";
 
-    while(getals(inp,m,a,n,b)) {
-      printsrctotgt(out,m,a,n,b);
+    while (getals(inp, m, a, n, b)) {
+      printsrctotgt(out, m, a, n, b);
       sents++;
     }
     cerr << "Sents: " << sents << endl;

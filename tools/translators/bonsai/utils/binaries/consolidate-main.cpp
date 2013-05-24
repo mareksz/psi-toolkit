@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
   char* &fileNameConsolidated = argv[3];
   char* fileNameCountOfCounts;
 
-  for(int i=4; i<argc; i++) {
+  for (int i=4; i<argc; i++) {
     if (strcmp(argv[i],"--Hierarchical") == 0) {
       hierarchicalFlag = true;
       cerr << "processing hierarchical rules\n";
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
       cerr << "not including the phrase count feature\n";
     } else if (strcmp(argv[i],"--GoodTuring") == 0) {
       goodTuringFlag = true;
-      if (i+1==argc) { 
+      if (i+1==argc) {
         cerr << "ERROR: specify count of count files for Good Turing discounting!\n";
         exit(1);
       }
@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
       cerr << "adjusting phrase translation probabilities with Good Turing discounting\n";
     } else if (strcmp(argv[i],"--KneserNey") == 0) {
       kneserNeyFlag = true;
-      if (i+1==argc) { 
+      if (i+1==argc) {
         cerr << "ERROR: specify count of count files for Kneser Ney discounting!\n";
         exit(1);
       }
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
         sparseCountBinFeatureFlag = true;
       cerr << "include "<< (sparseCountBinFeatureFlag ? "sparse " : "") << "count bin feature:";
       int prev = 0;
-      while(i+1<argc && argv[i+1][0]>='0' && argv[i+1][0]<='9') {
+      while (i+1<argc && argv[i+1][0]>='0' && argv[i+1][0]<='9') {
         int binCount = atoi(argv[++i]);
         countBin.push_back( binCount );
         if (prev+1 == binCount) { cerr << " " << binCount; }
@@ -137,7 +137,7 @@ void loadCountOfCounts( char* fileNameCountOfCounts )
   istream &fileP = fileCountOfCounts;
 
   countOfCounts.push_back(0.0);
-  while(1) {
+  while (1) {
     if (fileP.eof()) break;
     SAFE_GETLINE((fileP), line, LINE_MAX_LENGTH, '\n', __FILE__);
     if (fileP.eof()) break;
@@ -151,8 +151,8 @@ void loadCountOfCounts( char* fileNameCountOfCounts )
   // compute Good Turing discounts
   if (goodTuringFlag) {
     goodTuringDiscount.push_back(0.01); // floor value
-    for( size_t i=1; i<countOfCounts.size()-1; i++ ) {
-      goodTuringDiscount.push_back(((float)i+1)/(float)i*((countOfCounts[i+1]+0.1) / ((float)countOfCounts[i]+0.1))); 
+    for ( size_t i=1; i<countOfCounts.size()-1; i++ ) {
+      goodTuringDiscount.push_back(((float)i+1)/(float)i*((countOfCounts[i+1]+0.1) / ((float)countOfCounts[i]+0.1)));
       if (goodTuringDiscount[i]>1)
         goodTuringDiscount[i] = 1;
       if (goodTuringDiscount[i]<goodTuringDiscount[i-1])
@@ -202,12 +202,12 @@ void processFiles( char* fileNameDirect, char* fileNameIndirect, char* fileNameC
 
   // loop through all extracted phrase translations
   int i=0;
-  while(true) {
+  while (true) {
     i++;
     if (i%100000 == 0) cerr << "." << flush;
 
     vector< string > itemDirect, itemIndirect;
-    if (! getLine(fileIndirectP,itemIndirect) ||
+    if (! getLine(fileIndirectP, itemIndirect) ||
         ! getLine(fileDirectP,  itemDirect  ))
       break;
 
@@ -292,7 +292,7 @@ void processFiles( char* fileNameDirect, char* fileNameIndirect, char* fileNameC
     // count bin feature (as a core feature)
     if (countBin.size()>0 && !sparseCountBinFeatureFlag) {
       bool foundBin = false;
-      for(size_t i=0; i < countBin.size(); i++) {
+      for (size_t i=0; i < countBin.size(); i++) {
         if (!foundBin && countEF <= countBin[i]) {
           fileConsolidated << " " << maybeLogProb(2.718);
           foundBin = true;
@@ -301,23 +301,23 @@ void processFiles( char* fileNameDirect, char* fileNameIndirect, char* fileNameC
           fileConsolidated << " " << maybeLogProb(1);
         }
       }
-      fileConsolidated << " " << maybeLogProb( foundBin ? 1 : 2.718 );   
+      fileConsolidated << " " << maybeLogProb( foundBin ? 1 : 2.718 );
     }
 
     // alignment
     fileConsolidated << " ||| " << itemDirect[3];
 
     // counts, for debugging
-    fileConsolidated << "||| " << countE << " " << countF << " " << countEF; 
+    fileConsolidated << "||| " << countE << " " << countF << " " << countEF;
 
     if (outputNTLengths)
     {
       fileConsolidated << " ||| " << itemDirect[5];
     }
-    
+
     // count bin feature (as a sparse feature)
-    if (sparseCountBinFeatureFlag || 
-        directSparseScores.compare("") != 0 || 
+    if (sparseCountBinFeatureFlag ||
+        directSparseScores.compare("") != 0 ||
         indirectSparseScores.compare("") != 0)
     {
       fileConsolidated << " |||";
@@ -327,7 +327,7 @@ void processFiles( char* fileNameDirect, char* fileNameIndirect, char* fileNameC
         fileConsolidated << " " << indirectSparseScores;
       if (sparseCountBinFeatureFlag) {
         bool foundBin = false;
-        for(size_t i=0; i < countBin.size(); i++) {
+        for (size_t i=0; i < countBin.size(); i++) {
           if (!foundBin && countEF <= countBin[i]) {
             fileConsolidated << " cb_";
             if (i == 0 && countBin[i] > 1)
@@ -351,13 +351,13 @@ void processFiles( char* fileNameDirect, char* fileNameIndirect, char* fileNameC
   fileConsolidated.Close();
 }
 
-void breakdownCoreAndSparse( string combined, string &core, string &sparse ) 
+void breakdownCoreAndSparse( string combined, string &core, string &sparse )
 {
   core = "";
   sparse = "";
   vector<string> score = tokenize( combined.c_str() );
-  for(size_t i=0; i<score.size(); i++) {
-    if ((score[i][0] >= '0' && score[i][0] <= '9') || i+1 == score.size()) 
+  for (size_t i=0; i<score.size(); i++) {
+    if ((score[i][0] >= '0' && score[i][0] <= '9') || i+1 == score.size())
       core += " " + score[i];
     else {
       sparse += " " + score[i];
@@ -387,7 +387,7 @@ vector< string > splitLine()
   vector< string > item;
   int start=0;
   int i=0;
-  for(; line[i] != '\0'; i++) {
+  for (; line[i] != '\0'; i++) {
     if (line[i] == ' ' &&
         line[i+1] == '|' &&
         line[i+2] == '|' &&

@@ -38,7 +38,7 @@ void SyntaxTree::Clear()
 {
   m_top = 0;
   // loop through all m_nodes, delete them
-  for(size_t i=0; i<m_nodes.size(); i++) {
+  for (size_t i=0; i<m_nodes.size(); i++) {
     delete m_nodes[i];
   }
   m_nodes.clear();
@@ -60,8 +60,8 @@ ParentNodes SyntaxTree::Parse()
   int size = m_index.size();
 
   // looping through all spans of size >= 2
-  for( int length=2; length<=size; length++ ) {
-    for( int startPos = 0; startPos <= size-length; startPos++ ) {
+  for ( int length=2; length<=size; length++ ) {
+    for ( int startPos = 0; startPos <= size-length; startPos++ ) {
       if (HasNode( startPos, startPos+length-1 )) {
         // processing one (parent) span
 
@@ -72,11 +72,11 @@ ParentNodes SyntaxTree::Parse()
 
         int first = 1;
         int covered = 0;
-        while( covered < length ) {
+        while ( covered < length ) {
           // find largest covering subspan (child)
           // starting at last covered position
-          for( int midPos=length-first; midPos>covered; midPos-- ) {
-            if( HasNode( startPos+covered, startPos+midPos-1 ) ) {
+          for ( int midPos=length-first; midPos>covered; midPos-- ) {
+            if ( HasNode( startPos+covered, startPos+midPos-1 ) ) {
               covered = midPos;
               splitPoints.push_back( startPos+covered );
               // std::cerr << " " << ( startPos+covered );
@@ -163,11 +163,11 @@ void SyntaxTree::ConnectNodes()
 std::ostream& operator<<(std::ostream& os, const SyntaxTree& t)
 {
   size_t size = t.m_index.size();
-  for(size_t length=1; length<=size; length++) {
-    for(size_t space=0; space<length; space++) {
+  for (size_t length=1; length<=size; length++) {
+    for (size_t space=0; space<length; space++) {
       os << "    ";
     }
-    for(size_t start=0; start<=size-length; start++) {
+    for (size_t start=0; start<=size-length; start++) {
 
       if (t.HasNode( start, start+(length-1) )) {
         std::string label = t.GetNodes( start, start+(length-1) )[0]->GetLabel() + "#######";
@@ -183,4 +183,3 @@ std::ostream& operator<<(std::ostream& os, const SyntaxTree& t)
 }
 
 }
-

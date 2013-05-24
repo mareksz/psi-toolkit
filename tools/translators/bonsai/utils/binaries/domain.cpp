@@ -16,7 +16,7 @@ namespace MosesTraining
 void Domain::load( const std::string &domainFileName ) {
   Moses::InputFileStream fileS( domainFileName );
   istream *fileP = &fileS;
-  while(true) {
+  while (true) {
     char line[TABLE_LINE_MAX_LENGTH];
     SAFE_GETLINE((*fileP), line, TABLE_LINE_MAX_LENGTH, '\n', __FILE__);
     if (fileP->eof()) break;
@@ -40,7 +40,7 @@ void Domain::load( const std::string &domainFileName ) {
 
 // get domain name based on sentence number
 string Domain::getDomainOfSentence( int sentenceId ) const {
-  for(size_t i=0; i<spec.size(); i++) {
+  for (size_t i=0; i<spec.size(); i++) {
     if (sentenceId <= spec[i].first) {
       return spec[i].second;
     }
@@ -54,12 +54,12 @@ DomainFeature::DomainFeature(const string& domainFile)
   m_domain.load(domainFile);
 }
 
-void DomainFeature::add(const ScoreFeatureContext& context, 
+void DomainFeature::add(const ScoreFeatureContext& context,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
   map< string, float > domainCount;
-  for(size_t i=0; i<context.phrasePair.size(); i++) {
+  for (size_t i=0; i<context.phrasePair.size(); i++) {
     string d = m_domain.getDomainOfSentence(context.phrasePair[i]->sentenceId );
     if (domainCount.find( d ) == domainCount.end()) {
       domainCount[d] = context.phrasePair[i]->count;
@@ -70,30 +70,30 @@ void DomainFeature::add(const ScoreFeatureContext& context,
   add(domainCount, context.count, context.maybeLog, denseValues, sparseValues);
 }
 
-void SubsetDomainFeature::add(const map<string,float>& domainCount,float count,
+void SubsetDomainFeature::add(const map<string, float>& domainCount, float count,
          const MaybeLog& maybeLog,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
  if (m_domain.list.size() > 6) {
     UTIL_THROW_IF(m_domain.list.size() > 6, ScoreFeatureArgumentException,
       "too many domains for core domain subset features");
   }
   size_t bitmap = 0;
-  for(size_t bit = 0; bit < m_domain.list.size(); bit++) {
+  for (size_t bit = 0; bit < m_domain.list.size(); bit++) {
     if (domainCount.find( m_domain.list[ bit ] ) != domainCount.end()) {
       bitmap += 1 << bit;
     }
   }
-  for(size_t i = 1; i < (1 << m_domain.list.size()); i++) {
+  for (size_t i = 1; i < (1 << m_domain.list.size()); i++) {
     denseValues.push_back(maybeLog( (bitmap == i) ? 2.718 : 1 ));
-  } 
+  }
 }
 
-void SparseSubsetDomainFeature::add(const map<string,float>& domainCount,float count,
+void SparseSubsetDomainFeature::add(const map<string, float>& domainCount, float count,
          const MaybeLog& maybeLog,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
   typedef vector<string>::const_iterator I;
   ostringstream key;
@@ -107,14 +107,14 @@ void SparseSubsetDomainFeature::add(const map<string,float>& domainCount,float c
 }
 
 
-void RatioDomainFeature::add(const map<string,float>& domainCount,float count,
+void RatioDomainFeature::add(const map<string, float>& domainCount, float count,
          const MaybeLog& maybeLog,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
   typedef vector< string >::const_iterator I;
   for (I i = m_domain.list.begin(); i != m_domain.list.end(); i++ ) {
-    map<string,float>::const_iterator dci = domainCount.find(*i);
+    map<string, float>::const_iterator dci = domainCount.find(*i);
     if (dci == domainCount.end() ) {
       denseValues.push_back(maybeLog( 1 ));
     } else {
@@ -124,10 +124,10 @@ void RatioDomainFeature::add(const map<string,float>& domainCount,float count,
 }
 
 
-void SparseRatioDomainFeature::add(const map<string,float>& domainCount,float count,
+void SparseRatioDomainFeature::add(const map<string, float>& domainCount, float count,
          const MaybeLog& maybeLog,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
   typedef map< string, float >::const_iterator I;
   for (I i=domainCount.begin(); i != domainCount.end(); i++) {
@@ -136,14 +136,14 @@ void SparseRatioDomainFeature::add(const map<string,float>& domainCount,float co
 }
 
 
-void IndicatorDomainFeature::add(const map<string,float>& domainCount,float count,
+void IndicatorDomainFeature::add(const map<string, float>& domainCount, float count,
          const MaybeLog& maybeLog,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
   typedef vector< string >::const_iterator I;
   for (I i = m_domain.list.begin(); i != m_domain.list.end(); i++ ) {
-    map<string,float>::const_iterator dci = domainCount.find(*i);
+    map<string, float>::const_iterator dci = domainCount.find(*i);
     if (dci == domainCount.end() ) {
       denseValues.push_back(maybeLog( 1 ));
     } else {
@@ -153,10 +153,10 @@ void IndicatorDomainFeature::add(const map<string,float>& domainCount,float coun
 
 }
 
-void SparseIndicatorDomainFeature::add(const map<string,float>& domainCount,float count,
+void SparseIndicatorDomainFeature::add(const map<string, float>& domainCount, float count,
          const MaybeLog& maybeLog,
          std::vector<float>& denseValues,
-         std::map<std::string,float>& sparseValues)  const
+         std::map<std::string, float>& sparseValues)  const
 {
   typedef map< string, float >::const_iterator I;
   for (I i=domainCount.begin(); i != domainCount.end(); i++) {
@@ -164,7 +164,7 @@ void SparseIndicatorDomainFeature::add(const map<string,float>& domainCount,floa
   }
 }
 
-bool DomainFeature::equals(const PhraseAlignment& lhs, const PhraseAlignment& rhs) const 
+bool DomainFeature::equals(const PhraseAlignment& lhs, const PhraseAlignment& rhs) const
 {
   return m_domain.getDomainOfSentence(lhs.sentenceId) ==
     m_domain.getDomainOfSentence( rhs.sentenceId);
@@ -172,4 +172,3 @@ bool DomainFeature::equals(const PhraseAlignment& lhs, const PhraseAlignment& rh
 
 
 }
-

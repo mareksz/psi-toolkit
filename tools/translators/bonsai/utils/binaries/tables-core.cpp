@@ -3,7 +3,7 @@
 #include "tables-core.h"
 
 #define TABLE_LINE_MAX_LENGTH 1000
-#define UNKNOWNSTR	"UNK"
+#define UNKNOWNSTR      "UNK"
 
 using namespace std;
 
@@ -14,7 +14,7 @@ vector<string> tokenize( const char* input )
   bool betweenWords = true;
   int start=0;
   int i=0;
-  for(; input[i] != '\0'; i++) {
+  for (; input[i] != '\0'; i++) {
     bool isSpace = (input[i] == ' ' || input[i] == '\t');
 
     if (!isSpace && betweenWords) {
@@ -41,7 +41,7 @@ WORD_ID Vocabulary::storeIfNew( const WORD& word )
 {
   map<WORD, WORD_ID>::iterator i = lookup.find( word );
 
-  if( i != lookup.end() )
+  if ( i != lookup.end() )
     return i->second;
 
   WORD_ID id = vocab.size();
@@ -53,7 +53,7 @@ WORD_ID Vocabulary::storeIfNew( const WORD& word )
 WORD_ID Vocabulary::getWordID( const WORD& word )
 {
   map<WORD, WORD_ID>::iterator i = lookup.find( word );
-  if( i == lookup.end() )
+  if ( i == lookup.end() )
     return 0;
   return i->second;
 }
@@ -61,7 +61,7 @@ WORD_ID Vocabulary::getWordID( const WORD& word )
 PHRASE_ID PhraseTable::storeIfNew( const PHRASE& phrase )
 {
   map< PHRASE, PHRASE_ID >::iterator i = lookup.find( phrase );
-  if( i != lookup.end() )
+  if ( i != lookup.end() )
     return i->second;
 
   PHRASE_ID id  = phraseTable.size();
@@ -73,7 +73,7 @@ PHRASE_ID PhraseTable::storeIfNew( const PHRASE& phrase )
 PHRASE_ID PhraseTable::getPhraseID( const PHRASE& phrase )
 {
   map< PHRASE, PHRASE_ID >::iterator i = lookup.find( phrase );
-  if( i == lookup.end() )
+  if ( i == lookup.end() )
     return 0;
   return i->second;
 }
@@ -86,7 +86,7 @@ void PhraseTable::clear()
 
 void DTable::init()
 {
-  for(int i = -10; i<10; i++)
+  for (int i = -10; i<10; i++)
     dtable[i] = -abs( i );
 }
 
@@ -97,7 +97,7 @@ void DTable::load( const string& fileName )
 
   std::string line;
   int i=0;
-  while(true) {
+  while (true) {
     i++;
     getline(inFile, line);
     if (inFile.eof()) break;
@@ -105,7 +105,7 @@ void DTable::load( const string& fileName )
       std::cerr << "Error reading from " << fileName << std::endl;
       abort();
     }
-    
+
     vector<string> token = tokenize(line.c_str());
     if (token.size() < 2) {
       cerr << "line " << i << " in " << fileName << " too short, skipping\n";
@@ -126,4 +126,3 @@ double DTable::get( int distortion )
 }
 
 }
-

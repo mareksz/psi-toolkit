@@ -22,7 +22,7 @@
 
 using namespace std;
 
-namespace MosesTraining 
+namespace MosesTraining
 {
 
 
@@ -83,18 +83,17 @@ namespace MosesTraining
   bool ScoreFeatureManager::equals(const PhraseAlignment& lhs, const PhraseAlignment& rhs) const
   {
     for (size_t i = 0; i < m_features.size(); ++i) {
-      if (!m_features[i]->equals(lhs,rhs)) return false;
+      if (!m_features[i]->equals(lhs, rhs)) return false;
     }
     return true;
   }
 
  void ScoreFeatureManager::addFeatures(const ScoreFeatureContext& context,
            std::vector<float>& denseValues,
-           std::map<std::string,float>& sparseValues) const
+           std::map<std::string, float>& sparseValues) const
  {
     for (size_t i = 0; i < m_features.size(); ++i) {
       m_features[i]->add(context, denseValues, sparseValues);
     }
  }
 }
-

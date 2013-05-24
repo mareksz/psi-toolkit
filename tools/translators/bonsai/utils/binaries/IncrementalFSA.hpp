@@ -28,10 +28,10 @@ class IncrementalFSA {
     Signatures sig;
     bool verbose;
     int states;
-    
+
     std::set<int> last_traversed;
     std::set<int> last_added;
-    
+
     void replace_or_register(int);
     StateSignature make_sig(int);
 
@@ -42,28 +42,28 @@ class IncrementalFSA {
     void add_new_transition(int, int, int);
     void add_branch(int, Word::iterator, Word::iterator);
     void delete_state(int);
-    
+
     int delta(Word::iterator, Word::iterator);
     int delta_prefix(Word::iterator&, Word::iterator);
-     
+
     bool is_end_state(int);
     void set_end_state(int);
 
     void purge();
     void print_rest();
-    
+
   public:
     IncrementalFSA();
     IncrementalFSA(int);
     ~IncrementalFSA() {    }
     void add_word(Word &);
     void finalize();
-    
+
     int size() {
-	int c = 0;
-	for(TransitionTable::iterator it = state_table.begin(); it != state_table.end(); it++)
-	    c += it->second.size();
-	return c;
+        int c = 0;
+        for (TransitionTable::iterator it = state_table.begin(); it != state_table.end(); it++)
+            c += it->second.size();
+        return c;
     }
 };
 

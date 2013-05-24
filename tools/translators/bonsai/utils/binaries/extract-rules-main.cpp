@@ -55,7 +55,7 @@ using namespace MosesTraining;
 typedef vector< int > LabelIndex;
 typedef map< int, int > WordIndex;
 
-class ExtractTask 
+class ExtractTask
 {
 private:
   SentenceAlignmentWithSyntax &m_sentence;
@@ -64,13 +64,13 @@ private:
   Moses::OutputFileStream& m_extractFileInv;
 
   vector< ExtractedRule > m_extractedRules;
-  
+
   // main functions
   void extractRules();
   void addRuleToCollection(ExtractedRule &rule);
   void consolidateRules();
   void writeRulesToFile();
-  
+
   // subs
   void addRule( int, int, int, int, int, RuleExist &ruleExist);
   void addHieroRule( int startT, int endT, int startS, int endS
@@ -86,7 +86,7 @@ private:
   void saveHieroAlignment(  int startT, int endT, int startS, int endS
                            , const WordIndex &indexS, const WordIndex &indexT, HoleCollection &holeColl, ExtractedRule &rule);
   void saveAllHieroPhrases( int startT, int endT, int startS, int endS, HoleCollection &holeColl, int countS);
-  
+
   inline string IntToString( int i )
   {
     stringstream out;
@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
          << " | --UnpairedExtractFormat"
          << " | --ConditionOnTargetLHS ]"
         << " | --BoundaryRules[" << options.boundaryRules << "]";
-    
+
     exit(1);
   }
   char* &fileNameT = argv[1];
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
 
   int optionInd = 5;
 
-  for(int i=optionInd; i<argc; i++) {
+  for (int i=optionInd; i<argc; i++) {
     // maximum span length
     if (strcmp(argv[i],"--MaxSpan") == 0) {
       options.maxSpan = atoi(argv[++i]);
@@ -214,8 +214,8 @@ int main(int argc, char* argv[])
       }
     }
     else if (strcmp(argv[i], "--GZOutput") == 0) {
-      options.gzOutput = true;  
-    } 
+      options.gzOutput = true;
+    }
     // allow consecutive non-terminals (X Y | X Y)
     else if (strcmp(argv[i],"--TargetSyntax") == 0) {
       options.targetSyntax = true;
@@ -265,7 +265,7 @@ int main(int argc, char* argv[])
       options.unpairedExtractFormat = true;
     } else if (strcmp(argv[i],"--ConditionOnTargetLHS") == 0) {
       options.conditionOnTargetLhs = true;
-    } else if (strcmp(argv[i],"-threads") == 0 || 
+    } else if (strcmp(argv[i],"-threads") == 0 ||
                strcmp(argv[i],"--threads") == 0 ||
                strcmp(argv[i],"--Threads") == 0) {
 #ifdef WITH_THREADS
@@ -314,7 +314,7 @@ int main(int argc, char* argv[])
 
   // loop through all sentence pairs
   size_t i=sentenceOffset;
-  while(true) {
+  while (true) {
     i++;
     if (i%1000 == 0) cerr << i << " " << flush;
 
@@ -327,7 +327,7 @@ int main(int argc, char* argv[])
     SAFE_GETLINE((*aFileP), alignmentString, LINE_MAX_LENGTH, '\n', __FILE__);
 
     SentenceAlignmentWithSyntax sentence
-      (targetLabelCollection, sourceLabelCollection, 
+      (targetLabelCollection, sourceLabelCollection,
        targetTopLabelCollection, sourceTopLabelCollection, options);
     //az: output src, tgt, and alingment line
     if (options.onlyOutputSpanInfo) {
@@ -380,16 +380,16 @@ void ExtractTask::extractRules()
   RuleExist ruleExist(countT);
 
   // check alignments for target phrase startT...endT
-  for(int lengthT=1;
+  for (int lengthT=1;
       lengthT <= m_options.maxSpan && lengthT <= countT;
       lengthT++) {
-    for(int startT=0; startT < countT-(lengthT-1); startT++) {
+    for (int startT=0; startT < countT-(lengthT-1); startT++) {
 
       // that's nice to have
       int endT = startT + lengthT - 1;
 
       // if there is target side syntax, there has to be a node
-      if (m_options.targetSyntax && !m_sentence.targetTree.HasNode(startT,endT))
+      if (m_options.targetSyntax && !m_sentence.targetTree.HasNode(startT, endT))
         continue;
 
       // find find aligned source words
@@ -397,8 +397,8 @@ void ExtractTask::extractRules()
       int minS = 9999;
       int maxS = -1;
       vector< int > usedS = m_sentence.alignedCountS;
-      for(int ti=startT; ti<=endT; ti++) {
-        for(unsigned int i=0; i<m_sentence.alignedToT[ti].size(); i++) {
+      for (int ti=startT; ti<=endT; ti++) {
+        for (unsigned int i=0; i<m_sentence.alignedToT[ti].size(); i++) {
           int si = m_sentence.alignedToT[ti][i];
           if (si<minS) {
             minS = si;
@@ -411,16 +411,16 @@ void ExtractTask::extractRules()
       }
 
       // unaligned phrases are not allowed
-      if( maxS == -1 )
+      if ( maxS == -1 )
         continue;
 
       // source phrase has to be within limits
-      if( maxS-minS >= m_options.maxSpan )
+      if ( maxS-minS >= m_options.maxSpan )
         continue;
 
       // check if source words are aligned to out of bound target words
       bool out_of_bounds = false;
-      for(int si=minS; si<=maxS && !out_of_bounds; si++)
+      for (int si=minS; si<=maxS && !out_of_bounds; si++)
         if (usedS[si]>0) {
           out_of_bounds = true;
         }
@@ -431,25 +431,25 @@ void ExtractTask::extractRules()
 
       // done with all the checks, lets go over all consistent phrase pairs
       // start point of source phrase may retreat over unaligned
-      for(int startS=minS;
+      for (int startS=minS;
           (startS>=0 &&
            startS>maxS - m_options.maxSpan && // within length limit
            (startS==minS || m_sentence.alignedCountS[startS]==0)); // unaligned
           startS--) {
         // end point of source phrase may advance over unaligned
-        for(int endS=maxS;
+        for (int endS=maxS;
             (endS<countS && endS<startS + m_options.maxSpan && // within length limit
              (endS==maxS || m_sentence.alignedCountS[endS]==0)); // unaligned
             endS++) {
           // if there is source side syntax, there has to be a node
-          if (m_options.sourceSyntax && !m_sentence.sourceTree.HasNode(startS,endS))
+          if (m_options.sourceSyntax && !m_sentence.sourceTree.HasNode(startS, endS))
             continue;
 
           // TODO: loop over all source and target syntax labels
 
           // if within length limits, add as fully-lexical phrase pair
           if (endT-startT < m_options.maxSymbolsTarget && endS-startS < m_options.maxSymbolsSource) {
-            addRule(startT,endT,startS,endS, countS, ruleExist);
+            addRule(startT, endT, startS, endS, countS, ruleExist);
           }
 
           // take note that this is a valid phrase alignment
@@ -479,7 +479,7 @@ void ExtractTask::preprocessSourceHieroPhrase( int startT, int endT, int startS,
   int outPos = 0;
   int holeCount = 0;
   int holeTotal = holeColl.GetHoles().size();
-  for(int currPos = startS; currPos <= endS; currPos++) {
+  for (int currPos = startS; currPos <= endS; currPos++) {
     bool isHole = false;
     if (iterHoleList != holeColl.GetSortedSourceHoles().end()) {
       const Hole &hole = **iterHoleList;
@@ -518,7 +518,7 @@ string ExtractTask::saveTargetHieroPhrase( int startT, int endT, int startS, int
   string out = "";
   int outPos = 0;
   int holeCount = 0;
-  for(int currPos = startT; currPos <= endT; currPos++) {
+  for (int currPos = startT; currPos <= endT; currPos++) {
     bool isHole = false;
     if (iterHoleList != holeColl.GetHoles().end()) {
       const Hole &hole = *iterHoleList;
@@ -534,13 +534,13 @@ string ExtractTask::saveTargetHieroPhrase( int startT, int endT, int startS, int
       int labelI = labelIndex[ 2+holeCount ];
       string targetLabel;
       if (m_options.targetSyntax) {
-        targetLabel = m_sentence.targetTree.GetNodes(currPos,hole.GetEnd(1))[labelI]->GetLabel();
+        targetLabel = m_sentence.targetTree.GetNodes(currPos, hole.GetEnd(1))[labelI]->GetLabel();
       } else if (m_options.boundaryRules && (startS == 0 || endS == countS - 1)) {
-         targetLabel = "S"; 
+         targetLabel = "S";
       } else {
         targetLabel = "X";
       }
-      
+
       hole.SetLabel(targetLabel, 1);
 
       if (m_options.unpairedExtractFormat) {
@@ -550,7 +550,7 @@ string ExtractTask::saveTargetHieroPhrase( int startT, int endT, int startS, int
       }
 
       if (m_options.pcfgScore) {
-        double score = m_sentence.targetTree.GetNodes(currPos,hole.GetEnd(1))[labelI]->GetPcfgScore();
+        double score = m_sentence.targetTree.GetNodes(currPos, hole.GetEnd(1))[labelI]->GetPcfgScore();
         logPCFGScore -= score;
       }
 
@@ -579,7 +579,7 @@ string ExtractTask::saveSourceHieroPhrase( int startT, int endT, int startS, int
   string out = "";
   int outPos = 0;
   int holeCount = 0;
-  for(int currPos = startS; currPos <= endS; currPos++) {
+  for (int currPos = startS; currPos <= endS; currPos++) {
     bool isHole = false;
     if (iterHoleList != holeColl.GetSortedSourceHoles().end()) {
       const Hole &hole = **iterHoleList;
@@ -618,10 +618,10 @@ void ExtractTask::saveHieroAlignment( int startT, int endT, int startS, int endS
                          , const WordIndex &indexS, const WordIndex &indexT, HoleCollection &holeColl, ExtractedRule &rule)
 {
   // print alignment of words
-  for(int ti=startT; ti<=endT; ti++) {
+  for (int ti=startT; ti<=endT; ti++) {
     WordIndex::const_iterator p = indexT.find(ti);
     if (p != indexT.end()) { // does word still exist?
-      for(unsigned int i=0; i<m_sentence.alignedToT[ti].size(); i++) {
+      for (unsigned int i=0; i<m_sentence.alignedToT[ti].size(); i++) {
         int si = m_sentence.alignedToT[ti][i];
         std::string sourceSymbolIndex = IntToString(indexS.find(si)->second);
         std::string targetSymbolIndex = IntToString(p->second);
@@ -636,13 +636,13 @@ void ExtractTask::saveHieroAlignment( int startT, int endT, int startS, int endS
   HoleList::const_iterator iterHole;
   for (iterHole = holeColl.GetHoles().begin(); iterHole != holeColl.GetHoles().end(); ++iterHole) {
     const Hole &hole = *iterHole;
-        
+
     std::string sourceSymbolIndex = IntToString(hole.GetPos(0));
     std::string targetSymbolIndex = IntToString(hole.GetPos(1));
     rule.alignment      += sourceSymbolIndex + "-" + targetSymbolIndex + " ";
     if (!m_options.onlyDirectFlag)
       rule.alignmentInv += targetSymbolIndex + "-" + sourceSymbolIndex + " ";
-  
+
     rule.SetSpanLength(hole.GetPos(0), hole.GetSize(0), hole.GetSize(1) ) ;
 
   }
@@ -663,7 +663,7 @@ void ExtractTask::saveHieroPhrase( int startT, int endT, int startS, int endS
   // phrase labels
   string targetLabel;
   if (m_options.targetSyntax) {
-    targetLabel = m_sentence.targetTree.GetNodes(startT,endT)[labelIndex[0] ]->GetLabel();
+    targetLabel = m_sentence.targetTree.GetNodes(startT, endT)[labelIndex[0] ]->GetLabel();
   } else if (m_options.boundaryRules && (startS == 0 || endS == countS - 1)) {
     targetLabel = "S";
   } else {
@@ -678,7 +678,7 @@ void ExtractTask::saveHieroPhrase( int startT, int endT, int startS, int endS
 
   // target
   if (m_options.pcfgScore) {
-    double logPCFGScore = m_sentence.targetTree.GetNodes(startT,endT)[labelIndex[0]]->GetPcfgScore();
+    double logPCFGScore = m_sentence.targetTree.GetNodes(startT, endT)[labelIndex[0]]->GetPcfgScore();
     rule.target = saveTargetHieroPhrase(startT, endT, startS, endS, indexT, holeColl, labelIndex, logPCFGScore, countS)
                 + " [" + targetLabel + "]";
     rule.pcfgScore = std::exp(logPCFGScore);
@@ -704,43 +704,43 @@ void ExtractTask::saveHieroPhrase( int startT, int endT, int startS, int endS
 
 void ExtractTask::saveAllHieroPhrases( int startT, int endT, int startS, int endS, HoleCollection &holeColl, int countS)
 {
-  LabelIndex labelIndex,labelCount;
+  LabelIndex labelIndex, labelCount;
 
   // number of target head labels
-  int numLabels = m_options.targetSyntax ? m_sentence.targetTree.GetNodes(startT,endT).size() : 1;
+  int numLabels = m_options.targetSyntax ? m_sentence.targetTree.GetNodes(startT, endT).size() : 1;
   labelCount.push_back(numLabels);
   labelIndex.push_back(0);
 
   // number of source head labels
-  numLabels =  m_options.sourceSyntax ? m_sentence.sourceTree.GetNodes(startS,endS).size() : 1;
+  numLabels =  m_options.sourceSyntax ? m_sentence.sourceTree.GetNodes(startS, endS).size() : 1;
   labelCount.push_back(numLabels);
   labelIndex.push_back(0);
 
   // number of target hole labels
-  for( HoleList::const_iterator hole = holeColl.GetHoles().begin();
+  for ( HoleList::const_iterator hole = holeColl.GetHoles().begin();
        hole != holeColl.GetHoles().end(); hole++ ) {
-    int numLabels =  m_options.targetSyntax ? m_sentence.targetTree.GetNodes(hole->GetStart(1),hole->GetEnd(1)).size() : 1 ;
+    int numLabels =  m_options.targetSyntax ? m_sentence.targetTree.GetNodes(hole->GetStart(1), hole->GetEnd(1)).size() : 1 ;
     labelCount.push_back(numLabels);
     labelIndex.push_back(0);
   }
 
   // number of source hole labels
   holeColl.SortSourceHoles();
-  for( vector<Hole*>::iterator i = holeColl.GetSortedSourceHoles().begin();
+  for ( vector<Hole*>::iterator i = holeColl.GetSortedSourceHoles().begin();
        i != holeColl.GetSortedSourceHoles().end(); i++ ) {
     const Hole &hole = **i;
-    int numLabels =  m_options.sourceSyntax ? m_sentence.sourceTree.GetNodes(hole.GetStart(0),hole.GetEnd(0)).size() : 1 ;
+    int numLabels =  m_options.sourceSyntax ? m_sentence.sourceTree.GetNodes(hole.GetStart(0), hole.GetEnd(0)).size() : 1 ;
     labelCount.push_back(numLabels);
     labelIndex.push_back(0);
   }
 
   // loop through the holes
   bool done = false;
-  while(!done) {
+  while (!done) {
     saveHieroPhrase( startT, endT, startS, endS, holeColl, labelIndex, countS );
-    for(unsigned int i=0; i<labelIndex.size(); i++) {
+    for (unsigned int i=0; i<labelIndex.size(); i++) {
       labelIndex[i]++;
-      if(labelIndex[i] == labelCount[i]) {
+      if (labelIndex[i] == labelCount[i]) {
         labelIndex[i] = 0;
         if (i == labelIndex.size()-1)
           done = true;
@@ -829,7 +829,7 @@ void ExtractTask::addHieroRule( int startT, int endT, int startS, int endS
           HoleList::const_iterator iterHoleList = holeColl.GetHoles().begin();
           bool foundAlignedWord = false;
           // loop through all word positions
-          for(int pos = startT; pos <= endT && !foundAlignedWord; pos++) {
+          for (int pos = startT; pos <= endT && !foundAlignedWord; pos++) {
             // new hole? moving on...
             if (pos == startHoleT) {
               pos = endHoleT;
@@ -880,12 +880,12 @@ void ExtractTask::addHieroRule( int startT, int endT, int startS, int endS
 void ExtractTask::addRule( int startT, int endT, int startS, int endS, int countS, RuleExist &ruleExist)
 {
   // contains only <s> or </s>. Don't output
-  if (m_options.boundaryRules 
-      && (   (startS == 0         && endS == 0) 
+  if (m_options.boundaryRules
+      && (   (startS == 0         && endS == 0)
           || (startS == countS-1  && endS == countS-1))) {
     return;
   }
-  
+
   if (m_options.onlyOutputSpanInfo) {
     cout << startS << " " << endS << " " << startT << " " << endT << endl;
     return;
@@ -894,16 +894,16 @@ void ExtractTask::addRule( int startT, int endT, int startS, int endS, int count
   ExtractedRule rule(startT, endT, startS, endS);
 
   // phrase labels
-  string targetLabel,sourceLabel;
+  string targetLabel, sourceLabel;
   if (m_options.targetSyntax && m_options.conditionOnTargetLhs) {
-    sourceLabel = targetLabel = m_sentence.targetTree.GetNodes(startT,endT)[0]->GetLabel();
+    sourceLabel = targetLabel = m_sentence.targetTree.GetNodes(startT, endT)[0]->GetLabel();
   }
   else {
     sourceLabel = m_options.sourceSyntax ?
                   m_sentence.sourceTree.GetNodes(startS,endS)[0]->GetLabel() : "X";
-    
+
     if (m_options.targetSyntax) {
-      targetLabel = m_sentence.targetTree.GetNodes(startT,endT)[0]->GetLabel();
+      targetLabel = m_sentence.targetTree.GetNodes(startT, endT)[0]->GetLabel();
     } else if (m_options.boundaryRules && (startS == 0 || endS == countS - 1)) {
       targetLabel = "S";
     } else {
@@ -913,24 +913,24 @@ void ExtractTask::addRule( int startT, int endT, int startS, int endS, int count
 
   // source
   rule.source = "";
-  for(int si=startS; si<=endS; si++)
+  for (int si=startS; si<=endS; si++)
     rule.source += m_sentence.source[si] + " ";
   rule.source += "[" + sourceLabel + "]";
 
   // target
   rule.target = "";
-  for(int ti=startT; ti<=endT; ti++)
+  for (int ti=startT; ti<=endT; ti++)
     rule.target += m_sentence.target[ti] + " ";
   rule.target += "[" + targetLabel + "]";
 
   if (m_options.pcfgScore) {
-    double logPCFGScore = m_sentence.targetTree.GetNodes(startT,endT)[0]->GetPcfgScore();
+    double logPCFGScore = m_sentence.targetTree.GetNodes(startT, endT)[0]->GetPcfgScore();
     rule.pcfgScore = std::exp(logPCFGScore);
   }
 
   // alignment
-  for(int ti=startT; ti<=endT; ti++) {
-    for(unsigned int i=0; i<m_sentence.alignedToT[ti].size(); i++) {
+  for (int ti=startT; ti<=endT; ti++) {
+    for (unsigned int i=0; i<m_sentence.alignedToT[ti].size(); i++) {
       int si = m_sentence.alignedToT[ti][i];
       std::string sourceSymbolIndex = IntToString(si-startS);
       std::string targetSymbolIndex = IntToString(ti-startT);
@@ -953,7 +953,7 @@ void ExtractTask::addRuleToCollection( ExtractedRule &newRule )
   // no double-counting of identical rules from overlapping spans
   if (!m_options.duplicateRules) {
     vector<ExtractedRule>::const_iterator rule;
-    for(rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
+    for (rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
       if (rule->source.compare( newRule.source ) == 0 &&
           rule->target.compare( newRule.target ) == 0 &&
           !(rule->endT < newRule.startT || rule->startT > newRule.endT)) { // overlapping
@@ -967,27 +967,27 @@ void ExtractTask::addRuleToCollection( ExtractedRule &newRule )
 void ExtractTask::consolidateRules()
 {
   typedef vector<ExtractedRule>::iterator R;
-  map<int, map<int, map<int, map<int,int> > > > spanCount;
+  map<int, map<int, map<int, map<int, int> > > > spanCount;
 
   // compute number of rules per span
   if (m_options.fractionalCounting) {
-    for(R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
+    for (R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
       spanCount[ rule->startT ][ rule->endT ][ rule->startS ][ rule->endS ]++;
     }
   }
 
   // compute fractional counts
-  for(R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
+  for (R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
     rule->count =    1.0/(float) (m_options.fractionalCounting ? spanCount[ rule->startT ][ rule->endT ][ rule->startS ][ rule->endS ] : 1.0 );
   }
 
   // consolidate counts
   map<std::string, map< std::string, map< std::string, float> > > consolidatedCount;
-  for(R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
+  for (R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
     consolidatedCount[ rule->source ][ rule->target][ rule->alignment ] += rule->count;
   }
 
-  for(R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
+  for (R rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
     float count = consolidatedCount[ rule->source ][ rule->target][ rule->alignment ];
     rule->count = count;
     consolidatedCount[ rule->source ][ rule->target][ rule->alignment ] = 0;
@@ -999,7 +999,7 @@ void ExtractTask::writeRulesToFile()
   vector<ExtractedRule>::const_iterator rule;
   ostringstream out;
   ostringstream outInv;
-  for(rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
+  for (rule = m_extractedRules.begin(); rule != m_extractedRules.end(); rule++ ) {
     if (rule->count == 0)
       continue;
 
@@ -1008,7 +1008,7 @@ void ExtractTask::writeRulesToFile()
         << rule->alignment << " ||| "
         << rule->count << " ||| ";
     if (m_options.outputNTLengths) {
-      rule->OutputNTLengths(out); 
+      rule->OutputNTLengths(out);
     }
     if (m_options.pcfgScore) {
       out << " ||| " << rule->pcfgScore;
@@ -1037,9 +1037,9 @@ void writeGlueGrammar( const string & fileName, RuleExtractionOptions &options, 
   } else {
     // chose a top label that is not already a label
     string topLabel = "QQQQQQ";
-    for( unsigned int i=1; i<=topLabel.length(); i++) {
-      if(targetLabelCollection.find( topLabel.substr(0,i) ) == targetLabelCollection.end() ) {
-        topLabel = topLabel.substr(0,i);
+    for ( unsigned int i=1; i<=topLabel.length(); i++) {
+      if (targetLabelCollection.find( topLabel.substr(0, i) ) == targetLabelCollection.end() ) {
+        topLabel = topLabel.substr(0, i);
         break;
       }
     }
@@ -1048,13 +1048,13 @@ void writeGlueGrammar( const string & fileName, RuleExtractionOptions &options, 
                 << "[X][" << topLabel << "] </s> [X] ||| [X][" << topLabel << "] </s> [" << topLabel << "] ||| 1 ||| 0-0 " << endl;
 
     // top rules
-    for( map<string,int>::const_iterator i =  targetTopLabelCollection.begin();
+    for ( map<string, int>::const_iterator i =  targetTopLabelCollection.begin();
          i !=  targetTopLabelCollection.end(); i++ ) {
       grammarFile << "<s> [X][" << i->first << "] </s> [X] ||| <s> [X][" << i->first << "] </s> [" << topLabel << "] ||| 1 ||| 1-1" << endl;
     }
 
     // glue rules
-    for( set<string>::const_iterator i =  targetLabelCollection.begin();
+    for ( set<string>::const_iterator i =  targetLabelCollection.begin();
          i !=  targetLabelCollection.end(); i++ ) {
       grammarFile << "[X][" << topLabel << "] [X][" << *i << "] [X] ||| [X][" << topLabel << "] [X][" << *i << "] [" << topLabel << "] ||| 2.718 ||| 0-0 1-1" << endl;
     }
@@ -1067,14 +1067,14 @@ void writeGlueGrammar( const string & fileName, RuleExtractionOptions &options, 
 // ( labels of singleton words are used to estimate
 //   distribution oflabels for unknown words )
 
-map<string,int> wordCount;
-map<string,string> wordLabel;
+map<string, int> wordCount;
+map<string, string> wordLabel;
 void collectWordLabelCounts( SentenceAlignmentWithSyntax &sentence )
 {
   int countT = sentence.target.size();
-  for(int ti=0; ti < countT; ti++) {
+  for (int ti=0; ti < countT; ti++) {
     string &word = sentence.target[ ti ];
-    const vector< SyntaxNode* >& labels = sentence.targetTree.GetNodes(ti,ti);
+    const vector< SyntaxNode* >& labels = sentence.targetTree.GetNodes(ti, ti);
     if (labels.size() > 0) {
       wordCount[ word ]++;
       wordLabel[ word ] = labels[0]->GetLabel();
@@ -1086,11 +1086,11 @@ void writeUnknownWordLabel(const string & fileName)
 {
   ofstream outFile;
   outFile.open(fileName.c_str());
-  typedef map<string,int>::const_iterator I;
+  typedef map<string, int>::const_iterator I;
 
-  map<string,int> count;
+  map<string, int> count;
   int total = 0;
-  for(I word = wordCount.begin(); word != wordCount.end(); word++) {
+  for (I word = wordCount.begin(); word != wordCount.end(); word++) {
     // only consider singletons
     if (word->second == 1) {
       count[ wordLabel[ word->first ] ]++;
@@ -1098,7 +1098,7 @@ void writeUnknownWordLabel(const string & fileName)
     }
   }
 
-  for(I pos = count.begin(); pos != count.end(); pos++) {
+  for (I pos = count.begin(); pos != count.end(); pos++) {
     double ratio = ((double) pos->second / (double) total);
     if (ratio > 0.03)
       outFile << pos->first << " " << ratio << endl;
