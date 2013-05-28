@@ -119,7 +119,7 @@ std::string TransfererRunner::getContinuation(
         std::string trgLang = options["trg-lang"].as<std::string>();
 
         return std::string("generate-lexdb-forms-") + trgLang
-            + " ! detok --lang pl"
+            + " ! detok --lang " + trgLang
             + " ! simple-writer --tags !" + trgLang + ",text";
     }
 

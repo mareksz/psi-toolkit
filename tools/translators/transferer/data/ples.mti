@@ -454,7 +454,7 @@ sub ::inflect_be_present(person, number, neg)
 
     if($number = 1 and $person = 3)
         $result := $result + "es";
-    
+
     if($number = 2 and $person = 1)
         $result := $result + "somos";
 
@@ -463,7 +463,7 @@ sub ::inflect_be_present(person, number, neg)
 
     if($number = 2 and $person = 3)
         $result := $result + "son";
-    
+
     return $result;
 }
 
@@ -473,11 +473,11 @@ sub N::surface()
            $gendercode := 4;
         else
            $gendercode := 1;
-        
+
         if (Num == 2)
             $numcode := 2;
         else
             $numcode := 1;
-            
-        return (Equiv + "+subst") & get_morpho_es(0, $gendercode, $numcode, 0, 0);
+
+        return pair(Equiv + "+subst", get_morpho_es(0, $gendercode, $numcode, 0, 0));
 }
