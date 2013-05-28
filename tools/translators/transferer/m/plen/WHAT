@@ -1,1 +1,1 @@
-gobio --lang pl ! bilexicon --lang pl --trg-lang en ! transferer --lang pl --trg-lang en ! generate-lexdb-forms-en ! detok --lang pl ! simple-writer --tags !en,text
+gobio --lang pl ! bilexicon --lang pl --trg-lang en ! transferer --lang pl --trg-lang en
