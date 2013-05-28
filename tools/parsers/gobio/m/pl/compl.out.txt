@@ -1,1 +1,2 @@
-FC:[FR:podmiot[R:#[żołnierz]] C:#[widzi] FR:dop1[R:#[most]]]
+Z:[FC:[FR:podmiot[R:#[żołnierz]] C:#[widzi] FR:dop1[R:#[most]]]]
+Z:[FC:[FR:podmiot[R:#[robotnicy]] C:#[podążyli] FPR:dop1[PR:[do] FR:#[R:#[miasta]]]]]

@@ -641,7 +641,11 @@ configure_file(${psi-toolkit_SOURCE_DIR}/common/config.hpp.in
 # ====================================================
 
 function(download_artifact FILE)
-  set(_url "http://mrt.wmi.amu.edu.pl:8080/job/psi-toolkit-data-${CPU_ARCH}/lastSuccessfulBuild/artifact/psi-toolkit-data/${FILE}")
+  download_project_artifact(psi-toolkit-data ${FILE})
+endfunction(download_artifact)
+
+function(download_project_artifact PROJECT FILE)
+  set(_url "http://mrt.wmi.amu.edu.pl:8080/job/${PROJECT}-${CPU_ARCH}/lastSuccessfulBuild/artifact/psi-toolkit-data/${FILE}")
 
   message(STATUS "Checking ${_url}...")
 
@@ -794,10 +798,10 @@ if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/bilexicon/data/plfr.bin")
     download_artifact("tools/lexica/bilexicon/data/plit.bin")
     download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
-    download_artifact("tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
-    download_artifact("tools/lexica/mapper/data/pl-valency.bin")
-    
-    download_artifact("tools/lemmatizers/lamerlemma/data/pl.bin")
+    download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
+    download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/pl-valency.bin")
+
+    download_project_artifact(psi-toolkit-data-sumo "tools/lemmatizers/lamerlemma/data/pl.bin")
     download_artifact("tools/lemmatizers/lamerlemma/data/fr.bin")
     download_artifact("tools/lemmatizers/lamerlemma/data/de.bin")
     download_artifact("tools/lemmatizers/lamerlemma/data/en.bin")

@@ -1,1 +1,1 @@
-lamerlemma ! simple-writer --tags lemma
+lamerlemma --lang pl ! simple-writer --tags lemma
