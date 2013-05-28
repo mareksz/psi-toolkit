@@ -435,7 +435,7 @@ if($COMPL := find(,compl2))
 
 R => N
 {
-        Gender := fem;
+        Gender := masc;
         Num := @.L;
 }
 
