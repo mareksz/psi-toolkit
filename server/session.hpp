@@ -13,10 +13,10 @@ public:
     Session(std::string sid);
     std::string getId() const;
 
-    void setData(std::string key, std::string value);
-    std::string getData(std::string key);
-    bool isData(std::string key);
-    void clearData(std::string key);
+    bool isData(const std::string& key);
+    std::string getData(const std::string& key);
+    void setData(const std::string& key, const std::string& value);
+    void clearData(const std::string& key);
 
 private:
 

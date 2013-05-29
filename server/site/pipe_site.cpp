@@ -105,12 +105,14 @@ char * PipeSite::hiddenOptions() {
     std::string fileOnOff = psiServer_.session()->getData("radio-file");
     std::string outputFile = psiServer_.session()->getData("output-file");
     std::string outputType = psiServer_.session()->getData("output-type");
+    std::string errorOccured = psiServer_.session()->getData("error-occured");
 
     std::string opts =
         std::string("psisOptions = {") +
         std::string("'isInputFile' : '") + fileOnOff + std::string("', ") +
         std::string("'fileToDownload' : '") + outputFile + std::string("', ") +
-        std::string("'initialOutputType' : '") + outputType + std::string("' ") +
+        std::string("'initialOutputType' : '") + outputType + std::string("', " ) +
+        std::string("'errorOccured' : '") + errorOccured + std::string("' ") +
         std::string("};");
 
     psiServer_.session()->clearData("radio-file");
@@ -152,8 +154,11 @@ std::string PipeSite::runPipe_(std::string pipe,
         }
     }
     catch (std::exception& e) {
-        oss << "There are some problems: " << e.what() << std::endl
-            << "Check the pipe-line specification and try again.";
+        oss << "There are some problems: " << e.what();
+
+        if (withSession) {
+            psiServer_.session()->setData("error-occured", e.what());
+        }
     }
 
     return oss.str();
@@ -197,6 +202,7 @@ void PipeSite::tryToAddGuessingReader_(std::string& pipe) {
 
 void PipeSite::clearPreviousFileFromOutput_() {
     psiServer_.session()->clearData("output-file");
+    psiServer_.session()->clearData("error-occured");
 }
 
 void PipeSite::createFileFromOutput_(const std::string& output) {

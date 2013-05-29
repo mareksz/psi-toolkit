@@ -48,7 +48,7 @@ function handleUploadingFile(limit) {
         return false;
       }
       else if (input.files[0].size > limit) {
-        showWarningMessage("File " + input.files[0].name + " with " + input.files[0].size +
+        showWarningMessage("File '" + input.files[0].name + "' with " + input.files[0].size +
                            " bytes in size is too large. Limit is " + limit / 1024 + " KBs." );
         return false;
       }
@@ -136,7 +136,13 @@ function readPsisOptions() {
     $('#output-bottom-info').css('display', 'none');
   }
 
-  if (psisOptions['lastOutputType']) { $('#output-type-select').val(psisOptions['lastOutputType']); }
+  if (psisOptions['lastOutputType']) {
+      $('#output-type-select').val(psisOptions['lastOutputType']);
+  }
+
+  if (psisOptions['errorOccured']) {
+      $('#output > pre').addClass('alert');
+  }
 }
 
 function bindChangeOutputSize() {

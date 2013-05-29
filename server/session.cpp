@@ -10,22 +10,7 @@ std::string Session::getId() const {
     return id;
 }
 
-void Session::setData(std::string key, std::string value) {
-    data[key] = value;
-}
-
-std::string Session::getData(std::string key) {
-    std::map<std::string, std::string>::iterator it = data.find(key);
-    std::string value("");
-
-    if (it != data.end()) {
-        value = it->second;
-    }
-
-    return value;
-}
-
-bool Session::isData(std::string key) {
+bool Session::isData(const std::string& key) {
     std::map<std::string, std::string>::iterator it = data.find(key);
 
     if (it != data.end()) {
@@ -38,6 +23,21 @@ bool Session::isData(std::string key) {
     return false;
 }
 
-void Session::clearData(std::string key) {
+std::string Session::getData(const std::string& key) {
+    std::map<std::string, std::string>::iterator it = data.find(key);
+    std::string value("");
+
+    if (it != data.end()) {
+        value = it->second;
+    }
+
+    return value;
+}
+
+void Session::setData(const std::string& key, const std::string& value) {
+    data[key] = value;
+}
+
+void Session::clearData(const std::string& key) {
     data[key] = std::string("");
 }
