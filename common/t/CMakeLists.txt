@@ -19,6 +19,7 @@ add_library(common-tests
     lattice_preparators.cpp
     lattice_tests.cpp
     layer_tags_tests.cpp
+    limit_checker_tests.cpp
     literal_test_output_iterator.cpp
     object_cache_tests.cpp
     quoter_tests.cpp
