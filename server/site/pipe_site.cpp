@@ -15,6 +15,9 @@
 
 const std::string PipeSite::GUESSING_READER = "guessing-reader";
 
+const unsigned int PipeSite::MAX_INPUT_SIZE = 524288;
+const std::string PipeSite::TOO_LARGE_INPUT_MSG = "Input is too large. Limit is 512 KBs.";
+
 PipeSite::PipeSite(PsiServer& server, const std::string& pipe, const std::string& text)
     : TemplateSite(server),
     initialText_(text.c_str()),
@@ -140,6 +143,16 @@ std::string PipeSite::runPipe_(std::string pipe,
 
     if (withSession) {
         clearPreviousFileFromOutput_();
+    }
+
+    if (input.size() > MAX_INPUT_SIZE) {
+        oss << "There are some problems: " << TOO_LARGE_INPUT_MSG;
+
+        if (withSession) {
+            psiServer_.session()->setData("error-occured", TOO_LARGE_INPUT_MSG);
+        }
+
+        return oss.str();
     }
 
     try {

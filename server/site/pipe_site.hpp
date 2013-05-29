@@ -52,6 +52,9 @@ private:
     std::string encodeHTML_(const std::string& data);
 
     EncodingConverter encodingConverter_;
+
+    static const unsigned int MAX_INPUT_SIZE;
+    static const std::string TOO_LARGE_INPUT_MSG;
 };
 
 #endif
