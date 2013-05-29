@@ -28,8 +28,8 @@ public:
 
 private:
 
-    HtmlHelpFormatter htmlHelpFormatter_;
     FileStorage fileStorage_;
+    HtmlHelpFormatter htmlHelpFormatter_;
 
 };
 
