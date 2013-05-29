@@ -35,17 +35,17 @@ class DomainFeature : public ScoreFeature
 
     DomainFeature(const std::string& domainFile);
     bool equals(const PhraseAlignment& lhs, const PhraseAlignment& rhs) const;
-    void add(const ScoreFeatureContext& context, 
+    void add(const ScoreFeatureContext& context,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 
   protected:
     /** Overriden in subclass */
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const = 0;
-      
+             std::map<std::string, float>& sparseValues) const = 0;
+
 
     Domain m_domain;
 
@@ -58,10 +58,10 @@ class SubsetDomainFeature : public DomainFeature
       DomainFeature(domainFile) {}
 
   protected:
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 };
 
 class SparseSubsetDomainFeature : public DomainFeature
@@ -71,10 +71,10 @@ class SparseSubsetDomainFeature : public DomainFeature
       DomainFeature(domainFile) {}
 
   protected:
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 
 };
 
@@ -85,10 +85,10 @@ class IndicatorDomainFeature : public DomainFeature
       DomainFeature(domainFile) {}
 
   protected:
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 };
 
 
@@ -99,10 +99,10 @@ class SparseIndicatorDomainFeature : public DomainFeature
       DomainFeature(domainFile) {}
 
   protected:
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 };
 
 
@@ -113,10 +113,10 @@ class RatioDomainFeature : public DomainFeature
       DomainFeature(domainFile) {}
 
   protected:
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 };
 
 
@@ -127,10 +127,10 @@ class SparseRatioDomainFeature : public DomainFeature
       DomainFeature(domainFile) {}
 
   protected:
-    virtual void add(const std::map<std::string,float>& domainCounts, float count,
+    virtual void add(const std::map<std::string, float>& domainCounts, float count,
              const MaybeLog& maybeLog,
              std::vector<float>& denseValues,
-             std::map<std::string,float>& sparseValues) const;
+             std::map<std::string, float>& sparseValues) const;
 };
 
 

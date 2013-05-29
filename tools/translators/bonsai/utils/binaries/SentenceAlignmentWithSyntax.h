@@ -46,8 +46,8 @@ public:
 
   SentenceAlignmentWithSyntax(std::set<std::string> & tgtLabelColl,
                               std::set<std::string> & srcLabelColl,
-                              std::map<std::string,int> & tgtTopLabelColl,
-                              std::map<std::string,int> & srcTopLabelColl,
+                              std::map<std::string, int> & tgtTopLabelColl,
+                              std::map<std::string, int> & srcTopLabelColl,
                               const RuleExtractionOptions & options)
     : m_targetLabelCollection(tgtLabelColl)
     , m_sourceLabelCollection(srcLabelColl)

@@ -41,10 +41,10 @@ protected:
 public:
   SyntaxNode( int startPos, int endPos, std::string label )
     :m_start(startPos)
-    ,m_end(endPos)
-    ,m_label(label)
-    ,m_parent(0)
-    ,m_pcfgScore(0.0f)
+    , m_end(endPos)
+    , m_label(label)
+    , m_parent(0)
+    , m_pcfgScore(0.0f)
   {}
   int GetStart() const {
     return m_start;
@@ -123,4 +123,3 @@ public:
 std::ostream& operator<<(std::ostream&, const SyntaxTree&);
 
 }
-
