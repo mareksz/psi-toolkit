@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  var MAX_UPLOADING_FILE_SIZE = 524288;
 
   $("#toolbox textarea").autosize();
   $('#input-file > input').filestyle({ });
@@ -8,9 +9,58 @@ $(document).ready(function(){
   bindChangeOutputSize();
   bindChangeOutputType();
 
-  readPsisOptions();
+  if (isFileReaderSupported) {
+    handleUploadingFile(MAX_UPLOADING_FILE_SIZE);
+  }
 
+  readPsisOptions();
 });
+
+function isFileReaderSupported() {
+  if (!window.FileReader) {
+    console.log("The file API isn't supported on this browser yet.");
+    return false;
+  }
+
+  var input = document.getElementsByName('input-file');
+
+  if (!input) {
+    console.error("Couldn't find the file input element.");
+    return false;
+  }
+
+  if (!input[0].files) {
+    console.log("This browser doesn't seem to support the `files` property of file inputs.");
+    return false;
+  }
+
+  return true;
+}
+
+function handleUploadingFile(limit) {
+  $('#toolbox-form').submit(function(e){
+
+    if (document.getElementById('radio-input-file').checked) {
+      var input = document.getElementsByName('input-file')[0];
+
+      if (!input.files[0]) {
+        showWarningMessage("Please select a file before clicking 'Go'.");
+        return false;
+      }
+      else if (input.files[0].size > limit) {
+        showWarningMessage("File " + input.files[0].name + " with " + input.files[0].size +
+                           " bytes in size is too large. Limit is " + limit / 1024 + " KBs." );
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+function showWarningMessage(msg) {
+    $('#output > pre').addClass('alert').text(msg);
+}
 
 function bindTextBookmarks() {
   $('#toolbox-text .bookmarks > a').click(function(e){
