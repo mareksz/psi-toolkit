@@ -35,6 +35,7 @@ add_library(common SHARED
     layer_tag_mask.cpp
     lang_specific_processor_file_fetcher.cpp
     lemmatizer_output_iterator.cpp
+    limit_checker.cpp
     logging.cpp
     md5.cpp
     morfologik_tags_parser.cpp
