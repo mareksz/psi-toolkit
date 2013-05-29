@@ -6,7 +6,7 @@ Annotator* Detok::Factory::doCreateAnnotator(
     std::string lang = options["lang"].as<std::string>();
     LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
 
-    Detok *detok = new Detok();
+    Detok *detok = new Detok(lang);
 
     return detok;
 }
@@ -49,7 +49,10 @@ Detok::Worker::Worker(Detok& processor, Lattice& lattice):
 void Detok::Worker::doRun() {
     INFO("detokenizer working");
 
-    LayerTagMask mask = lattice_.getLayerTagManager().getMaskWithLangCode("token", "en");
+    std::string langCode = processor_.langCode_;
+
+    LayerTagMask mask = lattice_.getLayerTagManager().getMaskWithLangCode(
+        "token", langCode);
 
     Lattice::EdgesSortedByTargetIterator iter(lattice_, mask);
 
@@ -104,7 +107,7 @@ void Detok::Worker::doRun() {
         toVertex,
         textItem,
         lattice_.getLayerTagManager().createSingletonTagCollectionWithLangCode(
-            "text", "en"));
+            "text", langCode));
 }
 
 bool Detok::Worker::shouldBePrecededBySpace_(const std::string& text) {
@@ -146,5 +149,6 @@ std::string Detok::doInfo() {
     return "detokenizer";
 }
 
-Detok::Detok() {
+Detok::Detok(const std::string& langCode)
+    :langCode_(langCode) {
 }

@@ -24,12 +24,19 @@ public:
         virtual std::list<std::list<std::string> > doOptionalLayerTags();
 
         virtual std::list<std::string> doProvidedLayerTags();
+
+        virtual AnnotatorFactory::LanguagesHandling doLanguagesHandling(
+            const boost::program_options::variables_map& /*options*/) const {
+
+            return AnnotatorFactory::LANGUAGE_INDEPENDENT;
+        }
+
     };
 
-    Detok();
+    Detok(const std::string& langCode);
 
     private:
-        class Worker : public LatticeWorker {
+    class Worker : public LatticeWorker {
         public:
             Worker(Detok& processor, Lattice& lattice);
         private:
@@ -43,4 +50,6 @@ public:
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
 
     virtual std::string doInfo();
+
+    std::string langCode_;
 };

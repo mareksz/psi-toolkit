@@ -181,8 +181,18 @@ void BracketingLatticeWriter::Worker::doRun_() {
         }
 
         BOOST_FOREACH(EdgeData ed, collectedEdges) {
-            int begin = lattice_.getEdgeBeginIndex(*ed.source);
-            int end = lattice_.getEdgeEndIndex(*ed.source);
+            int begin;
+            int end;
+            try {
+                begin = lattice_.getEdgeBeginIndex(*ed.source);
+            } catch (WrongVertexException) {
+                begin = 0;
+            }
+            try {
+                end = lattice_.getEdgeEndIndex(*ed.source);
+            } catch (WrongVertexException) {
+                end = lattice_.getAllText().length();
+            }
             BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], ed);
         }
 
@@ -195,8 +205,18 @@ void BracketingLatticeWriter::Worker::doRun_() {
             if (shouldBeSkipped_(edge)) {
                 continue;
             }
-            int begin = lattice_.getEdgeBeginIndex(edge);
-            int end = lattice_.getEdgeEndIndex(edge);
+            int begin;
+            int end;
+            try {
+                begin = lattice_.getEdgeBeginIndex(edge);
+            } catch (WrongVertexException) {
+                begin = 0;
+            }
+            try {
+                end = lattice_.getEdgeEndIndex(edge);
+            } catch (WrongVertexException) {
+                end = lattice_.getAllText().length();
+            }
             EdgeData edgeData = getEdgeData_(edge);
             BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], edgeData);
         }

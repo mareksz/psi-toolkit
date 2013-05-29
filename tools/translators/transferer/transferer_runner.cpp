@@ -112,6 +112,20 @@ std::list<std::list<std::string> > TransfererRunner::requiredLayerTags() {
             boost::assign::list_of(std::string("parse")));
 }
 
+std::string TransfererRunner::getContinuation(
+    const boost::program_options::variables_map& options) {
+
+    if (options.count("trg-lang")) {
+        std::string trgLang = options["trg-lang"].as<std::string>();
+
+        return std::string("generate-lexdb-forms-") + trgLang
+            + " ! detok --lang " + trgLang
+            + " ! simple-writer --tags !" + trgLang + ",text";
+    }
+
+    return "psi-toolkit";
+}
+
 std::list<std::string> TransfererRunner::tagsToOperateOn() {
     return boost::assign::list_of
         (std::string("!parse"))(std::string("parse"))(LayerTagManager::getLanguageTag(langCode_));

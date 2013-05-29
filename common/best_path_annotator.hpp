@@ -56,6 +56,12 @@ public:
         virtual std::list<std::string> doProvidedLayerTags() {
             return T::providedLayerTags();
         }
+
+        virtual std::string doGetContinuation(
+            const boost::program_options::variables_map& options) const {
+
+            return T::getContinuation(options);
+        }
     };
 
     class Worker : public LatticeWorker {
