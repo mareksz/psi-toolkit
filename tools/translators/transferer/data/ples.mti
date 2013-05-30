@@ -1,442 +1,85 @@
 
 FP => AP
 {
+   warning("FP!");
    if(Degree = superlative)
         Def := "el más";
    else if(Degree = comparative)
         Def := "más";
+        
+        
+}
+
+
+
+C => V
+{
+    Num := @.L;
+    Tense := @.C;
+    Person := @.O;
+}
+
+sub ::tense_to_code(t)
+{
+    if ($t = "teraźniejszy") {
+        return 14;
+    } else if ($t = "przyszły") {
+        return 16;
+    } else if ($t = "przeszły") {
+        return 19;
+    }
+}
+
+sub V::surface()
+{
+   warning("V surface. Tense = "+Tense);
+ 
+   return pair(Equiv + "+verb", get_morpho_es(tense_to_code(Tense), 0, Num, Person, 0));
+
 }
 
 P => A
 {
-        if (@.R = ż)
-           Gender := fem;
-        else
-           Gender := masc;
+   warning("P!");
+    
+   if (@.R = ż)
+      Gender := fem;
+   else
+      Gender := masc;
 
-        Num := @.L;
+   Num := @.L;
+}
+
+sub GNP::default()
+{
+    warning("GNP::default");
+    if (undefined(%Head)) {
+        warning("Head not defined");
+    } else {
+        warning("Head defined");    
+    }
+    order %N < %NP < %A < %AP;
 }
 
 FR => GNP
 {
-    # 'pisanie zdania' => 'writing the sentence'
-    :dop1=>:compl1 {}
-    # 'mówienie Markowi o Dorocie' => 'telling Marek about Dorota'
-    :dop2=>:compl2 {}
-    # 'komputer brata' => 'ordenador de hermano'
-    :dopełniacz=>:possesive {}
-    # 'Widzę prof. Nowaka.' => 'Veo a Prof. Nowak.'
-    :apoz=>:appos {}
-    '$który' => 'qual' {warning('UNEXPECTED: FR: qual');}
-    '$jaki' => 'que' {warning('UNEXPECTED: FR: que');}
-    '$czyj' => 'quienes' {warning('UNEXPECTED: FR: quienes');}
-    '$ile' => 'quanto' {warning('UNEXPECTED: FR: quanto');}
-    'nie'=>'no' {warning('UNEXPECTED: FR: no');}
-    # 'na pewno nie kino' => 'certainly not a cinema'
-    :partykuła => :prearticle {}
-    # 'trochę zapałek' => 'a few matches'
-    :kwant => :quant {}
-    # 'pomiędzy mną a tobą' => 'between me and you'
-    # 'pomiędzy mną i tobą' => 'between me and you'
-    'a' => 'and' {}
-    'i' => 'and' {}
-    # MW błąd tłumaczenia: ten, co go odwiedziłam => the one I visited 'that'
-    'co' => AdjPron{Equiv := 'qual'; warning('UNEXPECTED: FR: qual');}
-
-    delete('r.',);
-    delete("N","word_year");
-
     inherit("Interrogative",);
     inherit("Neg",);
     inherit("Gender",);
+    inherit("Num",);
 
-    S := get_dvalue(@.S);
-
-    # 'mała papuga'
-    %Head [ label() = "#" ];
-
-    if(%Head->cat() = "GNPS")
-    {
-        # 'zielone korale, biała bluzka, czerwone spodenki'
-        Num := 2;
-        Person := 3;
-
-        if(%Head->find("CGNP",)->find("Conj",)->Neg)
-        {
-            # 'nie lubię ani Kamila, ani Karoliny'
-            Neg := 1;
-        }
-    }
-    else
-    {
-        # 'biała bluzka'
-        if(%Head)
-        {
-            # 'okno zostało pomalowane' => 'the window was painted'
-            Def := %Head->Def;
-            DefLevel := %Head->DefLevel;
-
-            SpecDef := %Head->SpecDef;
-            SpecPrep := %Head->SpecPrep;
-            SpecCat := %Head->SpecCat;
-
-            Num := %Head->Num;
-            Person := %Head->Person;
-
-if(undefined(Compl1) and %Head->Compl1)
-            {
-                # 'pisanie listu' => 'writing a letter'
-                Compl1 := %Head->Compl1;
-                Prep1  := %Head->Prep1;
-                Def1   := %Head->Def1;
-            }
-if(undefined(Compl2) and %Head->Compl2)
-            {
-                # 'pisanie listu' => 'writing a letter'
-                Compl2 := %Head->Compl2;
-                Prep2  := %Head->Prep2;
-                Def2   := %Head->Def2;
-            }
-
-            U := %Head->U;
-
-            # @attr Mw - "measure word", tj. wyraz używany gdy rzeczownikowi towarzyszy
-            # liczebnik główny
-            # 'sześć mebli' => 'six pieces of furniture'
-            Mw := %Head->Mw;
-        }
-        else
-        {
-            # 'było to w roku 2010, w maju' => 'it was in 2010, in May'
-            Def := zero;
-            DefLevel := 15;
-            Num := @.L;
-            Person := @.O;
-
-            find(,year)->Case := nom;
-            find(,year)->Prep := null();
-        }
-    }
-
-    if(Mw and find("CardNum",) and %Head->eqv()->L = 2)
-    {
-        # 'sześć mebli' => 'six pieces of furniture'
-        insert_measure_word(Mw);
-    }
-
-    # jeśli z głową nie były związane atrybuty Num i Person
-    # (np. dla akronimów)
-    # 'PCXY kocha was' => 'PCXY loves you'
-    if(undefined(Num))
-        Num := @.L;
-
-    if(undefined(Person))
-        Person := @.O;
-
-    # zabezpieczamy się przed dziwnymi przypadkami, kiedy Num/Person
-    # pozostaje dalej nieustawione
-    if(not Num)
-        Num := 1;
-
-    # 'rok w którym urodziłam się' => 'year in which I was born'
-    if(not Person)
-        Person := 3;
-
-    if(%Head->cat() = "AdjPron")
-    {
-        if(%Head->Equiv = "this")
-        {
-            if(Num == 2)
-            {
-                # 'ci, którzy lubią ten taniec' =>? 'the ones which like this dance'
-                %Head->Equiv := "the ones";
-            }
-            else
-            {
-                # 'ten, który lubi ten taniec' =>? 'the one which likes this dance'
-                # 'ten, kto lubi ten taniec' =>? 'the one which likes this dance'
-                # 'lubię tego, kto zaśpiewa' => 'I like the one who will sing'
-                %Head->Equiv := "the one";
-            }
-
-            %Head->Inflection := "";
-            Def := the;
-            DefLevel := 100;
-        }
-        else if(%Head->Equiv = "no")
-        {
-            # 'żaden z nas nie lubi pająków' => 'none of us likes spiders'
-            %Head->Equiv := "none";
-            %Head->Inflection := "";
-            Def := zero;
-            DefLevel := 100;
-        }
-    }
-    else if(%Head->cat() = "ItPron" and find("VP",))
-    {
-        # 'Anna lubi to, co ja lubię' => 'Anna likes what I like'
-        %Head->delete('what',);
-        %Head->insert_right('',"#");
-    }
-    # zaimki typu "sam siebie"
-    else if(%Head->cat() = "ReflPron" and $adjpron := find("AdjPron",))
-    {
-        # poniższy zapis jest specyficznie związany z dziwnym drzewem zaimka "sam"
-        # 'pluję na samego siebie' => 'I am spitting on myself'
-        # 'programista nie lubi samego siebie' => 'the programmer doesn~t like himself'
-        if ($adjpron->find("AdjPron",)->find('$sam',))
-            delete($adjpron,);
-    }
-
-    # uzgodnienie liczby zaimków this/that
-    foreach $s
-    {
-        # 'tamte boginie' => 'those goddesses'
-        if($s->cat() = "AdjPron")
-            $s->Num := Num;
-    }
-
-    if(@.P = mian)
-    {
-        # 'on' => he
-        # 'samochody' => 'cars'
-        # 'drukarki' => 'printers'
-        # 'Polacy' => 'Poles'
-        Case := nom;
-        Prep := null();
-    }
-    else if(@.P = dop)
-    {
-        # 'samochodów' => 'of cars'
-        # 'drukarek' => 'of printers'
-        # 'mebli' => 'of furniture'
-        Case := gen;
-        Prep := 'of';
-    }
-    else if(@.P = cel)
-    {
-        # 'samochodom' => 'for cars'
-        # 'i Polakom' => 'and for Poles'
-        # 'meblom' => 'for furniture'
-        Case := acc;
-        Prep := 'for';
-    }
-    else if(@.P = bier)
-    {
-        # 'jemu' => 'for him'
-        # 'Joannę' => 'Joanna'
-        # 'drukarkę' => 'printer'
-        Case := acc;
-        Prep := null();
-    }
-    else if(@.P = narz)
-    {
-        Case := acc;
-
-        if(semmatch(%Head->S,"vehicle"))
-        {
-            if(eqv()->Length = 1)
-            {
-                # 'samochodami' => 'by cars'
-                Prep := 'by';
-                setDef(zero,100);
-            }
-            else
-            {
-                # 'samochodami osobowymi' => 'on passenger cars'
-                Prep := 'on';
-            }
-        }
-        else
-        {
-            # 'policjantami' => 'with police officers'
-            # 'przyjaciółmi' => 'with friends'
-            Prep := 'with';
-        }
-    }
-    else if(@.P = miejsc)
-    {
-        # 'samochodach' => 'cars'
-        # 'policjantach' => 'police officers'
-        Case := acc;
-        Prep := null();
-    }
-    else if(@.P = woł)
-    {
-        # 'Joanno' => 'Joanna'
-        Case := acc;
-        Prep := null();
-    }
-
-    # obsługa przydawki dopełniaczowej
-    if($poss := find("GNP",possesive))
-    {
-        # obsługa transferu przydawki dopełniaczowej na coś innego niż "of NP"
-        if(0)   # (sztuczka do 'else if' w makrze repeat)
-            0;
-else if(%Head->eqv()->Sem1 and not %Head->eqv()->Dop1 and Prep1 != "of")
-        {
-            # 'rada banku' => 'council of the bank'
-            # 'magazyn amunicji' => 'magazine of the ammunition'
-            $poss->change_label(compl1);
-        }
-else if(%Head->eqv()->Sem2 and not %Head->eqv()->Dop2 and Prep2 != "of")
-        {
-            # 'rada banku' => 'council of the bank'
-            # 'magazyn amunicji' => 'magazine of the ammunition'
-            $poss->change_label(compl2);
-        }
-        else if(semmatch(($poss->find(,"#")).S,"first_name") and $poss->last_son($poss->find(,"#")) and not find("AdjPron",))
-        {
-            # 'rower Adama' => 'Adam~s bicycle'
-            $poss.Prep := saxon;
-        }
-    }
-
-    # frazy typu "siebie nawzajem"
-    if (find('mutually',))
-    {
-        # 'myślą o sobie nawzajem' => 'they are thinking about each other'
-        find("ReflPron","#")->Equiv := "each other";
-        delete('mutually',);
-    }
-
-    # TRANSFER DOPEŁNIEŃ
-
-if($COMPL := find(,compl1))
-    {
-        if($COMPL.cat() = "GNP")
-        {
-            # @todo poprawić, żeby wychodziło "scanner service"
-
-            # NPf idzie na koniec:
-            # 'rozkaz zabicia tego smoka' p=>e 'order to kill this dragon'
-            if (not Prep1 and not find("V", "#") and Compl1 != "NPf")
-            {
-                # 'automat z sokiem' p=>e 'juice vending machine'
-                # 'komisariat Poznań Jeżyce' p=>e 'Poznań Jeżyce police station'
-                $COMPL.Prep := of;
-            }
-            else
-            {
-                # 'zależność od tego wyniku' => 'dependence on this result'
-                $COMPL.Prep := Prep1;
-            }
-
-            # @todo ??? co to jest
-            # MW Dopełnienie ze zdaniem podrzędnym rozbijane jest na dwa drzewa.
-            if ($COMPL->find ("SubC", "#"))
-            {
-                warning('UNEXPECTED: FR - $COMPL->find ("SubC", "#")');
-                if ($COMPL.Prep != '' and SubC.Type != ob)
-                    SubC.Type := gerund;
-            }
-
-        }
-        else if($COMPL.cat() = "AdvP")
-        {
-            # 'ich obecność tutaj' => 'their presence here'
-            # @todo ???
-            if(Compl1 = "AJ")
-            {
-                warning('UNEXPECTED: FR - Compl1 = "AJ"');
-                $COMPL.Adj := true;
-            }
-        }
-        else if($COMPL.cat() = "SubC" or $COMPL.cat() = "VP")
-        {
-            # 'rozkaz zabicia tego smoka' => 'order to kill this dragon'
-            $COMPL.delete("Prep",);
-
-            $COMPL.Type := Compl1;
-            $COMPL.Prep := Prep1;
-        }
-    }
-if($COMPL := find(,compl2))
-    {
-        if($COMPL.cat() = "GNP")
-        {
-            # @todo poprawić, żeby wychodziło "scanner service"
-
-            # NPf idzie na koniec:
-            # 'rozkaz zabicia tego smoka' p=>e 'order to kill this dragon'
-            if (not Prep2 and not find("V", "#") and Compl2 != "NPf")
-            {
-                # 'automat z sokiem' p=>e 'juice vending machine'
-                # 'komisariat Poznań Jeżyce' p=>e 'Poznań Jeżyce police station'
-                $COMPL.Prep := of;
-            }
-            else
-            {
-                # 'zależność od tego wyniku' => 'dependence on this result'
-                $COMPL.Prep := Prep2;
-            }
-
-            # @todo ??? co to jest
-            # MW Dopełnienie ze zdaniem podrzędnym rozbijane jest na dwa drzewa.
-            if ($COMPL->find ("SubC", "#"))
-            {
-                warning('UNEXPECTED: FR - $COMPL->find ("SubC", "#")');
-                if ($COMPL.Prep != '' and SubC.Type != ob)
-                    SubC.Type := gerund;
-            }
-
-        }
-        else if($COMPL.cat() = "AdvP")
-        {
-            # 'ich obecność tutaj' => 'their presence here'
-            # @todo ???
-            if(Compl2 = "AJ")
-            {
-                warning('UNEXPECTED: FR - Compl2 = "AJ"');
-                $COMPL.Adj := true;
-            }
-        }
-        else if($COMPL.cat() = "SubC" or $COMPL.cat() = "VP")
-        {
-            # 'rozkaz zabicia tego smoka' => 'order to kill this dragon'
-            $COMPL.delete("Prep",);
-
-            $COMPL.Type := Compl2;
-            $COMPL.Prep := Prep2;
-        }
-    }
-
-    # transfer fraz rzeczownikowych typu 'to ja grałem'
-    RO => CLEFT
-    {
-        # 'to ten człowiek zabił Adama' => 'it was this man that killed Adam'
-        'to' => 'it is' {}
-    }
-
-    # frazy typu 'ile koni'
-    # 'ile samochodów kupiłeś wczoraj?' => 'how many cars did you buy yesterday?'
-
-
-    # @todo chyba do wyrzucenia
-    if(Num = 2 and delete('how much',))
-    {
-        warning('UNEXPECTED: FR - Num = 2 and delete(how much,)');
-        insert_left('how many',);
-    }
-
-    # @todo upewnić się co do tłumaczenia zdań 'to, jak umarł'
-    if ($ip := find("ItPron","#") and ($subc := find("SubC",) or find("VP",) or find("CVP",)))
-    {
-        # 'to, że umarł wczoraj' => 'the fact that he died yesterday'
-        $ip.Equiv := "";
-        if ($subc->Type = that)
-            $ip.Equiv := "the fact that";
-    }
-
-    # 'pięciu z nich zna Adama' => 'five of them know Adam'
-    if (find("CardNum",) and find("SP","#"))
-	    Num := 2;}
+}
 
 R => N
 {
-        Gender := masc;
-        Num := @.L;
+   warning("R!");
+   
+   # na razie rodzaj rzeczownika hiszpańskiego jest przenoszony z polskiego
+   if (@.R = ż)
+      Gender := fem;
+   else
+      Gender := masc;
+   Num := @.L;
 }
 
 sub ::inflect_be_present(person, number, neg)
@@ -469,6 +112,7 @@ sub ::inflect_be_present(person, number, neg)
 
 sub N::surface()
 {
+   warning("N::surface!");
         if (Gender == fem)
            $gendercode := 4;
         else
