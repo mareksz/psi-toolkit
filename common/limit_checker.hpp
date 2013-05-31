@@ -44,6 +44,11 @@ public:
     LimitChecker(int absoluteLimit);
 
     /**
+     * Set absolute limit.
+     */
+    void setAbsoluteLimit(int absoluteLimit);
+
+    /**
      * Add limit specification for the given argument.
      */
     void addLimitSpec(int argument, int limit);

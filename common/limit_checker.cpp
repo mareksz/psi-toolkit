@@ -18,6 +18,11 @@ LimitChecker::LimitChecker(int absoluteLimit) :
 { }
 
 
+void LimitChecker::setAbsoluteLimit(int absoluteLimit) {
+    absoluteLimit_ = absoluteLimit;
+}
+
+
 void LimitChecker::addLimitSpec(int argument, int limit) {
     if (argument < specs_.back().argument) {
         ready_ = false;
