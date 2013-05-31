@@ -1,16 +1,36 @@
 
 FP => AP
 {
-   warning("FP!");
    if(Degree = superlative)
         Def := "el más";
    else if(Degree = comparative)
-        Def := "más";
-        
-        
+        Def := "más";        
 }
 
+P => A
+{
+   if (@.R = ż)
+      Gender := fem;
+   else
+      Gender := masc;
 
+   Num := @.L;
+}
+
+sub A::surface()
+{
+    if (Gender == fem)
+       $gendercode := 4;
+    else
+       $gendercode := 1;
+
+    if (Num == 2)
+        $numcode := 2;
+    else
+        $numcode := 1;
+
+    return pair(Equiv + "+adj", get_morpho_es(2, $gendercode, $numcode, 0, 0));
+}
 
 C => V
 {
@@ -32,33 +52,15 @@ sub ::tense_to_code(t)
 
 sub V::surface()
 {
-   warning("V surface. Tense = "+Tense);
- 
    return pair(Equiv + "+verb", get_morpho_es(tense_to_code(Tense), 0, Num, Person, 0));
 
 }
 
-P => A
-{
-   warning("P!");
-    
-   if (@.R = ż)
-      Gender := fem;
-   else
-      Gender := masc;
-
-   Num := @.L;
-}
-
 sub GNP::default()
 {
-    warning("GNP::default");
-    if (undefined(%Head)) {
-        warning("Head not defined");
-    } else {
-        warning("Head defined");    
-    }
-    order %N < %NP < %A < %AP;
+    %AdjectivePhrase [cat() = "AP"];
+    %Noun [cat() = "N"];
+    order %Noun < %AdjectivePhrase;
 }
 
 FR => GNP
@@ -72,8 +74,6 @@ FR => GNP
 
 R => N
 {
-   warning("R!");
-   
    # na razie rodzaj rzeczownika hiszpańskiego jest przenoszony z polskiego
    if (@.R = ż)
       Gender := fem;
@@ -112,16 +112,15 @@ sub ::inflect_be_present(person, number, neg)
 
 sub N::surface()
 {
-   warning("N::surface!");
-        if (Gender == fem)
-           $gendercode := 4;
-        else
-           $gendercode := 1;
+    if (Gender == fem)
+       $gendercode := 4;
+    else
+       $gendercode := 1;
 
-        if (Num == 2)
-            $numcode := 2;
-        else
-            $numcode := 1;
+    if (Num == 2)
+        $numcode := 2;
+    else
+        $numcode := 1;
 
-        return pair(Equiv + "+subst", get_morpho_es(0, $gendercode, $numcode, 0, 0));
+    return pair(Equiv + "+subst", get_morpho_es(0, $gendercode, $numcode, 0, 0));
 }
