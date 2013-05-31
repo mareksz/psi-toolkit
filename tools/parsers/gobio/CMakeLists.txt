@@ -5,6 +5,7 @@ add_definitions(-Wno-sign-compare)
 add_library(tools-parsers-gobio SHARED
     gobio.cpp
     avmatrix/av_ai_converter.cpp
+    chart/gobio_limit_checker.cpp
     registrar/number_master.cpp
     registrar/zvalue_master.cpp
     rules/compile_gruleexpression.cpp
