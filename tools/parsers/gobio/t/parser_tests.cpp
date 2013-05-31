@@ -5,6 +5,7 @@
 #include "av_ai_converter.hpp"
 #include "chart.tpl"
 #include "lattice_preparators.hpp"
+#include "limit_checker.hpp"
 #include "psi_lattice_writer.hpp"
 #include "registrar.tpl"
 #include "simple_cfg_combinator.tpl"
@@ -45,7 +46,8 @@
     Combinator combinator; \
     registrar<std::string> reg; \
     AV_AI_Converter av_ai_converter(aim, reg, reg); \
-    Chart ch(lattice, av_ai_converter, "form");
+    LimitChecker limitChecker; \
+    Chart ch(lattice, av_ai_converter, "form", limitChecker);
 
 
 #ifdef RUN_PARSER_TEST
@@ -154,7 +156,8 @@ BOOST_AUTO_TEST_CASE( helpers ) {
 
     registrar<std::string> reg;
     AV_AI_Converter av_ai_converter(aim, reg, reg);
-    Chart ch(lattice, av_ai_converter, "form");
+    LimitChecker limitChecker;
+    Chart ch(lattice, av_ai_converter, "form", limitChecker);
 
     BOOST_CHECK_EQUAL(count_vertices(ch), 7);
     BOOST_CHECK_EQUAL(count_out_edges(ch), 6);

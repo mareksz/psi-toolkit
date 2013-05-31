@@ -11,19 +11,13 @@
  * Limit checker for Gobio parser.
  * It has some predefined values for some languages.
  */
-class GobioLimitChecker : protected LimitChecker {
+class GobioLimitChecker : public LimitChecker {
 public:
 
     /**
      * Create a limit checker for the given language.
      */
     GobioLimitChecker(std::string lang);
-
-    /**
-     * Check if the given value is within the limits for the given argument.
-     * Call similar superclass's method.
-     */
-    bool isAllowed(int argument, int value);
 
 };
 

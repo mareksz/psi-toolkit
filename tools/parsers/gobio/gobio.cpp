@@ -24,7 +24,7 @@ Annotator* Gobio::Factory::doCreateAnnotator(
     std::string terminalTag = options["terminal-tag"].as<std::string>();
     int edgeNumberLimit = options["edge-number-limit"].as<int>();
 
-    return new Gobio(rulesPathString, terminalTag, edgeNumberLimit);
+    return new Gobio(lang, rulesPathString, terminalTag, edgeNumberLimit);
 }
 
 void Gobio::Factory::doAddLanguageIndependentOptionsHandled(
@@ -89,7 +89,7 @@ const std::string Gobio::Factory::DEFAULT_TERMINAL_TAG
     = "parse-terminal";
 
 const int Gobio::Factory::DEFAULT_EDGE_NUMBER_LIMIT
-    = 1000;
+    = -1;
 
 LatticeWorker* Gobio::doCreateLatticeWorker(Lattice & lattice) {
     return new Worker(*this, lattice);
@@ -107,8 +107,19 @@ std::string Gobio::doInfo() {
     return "gobio parser";
 }
 
-Gobio::Gobio(std::string rulesPath, std::string terminalTag, int edgeNumberLimit)
-    : rulesPath_(rulesPath), terminalTag_(terminalTag), edgeNumberLimit_(edgeNumberLimit) {
+Gobio::Gobio(
+    std::string lang,
+    std::string rulesPath,
+    std::string terminalTag,
+    int edgeNumberLimit
+) :
+    limitChecker_(lang),
+    rulesPath_(rulesPath),
+    terminalTag_(terminalTag)
+{
+    if (edgeNumberLimit > -1) {
+        limitChecker_.setAbsoluteLimit(edgeNumberLimit_);
+    }
 }
 
 void Gobio::parse(Lattice & lattice) {
@@ -127,7 +138,7 @@ void Gobio::parse(Lattice & lattice) {
         true
     );
 
-    Chart ch(lattice, av_ai_converter, terminalTag_, edgeNumberLimit_);
+    Chart ch(lattice, av_ai_converter, terminalTag_, limitChecker_);
     Agenda agenda;
     Parser parser(ch, combinator, agenda);
 

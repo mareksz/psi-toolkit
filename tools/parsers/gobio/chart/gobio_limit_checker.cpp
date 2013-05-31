@@ -10,8 +10,3 @@ GobioLimitChecker::GobioLimitChecker(std::string lang) {
         addLimitSpec(100, 12);
     }
 }
-
-
-bool GobioLimitChecker::isAllowed(int argument, int value) {
-    return LimitChecker::isAllowed(argument, value);
-}
