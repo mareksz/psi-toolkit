@@ -5,6 +5,8 @@
 
 #include <boost/foreach.hpp>
 
+#include "logging.hpp"
+
 
 LimitChecker::LimitChecker() :
     ready_(true),
@@ -43,8 +45,10 @@ bool LimitChecker::isAllowed(int argument, int value) {
     }
     BOOST_FOREACH(LimitSpec spec, specs_) {
         if (spec.argument >= argument) {
+if (value > spec.limit) DEBUG("Limit " << spec.limit << " exceeded at edge length " << argument);
             return value <= spec.limit;
         }
     }
+if (value > absoluteLimit_) DEBUG("Absolute limit " << absoluteLimit_ << " exceeded.");
     return value <= absoluteLimit_;
 }
