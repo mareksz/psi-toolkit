@@ -4,9 +4,9 @@
 GobioLimitChecker::GobioLimitChecker(std::string lang) {
     if (lang == "pl") {
         setAbsoluteLimit(8);
-        addUnlimitedSpec(10);
-        addLimitSpec(20, 30);
-        addLimitSpec(30, 20);
+        addUnlimitedSpec(20);
+        addLimitSpec(30, 50);
+        addLimitSpec(40, 20);
         addLimitSpec(100, 12);
     }
 }
