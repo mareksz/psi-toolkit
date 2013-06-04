@@ -181,19 +181,21 @@ void BracketingLatticeWriter::Worker::doRun_() {
         }
 
         BOOST_FOREACH(EdgeData ed, collectedEdges) {
-            int begin;
-            int end;
             try {
-                begin = lattice_.getEdgeBeginIndex(*ed.source);
-            } catch (WrongVertexException) {
-                begin = 0;
-            }
-            try {
-                end = lattice_.getEdgeEndIndex(*ed.source);
-            } catch (WrongVertexException) {
-                end = lattice_.getAllText().length();
-            }
-            BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], ed);
+                int begin;
+                int end;
+                try {
+                    begin = lattice_.getEdgeBeginIndex(*ed.source);
+                } catch (WrongVertexException) {
+                    begin = lattice_.getEdgeBeginIndex(*ed.parent);
+                }
+                try {
+                    end = lattice_.getEdgeEndIndex(*ed.source);
+                } catch (WrongVertexException) {
+                    end = lattice_.getEdgeEndIndex(*ed.parent);
+                }
+                BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], ed);
+            } catch (WrongVertexException) { }
         }
 
     } else {
@@ -210,12 +212,22 @@ void BracketingLatticeWriter::Worker::doRun_() {
             try {
                 begin = lattice_.getEdgeBeginIndex(edge);
             } catch (WrongVertexException) {
-                begin = 0;
+                boost::optional<Lattice::EdgeDescriptor> parent = lattice_.getParent(edge);
+                if (parent) {
+                    begin = lattice_.getEdgeBeginIndex(*parent);
+                } else {
+                    throw WrongVertexException("Loose edge.");
+                }
             }
             try {
                 end = lattice_.getEdgeEndIndex(edge);
             } catch (WrongVertexException) {
-                end = lattice_.getAllText().length();
+                boost::optional<Lattice::EdgeDescriptor> parent = lattice_.getParent(edge);
+                if (parent) {
+                    end = lattice_.getEdgeEndIndex(*parent);
+                } else {
+                    throw WrongVertexException("Loose edge.");
+                }
             }
             EdgeData edgeData = getEdgeData_(edge);
             BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], edgeData);
