@@ -15,6 +15,11 @@ class GobioLimitChecker : public LimitChecker {
 public:
 
     /**
+     * Create an "unlimited" limit checker.
+     */
+    GobioLimitChecker() { }
+
+    /**
      * Create a limit checker for the given language.
      */
     GobioLimitChecker(std::string lang);
