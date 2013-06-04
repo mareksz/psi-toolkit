@@ -1,3 +1,5 @@
 FR:[FP:[P:#[absolutny]] R:#[komputer]]
 FR:[FP:[P:#[absolutny]] R:#[komputer]]
 FR:[R:#[komputery]]
+FRs:[SFR:#[FR:[FR:[R:#[komputer]] S:[i] FR:#[R:#[drukarka]]]
+]]
