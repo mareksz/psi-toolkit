@@ -118,7 +118,7 @@ Gobio::Gobio(
     terminalTag_(terminalTag)
 {
     if (edgeNumberLimit > -1) {
-        limitChecker_.setAbsoluteLimit(edgeNumberLimit_);
+        limitChecker_.setAbsoluteLimit(edgeNumberLimit);
     }
 }
 
