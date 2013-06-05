@@ -298,9 +298,12 @@ typename Ch::edge_descriptor edge_by_hook_path(
     const std::vector<size_t>& path)
 {
     assert(!path.empty());
-    typename Ch::edge_descriptor result = chart.partition_link(pit, path.back());
-    pit = chart.edge_partitions(result).first;
-    return result;
+    typename Ch::edge_descriptor e;
+    BOOST_FOREACH(size_t path_element, path) {
+        e = chart.partition_link(pit, path_element);
+        pit = chart.edge_partitions(e).first;
+    }
+    return e;
 }
 
 template<class T, class Ch, class K>

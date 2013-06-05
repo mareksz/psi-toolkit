@@ -13,6 +13,7 @@
 #include "agenda_parser.tpl"
 #include "annotation_item_manager.hpp"
 #include "chooser.tpl"
+#include "gobio_limit_checker.hpp"
 #include "semantics_wrapper.tpl"
 #include "tgbg_combinator.tpl"
 #include "zvalue.hpp"
@@ -104,6 +105,7 @@ public:
     };
 
     Gobio(
+        std::string lang,
         std::string rulesPath,
         std::string terminalTag = Factory::DEFAULT_TERMINAL_TAG,
         int edgeNumberLimit = Factory::DEFAULT_EDGE_NUMBER_LIMIT);
@@ -123,6 +125,8 @@ private:
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
 
     virtual std::string doInfo();
+
+    GobioLimitChecker limitChecker_;
 
     std::string rulesPath_;
 

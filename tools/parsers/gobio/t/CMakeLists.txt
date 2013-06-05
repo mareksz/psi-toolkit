@@ -13,6 +13,7 @@ include_directories("${psi-toolkit_SOURCE_DIR}/formats/psi/psi_reader")
 add_library(tools-parsers-gobio-tests
     av_ai_converter_tests.cpp
     chart_tests.cpp
+    gobio_limit_checker_tests.cpp
     parser_tests.cpp
     tgbg_tests.cpp
 )

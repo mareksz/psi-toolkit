@@ -23,6 +23,9 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
 
     Lattice::EdgeSequence::Builder builder(lattice);
 
+    Lattice::VertexDescriptor emergencyFromVertex = lattice.getLastVertex();
+    Lattice::VertexDescriptor emergencyToVertex = lattice.getFirstVertex();
+
     bool wereSubedgesAdded = false;
     for (int i = 0; i <= tree->last_subtree; ++i) {
         if (!NULLP(tree->getSubtree(i)->getCategory())) {
@@ -32,6 +35,13 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
                 tree->getSubtree(i));
             builder.addEdge(subedge, tree->getSubtree(i)->label);
             wereSubedgesAdded = true;
+
+            if (lattice.getEdgeSource(subedge) < emergencyFromVertex) {
+                emergencyFromVertex = lattice.getEdgeSource(subedge);
+            }
+            if (lattice.getEdgeTarget(subedge) > emergencyToVertex) {
+                emergencyToVertex = lattice.getEdgeTarget(subedge);
+            }
         }
     }
 
@@ -58,6 +68,13 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
                 = boost::any_cast<Lattice::EdgeDescriptor>(tree->getOrigin());
             if (lattice.getEdgeAnnotationItem(originalEdge) != annotationItem) {
                 builder.addEdge(originalEdge);
+
+                if (lattice.getEdgeSource(originalEdge) < emergencyFromVertex) {
+                    emergencyFromVertex = lattice.getEdgeSource(originalEdge);
+                }
+                if (lattice.getEdgeTarget(originalEdge) > emergencyToVertex) {
+                    emergencyToVertex = lattice.getEdgeTarget(originalEdge);
+                }
             }
         } catch (const boost::bad_any_cast &) {
             std::stringstream errorSs;
@@ -71,8 +88,14 @@ Lattice::EdgeDescriptor putZsyntreeIntoLattice(
 
     if (!vertexSet && tree->segment_len == 0) {
         newEdge = true;
-        fromVertex = lattice.addLooseVertex();
-        toVertex = lattice.addLooseVertex();
+
+        if (emergencyFromVertex < emergencyToVertex) {
+            fromVertex = emergencyFromVertex;
+            toVertex = emergencyToVertex;
+        } else {
+            fromVertex = lattice.addLooseVertex();
+            toVertex = lattice.addLooseVertex();
+        }
     }
 
     Lattice::EdgeDescriptor addedEdge = lattice.addEdge(

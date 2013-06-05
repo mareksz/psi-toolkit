@@ -8,6 +8,7 @@
 #include "chart.tpl"
 #include "lattice.hpp"
 #include "lattice_preparators.hpp"
+#include "limit_checker.hpp"
 #include "psi_lattice_reader.hpp"
 #include "psi_lattice_writer.hpp"
 #include "registrar.tpl"
@@ -17,8 +18,9 @@
 #define SIMPLE_CHART(CH, LATTICE) \
     registrar<std::string> reg; \
     AV_AI_Converter av_ai_converter((LATTICE).getAnnotationItemManager(), reg, reg); \
+    LimitChecker limitChecker; \
     typedef chart<std::string, double, int, int_rule> simple_chart; \
-    simple_chart (CH)((LATTICE), av_ai_converter, "form");
+    simple_chart (CH)((LATTICE), av_ai_converter, "form", limitChecker);
 
 
 class int_rule {

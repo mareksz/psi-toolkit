@@ -1,76 +1,76 @@
-# Rzeczowniki pospolite
+#0 Rzeczowniki pospolite
 
 1100:NCMS
 1200:NCMP
 4100:NCFS
 4200:NCFP
 
-# Rzeczowniki wlasne
+#1 Rzeczowniki wlasne
 
 1100:NPMS
 1200:NPMP
 2100:NPFS
 2200:NPFP
 
-#Przymiotniki stopnia rownego
+#2 Przymiotniki stopnia rownego
 
 1100:AMS
 1200:AMP
 4100:AFS
 4200:AFP
 
-#Przymiotniki stopnia wyzszego i najwyzszego
+#3 Przymiotniki stopnia wyzszego i najwyzszego
 
 0100:AS
 0200:AP
 
-#Przymiotniki stopnia absolutnego
+#4 Przymiotniki stopnia absolutnego
 
 1100:AMS
 1200:AMP
 2100:AFS
 2200:AFP
 
-#Czasowniki zwykle, bezokoliczniki, z podwojna zbitka
+#5 Czasowniki zwykle, bezokoliczniki, z podwojna zbitka
 
 0000:VMNT
 
-#Czasowniki zwykle, bezokoliczniki, ze zbitka celownikowa
+#6 Czasowniki zwykle, bezokoliczniki, ze zbitka celownikowa
 
 0000:VMND
 
-#Czasowniki zwykle, bezokoliczniki, ze zbitka biernikowa
+#7Czasowniki zwykle, bezokoliczniki, ze zbitka biernikowa
 
 0000:VMNA
 
-#Czasowniki zwykle, bezokoliczniki
+#8 Czasowniki zwykle, bezokoliczniki
 
 0000:VMN
 
-#Czasowniki zwykle, imieslowy
+#9 Czasowniki zwykle, imieslowy
 
 1100:VMPSM
 1200:VMPPM
 2100:VMPSF
 2200:VMPPF
 
-#Czasowniki zwykle, gerundium, ze zbitka podwojna
+#10 Czasowniki zwykle, gerundium, ze zbitka podwojna
 
 0000:VMGT
 
-#Czasowniki zwykle, gerundium, ze zbitka celownikowa
+#11 Czasowniki zwykle, gerundium, ze zbitka celownikowa
 
 0000:VMGD
 
-#Czasowniki zwykle, gerundium, ze zbitka biernikowa
+#12 Czasowniki zwykle, gerundium, ze zbitka biernikowa
 
 0000:VMGA
 
-#Czasowniki zwykle, gerundium
+#13 Czasowniki zwykle, gerundium
 
 0000:VMG
 
-#Czasowniki zwykle, tryb oznajmujacy, czas terazniejszy
+#14 Czasowniki zwykle, tryb oznajmujacy, czas terazniejszy
 
 0110:VMIP1S
 0120:VMIP2S
@@ -80,7 +80,7 @@
 0220:VMIP2P
 0230:VMIP3P
 
-#Czasowniki zwykle, tryb laczny, czas terazniejszy
+#15 Czasowniki zwykle, tryb laczny, czas terazniejszy
 0110:VMSPS
 0120:VMSP2S
 0130:VMSPS
@@ -89,7 +89,7 @@
 0220:VMSP2P
 0230:VMSP3P
 
-#Czasowniki zwykle, tryb oznajmujacy, czas przyszly
+#16 Czasowniki zwykle, tryb oznajmujacy, czas przyszly
 
 0110:VMIF1S
 0120:VMIF2S
@@ -99,7 +99,7 @@
 0220:VMIF2P
 0230:VMIF3P
 
-#Czasowniki zwykle, tryb oznajmujacy, czas imperfecto
+#17 Czasowniki zwykle, tryb oznajmujacy, czas imperfecto
 
 0110:VMIIS
 0120:VMII2S
@@ -109,7 +109,7 @@
 0220:VMII2P
 0230:VMII3P
 
-#Czasowniki zwykle, tryb laczny, czas imperfecto
+#18 Czasowniki zwykle, tryb laczny, czas imperfecto
 
 0110:VMSIS
 0120:VMSI2S
@@ -119,7 +119,7 @@
 0220:VMSI2P
 0230:VMSI3P
 
-#Czasowniki zwykle, tryb oznajmujacy, czas przeszly
+#19 Czasowniki zwykle, tryb oznajmujacy, czas przeszly
 
 0110:VMIS1S
 0120:VMIS2S
@@ -129,7 +129,7 @@
 0220:VMIS2P
 0230:VMIS3P
 
-#Czasowniki zwykle, tryb warunkowy
+#20 Czasowniki zwykle, tryb warunkowy
 
 0110:VMCS
 0120:VMC2S
@@ -139,23 +139,23 @@
 0220:VMC2P
 0230:VMC3P
 
-#Czasowniki posilkowe, bezokoliczniki, ze zbitka podwojna
+#21 Czasowniki posilkowe, bezokoliczniki, ze zbitka podwojna
 
 0000:VANT
 
-#Czasowniki posilkowe, bezokoliczniki, ze zbitka celownikowa
+#22 Czasowniki posilkowe, bezokoliczniki, ze zbitka celownikowa
 
 0000:VAND
 
-#Czasowniki posilkowe, bezokoliczniki, ze zbitka biernikowa
+#23 Czasowniki posilkowe, bezokoliczniki, ze zbitka biernikowa
 
 0000:VANA
 
-#Czasowniki posilkowe, bezokoliczniki
+#24 Czasowniki posilkowe, bezokoliczniki
 
 0000:VAN
 
-#Czasowniki posilkowe, imieslowy
+#25 Czasowniki posilkowe, imieslowy
 
 1100:VAPSM
 1200:VAPPM

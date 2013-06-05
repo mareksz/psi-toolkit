@@ -69,6 +69,8 @@ void AutoCompleter::complete_(ProcessorPromiseAlternativeSequence& sequence) {
 
                 break;
             } else if ((*iter)->size() > 1) {
+                INFO("trying alternatives");
+
                 BOOST_FOREACH(ProcessorPromiseSharedPtr promise, *(*iter)) {
 
                     INFO("trying " << promise->getName());

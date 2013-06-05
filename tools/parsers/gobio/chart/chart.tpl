@@ -16,14 +16,14 @@ chart<C,S,V,R,I>::chart(
     Lattice & lattice,
     AV_AI_Converter & av_ai_converter,
     const std::string& terminalTag,
-    int edgeNumberLimit
+    LimitChecker & limitChecker
 ) :
     lattice_(lattice),
     av_ai_converter_(av_ai_converter),
     outputTags_(lattice.getLayerTagManager().createTagCollectionFromList(
         boost::assign::list_of("gobio")("parse-aux"))),
     inputTagMask_(lattice.getLayerTagManager().anyTag()),
-    edgeNumberLimit_(edgeNumberLimit)
+    limitChecker_(limitChecker)
 {
     std::vector<LayerTagCollection> altTags;
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection(terminalTag));
@@ -56,7 +56,7 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
     try {
         AnnotationItem ai = av_ai_converter_.toAnnotationItem(category);
         int num1 = lattice_.countEdges(u, v);
-        if (num1 >= edgeNumberLimit_) {
+        if (u >= 0 && v >= 0 && !limitChecker_.isAllowed(v - u, num1)) {
             return std::pair<edge_descriptor,bool>(Lattice::EdgeDescriptor(), false);
         }
         Lattice::EdgeDescriptor result = lattice_.addEdge(
@@ -90,7 +90,7 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
         Lattice::EdgeSequence::Builder builder(lattice_);
         builder.addEdge(link);
         int num1 = lattice_.countEdges(u, v);
-        if (num1 >= edgeNumberLimit_) {
+        if (u >= 0 && v >= 0 && !limitChecker_.isAllowed(v - u, num1)) {
             return std::pair<edge_descriptor,bool>(Lattice::EdgeDescriptor(), false);
         }
         Lattice::EdgeDescriptor result = lattice_.addEdge(
@@ -126,7 +126,7 @@ std::pair<typename chart<C,S,V,R,I>::edge_descriptor,bool> chart<C,S,V,R,I>::add
         builder.addEdge(left_link);
         builder.addEdge(right_link);
         int num1 = lattice_.countEdges(u, v);
-        if (num1 >= edgeNumberLimit_) {
+        if (u >= 0 && v >= 0 && !limitChecker_.isAllowed(v - u, num1)) {
             return std::pair<edge_descriptor,bool>(Lattice::EdgeDescriptor(), false);
         }
         Lattice::EdgeDescriptor result = lattice_.addEdge(
