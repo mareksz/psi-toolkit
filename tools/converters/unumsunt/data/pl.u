@@ -91,6 +91,7 @@ CAT = czasownik, C = przeszły >> R = $Rp, R1 = 0
 CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
+CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny
 CAT = przyimek >> Length=1,Amb=1,Typ=0
 siebie sobie >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
