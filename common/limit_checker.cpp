@@ -29,7 +29,8 @@ void LimitChecker::addLimitSpec(int argument, int limit) {
     if (argument < specs_.back().argument) {
         ready_ = false;
     }
-    specs_.push_back(LimitChecker::LimitSpec(argument, limit));
+    LimitChecker::LimitSpec spec(argument, limit);
+    specs_.push_back(spec);
 }
 
 
