@@ -92,6 +92,10 @@ std::string LinkParser::Factory::doGetName() const {
     return "link-parser";
 }
 
+std::string LinkParser::Factory::doGetSubType() const {
+    return "parser";
+}
+
 std::list<std::string> LinkParser::Factory::doGetAliases() {
     return boost::assign::list_of<std::string>
         (std::string("link-grammar"))

@@ -61,6 +61,10 @@ std::string TpTokenizer::Factory::doGetName() const {
     return "tp-tokenizer";
 }
 
+std::string TpTokenizer::Factory::doGetSubType() const {
+    return "tokenizer";
+}
+
 std::list<std::string> TpTokenizer::Factory::doGetAliases() {
     return boost::assign::list_of<std::string>
         (std::string("tp-tokeniser"))

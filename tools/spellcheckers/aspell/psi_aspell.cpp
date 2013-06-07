@@ -60,6 +60,10 @@ std::string PSIAspell::Factory::doGetName() const {
     return "aspell";
 }
 
+std::string PSIAspell::Factory::doGetSubType() const {
+    return "spell checker";
+}
+
 std::list<std::string> PSIAspell::Factory::doGetAliases() {
     return boost::assign::list_of<std::string>
         (std::string("spell"));

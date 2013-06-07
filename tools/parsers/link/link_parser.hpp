@@ -29,6 +29,7 @@ public:
         }
 
         virtual std::string doGetName() const;
+        virtual std::string doGetSubType() const;
         virtual std::list<std::string> doGetAliases();
         virtual boost::filesystem::path doGetFile() const;
 

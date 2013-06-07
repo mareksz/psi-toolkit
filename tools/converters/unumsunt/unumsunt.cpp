@@ -50,6 +50,10 @@ std::string Unumsunt::Factory::doGetName() const {
     return "tagset-converter";
 }
 
+std::string Unumsunt::Factory::doGetSubType() const {
+    return "converter";
+}
+
 
 boost::filesystem::path Unumsunt::Factory::doGetFile() const {
     return __FILE__;

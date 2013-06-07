@@ -35,10 +35,6 @@ private:
         return std::string("reader");
     }
 
-    virtual std::string doGetSubType() {
-        return std::string();
-    }
-
     virtual bool doIsSubTyped() const {
         return false;
     }

@@ -29,6 +29,7 @@ public:
         virtual boost::filesystem::path doGetFile() const;
 
         virtual std::string doGetName() const;
+        virtual std::string doGetSubType() const;
     };
 
     enum HandlingAttributes {

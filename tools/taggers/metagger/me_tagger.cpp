@@ -72,6 +72,10 @@ std::string MeTagger::Factory::doGetName() const {
     return "metagger";
 }
 
+std::string MeTagger::Factory::doGetSubType() const {
+    return "tagger";
+}
+
 boost::filesystem::path MeTagger::Factory::doGetFile() const {
     return __FILE__;
 }

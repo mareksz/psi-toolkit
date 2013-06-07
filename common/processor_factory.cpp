@@ -79,8 +79,12 @@ std::string ProcessorFactory::getType() const {
     return doGetType();
 }
 
-std::string ProcessorFactory::getSubType() {
+std::string ProcessorFactory::getSubType() const {
     return doGetSubType();
+}
+
+std::string ProcessorFactory::doGetSubType() const {
+    return std::string("");
 }
 
 bool ProcessorFactory::isSubTyped() const {

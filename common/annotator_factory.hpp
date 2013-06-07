@@ -130,7 +130,7 @@ private:
         return std::string("annotator");
     }
 
-    virtual std::string doGetSubType();
+    virtual std::string doGetSubType() const;
 
     virtual bool doIsSubTyped() const {
         return true;

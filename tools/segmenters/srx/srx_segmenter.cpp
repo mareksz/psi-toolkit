@@ -58,6 +58,10 @@ std::string SrxSegmenter::Factory::doGetName() const {
     return "srx-segmenter";
 }
 
+std::string SrxSegmenter::Factory::doGetSubType() const {
+    return "segmenter";
+}
+
 boost::filesystem::path SrxSegmenter::Factory::doGetFile() const {
     return __FILE__;
 }

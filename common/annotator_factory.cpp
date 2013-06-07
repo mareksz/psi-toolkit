@@ -76,6 +76,6 @@ std::list<std::string> AnnotatorFactory::doProvidedLayerTags(
     return doProvidedLayerTags();
 }
 
-std::string AnnotatorFactory::doGetSubType() {
-    return "fake subtype"; //TODO: implement based on getFile() method
+std::string AnnotatorFactory::doGetSubType() const {
+    return "uncategorized"; //TODO: implement based on getFile() method
 }

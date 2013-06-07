@@ -37,10 +37,6 @@ private:
         return std::string("writer");
     }
 
-    virtual std::string doGetSubType() {
-        return std::string();
-    }
-
     virtual bool doIsSubTyped() const {
         return false;
     }

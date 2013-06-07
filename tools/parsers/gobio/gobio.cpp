@@ -46,6 +46,10 @@ std::string Gobio::Factory::doGetName() const {
     return "gobio";
 }
 
+std::string Gobio::Factory::doGetSubType() const {
+    return "parser";
+}
+
 boost::filesystem::path Gobio::Factory::doGetFile() const {
     return __FILE__;
 }
