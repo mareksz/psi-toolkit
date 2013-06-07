@@ -126,7 +126,15 @@ private:
     virtual std::list<std::string> doLanguagesHandled(
         const boost::program_options::variables_map& options) const = 0;
 
+    virtual std::string doGetType() const {
+        return std::string("annotator");
+    }
 
+    virtual std::string doGetSubType();
+
+    virtual bool doIsSubTyped() const {
+        return true;
+    }
 };
 
 #endif

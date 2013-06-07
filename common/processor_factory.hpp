@@ -79,6 +79,22 @@ public:
     std::string getDetailedDescription();
 
     /**
+     * Returns processor's type, e.g. reader, annotator, writer.
+     */
+    std::string getType() const;
+
+    /**
+     * Returns processor's subtype, e.g. for 'annotator' type there may be such subtypes as
+     * 'lemmatizer', 'tokenizer', etc. Returns empty string if there are no subtypes for the type.
+     */
+    std::string getSubType();
+
+    /**
+     * Checks if given processor type has subtypes.
+     */
+    bool isSubTyped() const;
+
+    /**
      * Checks if all requirements are met. If not puts a message into `message' stream.
      */
     bool checkRequirements(const boost::program_options::variables_map& options,
@@ -110,6 +126,10 @@ private:
 
     virtual std::string doGetDescription();
     virtual std::string doGetDetailedDescription();
+
+    virtual std::string doGetType() const = 0;
+    virtual std::string doGetSubType() = 0;
+    virtual bool doIsSubTyped() const = 0;
 
     virtual std::list<std::string> doGetAliases();
 

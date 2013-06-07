@@ -75,6 +75,18 @@ std::string ProcessorFactory::doGetDetailedDescription() {
     return getDataFile("detailed_description.txt", false);
 }
 
+std::string ProcessorFactory::getType() const {
+    return doGetType();
+}
+
+std::string ProcessorFactory::getSubType() {
+    return doGetSubType();
+}
+
+bool ProcessorFactory::isSubTyped() const {
+    return doIsSubTyped();
+}
+
 std::list<std::string> ProcessorFactory::doGetAliases() {
     return std::list<std::string>();
 }
