@@ -81,7 +81,7 @@ void HtmlHelpFormatter::formatAliases_(std::list<std::string> aliases, std::ostr
 void HtmlHelpFormatter::formatUsingExamples_(std::vector<TestBatch> batches, std::ostream& output) {
     output << "<div class=\"help-examples\">"
         << "<h3>" << EXAMPLES_HEADER
-            << " <span class=\"toggler example-toggler\">[show]</span>"
+            //<< " <span class=\"toggler example-toggler\">[show]</span>"
         << "</h3>"
         << std::endl;
 

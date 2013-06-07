@@ -1,7 +1,8 @@
 $(document).ready(function(){
     bindBibtexToggle();
     bindDetailedDescriptionToggle();
-    bindHelpExamplesToggle();
+    bindHelpItemsToggle();
+    //bindHelpExamplesToggle();
 });
 
 function bindBibtexToggle() {
@@ -21,6 +22,12 @@ function bindDetailedDescriptionToggle() {
                 button.text('[show more]');
             }
         })
+    });
+}
+
+function bindHelpItemsToggle() {
+    $('.help-item > h2').click(function() {
+        $(this).siblings('div').toggle('fast');
     });
 }
 

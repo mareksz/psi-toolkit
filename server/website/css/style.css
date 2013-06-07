@@ -225,15 +225,18 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 /* help */
 
 .help-item { border-top:1px dotted #ccc; }
-.help-item > div { margin-bottom:12px; /*display:none;*/ }
+.help-item > div { margin-bottom:12px; display:none; }
+.help-item > h2 { cursor:pointer; }
 .help-desc { clear:both; }
 .alias-item { margin-left:24px; }
 
 .type-header, .subtype-header { border-top:1px dotted #ccc; padding-top:8px; }
 .type-container, .subtype-container, .help-examples, .help-opts, .help-alias, .help-langs {
     margin-left:24px; }
-.help-example { display:none; }
+
+/*.help-example { display:none; }*/
 .example-desc { margin-top:6px; }
+
 .in-out { margin-bottom:25px; }
 .in-out > pre, .in-out > a { padding-left:35px; }
 .in-out > a { display:block; }
