@@ -2,7 +2,8 @@ $(document).ready(function(){
     bindBibtexToggle();
     bindDetailedDescriptionToggle();
     bindHelpItemsToggle();
-    //bindHelpExamplesToggle();
+    bindTogglerOnAllHelpItems();
+    bindTogglingHelpItemWithMenu();
 });
 
 function bindBibtexToggle() {
@@ -31,17 +32,20 @@ function bindHelpItemsToggle() {
     });
 }
 
-function bindHelpExamplesToggle() {
-    $('.example-toggler').click(function() {
-        var button = $(this);
-        button.parent().siblings('.help-example').toggle('fast', function() {
-            if ($(this).is(":visible")) {
-                button.text('[hide]');
-            }
-            else {
-                button.text('[show]');
-            }
-        })
+function bindTogglerOnAllHelpItems() {
+    $('#show-all-toggler').click(function() {
+        $('.help-item div').show();
+    });
+
+    $('#hide-all-toggler').click(function() {
+        $('.help-item div').hide();
+    });
+}
+
+function bindTogglingHelpItemWithMenu() {
+    $('#help-menu a').click(function() {
+        var href = $(this).attr("href");
+        $( href.substr(href.indexOf("#")) ).siblings('div').show();
     });
 }
 
