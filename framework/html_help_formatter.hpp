@@ -71,6 +71,10 @@ private:
     static std::set<std::string> extensionsForRandomExamples_;
 
     void formatLanguagesHandled_(std::list<std::string> langCodes, std::ostream& output);
+
+    std::vector<std::string> getAllProcessorTypes_(); //FIXME move to other class
+    std::vector<std::string> getAllSubTypesForProcessorType_(std::string); //FIXME move to other class
+    std::vector<std::string> getAllProcessorsNamesForTypeAndSubType_(std::string, std::string);
 };
 
 #endif
