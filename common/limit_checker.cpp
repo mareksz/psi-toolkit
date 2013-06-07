@@ -26,7 +26,7 @@ void LimitChecker::setAbsoluteLimit(int absoluteLimit) {
 
 
 void LimitChecker::addLimitSpec(int argument, int limit) {
-    if (argument < specs_.back().argument) {
+    if (!specs_.empty() && argument < specs_.back().argument) {
         ready_ = false;
     }
     LimitChecker::LimitSpec spec(argument, limit);
