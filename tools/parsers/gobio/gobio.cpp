@@ -304,12 +304,13 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
 std::string Gobio::leafSymbolToCategory_(
     const std::string& symbol) {
 
-    if (symbol == "rzeczownik")  return "R";
-    if (symbol == "czasownik")   return "C";
-    if (symbol == "przymiotnik") return "P";
-    if (symbol == "przysłówek")  return "PS";
-    if (symbol == "przyimek")    return "PR";
-    if (symbol == "spójnik")     return "S";
+    if (symbol == "rzeczownik")         return "R";
+    if (symbol == "czasownik")          return "C";
+    if (symbol == "przymiotnik")        return "P";
+    if (symbol == "przysłówek")         return "PS";
+    if (symbol == "przyimek")           return "PR";
+    if (symbol == "spójnik")            return "S";
+    if (symbol == "zaimek_dzierżawczy") return "ZP";
 
     return symbol;
 }

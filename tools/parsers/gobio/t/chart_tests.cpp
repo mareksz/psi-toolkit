@@ -442,14 +442,11 @@ BOOST_AUTO_TEST_CASE( chart_categories ) {
             lattice.firstOutEdge(lattice.getFirstVertex(),
             lattice.getLayerTagManager().getMask("token"))),
         "'niebieskiego'");
-// TODO odkomentowac ponizsze po zrobieniu walencji:
-/*
     BOOST_CHECK_EQUAL(
         ch.edge_category(
             lattice.firstOutEdge(lattice.getFirstVertex(),
             lattice.getLayerTagManager().getMask("form"))),
         "'$niebieski'");
-*/
 
 }
 

@@ -74,7 +74,7 @@ CAT = przymiotnik >> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = a
 CAT = przymiotnik, R = mnż >> R = mnż|mno
 CAT = przymiotnik, R = mo >> R = mo|mż
 CAT = przymiotnik, R = m >> R = mo|mno|mż|mnż
-mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
 CAT = spójnik >> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1,Typ=0
@@ -91,6 +91,7 @@ CAT = czasownik, C = przeszły >> R = $Rp, R1 = 0
 CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
+CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny
 CAT = przyimek >> Length=1,Amb=1,Typ=0
 siebie sobie >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
