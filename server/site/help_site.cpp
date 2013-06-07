@@ -40,7 +40,7 @@ char * HelpSite::description() {
 
 char * HelpSite::processorHelps() {
     std::ostringstream streamForHelps;
-    htmlHelpFormatter_.formatHelps(streamForHelps);
+    htmlHelpFormatter_.formatHelpsWithTypes(streamForHelps);
 
     return stringToChar(streamForHelps.str());
 }

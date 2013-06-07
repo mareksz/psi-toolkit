@@ -77,5 +77,5 @@ std::list<std::string> AnnotatorFactory::doProvidedLayerTags(
 }
 
 std::string AnnotatorFactory::doGetSubType() {
-    return "fake subtype"; //TODO
+    return "fake subtype"; //TODO: implement based on getFile() method
 }

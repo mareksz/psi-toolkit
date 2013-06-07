@@ -209,6 +209,21 @@ void HtmlHelpFormatter::formatDocumentationMenu(std::ostream& output) {
     output << "</ul>" << std::endl;
 }
 
+void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
+    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
+
+    BOOST_FOREACH(std::string processorName, processors) {
+        output << std::endl
+            << "<!--"
+            << MainFactoriesKeeper::getInstance().getProcessorFactory(processorName).getType()
+            << " - "
+            << MainFactoriesKeeper::getInstance().getProcessorFactory(processorName).getSubType()
+            << "-->" << std::endl;
+
+        formatOneProcessorHelp(processorName, output);
+    }
+}
+
 void HtmlHelpFormatter::formatAllowedOptions_(boost::program_options::options_description options,
     std::ostream& output) {
 

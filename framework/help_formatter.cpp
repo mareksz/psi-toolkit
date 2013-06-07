@@ -34,9 +34,9 @@ void HelpFormatter::formatOneProcessorHelp(std::string processorName, std::ostre
 bool HelpFormatter::formatProcessorHelpsByName(std::string aliasOrProcessorName,
                                                std::ostream& output) {
 
-    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
-    bool isProcessor = (std::find(processors.begin(), processors.end(), aliasOrProcessorName)
-                            != processors.end());
+    std::vector<std::string> procs = MainFactoriesKeeper::getInstance().getProcessorNames();
+    bool isProcessor =
+        (std::find(procs.begin(), procs.end(), aliasOrProcessorName) != procs.end());
 
     if (isProcessor) {
         formatOneProcessorHelp(aliasOrProcessorName, output);
