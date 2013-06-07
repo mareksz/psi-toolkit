@@ -24,7 +24,6 @@ public:
     Morfologik(const boost::program_options::variables_map& options);
 
     static std::string getName();
-    static std::string getSubType();
     static boost::filesystem::path getFile();
     static std::list<std::string> getLayerTags();
     std::string getLanguage() const;

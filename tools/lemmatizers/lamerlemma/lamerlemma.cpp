@@ -130,10 +130,6 @@ std::string LamerLemma::getName() {
     return "lamerlemma";
 }
 
-std::string LamerLemma::getSubType() {
-    return "lemmatizer";
-}
-
 boost::filesystem::path LamerLemma::getFile() {
     return __FILE__;
 }

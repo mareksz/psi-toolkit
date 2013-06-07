@@ -35,6 +35,10 @@ std::string TransfererRunner::getName() {
     return "transferer";
 }
 
+std::string TransfererRunner::getSubType() {
+    return "translator";
+}
+
 boost::filesystem::path TransfererRunner::getFile() {
     return __FILE__;
 }

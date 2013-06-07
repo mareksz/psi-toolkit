@@ -39,10 +39,6 @@ std::string Morfologik::getName() {
     return "morfologik";
 }
 
-std::string Morfologik::getSubType() {
-    return "lammatizer";
-}
-
 boost::filesystem::path Morfologik::getFile() {
     return __FILE__;
 }
