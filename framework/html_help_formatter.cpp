@@ -5,6 +5,7 @@
 #include "html_help_formatter.hpp"
 #include "processors_helper.hpp"
 #include "shallow_aliaser.hpp"
+#include "string_inflection.hpp"
 #include "logging.hpp"
 
 #include "sundown/cpp/stringwrapper.hpp"
@@ -214,14 +215,18 @@ void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
     std::vector<std::string> types = ProcessorsHelper::getAllProcessorTypes_();
 
     BOOST_FOREACH(std::string type, types) {
-        output << "<h1 class=\"type-header\">" << type << "</h1>" << std::endl
+        output << "<h1 class=\"type-header\">"
+            << pluralizeRegularWord(type)
+            << "</h1>" << std::endl
             << "<div class=\"type-container\">" << std::endl;
 
         std::vector<std::string> subtypes = ProcessorsHelper::getAllSubTypesForProcessorType_(type);
 
         BOOST_FOREACH(std::string subtype, subtypes) {
             if (!subtype.empty()) {
-                output << "<h1 class=\"subtype-header\">" << subtype << "</h1>" << std::endl
+                output << "<h1 class=\"subtype-header\">"
+                    << pluralizeRegularWord(subtype)
+                    << "</h1>" << std::endl
                     << "<div class=\"subtype-container\">" << std::endl;
             }
 
