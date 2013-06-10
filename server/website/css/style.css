@@ -242,7 +242,7 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 .in-out > a { display:block; }
 .in, .out { float:left; font-weight:bold; margin-right:5px; }
 
-.toggler { color:#004767; font-size:.7em; text-decoration:none; cursor:pointer; }
+.toggler { color:#004767; font-size:.7em; text-decoration:none; cursor:pointer; float:right; }
 .toggler:hover { text-decoration:underline; }
 
 #show-all-toggler, #hide-all-toggler { float:right; }

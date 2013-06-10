@@ -49,6 +49,11 @@ function bindTogglingHelpItemWithMenu() {
     });
 }
 
+function showHelpItemWhenRedirectedToItFromOtherSite() {
+    var url = window.location.hash;
+    $( url.substr(url.indexOf("#")) ).siblings('div').show();
+}
+
 function addRightMenu(menuId, containerId) {
     $('#' + menuId).append(createRightMenuFromHeaders(containerId));
     bindStickyRightMenu(menuId);
