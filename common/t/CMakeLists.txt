@@ -25,6 +25,7 @@ add_library(common-tests
     quoter_tests.cpp
     regexp_tests.cpp
     string_frag_tests.cpp
+    string_inflection_tests.cpp
     xml_property_tree_tests.cpp
     ${COMMON_TESTS_EXTRAS}
 )
