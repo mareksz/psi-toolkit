@@ -16,6 +16,7 @@ public:
     Mapper(const boost::program_options::variables_map& options);
 
     static std::string getName();
+    static std::string getSubType();
     static boost::filesystem::path getFile();
 
     static AnnotatorFactory::LanguagesHandling languagesHandling(

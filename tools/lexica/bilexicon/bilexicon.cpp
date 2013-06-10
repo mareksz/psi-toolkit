@@ -54,6 +54,10 @@ std::string BiLexicon::getName() {
     return "bilexicon";
 }
 
+std::string BiLexicon::getSubType() {
+    return "lexicon";
+}
+
 boost::filesystem::path BiLexicon::getFile() {
     return __FILE__;
 }
