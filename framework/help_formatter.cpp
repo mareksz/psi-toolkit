@@ -33,7 +33,6 @@ void HelpFormatter::formatOneProcessorHelp(std::string processorName, std::ostre
 
 bool HelpFormatter::formatProcessorHelpsByName(std::string aliasOrProcessorName,
                                                std::ostream& output) {
-
     std::vector<std::string> procs = MainFactoriesKeeper::getInstance().getProcessorNames();
     bool isProcessor =
         (std::find(procs.begin(), procs.end(), aliasOrProcessorName) != procs.end());
@@ -47,8 +46,9 @@ bool HelpFormatter::formatProcessorHelpsByName(std::string aliasOrProcessorName,
     bool isAlias = aliases.count(aliasOrProcessorName);
 
     if (isAlias) {
-        BOOST_FOREACH(std::string name, getAliasesForProcessorName(aliasOrProcessorName)) {
-            formatOneProcessorHelp(name, output);
+        BOOST_FOREACH(ProcessorFactory* processor, MainFactoriesKeeper::getInstance().
+                getProcessorFactoriesForName(aliasOrProcessorName)) {
+            formatOneProcessorHelp(processor->getName(), output);
         }
         return true;
     }
@@ -87,37 +87,31 @@ void HelpFormatter::formatOneAlias(std::string aliasName,
 
 void HelpFormatter::formatDescription(std::ostream& output) {
     boost::filesystem::path path = getPathToFrameworkDataFile_("description.txt");
-
     doFormatDataFile(getFileContent(path), output);
 }
 
 void HelpFormatter::formatTutorial(std::ostream& output) {
     boost::filesystem::path path = getPathToFrameworkDataFile_("tutorial.txt");
-
     doFormatDataFile(getFileContent(path), output);
 }
 
 void HelpFormatter::formatLicence(std::ostream& output) {
     boost::filesystem::path path = getPathToFrameworkDataFile_("licence.txt");
-
     doFormatDataFile(getFileContent(path), output);
 }
 
 void HelpFormatter::formatAboutPsiFormat(std::ostream& output) {
     boost::filesystem::path path = getPathToFrameworkDataFile_("psi-format.txt");
-
     doFormatDataFile(getFileContent(path), output);
 }
 
 void HelpFormatter::formatFAQ(std::ostream& output) {
     boost::filesystem::path path = getPathToFrameworkDataFile_("faq.txt");
-
     doFormatDataFile(getFileContent(path), output);
 }
 
 void HelpFormatter::formatInstallationGuide(std::ostream& output) {
     boost::filesystem::path path = getPathToFrameworkDataFile_("installation_guide.txt");
-
     doFormatDataFile(getFileContent(path), output);
 }
 
