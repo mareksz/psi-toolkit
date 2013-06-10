@@ -70,6 +70,11 @@ FromConfigurationAnnotatorFactory::doGetName() const {
     return name_;
 }
 
+std::string
+FromConfigurationAnnotatorFactory::doGetSubType() const {
+    return annotatorFactory_.getSubType();
+}
+
 Annotator*
 FromConfigurationAnnotatorFactory::doCreateAnnotator(
     const boost::program_options::variables_map&) {
