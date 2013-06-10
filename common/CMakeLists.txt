@@ -55,6 +55,7 @@ add_library(common SHARED
     stream_helpers.cpp
     string_frag.cpp
     string_helpers.cpp
+    string_inflection.cpp
     utt_like_quoter.cpp
     xml_property_tree.cpp
     zvalue.cpp
