@@ -79,7 +79,7 @@ const std::string PipeRunner::PIPELINE_SEPARATOR = "!";
 
 template<typename Source, typename Sink>
 void PipeRunner::parseIntoFinalPipeline_(
-    std::vector<std::string> args, bool isTheFirstArgProgramName) {
+        std::vector<std::string> args, bool isTheFirstArgProgramName) {
 
     args = shallowAliaser_.replace(args);
 
@@ -178,9 +178,10 @@ bool PipeRunner::stopAfterExecutingRunnerOptions_() {
             std::cout << runnerOptionsDescription_
                       << std::endl
                       << "To get detailed information about individual processor "
-                         "use `--help name` option."
+                         "use \n`--help processor-name` option."
                       << std::endl;
         }
+
         return true;
     }
 

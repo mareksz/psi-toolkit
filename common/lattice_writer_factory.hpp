@@ -33,6 +33,13 @@ private:
         return std::string();
     }
 
+    virtual std::string doGetType() const {
+        return std::string("writer");
+    }
+
+    virtual bool doIsSubTyped() const {
+        return false;
+    }
 };
 
 #endif

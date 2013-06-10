@@ -22,6 +22,7 @@ private:
     virtual boost::program_options::options_description doOptionsHandled();
     virtual boost::filesystem::path doGetFile() const;
     virtual std::string doGetName() const;
+    virtual std::string doGetSubType() const;
     virtual Annotator* doCreateAnnotator(const boost::program_options::variables_map&);
     virtual std::list<std::list<std::basic_string<char> > > doRequiredLayerTags();
     virtual std::list<std::list<std::basic_string<char> > > doOptionalLayerTags();

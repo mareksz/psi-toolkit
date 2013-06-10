@@ -24,6 +24,7 @@ class MeTagger : public Annotator {
                 boost::program_options::options_description& optionsDescription);
 
             virtual std::string doGetName() const;
+            virtual std::string doGetSubType() const;
             virtual boost::filesystem::path doGetFile() const;
 
             virtual std::list<std::list<std::string> > doRequiredLayerTags();

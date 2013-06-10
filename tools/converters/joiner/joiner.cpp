@@ -141,6 +141,10 @@ std::string Joiner::Factory::doGetName() const {
     return "joiner";
 }
 
+std::string Joiner::Factory::doGetSubType() const {
+    return "converter";
+}
+
 
 LatticeWorker* Joiner::doCreateLatticeWorker(Lattice & lattice) {
     return new Worker(*this, lattice);

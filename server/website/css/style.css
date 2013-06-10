@@ -224,22 +224,30 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 
 /* help */
 
-.help-item { border-top:1px dotted #ccc; padding-bottom:24px; }
-.help-item > div { margin-bottom:12px; }
+.help-item { border-top:1px dotted #ccc; }
+.help-item > div { margin-bottom:12px; display:none; }
+.help-item > h2 { cursor:pointer; }
 .help-desc { clear:both; }
-.alias-item { margin-left:24px; }
 
-.help-examples, .help-opts, .help-alias, .help-langs { margin-left:24px; }
-.help-example { display:none; }
+.type-header, .subtype-header { border-top:1px dotted #ccc; padding-top:8px; }
+.type-container, .subtype-container, .help-examples, .help-opts, .help-alias, .help-langs {
+    margin-left:24px; }
+
+/*.help-example { display:none; }*/
+.alias-item { margin-left:24px; }
 .example-desc { margin-top:6px; }
+
 .in-out { margin-bottom:25px; }
 .in-out > pre, .in-out > a { padding-left:35px; }
 .in-out > a { display:block; }
 .in, .out { float:left; font-weight:bold; margin-right:5px; }
 
-.toggler { color:#004767; font-size:.9em; text-decoration:none; cursor:pointer; }
+.toggler { color:#004767; font-size:.7em; text-decoration:none; cursor:pointer; }
 .toggler:hover { text-decoration:underline; }
-.help-toggler { float:right; }
+
+#show-all-toggler, #hide-all-toggler { float:right; }
+#show-all-toggler { margin-right:5px; }
+#hide-all-toggler { margin-right:190px; }
 
 img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
     width:770px; }

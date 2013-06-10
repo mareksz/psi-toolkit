@@ -60,6 +60,10 @@ public:
             return L::getName();
         }
 
+        virtual std::string doGetSubType() const {
+            return "lemmatizer";
+        }
+
         virtual boost::filesystem::path doGetFile() const {
             return L::getFile();
         }

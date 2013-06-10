@@ -3,8 +3,9 @@
 #include <boost/algorithm/string/replace.hpp>
 
 #include "html_help_formatter.hpp"
-#include "logging.hpp"
+#include "processors_helper.hpp"
 #include "shallow_aliaser.hpp"
+#include "logging.hpp"
 
 #include "sundown/cpp/stringwrapper.hpp"
 
@@ -81,7 +82,7 @@ void HtmlHelpFormatter::formatAliases_(std::list<std::string> aliases, std::ostr
 void HtmlHelpFormatter::formatUsingExamples_(std::vector<TestBatch> batches, std::ostream& output) {
     output << "<div class=\"help-examples\">"
         << "<h3>" << EXAMPLES_HEADER
-            << " <span class=\"toggler example-toggler\">[show]</span>"
+            //<< " <span class=\"toggler example-toggler\">[show]</span>"
         << "</h3>"
         << std::endl;
 
@@ -207,6 +208,37 @@ void HtmlHelpFormatter::formatDocumentationMenu(std::ostream& output) {
             << std::endl;
     };
     output << "</ul>" << std::endl;
+}
+
+void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
+    std::vector<std::string> types = ProcessorsHelper::getAllProcessorTypes_();
+
+    BOOST_FOREACH(std::string type, types) {
+        output << "<h1 class=\"type-header\">" << type << "</h1>" << std::endl
+            << "<div class=\"type-container\">" << std::endl;
+
+        std::vector<std::string> subtypes = ProcessorsHelper::getAllSubTypesForProcessorType_(type);
+
+        BOOST_FOREACH(std::string subtype, subtypes) {
+            if (!subtype.empty()) {
+                output << "<h1 class=\"subtype-header\">" << subtype << "</h1>" << std::endl
+                    << "<div class=\"subtype-container\">" << std::endl;
+            }
+
+            std::vector<std::string> processors =
+                ProcessorsHelper::getAllProcessorsNamesForTypeAndSubType_(type, subtype);
+
+            BOOST_FOREACH(std::string processor, processors) {
+                formatOneProcessorHelp(processor, output);
+            }
+
+            if (!subtype.empty()) {
+                output << "</div>" << std::endl;
+            }
+        }
+
+        output << "</div>" << std::endl;
+    }
 }
 
 void HtmlHelpFormatter::formatAllowedOptions_(boost::program_options::options_description options,

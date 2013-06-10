@@ -31,6 +31,14 @@ private:
         return std::string("psi-writer");
     }
 
+    virtual std::string doGetType() const {
+        return std::string("reader");
+    }
+
+    virtual bool doIsSubTyped() const {
+        return false;
+    }
+
 };
 
 #endif

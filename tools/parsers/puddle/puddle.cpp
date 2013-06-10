@@ -65,6 +65,9 @@ namespace puddle {
     std::string Puddle::Factory::doGetName() const {
         return "puddle";
     }
+    std::string Puddle::Factory::doGetSubType() const {
+        return "parser";
+    }
 
     boost::filesystem::path Puddle::Factory::doGetFile() const {
         return __FILE__;

@@ -182,6 +182,10 @@ std::string Bonsai::Factory::doGetName() const {
     return "bonsai";
 }
 
+std::string Bonsai::Factory::doGetSubType() const {
+    return "translator";
+}
+
 boost::filesystem::path Bonsai::Factory::doGetFile() const {
     return __FILE__;
 }

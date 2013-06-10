@@ -17,7 +17,7 @@ void ConsoleHelpFormatter::doFormatOneProcessorHelp(
            << description << std::endl;
 
     if (!detailedDescription.empty()) {
-        output << std::endl << detailedDescription << std::endl;
+        output << detailedDescription << std::endl;
     }
 
     if (!aliases.empty()) {
@@ -35,7 +35,7 @@ void ConsoleHelpFormatter::doFormatOneProcessorHelp(
             << " examples check installed files or visit PSI website."
             << std::endl << std::endl;
 
-    output << options;
+    output << options << std::endl;
 }
 
 void ConsoleHelpFormatter::formatLanguagesHandled_(std::list<std::string> langCodes,

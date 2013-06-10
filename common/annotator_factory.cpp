@@ -75,3 +75,7 @@ std::list<std::string> AnnotatorFactory::doProvidedLayerTags(
 
     return doProvidedLayerTags();
 }
+
+std::string AnnotatorFactory::doGetSubType() const {
+    return "uncategorized";
+}

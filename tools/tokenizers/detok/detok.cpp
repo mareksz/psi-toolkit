@@ -19,6 +19,10 @@ std::string Detok::Factory::doGetName() const {
     return "detok";
 }
 
+std::string Detok::Factory::doGetSubType() const {
+    return "tokenizer";
+}
+
 boost::filesystem::path Detok::Factory::doGetFile() const {
     return __FILE__;
 }

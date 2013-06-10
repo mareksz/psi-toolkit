@@ -44,6 +44,7 @@ public:
             const boost::program_options::variables_map& options);
 
         virtual std::string doGetName() const;
+        virtual std::string doGetSubType() const;
         virtual boost::filesystem::path doGetFile() const;
         virtual boost::program_options::options_description doOptionsHandled();
 

@@ -42,6 +42,10 @@ public:
             return T::getName();
         }
 
+        virtual std::string doGetSubType() const {
+            return T::getSubType();
+        }
+
         virtual boost::filesystem::path doGetFile() const {
             return T::getFile();
         }

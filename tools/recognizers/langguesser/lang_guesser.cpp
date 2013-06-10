@@ -243,6 +243,10 @@ std::string LangGuesser::Factory::doGetName() const {
     return "lang-guesser";
 }
 
+std::string LangGuesser::Factory::doGetSubType() const {
+    return "tagger";
+}
+
 boost::filesystem::path LangGuesser::Factory::doGetFile() const {
     return __FILE__;
 }

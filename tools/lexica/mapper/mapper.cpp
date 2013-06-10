@@ -140,6 +140,10 @@ std::string Mapper::getName() {
     return "mapper";
 }
 
+std::string Mapper::getSubType() {
+    return "lexicon";
+}
+
 boost::filesystem::path Mapper::getFile() {
     return __FILE__;
 }

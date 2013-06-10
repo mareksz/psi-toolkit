@@ -1,7 +1,9 @@
 $(document).ready(function(){
     bindBibtexToggle();
     bindDetailedDescriptionToggle();
-    bindHelpExamplesToggle();
+    bindHelpItemsToggle();
+    bindTogglerOnAllHelpItems();
+    bindTogglingHelpItemWithMenu();
 });
 
 function bindBibtexToggle() {
@@ -24,17 +26,26 @@ function bindDetailedDescriptionToggle() {
     });
 }
 
-function bindHelpExamplesToggle() {
-    $('.example-toggler').click(function() {
-        var button = $(this);
-        button.parent().siblings('.help-example').toggle('fast', function() {
-            if ($(this).is(":visible")) {
-                button.text('[hide]');
-            }
-            else {
-                button.text('[show]');
-            }
-        })
+function bindHelpItemsToggle() {
+    $('.help-item > h2').click(function() {
+        $(this).siblings('div').toggle('fast');
+    });
+}
+
+function bindTogglerOnAllHelpItems() {
+    $('#show-all-toggler').click(function() {
+        $('.help-item div').show();
+    });
+
+    $('#hide-all-toggler').click(function() {
+        $('.help-item div').hide();
+    });
+}
+
+function bindTogglingHelpItemWithMenu() {
+    $('#help-menu a').click(function() {
+        var href = $(this).attr("href");
+        $( href.substr(href.indexOf("#")) ).siblings('div').show();
     });
 }
 
@@ -64,15 +75,16 @@ function createRightMenuFromHeaders(containerId) {
 
 function bindStickyRightMenu(menuId) {
   var menu = $('#' + menuId);
-  var origOffsetY = menu.offset().top;
   var extraTop = 12; // = .right-menu.sticky-menu#top
-  var footerTop = $(document).height() - $("footer").outerHeight() - 2;
+  var origOffsetY = menu.offset().top;
 
   function footerTopToDownOfPage() {
     return $(window).height() - ($("footer").offset().top - window.scrollY)
   }
 
   function onScroll(e) {
+    var footerTop = $(document).height() - $("footer").outerHeight() - 2;
+
     if (window.scrollY + extraTop >= origOffsetY) {
         menu.addClass('sticky-menu');
 

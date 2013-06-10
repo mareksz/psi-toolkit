@@ -24,6 +24,7 @@ add_library(framework SHARED
     pipe_runner.cpp
     split_pipeline.cpp
     version_information.cpp
+    processors_helper.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/git_info.cpp"
 )
 

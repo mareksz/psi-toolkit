@@ -15,6 +15,7 @@ public:
 
     void formatPipelineExamplesInJSON(std::ostream& output);
     void formatDocumentationMenu(std::ostream& output);
+    void formatHelpsWithTypes(std::ostream& output);
 
     /*
      * If you pass FileStorage, some example inputs and outputs in non-textual format
