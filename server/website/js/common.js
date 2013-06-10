@@ -75,15 +75,16 @@ function createRightMenuFromHeaders(containerId) {
 
 function bindStickyRightMenu(menuId) {
   var menu = $('#' + menuId);
-  var origOffsetY = menu.offset().top;
   var extraTop = 12; // = .right-menu.sticky-menu#top
-  var footerTop = $(document).height() - $("footer").outerHeight() - 2;
+  var origOffsetY = menu.offset().top;
 
   function footerTopToDownOfPage() {
     return $(window).height() - ($("footer").offset().top - window.scrollY)
   }
 
   function onScroll(e) {
+    var footerTop = $(document).height() - $("footer").outerHeight() - 2;
+
     if (window.scrollY + extraTop >= origOffsetY) {
         menu.addClass('sticky-menu');
 
