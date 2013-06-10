@@ -3,8 +3,9 @@
 #include <boost/algorithm/string/replace.hpp>
 
 #include "html_help_formatter.hpp"
-#include "logging.hpp"
+#include "processors_helper.hpp"
 #include "shallow_aliaser.hpp"
+#include "logging.hpp"
 
 #include "sundown/cpp/stringwrapper.hpp"
 
@@ -210,13 +211,13 @@ void HtmlHelpFormatter::formatDocumentationMenu(std::ostream& output) {
 }
 
 void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
-    std::vector<std::string> types = getAllProcessorTypes_();
+    std::vector<std::string> types = ProcessorsHelper::getAllProcessorTypes_();
 
     BOOST_FOREACH(std::string type, types) {
         output << "<h1 class=\"type-header\">" << type << "</h1>" << std::endl
             << "<div class=\"type-container\">" << std::endl;
 
-        std::vector<std::string> subtypes = getAllSubTypesForProcessorType_(type);
+        std::vector<std::string> subtypes = ProcessorsHelper::getAllSubTypesForProcessorType_(type);
 
         BOOST_FOREACH(std::string subtype, subtypes) {
             if (!subtype.empty()) {
@@ -225,7 +226,7 @@ void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
             }
 
             std::vector<std::string> processors =
-                getAllProcessorsNamesForTypeAndSubType_(type, subtype);
+                ProcessorsHelper::getAllProcessorsNamesForTypeAndSubType_(type, subtype);
 
             BOOST_FOREACH(std::string processor, processors) {
                 formatOneProcessorHelp(processor, output);
@@ -238,56 +239,6 @@ void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
 
         output << "</div>" << std::endl;
     }
-}
-
-std::vector<std::string> HtmlHelpFormatter::getAllProcessorTypes_() {
-    std::vector<std::string> types;
-    std::string type;
-
-    BOOST_FOREACH(std::string name, MainFactoriesKeeper::getInstance().getProcessorNames()) {
-        type = MainFactoriesKeeper::getInstance().getProcessorFactory(name).getType();
-
-        if (std::find(types.begin(), types.end(), type) == types.end()) {
-            types.push_back(type);
-        }
-    }
-
-    return types;
-}
-
-std::vector<std::string> HtmlHelpFormatter::getAllSubTypesForProcessorType_(std::string type) {
-    std::vector<std::string> subtypes;
-    std::string subtype;
-
-    BOOST_FOREACH(std::string name, MainFactoriesKeeper::getInstance().getProcessorNames()) {
-        if (MainFactoriesKeeper::getInstance().getProcessorFactory(name).getType() != type) {
-            continue;
-        }
-
-        subtype = MainFactoriesKeeper::getInstance().getProcessorFactory(name).getSubType();
-
-        if (std::find(subtypes.begin(), subtypes.end(), subtype) == subtypes.end()) {
-            subtypes.push_back(subtype);
-        }
-    }
-
-    std::sort(subtypes.begin(), subtypes.end());
-    return subtypes;
-}
-
-std::vector<std::string> HtmlHelpFormatter::getAllProcessorsNamesForTypeAndSubType_(
-        std::string type, std::string subtype) {
-    std::vector<std::string> processors;
-
-    BOOST_FOREACH(std::string name, MainFactoriesKeeper::getInstance().getProcessorNames()) {
-        if (MainFactoriesKeeper::getInstance().getProcessorFactory(name).getType() != type ||
-            MainFactoriesKeeper::getInstance().getProcessorFactory(name).getSubType() != subtype) {
-            continue;
-        }
-        processors.push_back(name);
-    }
-
-    return processors;
 }
 
 void HtmlHelpFormatter::formatAllowedOptions_(boost::program_options::options_description options,
