@@ -21,6 +21,10 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
 
     complete_(sequence);
 
+    BOOST_FOREACH(ProcessorPromiseSequence seq, alternativeSequences_) {
+        trySolution_(seq);
+    }
+
     return bestFound_;
 }
 
@@ -143,7 +147,7 @@ void AutoCompleter::complete_(ProcessorPromiseAlternativeSequence& sequence) {
 
     } while (!allFulfilled);
 
-    trySolution_(toPromiseSequence_(sequence));
+    alternativeSequences_.push_back(toPromiseSequence_(sequence));
 }
 
 bool AutoCompleter::isMultilingualProcessorPromiseAlternative_(

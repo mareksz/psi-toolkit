@@ -72,6 +72,8 @@ private:
     boost::optional<ProcessorPromiseSequence> bestFound_;
     boost::optional<double> bestQualityScore_;
     boost::optional<double> bestEstimatedTime_;
+
+    std::list<ProcessorPromiseSequence> alternativeSequences_;
 };
 
 #endif
