@@ -21,11 +21,21 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
 
     complete_(sequence);
 
-    BOOST_FOREACH(ProcessorPromiseSequence seq, alternativeSequences_) {
-        trySolution_(seq);
+    std::list<ProcessorPromiseSequence>::iterator bestIter =
+        alternativeSequences_.end();
+
+    for (std::list<ProcessorPromiseSequence>::iterator iter =
+             alternativeSequences_.begin();
+         iter != alternativeSequences_.end();
+         ++iter) {
+
+        if (trySolution_(*iter))
+            bestIter = iter;
     }
 
     if (bestFound_) {
+        alternativeSequences_.erase(bestIter);
+
         INFO("checking promise sequence...");
 
         boost::optional<std::exception> ex = checkSolution_(*bestFound_);
@@ -344,7 +354,7 @@ ProcessorPromiseSequence AutoCompleter::toPromiseSequence_(
     return promiseSeq;
 }
 
-void AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence) {
+bool AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence) {
     double seqScore = calculateQualityScore_(promiseSequence);
     double seqTime = calculateEstimatedTime_(promiseSequence);
 
@@ -354,7 +364,11 @@ void AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence
         bestQualityScore_ = seqScore;
         bestEstimatedTime_ = seqTime;
         bestFound_ = promiseSequence;
+
+        return true;
     }
+
+    return false;
 }
 
 boost::optional<std::exception> AutoCompleter::checkSolution_(const ProcessorPromiseSequence& promiseSequence) {
