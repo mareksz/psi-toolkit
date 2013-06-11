@@ -55,6 +55,7 @@ private:
     ProcessorPromiseSequence toPromiseSequence_(const ProcessorPromiseAlternativeSequence& seq);
 
     void trySolution_(const ProcessorPromiseSequence& promiseSequence);
+    boost::optional<std::exception> checkSolution_(const ProcessorPromiseSequence& promiseSequence);
 
     double calculateQualityScore_(const ProcessorPromiseSequence& promiseSequence);
     double calculateEstimatedTime_(const ProcessorPromiseSequence& promiseSequence);

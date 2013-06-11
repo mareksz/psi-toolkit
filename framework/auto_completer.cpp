@@ -25,6 +25,17 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
         trySolution_(seq);
     }
 
+    if (bestFound_) {
+        INFO("checking promise sequence...");
+
+        boost::optional<std::exception> ex = checkSolution_(*bestFound_);
+
+        if (ex)
+            throw *ex;
+
+        INFO("checking done...");
+    }
+
     return bestFound_;
 }
 
@@ -345,6 +356,20 @@ void AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence
         bestFound_ = promiseSequence;
     }
 }
+
+boost::optional<std::exception> AutoCompleter::checkSolution_(const ProcessorPromiseSequence& promiseSequence) {
+    try {
+        BOOST_FOREACH(ProcessorPromiseSharedPtr promise, promiseSequence) {
+            promise->createProcessor();
+        }
+    } catch (std::exception& ex) {
+        DEBUG("cannot run this promise sequence [" << ex.what() << "]");
+        return boost::optional<std::exception>(ex);
+    }
+
+    return boost::optional<std::exception>();
+}
+
 
 double AutoCompleter::calculateQualityScore_(const ProcessorPromiseSequence& promiseSequence) {
     double sum = 0.0;
