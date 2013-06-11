@@ -21,30 +21,42 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
 
     complete_(sequence);
 
-    std::list<ProcessorPromiseSequence>::iterator bestIter =
-        alternativeSequences_.end();
+    boost::optional<std::exception> firstException;
 
-    for (std::list<ProcessorPromiseSequence>::iterator iter =
-             alternativeSequences_.begin();
-         iter != alternativeSequences_.end();
-         ++iter) {
+    while (!alternativeSequences_.empty()) {
 
-        if (trySolution_(*iter))
-            bestIter = iter;
+        std::list<ProcessorPromiseSequence>::iterator bestIter =
+            alternativeSequences_.end();
+
+        bestFound_.reset();
+        bestQualityScore_.reset();
+        bestEstimatedTime_.reset();
+
+        for (std::list<ProcessorPromiseSequence>::iterator iter =
+                 alternativeSequences_.begin();
+             iter != alternativeSequences_.end();
+             ++iter) {
+
+            if (trySolution_(*iter))
+                bestIter = iter;
+        }
+
+        if (bestFound_) {
+            alternativeSequences_.erase(bestIter);
+
+            INFO("checking promise sequence...");
+
+            boost::optional<std::exception> ex = checkSolution_(*bestFound_);
+
+            if (ex)
+                firstException = ex;
+
+            INFO("checking done...");
+        }
     }
 
-    if (bestFound_) {
-        alternativeSequences_.erase(bestIter);
-
-        INFO("checking promise sequence...");
-
-        boost::optional<std::exception> ex = checkSolution_(*bestFound_);
-
-        if (ex)
-            throw *ex;
-
-        INFO("checking done...");
-    }
+    if (!bestFound_ && firstException)
+        throw firstException;
 
     return bestFound_;
 }
