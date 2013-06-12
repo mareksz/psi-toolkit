@@ -10,6 +10,7 @@
     <!--#psis pipe_site_options -->
 
     $(document).ready(function(){
+        addRightMenu("processor-documentation-menu", "processor-documentation");
     });
   </script>
 </head>
@@ -21,13 +22,12 @@
 <div id="content">
   <div class="wrapper">
 
-    <aside class="right-menu" id="help-menu">
-        some right menu
+    <aside class="processor-documentation-menu" id="help-menu">
     </aside>
 
-    <h1><!--#psis processor_documentation_site_processor_name --></h1>
+    <h1>Specification for <!--#psis processor_documentation_site_processor_name --></h1>
 
-    <section class="left-content">
+    <section id="processor-documentation" class="left-content">
       <!--#psis processor_documentation_site_processor_documentation -->
     </section>
 

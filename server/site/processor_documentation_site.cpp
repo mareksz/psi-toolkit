@@ -11,9 +11,13 @@ const std::string ProcessorDocumentationSite::PROCESSOR_NAME_PARAM = "name";
 
 ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
     : TemplateSite(server),
-    name_("unknown"),
-    documentation_("Page not found!")
+    name_(pageNotFoundMessage()),
+    documentation_(""),
+    fileStorage_(std::string(psiServer_.websiteRoot)),
+    htmlHelpFormatter_()
 {
+    htmlHelpFormatter_.setFileStorage(&fileStorage_);
+
     psiServer_.registerIncludeCode("processor_documentation_site_processor_name",
         boost::bind(&ProcessorDocumentationSite::processorName, this));
     psiServer_.registerIncludeCode("processor_documentation_site_processor_documentation",
@@ -29,7 +33,7 @@ char * ProcessorDocumentationSite::processorName() {
 
 char * ProcessorDocumentationSite::processorDocumentation() {
     if (documentation_.str().empty()) {
-        documentation_ << "Page not found!";
+        documentation_ << pageNotFoundMessage();
     }
     return stringToChar(documentation_.str());
 }
@@ -40,13 +44,14 @@ char * ProcessorDocumentationSite::actionProcessorDocumentation() {
     if (psiServer_.session()->isData(PROCESSOR_NAME_PARAM)) {
         name_ = psiServer_.session()->getData(PROCESSOR_NAME_PARAM);
 
-        if (not HtmlHelpFormatter().formatProcessorHelpsByName(name_, documentation_)) {
-            name_ = "page not found";
-            documentation_ << "Processor(s) <code>" << name_ << "</code> not found." << std::endl;
+        if (not htmlHelpFormatter_.formatProcessorHelpsByName(name_, documentation_)) {
+            documentation_ << "Processor <code>" << name_ << "</code> not found." << std::endl;
+            name_ = pageNotFoundMessage();
         }
     }
     else {
-        documentation_ << "Processor(s) not specified.";
+        name_ = pageNotFoundMessage();
+        documentation_ << "Processor not specified.";
     }
 
     psiServer_.session()->clearData(PROCESSOR_NAME_PARAM);
