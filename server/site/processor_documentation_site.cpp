@@ -10,11 +10,9 @@
 const std::string ProcessorDocumentationSite::PROCESSOR_NAME_PARAM = "name";
 
 ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
-    : TemplateSite(server),
+    : HelpTemplateSite(server),
     name_(pageNotFoundMessage()),
-    documentation_(""),
-    fileStorage_(std::string(psiServer_.websiteRoot)),
-    htmlHelpFormatter_()
+    documentation_("")
 {
     htmlHelpFormatter_.setFileStorage(&fileStorage_);
 

@@ -1,13 +1,7 @@
 #include "help_site.hpp"
 #include "logging.hpp"
 
-HelpSite::HelpSite(PsiServer& server)
-    : TemplateSite(server),
-    fileStorage_(std::string(psiServer_.websiteRoot)),
-    htmlHelpFormatter_()
-{
-    htmlHelpFormatter_.setFileStorage(&fileStorage_);
-
+HelpSite::HelpSite(PsiServer& server) : HelpTemplateSite(server) {
     psiServer_.registerIncludeCode(
         "help_site_description", boost::bind(&HelpSite::description, this));
     psiServer_.registerIncludeCode(
