@@ -14,7 +14,7 @@ ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
     name_(pageNotFoundMessage()),
     documentation_("")
 {
-    htmlHelpFormatter_.setFileStorage(&fileStorage_);
+    htmlHelpFormatter_.setUseJavaScript(false);
 
     psiServer_.registerIncludeCode("processor_documentation_site_processor_name",
         boost::bind(&ProcessorDocumentationSite::processorName, this));

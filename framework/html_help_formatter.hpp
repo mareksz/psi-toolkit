@@ -11,6 +11,7 @@ class HtmlHelpFormatter : public HelpFormatter {
 
 public:
     HtmlHelpFormatter();
+    HtmlHelpFormatter(bool useJavaScript);
     ~HtmlHelpFormatter();
 
     void formatPipelineExamplesInJSON(std::ostream& output);
@@ -24,10 +25,14 @@ public:
     void setFileStorage(FileStorage* fileStorage);
     void unsetFileStorage();
 
+    void setUseJavaScript(bool onOff);
+
 private:
 
     FileStorage* fileStorage_;
     FileRecognizer fileRecognizer_;
+    bool useJavaScript_;
+
 
     void doFormatOneProcessorHelp(
         std::string processorName,
