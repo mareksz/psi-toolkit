@@ -5,6 +5,7 @@
 #include "processor_documentation_site.hpp"
 #include "pipe_runner.hpp"
 #include "session_manager.hpp"
+#include "html_help_formatter.hpp"
 
 const std::string ProcessorDocumentationSite::PROCESSOR_NAME_PARAM = "name";
 
@@ -38,12 +39,16 @@ char * ProcessorDocumentationSite::actionProcessorDocumentation() {
 
     if (psiServer_.session()->isData(PROCESSOR_NAME_PARAM)) {
         name_ = psiServer_.session()->getData(PROCESSOR_NAME_PARAM);
+
+        if (not HtmlHelpFormatter().formatProcessorHelpsByName(name_, documentation_)) {
+            name_ = "page not found";
+            documentation_ << "Processor(s) <code>" << name_ << "</code> not found." << std::endl;
+        }
     }
     else {
-        documentation_ << "Page does not exist!" << std::endl;
+        documentation_ << "Processor(s) not specified.";
     }
 
-    documentation_ << name_ << std::endl;
-
+    psiServer_.session()->clearData(PROCESSOR_NAME_PARAM);
     return stringToChar(std::string("/help/processor-documentation.html"));
 }

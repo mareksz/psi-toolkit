@@ -225,7 +225,8 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 /* help */
 
 .help-item { border-top:1px dotted #ccc; }
-.help-item > div { margin-bottom:12px; display:none; }
+.help-item > div { margin-bottom:12px; }
+#documentation .help-item > div { display:none; }
 .help-item > h2 { cursor:pointer; }
 .help-desc { clear:both; }
 
