@@ -15,6 +15,7 @@ public:
     char * processorName();
     char * processorDocumentation();
     char * actionProcessorDocumentation();
+    char * processorDocumentationMenu();
 
 private:
     std::string name_;

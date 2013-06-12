@@ -214,3 +214,7 @@ std::string HelpFormatter::getProcessorNameWithoutOptions(const std::string& nam
 
     return trimmedName;
 }
+
+std::vector<std::string> HelpFormatter::getProcessorNames() {
+    return MainFactoriesKeeper::getInstance().getProcessorNames();
+}

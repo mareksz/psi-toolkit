@@ -10,7 +10,7 @@
     <!--#psis pipe_site_options -->
 
     $(document).ready(function(){
-        addRightMenu("processor-documentation-menu", "processor-documentation");
+        bindStickyRightMenu("help-menu");
     });
   </script>
 </head>
@@ -22,7 +22,8 @@
 <div id="content">
   <div class="wrapper">
 
-    <aside class="processor-documentation-menu" id="help-menu">
+    <aside id="processor-documentation-menu" class="right-menu">
+      <!--#psis processor_documentation_site_processor_documentation_menu -->
     </aside>
 
     <h1>Specification for <!--#psis processor_documentation_site_processor_name --></h1>
@@ -37,6 +38,7 @@
       <li><a href="/help/start.html">Getting Started</a></li>
       <li><a href="/help/installation.html">Installation guide</a></li>
       <li><a href="/help/tutorial.html">Tutorial</a></li>
+      <li><a href="/help/documentation.html">Documentation</a></li>
       <li><a href="/help/psi-format.html">About PSI format</a></li>
       <li><a href="/help/aliases.html">Aliases</a></li>
       <li><a href="/help/faq.html">Frequently Asked Questions</a></li>

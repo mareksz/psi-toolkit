@@ -212,17 +212,6 @@ void HtmlHelpFormatter::formatPipelineExampleInJSON_(TestBatch batch, std::ostre
     output << "  }, " << std::endl;
 }
 
-void HtmlHelpFormatter::formatDocumentationMenu(std::ostream& output) {
-    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
-
-    output << "<ul>" << std::endl;
-    BOOST_FOREACH(std::string processorName, processors) {
-        output << "<li><a href=\"#" << processorName << "\">" << processorName << "</a></li>"
-            << std::endl;
-    };
-    output << "</ul>" << std::endl;
-}
-
 void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
     std::vector<std::string> types = ProcessorsHelper::getAllProcessorTypes_();
 
