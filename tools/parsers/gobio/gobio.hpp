@@ -127,7 +127,7 @@ private:
 
     virtual std::string doInfo();
 
-    GobioLimitChecker limitChecker_;
+    boost::shared_ptr<LimitChecker> limitChecker_;
 
     std::string rulesPath_;
 
