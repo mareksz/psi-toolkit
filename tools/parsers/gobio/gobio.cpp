@@ -317,6 +317,12 @@ std::string Gobio::leafSymbolToCategory_(
     if (symbol == "spójnik")            return "S";
     if (symbol == "zaimek_dzierżawczy") return "ZP";
 
+    if (symbol.length() >= 2 && symbol[0] == 'z' && symbol[1] == 'z') {
+        std::stringstream resSs;
+        resSs << "'" << symbol.substr(2) << "'";
+        return resSs.str();
+    }
+
     return symbol;
 }
 
