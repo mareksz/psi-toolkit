@@ -216,7 +216,7 @@ TransformationPtr RuleSet::word_to_transformation(Symbol &lhs, SListPtr &srcSymb
             try {
                 costs.push_back(boost::lexical_cast<float>( trg_sym_map[probs[i]] ));
             }
-            catch(...) {
+            catch (...) {
             costs.push_back(0);
             }
     }

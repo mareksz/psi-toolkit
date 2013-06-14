@@ -213,17 +213,17 @@ void TransfererRunner::putTargetForms_(Lattice& lattice, zsyntree* targetTree, b
         n = nstack.top();
         nstack.pop();
 
-        if(!NULLP(z = n->fetch(transferer_->getSurfSymbol())))
+        if (!NULLP(z = n->fetch(transferer_->getSurfSymbol())))
         {
             try {
                 Lattice::EdgeDescriptor edge
                     = boost::any_cast<Lattice::EdgeDescriptor>(n->getOrigin());
 
-                if(ZVECTORP(z))
+                if (ZVECTORP(z))
                 {
                     zvector* v = ZVECTORC(z);
                     int c;
-                    for(c = 0 ; c < v->getSize(); ++c)
+                    for (c = 0 ; c < v->getSize(); ++c)
                         putTargetForm_(lattice, edge, v->elementAt(c));
                 }
                 else
@@ -235,7 +235,7 @@ void TransfererRunner::putTargetForms_(Lattice& lattice, zsyntree* targetTree, b
         else
         {
             // wrzucamy do kolejki potomków n
-            for(i = n->last_subtree; i >= 0; --i)
+            for (i = n->last_subtree; i >= 0; --i)
                 nstack.push(ZSYNTREEC(n->fetch(INTEGER_TO_ZVALUE(i))));
         }
     }

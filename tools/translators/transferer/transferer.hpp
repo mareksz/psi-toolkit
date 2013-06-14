@@ -273,7 +273,7 @@ class Transferer
              */
             int getNbArguments() const
             {
-                if(is_build_in) return nb_arguments;
+                if (is_build_in) return nb_arguments;
                 else return defined_subr->args->getSize();
             }
         };

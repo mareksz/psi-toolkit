@@ -1088,7 +1088,7 @@ void decimalfraction2pltext(int type,
                 std::string& tequiv,
                 std::string& tinflection)
 {
-    size_t pos = n.find(',');
+    size_t pos = n.find(', ');
 
     if (pos == std::string::npos) {
         integer2pltext(type, n, tequiv, tinflection);
