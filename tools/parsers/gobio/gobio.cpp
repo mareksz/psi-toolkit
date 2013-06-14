@@ -117,12 +117,13 @@ Gobio::Gobio(
     std::string terminalTag,
     int edgeNumberLimit
 ) :
-    limitChecker_(lang),
     rulesPath_(rulesPath),
     terminalTag_(terminalTag)
 {
     if (edgeNumberLimit > -1) {
-        limitChecker_.setAbsoluteLimit(edgeNumberLimit);
+        limitChecker_.reset(new LimitChecker(edgeNumberLimit));
+    } else {
+        limitChecker_.reset(new GobioLimitChecker(lang));
     }
 }
 
@@ -142,7 +143,7 @@ void Gobio::parse(Lattice & lattice) {
         true
     );
 
-    Chart ch(lattice, av_ai_converter, terminalTag_, limitChecker_);
+    Chart ch(lattice, av_ai_converter, terminalTag_, *limitChecker_);
     Agenda agenda;
     Parser parser(ch, combinator, agenda);
 
