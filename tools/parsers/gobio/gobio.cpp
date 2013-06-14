@@ -309,15 +309,20 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
 std::string Gobio::leafSymbolToCategory_(
     const std::string& symbol) {
 
-    if (symbol == "flicz")              return "LG";
-    if (symbol == "rzeczownik")         return "R";
-    if (symbol == "czasownik")          return "C";
-    if (symbol == "przymiotnik")        return "P";
-    if (symbol == "przysłówek")         return "PS";
-    if (symbol == "przyimek")           return "PR";
-    if (symbol == "przyimek_spośród")   return "PR";
-    if (symbol == "spójnik")            return "S";
-    if (symbol == "zaimek_dzierżawczy") return "ZP";
+    if (symbol == "flicz")                         return "LG";
+    if (symbol == "rzeczownik")                    return "R";
+    if (symbol == "czasownik")                     return "C";
+    if (symbol == "przymiotnik")                   return "P";
+    if (symbol == "przysłówek")                    return "PS";
+    if (symbol == "przyimek")                      return "PR";
+    if (symbol == "przyimek_spośród")              return "PR";
+    if (symbol == "spójnik")                       return "S";
+    if (symbol == "zaimek_dzierżawczy")            return "ZP";
+    if (symbol == "zaimek_rzeczowny_nieokreślony") return "ZRn";
+    if (symbol == "zaimek_rzeczowny_osobowy")      return "ZRo";
+
+    if (symbol == "przecinek") return "','";
+    if (symbol == "uuto")      return "'to'";
 
     if (symbol.length() >= 2 && symbol[0] == 'z' && symbol[1] == 'z') {
         std::stringstream resSs;
