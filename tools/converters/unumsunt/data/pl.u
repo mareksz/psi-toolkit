@@ -64,9 +64,9 @@
 @val    pant    imiesłów_uprzedni
 @val    pcon    imiesłów_współczesny
 @val    ppas    imiesłów_bierny
-#@attr   mode    C
-#@val    pot przypuszczający
-#@val    impt    rozkazujący
+@attr   accommodability Typ
+@val    congr   zg
+@val    rec d
 CAT = rzeczownik >> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
 CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno

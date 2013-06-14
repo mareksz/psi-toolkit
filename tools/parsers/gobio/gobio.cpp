@@ -309,6 +309,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
 std::string Gobio::leafSymbolToCategory_(
     const std::string& symbol) {
 
+    if (symbol == "flicz")              return "LG";
     if (symbol == "rzeczownik")         return "R";
     if (symbol == "czasownik")          return "C";
     if (symbol == "przymiotnik")        return "P";
