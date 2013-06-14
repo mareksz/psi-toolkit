@@ -11,7 +11,7 @@ const std::string ProcessorDocumentationSite::PROCESSOR_NAME_PARAM = "name";
 
 ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
     : HelpTemplateSite(server),
-    name_(pageNotFoundMessage()),
+    name_("processor not found"),
     documentation_("")
 {
     htmlHelpFormatter_.setUseJavaScript(false);
@@ -50,7 +50,7 @@ char * ProcessorDocumentationSite::actionProcessorDocumentation() {
         }
     }
     else {
-        name_ = pageNotFoundMessage();
+        name_ = "processor not found";
         documentation_ << "Processor not specified.";
     }
 

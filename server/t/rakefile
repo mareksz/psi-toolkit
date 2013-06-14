@@ -16,4 +16,5 @@ task :test, :host, :port do |t, args|
   require 'tutorial_site_test'
   require 'json_site_test'
   require 'site_map_test'
+  require 'processor_documentation_site_test'
 end
