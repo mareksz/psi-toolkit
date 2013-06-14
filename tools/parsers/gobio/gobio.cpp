@@ -315,6 +315,7 @@ std::string Gobio::leafSymbolToCategory_(
     if (symbol == "przymiotnik")        return "P";
     if (symbol == "przysłówek")         return "PS";
     if (symbol == "przyimek")           return "PR";
+    if (symbol == "przyimek_spośród")   return "PR";
     if (symbol == "spójnik")            return "S";
     if (symbol == "zaimek_dzierżawczy") return "ZP";
 
