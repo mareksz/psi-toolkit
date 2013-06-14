@@ -34,6 +34,13 @@ std::string Session::getData(const std::string& key) {
     return value;
 }
 
+std::string Session::getDataOrSetIfNotExists(const std::string& key, const std::string& value) {
+    if (not isData(key)) {
+        setData(key, value);
+    }
+    return getData(key);
+}
+
 void Session::setData(const std::string& key, const std::string& value) {
     data[key] = value;
 }

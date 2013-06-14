@@ -43,9 +43,11 @@ toolkit allows for processing various languages, including English, French or Ru
         <h1>Resources</h1>
         <ul>
           <li><a href="/download.html">Download</a></li>
-          <li><a href="/search.html">Search on website</a></li>
           <li><a href="http://psi-blog.wmi.amu.edu.pl" target="_blank">PSI-Blog</a>
-            <span class="new-content">new!</span></li>
+            <!-- <span class="new-content">new!</span> -->
+          </li>
+          <li><a href="/search.html">Search on website</a></li>
+          <li><a href="/sitemap.html">Site map</a></li>
         </ul>
       </section>
 

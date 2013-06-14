@@ -15,6 +15,7 @@ public:
 
     bool isData(const std::string& key);
     std::string getData(const std::string& key);
+    std::string getDataOrSetIfNotExists(const std::string& key, const std::string& value);
     void setData(const std::string& key, const std::string& value);
     void clearData(const std::string& key);
 

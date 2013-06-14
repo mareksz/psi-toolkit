@@ -13,7 +13,17 @@
 std::set<std::string> HtmlHelpFormatter::extensionsForRandomExamples_ =
     boost::assign::list_of("txt")("html");
 
-HtmlHelpFormatter::HtmlHelpFormatter() : fileStorage_(NULL) { }
+HtmlHelpFormatter::HtmlHelpFormatter()
+    : fileStorage_(NULL),
+    useJavaScript_(true) { }
+
+HtmlHelpFormatter::HtmlHelpFormatter(bool useJavaScript)
+    : fileStorage_(NULL),
+    useJavaScript_(useJavaScript) { }
+
+void HtmlHelpFormatter::setUseJavaScript(bool onOff) {
+    useJavaScript_ = onOff;
+}
 
 void HtmlHelpFormatter::doFormatOneProcessorHelp(
     std::string processorName,
@@ -55,10 +65,12 @@ void HtmlHelpFormatter::formatDescription_(std::string description,
         output << "<div class=\"help-desc\">" << markdownString2String(description);
 
         if (!details.empty()) {
-            output << "<div class=\"help-details\" style=\"display:none;\">"
+            output << "<div class=\"help-details\""
+                << (useJavaScript_ ? " style=\"display:none;\"" : "") << ">"
                 << markdownString2String(details)
                 << "</div>" << std::endl
-                << "<span class=\"toggler help-toggler\">[show more]</span>" << std::endl;
+                << (useJavaScript_ ? "<span class=\"toggler help-toggler\">[show more]</span>" : "")
+                << std::endl;
         }
 
         output << "</div>" << std::endl;
@@ -198,17 +210,6 @@ void HtmlHelpFormatter::formatPipelineExampleInJSON_(TestBatch batch, std::ostre
     output << "    \"text\" : \"" << escapeJSON_(text) << "\"" << std::endl;
 
     output << "  }, " << std::endl;
-}
-
-void HtmlHelpFormatter::formatDocumentationMenu(std::ostream& output) {
-    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
-
-    output << "<ul>" << std::endl;
-    BOOST_FOREACH(std::string processorName, processors) {
-        output << "<li><a href=\"#" << processorName << "\">" << processorName << "</a></li>"
-            << std::endl;
-    };
-    output << "</ul>" << std::endl;
 }
 
 void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {

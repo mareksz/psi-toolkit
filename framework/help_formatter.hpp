@@ -30,6 +30,8 @@ public:
     void formatFAQ(std::ostream& output);
     void formatInstallationGuide(std::ostream& output);
 
+    std::vector<std::string> getProcessorNames();
+
     virtual ~HelpFormatter();
 
 protected:

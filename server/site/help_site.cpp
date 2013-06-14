@@ -1,13 +1,7 @@
 #include "help_site.hpp"
 #include "logging.hpp"
 
-HelpSite::HelpSite(PsiServer& server)
-    : TemplateSite(server),
-    fileStorage_(std::string(psiServer_.websiteRoot)),
-    htmlHelpFormatter_()
-{
-    htmlHelpFormatter_.setFileStorage(&fileStorage_);
-
+HelpSite::HelpSite(PsiServer& server) : HelpTemplateSite(server) {
     psiServer_.registerIncludeCode(
         "help_site_description", boost::bind(&HelpSite::description, this));
     psiServer_.registerIncludeCode(
@@ -74,10 +68,16 @@ char * HelpSite::psiFormat() {
 }
 
 char * HelpSite::documentationMenu() {
-    std::ostringstream streamForMenu;
-    htmlHelpFormatter_.formatDocumentationMenu(streamForMenu);
+    std::ostringstream output;
 
-    return stringToChar(streamForMenu.str());
+    output << "<ul>" << std::endl;
+    BOOST_FOREACH(std::string processorName, htmlHelpFormatter_.getProcessorNames()) {
+        output << "<li><a href=\"#" << processorName << "\">" << processorName << "</a></li>"
+            << std::endl;
+    }
+    output << "</ul>" << std::endl;
+
+    return stringToChar(output.str());
 }
 
 char * HelpSite::pipelineExamples() {
