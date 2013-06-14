@@ -23,7 +23,7 @@ ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
     psiServer_.registerIncludeCode("processor_documentation_site_processor_documentation_menu",
         boost::bind(&ProcessorDocumentationSite::processorDocumentationMenu, this));
 
-    psiServer_.registerActionCode("help/documentation/processor",
+    psiServer_.registerActionCode("help/processor",
         boost::bind(&ProcessorDocumentationSite::actionProcessorDocumentation, this));
 }
 
@@ -61,9 +61,9 @@ char * ProcessorDocumentationSite::actionProcessorDocumentation() {
 char * ProcessorDocumentationSite::processorDocumentationMenu() {
     std::ostringstream output;
 
-    output << "<ul>" << std::endl;
+    output << "<ul class=\"processor-list\">" << std::endl;
     BOOST_FOREACH(std::string processorName, htmlHelpFormatter_.getProcessorNames()) {
-        output << "<li><a href=\"processor.psis?name=" << processorName << "\">"
+        output << "<li><a href=\"/help/processor.psis?name=" << processorName << "\">"
             << processorName << "</a></li>" << std::endl;
     }
     output << "</ul>" << std::endl;

@@ -230,6 +230,7 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 .help-item > h2 { cursor:pointer; }
 .help-desc { clear:both; }
 
+
 .type-header, .subtype-header { border-top:1px dotted #ccc; padding-top:8px; }
 .type-container, .subtype-container, .help-examples, .help-opts, .help-alias, .help-langs {
     margin-left:24px; }
@@ -266,6 +267,14 @@ img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
 .right-menu-element-H1 {  }
 .right-menu-element-H2 { margin-left:15px; }
 .right-menu-element-H3 { margin-left:30px; }
+
+#content.with-right-menu { min-height:750px; }
+
+/* site map */
+
+#sitemap { font-size:15px; }
+#sitemap li { list-style-type:disc; }
+#sitemap .processor-list li { line-height:1.7em; }
 
 /* about */
 
