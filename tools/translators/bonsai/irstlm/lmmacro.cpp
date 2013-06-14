@@ -92,7 +92,7 @@ bool lmmacro::loadmap(string lmfilename, istream& inp, istream& inpMap) {
 #ifdef WIN32
   lmtable::load(inp); //don't use memory map
 #else
-  if (lmfilename.compare(lmfilename.size()-3,3,".mm")==0)
+  if (lmfilename.compare(lmfilename.size()-3, 3, ".mm")==0)
     lmtable::load(inp, lmfilename.c_str(), NULL, 1);
   else
     lmtable::load(inp, lmfilename.c_str(), NULL, 0);
@@ -101,7 +101,7 @@ bool lmmacro::loadmap(string lmfilename, istream& inp, istream& inpMap) {
   // get header (selection field and, possibly, the classes of lemmas):
   inpMap.getline(line, MAX_LINE, '\n');
   tokenN = parseWords(line, words, MAX_TOKEN_N_MAP);
-  if (tokenN < 2 || strcmp(words[0],"FIELD")!=0)
+  if (tokenN < 2 || strcmp(words[0], "FIELD")!=0)
     error("ERROR: wrong header format of map file\n[correct: FIELD <int> (file of lexical classes, only if <int> > 9)]\n");
   selectedField = atoi(words[1]);
   if ( (selectedField==-1 || selectedField==-2) && tokenN==2)
@@ -428,9 +428,9 @@ void lmmacro::map(ngram *in, ngram *out)
       char curr_token[BUFSIZ];
       strcpy(curr_token, getDict()->decode(*(in->wordp(i))));
       char *field;
-      if (strcmp(curr_token,"<s>") &&
-      strcmp(curr_token,"</s>") &&
-      strcmp(curr_token,"_unk_")) {
+      if (strcmp(curr_token, "<s>") &&
+      strcmp(curr_token, "</s>") &&
+      strcmp(curr_token, "_unk_")) {
     field = strtok(curr_token, "#");
     for (int j=0; j<selectedField; j++)
       field = strtok(0, "#");
@@ -467,9 +467,9 @@ void lmmacro::map(ngram *in, ngram *out)
       strcpy(curr_token, getDict()->decode(*(in->wordp(i))));
       char *tag = NULL, *lemma = NULL;
 
-      if (strcmp(curr_token,"<s>") &&
-      strcmp(curr_token,"</s>") &&
-      strcmp(curr_token,"_unk_")) {
+      if (strcmp(curr_token, "<s>") &&
+      strcmp(curr_token, "</s>") &&
+      strcmp(curr_token, "_unk_")) {
 
     if (tagIdx<lemmaIdx) {
       tag = strtok(curr_token, "#");
@@ -486,7 +486,7 @@ void lmmacro::map(ngram *in, ngram *out)
     }
 
 #ifdef DEBUG
-    printf("(tag,lemma) = %s %s\n", tag, lemma);
+    printf("(tag, lemma) = %s %s\n", tag, lemma);
 #endif
       } else {
     tag = curr_token;

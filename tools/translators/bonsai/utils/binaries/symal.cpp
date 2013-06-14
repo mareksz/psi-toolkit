@@ -139,7 +139,7 @@ int prunionalignment(fstream& out, int m, int *a, int n, int* b)
   if (str.length() == 0)
     str = "\n";
   else
-    str.replace(str.length()-1,1,"\n");
+    str.replace(str.length()-1, 1, "\n");
 
   out << str;
   out.flush();
@@ -164,7 +164,7 @@ int printersect(fstream& out, int m, int *a, int n, int* b)
   if (str.length() == 0)
     str = "\n";
   else
-    str.replace(str.length()-1,1,"\n");
+    str.replace(str.length()-1, 1, "\n");
 
   out << str;
   out.flush();
@@ -188,7 +188,7 @@ int printtgttosrc(fstream& out, int m, int *a, int n, int* b)
   if (str.length() == 0)
     str = "\n";
   else
-    str.replace(str.length()-1,1,"\n");
+    str.replace(str.length()-1, 1, "\n");
 
   out << str;
   out.flush();
@@ -212,7 +212,7 @@ int printsrctotgt(fstream& out, int m, int *a, int n, int* b)
   if (str.length() == 0)
     str = "\n";
   else
-    str.replace(str.length()-1,1,"\n");
+    str.replace(str.length()-1, 1, "\n");
 
   out << str;
   out.flush();
@@ -374,7 +374,7 @@ int printgrow(fstream& out, int m, int *a, int n, int* b, bool diagonal=false, b
   if (str.length() == 0)
     str = "\n";
   else
-    str.replace(str.length()-1,1,"\n");
+    str.replace(str.length()-1, 1, "\n");
 
   out << str;
   out.flush();

@@ -37,7 +37,7 @@ namespace MosesTraining
     bool domainAdded = false;
     bool sparseDomainAdded = false;
     for (size_t i = 0; i < args.size(); ++i) {
-      if (args[i].substr(0,8) == "--Domain") {
+      if (args[i].substr(0, 8) == "--Domain") {
         string type = args[i].substr(8);
         ++i;
         UTIL_THROW_IF(i == args.size(), ScoreFeatureArgumentException, "Missing domain file");
@@ -55,7 +55,7 @@ namespace MosesTraining
         }
         domainAdded = true;
         m_includeSentenceId = true;
-      } else if (args[i].substr(0,14) == "--SparseDomain") {
+      } else if (args[i].substr(0, 14) == "--SparseDomain") {
         string type = args[i].substr(14);
         ++i;
         UTIL_THROW_IF(i == args.size(), ScoreFeatureArgumentException, "Missing domain file");
@@ -74,7 +74,7 @@ namespace MosesTraining
         sparseDomainAdded = true;
         m_includeSentenceId = true;
       } else {
-        UTIL_THROW(ScoreFeatureArgumentException,"Unknown score argument " << args[i]);
+        UTIL_THROW(ScoreFeatureArgumentException, "Unknown score argument " << args[i]);
       }
     }
 

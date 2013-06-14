@@ -70,13 +70,13 @@ string ParseXmlTagAttribute(const string& tag, const string& attributeName)
   size_t contentsStart = tag.find(tagOpen);
   if (contentsStart == string::npos) return "";
   contentsStart += tagOpen.size();
-  size_t contentsEnd = tag.find_first_of('"',contentsStart+1);
+  size_t contentsEnd = tag.find_first_of('"', contentsStart+1);
   if (contentsEnd == string::npos) {
     cerr << "Malformed XML attribute: "<< tag;
     return "";
   }
   size_t possibleEnd;
-  while (tag.at(contentsEnd-1) == '\\' && (possibleEnd = tag.find_first_of('"',contentsEnd+1)) != string::npos) {
+  while (tag.at(contentsEnd-1) == '\\' && (possibleEnd = tag.find_first_of('"', contentsEnd+1)) != string::npos) {
     contentsEnd = possibleEnd;
   }
   return tag.substr(contentsStart, contentsEnd-contentsStart);
@@ -297,7 +297,7 @@ bool ProcessAndStripXMLTags(string &line, SyntaxTree &tree, set< string > &label
       if (isClosed)
         tag = tag.substr(1); // remove "/" at the beginning
       if (isUnary)
-        tag = tag.substr(0,tag.size()-1); // remove "/" at the end
+        tag = tag.substr(0, tag.size()-1); // remove "/" at the end
 
       // find the tag name and contents
       string::size_type endOfName = tag.find_first_of(' ');
@@ -340,7 +340,7 @@ bool ProcessAndStripXMLTags(string &line, SyntaxTree &tree, set< string > &label
         size_t endPos = wordPos;
 
         // span attribute overwrites position
-        string span = ParseXmlTagAttribute(tagContent,"span");
+        string span = ParseXmlTagAttribute(tagContent, "span");
         if (! span.empty()) {
           vector<string> ij = Tokenize(span, "-");
           if (ij.size() != 1 && ij.size() != 2) {
@@ -359,10 +359,10 @@ bool ProcessAndStripXMLTags(string &line, SyntaxTree &tree, set< string > &label
           return false;
         }
 
-        string label = ParseXmlTagAttribute(tagContent,"label");
+        string label = ParseXmlTagAttribute(tagContent, "label");
         labelCollection.insert( label );
 
-        string pcfgString = ParseXmlTagAttribute(tagContent,"pcfg");
+        string pcfgString = ParseXmlTagAttribute(tagContent, "pcfg");
         float pcfgScore = pcfgString == "" ? 0.0f
                                            : std::atof(pcfgString.c_str());
 

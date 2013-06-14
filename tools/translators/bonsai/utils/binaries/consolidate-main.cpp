@@ -68,16 +68,16 @@ int main(int argc, char* argv[])
   char* fileNameCountOfCounts;
 
   for (int i=4; i<argc; i++) {
-    if (strcmp(argv[i],"--Hierarchical") == 0) {
+    if (strcmp(argv[i], "--Hierarchical") == 0) {
       hierarchicalFlag = true;
       cerr << "processing hierarchical rules\n";
-    } else if (strcmp(argv[i],"--OnlyDirect") == 0) {
+    } else if (strcmp(argv[i], "--OnlyDirect") == 0) {
       onlyDirectFlag = true;
       cerr << "only including direct translation scores p(e|f)\n";
-    } else if (strcmp(argv[i],"--NoPhraseCount") == 0) {
+    } else if (strcmp(argv[i], "--NoPhraseCount") == 0) {
       phraseCountFlag = false;
       cerr << "not including the phrase count feature\n";
-    } else if (strcmp(argv[i],"--GoodTuring") == 0) {
+    } else if (strcmp(argv[i], "--GoodTuring") == 0) {
       goodTuringFlag = true;
       if (i+1==argc) {
         cerr << "ERROR: specify count of count files for Good Turing discounting!\n";
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
       }
       fileNameCountOfCounts = argv[++i];
       cerr << "adjusting phrase translation probabilities with Good Turing discounting\n";
-    } else if (strcmp(argv[i],"--KneserNey") == 0) {
+    } else if (strcmp(argv[i], "--KneserNey") == 0) {
       kneserNeyFlag = true;
       if (i+1==argc) {
         cerr << "ERROR: specify count of count files for Kneser Ney discounting!\n";
@@ -93,12 +93,12 @@ int main(int argc, char* argv[])
       }
       fileNameCountOfCounts = argv[++i];
       cerr << "adjusting phrase translation probabilities with Kneser Ney discounting\n";
-    } else if (strcmp(argv[i],"--LowCountFeature") == 0) {
+    } else if (strcmp(argv[i], "--LowCountFeature") == 0) {
       lowCountFlag = true;
       cerr << "including the low count feature\n";
-    } else if (strcmp(argv[i],"--CountBinFeature") == 0 ||
-               strcmp(argv[i],"--SparseCountBinFeature") == 0) {
-      if (strcmp(argv[i],"--SparseCountBinFeature") == 0)
+    } else if (strcmp(argv[i], "--CountBinFeature") == 0 ||
+               strcmp(argv[i], "--SparseCountBinFeature") == 0) {
+      if (strcmp(argv[i], "--SparseCountBinFeature") == 0)
         sparseCountBinFeatureFlag = true;
       cerr << "include "<< (sparseCountBinFeatureFlag ? "sparse " : "") << "count bin feature:";
       int prev = 0;
@@ -110,10 +110,10 @@ int main(int argc, char* argv[])
         prev = binCount;
       }
       cerr << " " << (prev+1) << "+\n";
-    } else if (strcmp(argv[i],"--LogProb") == 0) {
+    } else if (strcmp(argv[i], "--LogProb") == 0) {
       logProbFlag = true;
       cerr << "using log-probabilities\n";
-    } else if (strcmp(argv[i],"--OutputNTLengths") == 0) {
+    } else if (strcmp(argv[i], "--OutputNTLengths") == 0) {
       outputNTLengths = true;
     } else {
       cerr << "ERROR: unknown option " << argv[i] << endl;

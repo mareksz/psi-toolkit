@@ -78,7 +78,7 @@ void lmtable::init_probcache(){
     assert(probcache==NULL);
     probcache=new ngramcache(maxlev, sizeof(double), 400000);
 #ifdef TRACE_CACHE
-    cacheout=new std::fstream("/tmp/tracecache",std::ios::out);
+    cacheout=new std::fstream("/tmp/tracecache", std::ios::out);
     sentence_id=0;
 #endif
 }
@@ -138,7 +138,7 @@ void lmtable::load(istream& inp, const char* filename, const char* outfilename, 
   inp >> header;
   //cerr << header << "\n";
 
-  if (strncmp(header,"Qblmt",5)==0 || strncmp(header,"blmt",4)==0){
+  if (strncmp(header, "Qblmt", 5)==0 || strncmp(header, "blmt", 4)==0){
     if (outtype==BINARY) {
       cerr << "Error: nothing to do. Passed input file: binary. Specified output format: binary.\n";
       exit(0);
@@ -146,7 +146,7 @@ void lmtable::load(istream& inp, const char* filename, const char* outfilename, 
     loadbin(inp, header, filename, keep_on_disk);
   }
   else{
-    if (strncmp(header,"ARPA",4)==0 && outtype==TEXT) {
+    if (strncmp(header, "ARPA", 4)==0 && outtype==TEXT) {
       cerr << "Error: nothing to do. Passed input file: textual. Specified output format: textual.\n";
       exit(0);
     }
@@ -211,12 +211,12 @@ int parseline(istream& inp, int Order, ngram& ng, float& prob, float& bow){
   //read words
   ng.size=0;
   for (int i=1;i<=Order;i++)
-    ng.pushw(strcmp(words[i],"<unk>")?words[i]:ng.dict->OOV());
+    ng.pushw(strcmp(words[i], "<unk>")?words[i]:ng.dict->OOV());
 
   //read logprob/code and logbow/code
-  assert(sscanf(words[0],"%f",&prob));
+  assert(sscanf(words[0], "%f", &prob));
   if (howmany==(Order+2))
-    assert(sscanf(words[Order+1],"%f",&bow));
+    assert(sscanf(words[Order+1], "%f", &bow));
   else
     bow=0.0; //this is log10prob=0 for implicit backoff
 
@@ -284,10 +284,10 @@ void lmtable::loadtxtmmap(istream& inp, const char* header, const char* outfilen
   float pb, bow;;
 
   //check the header to decide if the LM is quantized or not
-  isQtable=(strncmp(header,"qARPA",5)==0?true:false);
+  isQtable=(strncmp(header, "qARPA", 5)==0?true:false);
 
   //check the header to decide if the LM table is incomplete
-  isItable=(strncmp(header,"iARPA",5)==0?true:false);
+  isItable=(strncmp(header, "iARPA", 5)==0?true:false);
 
   if (isQtable){
     //check if header contains other infos
@@ -483,15 +483,15 @@ void lmtable::loadtxtmmap(istream& inp, const char* header, const char* outfilen
   // cat header+dictionary and n-grams files:
 
   char cmd[MAX_LINE];
-  sprintf(cmd,"cat %s >> %s", nameNgrams, nameHeader);
+  sprintf(cmd, "cat %s >> %s", nameNgrams, nameHeader);
   cerr << "run cmd <" << cmd << ">\n";
   system(cmd);
 
-  sprintf(cmd,"mv %s %s", nameHeader, outfilename);
+  sprintf(cmd, "mv %s %s", nameHeader, outfilename);
   cerr << "run cmd <" << cmd << ">\n";
   system(cmd);
 
-  sprintf(cmd,"rm %s", nameNgrams);
+  sprintf(cmd, "rm %s", nameNgrams);
   cerr << "run cmd <" << cmd << ">\n";
   system(cmd);
 
@@ -513,10 +513,10 @@ void lmtable::loadtxt(istream& inp, const char* header){
   float prob, bow;
 
   //check the header to decide if the LM is quantized or not
-  isQtable=(strncmp(header,"qARPA",5)==0?true:false);
+  isQtable=(strncmp(header, "qARPA", 5)==0?true:false);
 
   //check the header to decide if the LM table is incomplete
-  isItable=(strncmp(header,"iARPA",5)==0?true:false);
+  isItable=(strncmp(header, "iARPA", 5)==0?true:false);
 
   //we will configure the table later we we know the maxlev;
   bool yetconfigured=false;
@@ -924,8 +924,8 @@ void lmtable::loadbinheader(istream& inp, const char* header){
   // read rest of header
   inp >> maxlev;
 
-  if (strncmp(header,"Qblmt",5)==0) isQtable=1;
-  else if (strncmp(header,"blmt",4)==0) isQtable=0;
+  if (strncmp(header, "Qblmt", 5)==0) isQtable=1;
+  else if (strncmp(header, "blmt", 4)==0) isQtable=0;
   else error("loadbin: LM file is not in binary format");
 
   configure(maxlev, isQtable);
@@ -984,7 +984,7 @@ void lmtable::loadbin(istream& inp, const char* header, const char* filename, in
     //check that the LM is uncompressed
     char miniheader[4];
     read(diskid, miniheader, 4);
-    if (strncmp(miniheader,"Qblm",4) && strncmp(miniheader,"blmt",4))
+    if (strncmp(miniheader, "Qblm", 4) && strncmp(miniheader, "blmt", 4))
       error("mmap functionality does not work with compressed binary LMs\n");
 #endif
   }

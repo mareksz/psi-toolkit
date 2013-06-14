@@ -107,39 +107,39 @@ int main(int argc, char* argv[])
   vector<string> featureArgs; //all unknown args passed to feature manager
 
   for (int i=4; i<argc; i++) {
-    if (strcmp(argv[i],"inverse") == 0 || strcmp(argv[i],"--Inverse") == 0) {
+    if (strcmp(argv[i], "inverse") == 0 || strcmp(argv[i], "--Inverse") == 0) {
       inverseFlag = true;
       cerr << "using inverse mode\n";
-    } else if (strcmp(argv[i],"--Hierarchical") == 0) {
+    } else if (strcmp(argv[i], "--Hierarchical") == 0) {
       hierarchicalFlag = true;
       cerr << "processing hierarchical rules\n";
-    } else if (strcmp(argv[i],"--PCFG") == 0) {
+    } else if (strcmp(argv[i], "--PCFG") == 0) {
       pcfgFlag = true;
       cerr << "including PCFG scores\n";
-    } else if (strcmp(argv[i],"--UnpairedExtractFormat") == 0) {
+    } else if (strcmp(argv[i], "--UnpairedExtractFormat") == 0) {
       unpairedExtractFormatFlag = true;
       cerr << "processing unpaired extract format\n";
-    } else if (strcmp(argv[i],"--ConditionOnTargetLHS") == 0) {
+    } else if (strcmp(argv[i], "--ConditionOnTargetLHS") == 0) {
       conditionOnTargetLhsFlag = true;
       cerr << "processing unpaired extract format\n";
-    } else if (strcmp(argv[i],"--NoWordAlignment") == 0) {
+    } else if (strcmp(argv[i], "--NoWordAlignment") == 0) {
       wordAlignmentFlag = false;
       cerr << "omitting word alignment" << endl;
-    } else if (strcmp(argv[i],"--NoLex") == 0) {
+    } else if (strcmp(argv[i], "--NoLex") == 0) {
       lexFlag = false;
       cerr << "not computing lexical translation score\n";
-    } else if (strcmp(argv[i],"--GoodTuring") == 0) {
+    } else if (strcmp(argv[i], "--GoodTuring") == 0) {
       goodTuringFlag = true;
                         fileNameCountOfCounts = string(fileNamePhraseTable) + ".coc";
       cerr << "adjusting phrase translation probabilities with Good Turing discounting\n";
-    } else if (strcmp(argv[i],"--KneserNey") == 0) {
+    } else if (strcmp(argv[i], "--KneserNey") == 0) {
       kneserNeyFlag = true;
                         fileNameCountOfCounts = string(fileNamePhraseTable) + ".coc";
       cerr << "adjusting phrase translation probabilities with Kneser Ney discounting\n";
-    } else if (strcmp(argv[i],"--UnalignedPenalty") == 0) {
+    } else if (strcmp(argv[i], "--UnalignedPenalty") == 0) {
       unalignedFlag = true;
       cerr << "using unaligned word penalty\n";
-    } else if (strcmp(argv[i],"--UnalignedFunctionWordPenalty") == 0) {
+    } else if (strcmp(argv[i], "--UnalignedFunctionWordPenalty") == 0) {
       unalignedFWFlag = true;
       if (i+1==argc) {
         cerr << "ERROR: specify count of count files for Kneser Ney discounting!\n";
@@ -147,23 +147,23 @@ int main(int argc, char* argv[])
       }
       fileNameFunctionWords = argv[++i];
       cerr << "using unaligned function word penalty with function words from " << fileNameFunctionWords << endl;
-    }  else if (strcmp(argv[i],"--LogProb") == 0) {
+    }  else if (strcmp(argv[i], "--LogProb") == 0) {
       logProbFlag = true;
       cerr << "using log-probabilities\n";
-    } else if (strcmp(argv[i],"--NegLogProb") == 0) {
+    } else if (strcmp(argv[i], "--NegLogProb") == 0) {
       logProbFlag = true;
       negLogProb = -1;
       cerr << "using negative log-probabilities\n";
-    } else if (strcmp(argv[i],"--MinCountHierarchical") == 0) {
+    } else if (strcmp(argv[i], "--MinCountHierarchical") == 0) {
       minCountHierarchical = atof(argv[++i]);
       cerr << "dropping all phrase pairs occurring less than " << minCountHierarchical << " times\n";
       minCountHierarchical -= 0.00001; // account for rounding
-    } else if (strcmp(argv[i],"--OutputNTLengths") == 0) {
+    } else if (strcmp(argv[i], "--OutputNTLengths") == 0) {
       outputNTLengths = true;
-    } else if (strcmp(argv[i],"--Singleton") == 0) {
+    } else if (strcmp(argv[i], "--Singleton") == 0) {
       singletonFeature = true;
       cerr << "binary singleton feature\n";
-    } else if (strcmp(argv[i],"--CrossedNonTerm") == 0) {
+    } else if (strcmp(argv[i], "--CrossedNonTerm") == 0) {
       crossedNonTerm = true;
       cerr << "crossed non-term reordering feature\n";
     } else {
