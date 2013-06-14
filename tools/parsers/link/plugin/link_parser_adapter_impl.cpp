@@ -22,7 +22,7 @@ void LinkParserAdapterImpl::setDictionary(std::string language) {
     freeDictionary();
     dictionary_ = dictionary_create_lang(language.c_str());
     if (!dictionary_) {
-        throw ParserException("Could not create dictionary for language: " + language);
+        throw ParserException("No dictionary for language: " + language);
     }
 }
 
