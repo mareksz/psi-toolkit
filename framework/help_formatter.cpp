@@ -218,3 +218,17 @@ std::string HelpFormatter::getProcessorNameWithoutOptions(const std::string& nam
 std::vector<std::string> HelpFormatter::getProcessorNames() {
     return MainFactoriesKeeper::getInstance().getProcessorNames();
 }
+
+std::string HelpFormatter::getProcessorFullName(const std::string& processorName) {
+    //FIXME: check if processor with 'processorName' name exists
+    ProcessorFactory* processorFactory =
+        &MainFactoriesKeeper::getInstance().getProcessorFactory(processorName);
+
+    std::string fullName = processorFactory->getType() + " > ";
+    if (processorFactory->isSubTyped()) {
+        fullName += processorFactory->getSubType() + " > ";
+    }
+    fullName += processorFactory->getName();
+
+    return fullName;
+}

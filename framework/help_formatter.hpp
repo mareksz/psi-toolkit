@@ -31,6 +31,7 @@ public:
     void formatInstallationGuide(std::ostream& output);
 
     std::vector<std::string> getProcessorNames();
+    std::string getProcessorFullName(const std::string& processorName);
 
     virtual ~HelpFormatter();
 

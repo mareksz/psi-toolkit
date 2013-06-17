@@ -13,6 +13,7 @@ public:
     ProcessorDocumentationSite(PsiServer& server);
 
     char * processorName();
+    char * processorFullName();
     char * processorDocumentation();
     char * actionProcessorDocumentation();
     char * processorDocumentationMenu();
@@ -22,6 +23,7 @@ private:
     std::ostringstream documentation_;
 
     static const std::string PROCESSOR_NAME_PARAM;
+    static const std::string PROCESSOR_NOT_FOUND;
 };
 
 #endif

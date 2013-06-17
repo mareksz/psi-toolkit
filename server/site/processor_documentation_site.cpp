@@ -8,16 +8,19 @@
 #include "html_help_formatter.hpp"
 
 const std::string ProcessorDocumentationSite::PROCESSOR_NAME_PARAM = "name";
+const std::string ProcessorDocumentationSite::PROCESSOR_NOT_FOUND = "processor not found";
 
 ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
     : HelpTemplateSite(server),
-    name_("processor not found"),
+    name_(PROCESSOR_NOT_FOUND),
     documentation_("")
 {
     htmlHelpFormatter_.setUseJavaScript(false);
 
     psiServer_.registerIncludeCode("processor_documentation_site_processor_name",
         boost::bind(&ProcessorDocumentationSite::processorName, this));
+    psiServer_.registerIncludeCode("processor_documentation_site_processor_full_name",
+        boost::bind(&ProcessorDocumentationSite::processorFullName, this));
     psiServer_.registerIncludeCode("processor_documentation_site_processor_documentation",
         boost::bind(&ProcessorDocumentationSite::processorDocumentation, this));
     psiServer_.registerIncludeCode("processor_documentation_site_processor_documentation_menu",
@@ -29,6 +32,16 @@ ProcessorDocumentationSite::ProcessorDocumentationSite(PsiServer& server)
 
 char * ProcessorDocumentationSite::processorName() {
     return stringToChar(name_);
+}
+
+char * ProcessorDocumentationSite::processorFullName() {
+    std::string fullName = "unknown processor";
+
+    if (name_ != PROCESSOR_NOT_FOUND) {
+        fullName = htmlHelpFormatter_.getProcessorFullName(name_);
+    }
+
+    return stringToChar(fullName);
 }
 
 char * ProcessorDocumentationSite::processorDocumentation() {
@@ -46,11 +59,11 @@ char * ProcessorDocumentationSite::actionProcessorDocumentation() {
 
         if (not htmlHelpFormatter_.formatProcessorHelpsByName(name_, documentation_)) {
             documentation_ << "Processor <code>" << name_ << "</code> not found." << std::endl;
-            name_ = pageNotFoundMessage();
+            name_ = PROCESSOR_NOT_FOUND;
         }
     }
     else {
-        name_ = "processor not found";
+        name_ = PROCESSOR_NOT_FOUND;
         documentation_ << "Processor not specified.";
     }
 
