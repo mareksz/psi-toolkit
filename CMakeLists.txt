@@ -708,7 +708,7 @@ function(download_project_artifact PROJECT FILE)
     endif()
   endif()
 
-endfunction(download_artifact)
+endfunction(download_project_artifact)
 
 function(download_and_unpack URL FILE CHECKSUM DESTINATION)
   message(STATUS "Checking ${URL}...")
