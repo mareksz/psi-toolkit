@@ -254,6 +254,7 @@ img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
     width:770px; }
 
 .wrapper svg { width:100%; }
+span.fullName { color:#004767; }
 
 /* right menu */
 

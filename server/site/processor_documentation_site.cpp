@@ -40,7 +40,11 @@ char * ProcessorDocumentationSite::processorFullName() {
     if (name_ != PROCESSOR_NOT_FOUND) {
         fullName = htmlHelpFormatter_.getProcessorFullName(name_);
     }
+    if (fullName.empty()) {
+        fullName = name_;
+    }
 
+    fullName = std::string("<span class=\"fullName\">") + fullName + std::string("</span>");
     return stringToChar(fullName);
 }
 

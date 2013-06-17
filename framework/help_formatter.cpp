@@ -220,15 +220,18 @@ std::vector<std::string> HelpFormatter::getProcessorNames() {
 }
 
 std::string HelpFormatter::getProcessorFullName(const std::string& processorName) {
-    //FIXME: check if processor with 'processorName' name exists
-    ProcessorFactory* processorFactory =
-        &MainFactoriesKeeper::getInstance().getProcessorFactory(processorName);
+    std::string fullName = "";
 
-    std::string fullName = processorFactory->getType() + " > ";
-    if (processorFactory->isSubTyped()) {
-        fullName += processorFactory->getSubType() + " > ";
+    if (MainFactoriesKeeper::getInstance().hasProcessorFactory(processorName)) {
+        ProcessorFactory* processorFactory =
+            &MainFactoriesKeeper::getInstance().getProcessorFactory(processorName);
+
+        fullName = processorFactory->getType() + " > ";
+        if (processorFactory->isSubTyped()) {
+            fullName += processorFactory->getSubType() + " > ";
+        }
+        fullName += processorFactory->getName();
     }
-    fullName += processorFactory->getName();
 
     return fullName;
 }

@@ -235,6 +235,10 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     configurationFinder.run();
 }
 
+bool MainFactoriesKeeper::hasProcessorFactory(std::string processorName) {
+    return keeper_.hasProcessorFactory(processorName);
+}
+
 ProcessorFactory& MainFactoriesKeeper::getProcessorFactory(std::string processorName) {
     return keeper_.getProcessorFactory(processorName);
 }

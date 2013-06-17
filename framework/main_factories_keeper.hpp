@@ -7,6 +7,7 @@
 class MainFactoriesKeeper {
 
 public:
+    bool hasProcessorFactory(std::string processorName);
     ProcessorFactory& getProcessorFactory(std::string processorName);
     std::vector<std::string> getProcessorNames();
     std::set<std::string> getAliasNames();
