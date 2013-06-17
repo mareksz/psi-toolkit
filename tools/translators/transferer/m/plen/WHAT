@@ -1,1 +1,1 @@
-gobio --lang pl ! bilexicon --lang pl --trg-lang en ! transferer --lang pl --trg-lang en
+--line-by-line gobio --lang pl ! bilexicon --lang pl --trg-lang en ! transferer --lang pl --trg-lang en

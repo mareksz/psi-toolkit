@@ -30,7 +30,6 @@ chart<C,S,V,R,I>::chart(
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("form"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lemma"));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lexeme"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("normalization"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("term"));
