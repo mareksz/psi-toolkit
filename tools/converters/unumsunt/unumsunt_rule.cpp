@@ -82,7 +82,7 @@ bool UnumsuntRule::apply(
 ) {
     bool result = false;
     BOOST_FOREACH(boost::shared_ptr<AnnotationItem> item, items) {
-        if (!words.empty() && !words.count(item->getText())) {
+        if (!words.empty() && !words.count(item->getText().substr(0, item->getText().find('+')))) {
             continue;
         }
         bool allConditionsSatisfied = true;
