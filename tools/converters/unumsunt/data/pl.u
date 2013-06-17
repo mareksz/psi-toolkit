@@ -67,16 +67,17 @@
 @attr   accommodability Typ
 @val    congr   zg
 @val    rec d
+CAT = rzeczownik, wszystko >> CAT = '@wszystko'
+CAT = przysłówek, siebie się >> CAT = '@się'
+CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = rzeczownik >> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
 CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno
 CAT = rzeczownik, ktoś kogoś komuś kimś coś czegoś czemuś czymś nikt nikogo nikomu nikim nic niczego niczemu niczym >> CAT = zaimek_rzeczowny_nieokreślony
-CAT = rzeczownik, wszystko >> CAT = '@wszystko'
 CAT = przymiotnik >> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = any
 CAT = przymiotnik, R = mnż >> R = mnż|mno
 CAT = przymiotnik, R = mo >> R = mo|mż
 CAT = przymiotnik, R = m >> R = mo|mno|mż|mnż
-CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
 CAT = przysłówek, trudno >> Typ = modalny, Oblig2 = 1, Dop2 = bk
@@ -90,11 +91,14 @@ CAT = liczebnik_główny, pięć sześć siedem osiem dziewięć dziesięć >> T
 CAT = liczebnik_główny, dwoje troje czworo pięcioro sześcioro siedmioro ośmioro dziewięcioro >> Typ = d, R = zbiorowy
 CAT = czasownik >> Przyim = brak, Przyim1 = brak, Podmiot = 1, Length = 1, Amb = 1, Dop1=bier,Przyim1=brak,Sem1=any, S = any
 CAT = czasownik, C = teraźniejszy >> R = 0
+CAT = czasownik, C = przyszły >> R = 0
 CAT = czasownik, C = przeszły >> R = $Rp, R1 = 0
 CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
-CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny
+CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny, A = 0, R = $Rp
+CAT = czasownik, C = bezokolicznik >> R = 0, L = 0, O = 0
+CAT = czasownik, można >> C = teraźniejszy, Typ = modalny
 CAT = przyimek >> Length=1,Amb=1,Typ=0
-siebie sobie >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
+CAT = '@się' >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
