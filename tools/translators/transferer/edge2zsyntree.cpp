@@ -14,7 +14,7 @@
 //#include "dicaux.h"
 
 #include <stack>
-#include "string_helpers.cpp"
+#include "string_helpers.hpp"
 
 EdgeToZsyntreeConverter::EdgeToZsyntreeConverter(Lattice& latticeArg)
     :lattice(latticeArg),
