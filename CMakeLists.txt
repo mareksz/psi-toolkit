@@ -23,18 +23,18 @@ if(CMAKE_CONFIGURATION_TYPES)
      FORCE)
 endif()
 
-SET( CMAKE_CXX_FLAGS_COVERAGE "-g -pg -Wall -Wundef -Wnon-virtual-dtor -Wextra -fprofile-arcs -ftest-coverage" CACHE STRING
+SET( CMAKE_CXX_FLAGS_COVERAGE "-g -pg -Wall -Wundef -Wnon-virtual-dtor -Wextra -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used by the C++ compiler during maintainer builds."
     FORCE )
-SET( CMAKE_C_FLAGS_COVERAGE "-g -pg -Wall -pedantic -fprofile-arcs -ftest-coverage" CACHE STRING
+SET( CMAKE_C_FLAGS_COVERAGE "-g -pg -Wall -pedantic -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used by the C compiler during maintainer builds."
     FORCE )
 SET( CMAKE_EXE_LINKER_FLAGS_COVERAGE
-    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage" CACHE STRING
+    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used for linking binaries during maintainer builds."
     FORCE )
 SET( CMAKE_SHARED_LINKER_FLAGS_COVERAGE
-    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage" CACHE STRING
+    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used by the shared libraries linker during maintainer builds."
     FORCE )
 MARK_AS_ADVANCED(
