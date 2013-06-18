@@ -423,8 +423,8 @@ BOOST_AUTO_TEST_CASE( chart_categories ) {
 
     SIMPLE_CHART(ch, lattice);
 
-    BOOST_CHECK_EQUAL(count_out_edges(ch), 10);
-    BOOST_CHECK_EQUAL(count_in_edges(ch), 10);
+    BOOST_CHECK_EQUAL(count_out_edges(ch), 8);
+    BOOST_CHECK_EQUAL(count_in_edges(ch), 8);
     BOOST_CHECK_EQUAL(count_vertices(ch), 13);
 
     BOOST_CHECK_EQUAL(
