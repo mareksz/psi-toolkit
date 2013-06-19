@@ -13,7 +13,7 @@ CPPCHECK_EXCLUDE="-i ${TARGET_DIR}/bindings/perl -i ${TARGET_DIR}/bindings/pytho
 EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tools/translators/bonsai/irstlm"
 
 # Regexp for automatically generated files by bison etc.
-AUTO_GENERATED_FILES=".*tools/parsers/gobio/translator/lex.grlex.cpp|.*tools/parsers/gobio/translator/grparser.bis.cpp"
+AUTO_GENERATED_FILES=".*tools/parsers/gobio/translator/lex.(g|t)rlex.cpp|.*tools/parsers/gobio/translator/grparser.bis.cpp"
 
 mkdir -p $TARGET_DIR
 
@@ -41,20 +41,22 @@ xsltproc  ~/valgrind-reports-to-xunit/xslt/valgrind_transform.xsl valgrind.xml >
 cd ..
 
 # Running cppcheck
-cppcheck -D__cplusplus -D__GNUC__=3 -f --xml . --enable=all echo `find . -type d ! -path './.git*' ! -path "./${TARGET_DIR}"'*' | perl -ne 'chomp; print "-I$_ "'` ${CPPCHECK_EXCLUDE} 2> cppcheck-result-all.xml
-
-if $SKIP_STYLE_CHECKING_IN_EXTERNAL_LIBS; then
-    egrep -v "file=\"(${EXTERNAL_LIBS}|${AUTO_GENERATED_FILES}).*\" severity=\"style\"" cppcheck-result-all.xml > cppcheck-result.xml
-else
-    cp cppcheck-result-all.xml cppcheck-result.xml
-fi
-
-rm cppcheck-result-all.xml
+cppcheck -D__cplusplus -D__GNUC__=3 -f --xml . --enable=all echo `find . -type d ! -path './.git*' ! -path "./${TARGET_DIR}"'*' | perl -ne 'chomp; print "-I$_ "'` ${CPPCHECK_EXCLUDE} 2> cppcheck-result.xml.all
 
 # Running Vera++
 VERA_EXCLUDE="(${TARGET_DIR}|${EXTERNAL_LIBS}|${AUTO_GENERATED_FILES})"
 
-find . -regextype posix-extended -regex ".*\.(${FILE_EXTS})" ! -regex "\./${VERA_EXCLUDE}/.*" ! -path './common/config.hpp' | vera++ - -profile psi -showrules 2>&1 | ./vera++2cppcheck.pl > vera++-result.xml
+find . -regextype posix-extended -regex ".*\.(${FILE_EXTS})" ! -regex "\./${VERA_EXCLUDE}/.*" ! -path './common/config.hpp' | vera++ - -profile psi -showrules 2>&1 | ./vera++2cppcheck.pl > vera++-result.xml.all
+
+if $SKIP_STYLE_CHECKING_IN_EXTERNAL_LIBS; then
+    egrep -v "file=\"(${EXTERNAL_LIBS}|${AUTO_GENERATED_FILES}).*\" severity=\"style\"" cppcheck-result.xml.all > cppcheck-result.xml
+    egrep -v "file=\"(${EXTERNAL_LIBS}|${AUTO_GENERATED_FILES}).*\" severity=\"style\"" vera++-result.xml.all > vera++-result.xml
+else
+    cp cppcheck-result.xml.all cppcheck-result.xml
+    cp vera++-result.xml.all vera++-result.xml
+fi
+
+rm cppcheck-result.xml.all cppcheck-result.xml.all
 
 # Running server tests
 if ! type -P jruby > /dev/null; then
