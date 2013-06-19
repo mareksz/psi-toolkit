@@ -6,31 +6,81 @@ use File::Spec::Functions;
 use File::Spec::Unix;
 
 use Parallel::ForkManager;
+use Sys::CPU;
 use File::Temp qw(tempdir);
 
-my $PSIBUILD = "/home/marcinj/Poleng/Psi/psi-toolkit/build";
-my $PSIFRAMEWORK = "$PSIBUILD/framework";
-my $PARSE = "$PSIFRAMEWORK/psi-pipe --line-by-line puddle --lang pl ! bracketing-writer --skip-symbol-edges --opening-bracket '<tree_label=\"%c\">' --closing-bracket \"</tree>\" --tags parse lexeme frag";
+use Getopt::Long;
 
-my $input  = File::Spec->rel2abs($ARGV[0]);
-my $output = File::Spec->rel2abs($ARGV[1]);
+my $PSIBUILD = ".";
+my $LANG = "pl";
+my $INPUT;
+my $OUTPUT;
+my $FORK = 0;
 
-my $dir = File::Temp->newdir(CLEANUP => 1);
-my $tempdir = $dir->dirname;
+GetOptions(
+    "psi=s" => \$PSIBUILD,
+    "lang=s" => \$LANG,
+    "input=s" => \$INPUT,
+    "output=s" => \$OUTPUT,
+    "fork=s" => \$FORK,
+);
 
-`split -a 5 -d -l 1000 $input $tempdir/input.`;
+my $PSIBUILD_ = File::Spec->rel2abs($PSIBUILD);
 
-my $fm = new Parallel::ForkManager(6);
+die "No input file given.\n" if(not $INPUT);
+die "No output file given.\n" if(not $OUTPUT);
+die "Path '$PSIBUILD' does not exist" if(not -e "$PSIBUILD");
 
-foreach my $file (<$tempdir/input.*>) {
-    $fm->start() and next;
+my $PSIFRAMEWORK_ = "$PSIBUILD_/framework";
+my $PARSE_ = "$PSIFRAMEWORK_/psi-pipe --line-by-line puddle --lang $LANG ! bracketing-writer --skip-symbol-edges --opening-bracket '<tree_label=\"%c\">' --closing-bracket \"</tree>\" --tags parse lexeme --disambig";
 
-    chdir $PSIBUILD;
-    `$PARSE < $file > $file.parsed`;
+my $INPUT_  = File::Spec->rel2abs($INPUT);
+my $OUTPUT_ = File::Spec->rel2abs($OUTPUT);
 
-    $fm->finish()
+if($FORK eq "all") {
+    $FORK = Sys::CPU::cpu_count();
+}
+else {
+    $FORK = $FORK + 0;
 }
 
-$fm->wait_all_children();
+if($FORK > 1) {
+    print STDERR "Splitting data into $FORK parts\n";
+    my $dir = File::Temp->newdir(CLEANUP => 1);
+    my $tempdir = $dir->dirname;
+    
+    `split -a 5 -d -l 1000 $INPUT_ $tempdir/input.`;
+    
+    my $fm = new Parallel::ForkManager($FORK);
+    
+    print STDERR "Running $FORK parsing processes\n";
+    my $num = 0;
+    foreach my $file (<$tempdir/input.*>) {
+        $num++;
+        $fm->start() and next;
+    
+        print STDERR "Starting parsing process $num\n";
+        chdir $PSIBUILD_;
+        `$PARSE_ < $file > $file.parsed`;
+        print STDERR "Finished parsing process $num\n";
+    
+        $fm->finish()
+    }
+    
+    $fm->wait_all_children();
 
-`cat $tempdir/input.*.parsed > $output`;
+    print STDERR "Finished parsing\n";
+    print STDERR "Concatenating output\n";
+    
+    `cat $tempdir/input.*.parsed > $OUTPUT_`;
+    print STDERR "Done\n";
+}
+elsif($FORK == 1 or $FORK == 0) {
+    print STDERR "Starting parsing process\n";
+    chdir $PSIBUILD_;
+    `$PARSE_ < $INPUT_ > $OUTPUT_`;
+    print STDERR "Done\n";
+}
+else {
+    die "$FORK is not a valid number of processes.\n";
+}

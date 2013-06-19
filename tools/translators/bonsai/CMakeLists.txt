@@ -42,3 +42,5 @@ target_link_libraries(tools-translators-bonsai ${Boost_LIBRARIES} tools-parsers-
 
 install(TARGETS tools-translators-bonsai DESTINATION lib/)
 install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/bonsai)
+
+add_subdirectory(utils)
