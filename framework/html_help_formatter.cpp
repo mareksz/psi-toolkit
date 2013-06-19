@@ -181,11 +181,9 @@ void HtmlHelpFormatter::doFormatDataFile(std::string text, std::ostream& output)
 }
 
 void HtmlHelpFormatter::formatPipelineExamplesInJSON(std::ostream& output) {
-    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
-
     output << "var pipelineExamples = [" << std::endl;
 
-    BOOST_FOREACH(std::string processorName, processors) {
+    BOOST_FOREACH(std::string processorName, getProcessorNames()) {
         BOOST_FOREACH(TestBatch testBatch, getProcessorUsingExamples(processorName)) {
             formatPipelineExampleInJSON_(testBatch, output);
         };
@@ -271,12 +269,20 @@ void HtmlHelpFormatter::doFormatOneAlias(
     if (processorNames.empty())
         return;
 
-    output << "<div class=\"alias-item\">" << aliasName << " &rarr; ";
+    output << "<div class=\"alias-item\">";
+    if (processorNames.size() > 1) {
+        output << "<a href=\"/help/processor.psis?name=" << aliasName << "\">";
+    }
+    output << aliasName;
+    if (processorNames.size() > 1) {
+        output << "</a>";
+    }
+    output << " &rarr; ";
 
     unsigned int i = 0;
 
     BOOST_FOREACH(std::string processorName, processorNames) {
-        output << "<a href=\"/help/documentation.html#"
+        output << "<a href=\"/help/processor.psis?name="
             << getProcessorNameWithoutOptions(processorName) << "\">"
             << processorName << "</a>";
 
