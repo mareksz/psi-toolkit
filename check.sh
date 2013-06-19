@@ -56,7 +56,7 @@ else
     cp vera++-result.xml.all vera++-result.xml
 fi
 
-rm cppcheck-result.xml.all vera++-result.xml.all
+## rm cppcheck-result.xml.all vera++-result.xml.all
 
 # Running server tests
 if ! type -P jruby > /dev/null; then
