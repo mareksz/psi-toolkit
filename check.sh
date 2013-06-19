@@ -13,7 +13,7 @@ CPPCHECK_EXCLUDE="-i ${TARGET_DIR}/bindings/perl -i ${TARGET_DIR}/bindings/pytho
 EXTERNAL_LIBS="server/mpfd-parser|utf8|maxent|sundown|fex|tiniconv|uchardet|tools/translators/bonsai/irstlm"
 
 # Regexp for automatically generated files by bison etc.
-AUTO_GENERATED_FILES=".*tools/parsers/gobio/translator/lex.(g|t)rlex.cpp|.*tools/parsers/gobio/translator/grparser.bis.cpp"
+AUTO_GENERATED_FILES=".*/lex.trlex.cpp|.*/lex.grlex.cpp|.*tools/parsers/gobio/translator/grparser.bis.cpp"
 
 mkdir -p $TARGET_DIR
 
@@ -56,7 +56,7 @@ else
     cp vera++-result.xml.all vera++-result.xml
 fi
 
-rm cppcheck-result.xml.all cppcheck-result.xml.all
+rm cppcheck-result.xml.all vera++-result.xml.all
 
 # Running server tests
 if ! type -P jruby > /dev/null; then
