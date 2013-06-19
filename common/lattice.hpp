@@ -858,12 +858,8 @@ Lattice::EdgeSequence Lattice::getPathWithSkipping(
                         bestOne = iter.next();
                     }
                 }
-                if (skippingPredicate(*this, bestOne)) {
-                    pathBuilder.addEdge(bestOne);
-                    vertex = getEdgeTarget(bestOne);
-                } else {
-                    nextVertexFound = false;
-                }
+                pathBuilder.addEdge(bestOne);
+                vertex = getEdgeTarget(bestOne);
             } else {
                 nextVertexFound = false;
             }
