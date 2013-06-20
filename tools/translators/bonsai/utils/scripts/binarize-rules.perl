@@ -14,7 +14,7 @@ GetOptions(
     "bindir=s" => \$BIN_DIR,
     "scriptdir=s" => \$SCRIPT_DIR,
     "prefix=s" => \$name,
-    "copy" => \$copy,
+    #"copy" => \$copy,
 );
 
 $ENV{LC_ALL} = "C";

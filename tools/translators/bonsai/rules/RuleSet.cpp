@@ -29,11 +29,11 @@ RuleSet::RuleSet(std::string path, int max_length_, int max_nt_, int rule_set_in
    boost::program_options::store(boost::program_options::parse_config_file(config, desc), vm);
    boost::program_options::notify(vm);
 
-   if (vm.count("source.target.map") == 0) {
-       std::cerr << "Error: No rule map file given." << std::endl;
-       exit(1);
-   }
-   std::string mapfile = path + "/" + vm["source.target.map"].as<std::string>();
+   //if (vm.count("source.target.map") == 0) {
+   //    std::cerr << "Error: No rule map file given." << std::endl;
+   //    exit(1);
+   //}
+   //std::string mapfile = path + "/" + vm["source.target.map"].as<std::string>();
 
    if (vm.count("source.rules.index") == 0) {
        std::cerr << "Error: No source rule index file given." << std::endl;
@@ -98,7 +98,7 @@ EdgeTransformationsPtr RuleSet::get_edge_transformations(Lattice &lattice,
     boost::posix_time::time_duration delta1 = pt_start2 - pt_start1;
 
     if (verbosity > 0)
-    std::cerr << "DAG created in " << delta1.total_milliseconds() << " ms." << std::endl;
+        std::cerr << "DAG created in " << delta1.total_milliseconds() << " ms." << std::endl;
 
     rules::WordList src_lang_wordlist = src_fsa.multihash(src_lang_dag);
 
@@ -106,10 +106,10 @@ EdgeTransformationsPtr RuleSet::get_edge_transformations(Lattice &lattice,
     boost::posix_time::time_duration delta2 = pt_start3 - pt_start2;
 
     if (verbosity > 0)
-    std::cerr << "DAG intersected with rules in " << delta2.total_milliseconds() << " ms." << std::endl;
+        std::cerr << "DAG intersected with rules in " << delta2.total_milliseconds() << " ms." << std::endl;
 
     if (verbosity > 0)
-    std::cerr << "Rules found: " << src_lang_wordlist.size() << std::endl;
+        std::cerr << "Rules found: " << src_lang_wordlist.size() << std::endl;
 
     EdgeTransformationsPtr et( new EdgeTransformations() );
     typedef std::vector<std::pair<Symbol, SListPtr> > SymbolSListPairs;
@@ -118,61 +118,61 @@ EdgeTransformationsPtr RuleSet::get_edge_transformations(Lattice &lattice,
     std::sort(src_lang_wordlist.begin(), src_lang_wordlist.end(), wi_sorter);
     for (rules::WordList::iterator it = src_lang_wordlist.begin(); it != src_lang_wordlist.end(); it++) {
 
-    rules::Word src_word = it->get<0>();
-    int pos = it->get<1>()-1;
+        rules::Word src_word = it->get<0>();
+        int pos = it->get<1>()-1;
 
-    if (pos >= 0) {
-        rules::WordTriples trg_wordtriples = trg_huf.get_wordtriples(pos);
-        SymbolSListPairs sls = word_to_slist(src_word, src_sym_unmap);
-
-        for (SymbolSListPairs::iterator slit = sls.begin(); slit != sls.end(); slit++) {
-        if (et->count(slit->first) == 0)
-            (*et)[slit->first] = HyperEdgeSetPtr( new HyperEdgeSet() );
-
-        HyperEdgePtr he( new HyperEdge(slit->second) );
-
-        for (rules::WordTriples::iterator wit = trg_wordtriples.begin(); wit != trg_wordtriples.end(); wit++) {
-
-            rules::Word trg_word  = wit->get<0>();
-            rules::Word trg_probs = wit->get<1>();
-            rules::Word trg_align = wit->get<2>();
-
-            TransformationPtr tp = word_to_transformation(slit->first, slit->second, trg_word, trg_probs, trg_align);
-
-            if (verbosity > 1)
-            std::cerr << tp->str() << std::endl;
-
-            TransformationSetPtr tsp( new TransformationSet() );
-            tsp->insert( tp );
-
-            BOOST_FOREACH( TransformationPtr t, *tsp ) {
-            if (he->get_transformations()->size() < max_trans_hyper) {
-                if (eps > 0 and he->get_transformations()->size() > 0) {
-                TransformationPtr best = *(he->get_transformations()->begin());
-                if (t->get_cost() <= best->get_cost() + eps) {
-                    he->add(t);
+        if (pos >= 0) {            
+            rules::WordTriples trg_wordtriples = trg_huf.get_wordtriples(pos);
+            SymbolSListPairs sls = word_to_slist(src_word, src_sym_unmap);
+    
+            for (SymbolSListPairs::iterator slit = sls.begin(); slit != sls.end(); slit++) {
+                if (et->count(slit->first) == 0)
+                    (*et)[slit->first] = HyperEdgeSetPtr( new HyperEdgeSet() );
+        
+                HyperEdgePtr he( new HyperEdge(slit->second) );
+        
+                for (rules::WordTriples::iterator wit = trg_wordtriples.begin(); wit != trg_wordtriples.end(); wit++) {
+        
+                    rules::Word trg_word  = wit->get<0>();
+                    rules::Word trg_probs = wit->get<1>();
+                    rules::Word trg_align = wit->get<2>();
+        
+                    TransformationPtr tp = word_to_transformation(slit->first, slit->second, trg_word, trg_probs, trg_align);
+        
+                    if (verbosity > 1)
+                        std::cerr << tp->str() << std::endl;
+        
+                    TransformationSetPtr tsp( new TransformationSet() );
+                    tsp->insert( tp );
+        
+                    BOOST_FOREACH( TransformationPtr t, *tsp ) {
+                        if (he->get_transformations()->size() < max_trans_hyper) {
+                            if (eps > 0 and he->get_transformations()->size() > 0) {
+                                TransformationPtr best = *(he->get_transformations()->begin());
+                                if (t->get_cost() <= best->get_cost() + eps) {
+                                    he->add(t);
+                                }
+                            }
+                            else {
+                                he->add(t);
+                            }
+                        }
+                    }
                 }
-                }
-                else {
-                he->add(t);
+        
+                (*et)[slit->first]->insert(he);
+        
+                while ((*et)[slit->first]->size() > max_hyper_sym) {
+                    HyperEdgeSet::iterator it = (*et)[slit->first]->end();
+                    it--;
+                    (*et)[slit->first]->erase(it);
                 }
             }
-            }
+    
         }
-
-        (*et)[slit->first]->insert(he);
-
-        while ((*et)[slit->first]->size() > max_hyper_sym) {
-            HyperEdgeSet::iterator it = (*et)[slit->first]->end();
-            it--;
-            (*et)[slit->first]->erase(it);
+        else {
+            std::cerr << it->get<1>()-1 << std::endl;
         }
-        }
-
-    }
-    else {
-        std::cerr << it->get<1>()-1 << std::endl;
-    }
 
     }
 
@@ -180,7 +180,7 @@ EdgeTransformationsPtr RuleSet::get_edge_transformations(Lattice &lattice,
     boost::posix_time::time_duration delta_all = pt_all_end - pt_start1;
 
     if (verbosity > 0) {
-    std::cerr << "All transformations loaded in " << delta_all.total_milliseconds() << " ms." << std::endl;
+        std::cerr << "All transformations loaded in " << delta_all.total_milliseconds() << " ms." << std::endl;
     }
 
     return et;
