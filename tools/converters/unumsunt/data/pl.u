@@ -67,22 +67,27 @@
 @attr   accommodability Typ
 @val    congr   zg
 @val    rec d
-CAT = rzeczownik, wszystko >> CAT = '@wszystko'
-CAT = przysłówek, siebie się >> CAT = '@się'
-CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = rzeczownik >> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
 CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno
+CAT = rzeczownik, wszystko >> CAT = '@wszystko'
 CAT = rzeczownik, ktoś kogoś komuś kimś coś czegoś czemuś czymś nikt nikogo nikomu nikim nic niczego niczemu niczym >> CAT = zaimek_rzeczowny_nieokreślony
+CAT = zaimek_rzeczowny_osobowy >> R = $Rp
 CAT = przymiotnik >> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = any
 CAT = przymiotnik, R = mnż >> R = mnż|mno
 CAT = przymiotnik, R = mo >> R = mo|mż
 CAT = przymiotnik, R = m >> R = mo|mno|mż|mnż
+CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, ten ta to tego tej temu tę tym tą ci te tych tym tymi >> CAT = zaimek_przymiotny
+#CAT = przymiotnik, ten ta to tego tej temu tę tym tą ci te tych tym tymi >> '$to'
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
 CAT = przysłówek, trudno >> Typ = modalny, Dop2 = bk
+CAT = przysłówek, siebie się >> CAT = '@się'
+CAT = przysłówek, dlaczego którędy >> CAT = zaimek_przysłowny, Typ = pytajny
 CAT = spójnik >> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1,Typ=0
 CAT = spójnik, albo >> Typ=albo,Ps5=1
+CAT = spójnik, czy jak kiedy >> CAT = zaimek_przysłowny, Typ = pytajny
 CAT = wykrzyknienie >> Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny >> R = $Rp, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny, jeden jedna jedno jedni jedne >> Typ = kwant
@@ -97,8 +102,8 @@ CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
 CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny, A = 0, R = $Rp
-CAT = czasownik, C = bezokolicznik >> R = 0, L = 0, O = 0
-CAT = czasownik, można >> C = teraźniejszy, Typ = modalny
+CAT = czasownik, C = bezokolicznik >> R = 0, L = 0, O = 0, Podmiot = potencjalny
+CAT = czasownik, można trzeba >> C=teraźniejszy, Typ=modalny, Podmiot=brak, A=0, Dop3 = bk
 CAT = przyimek >> Length=1,Amb=1,Typ=0
 CAT = '@się' >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2

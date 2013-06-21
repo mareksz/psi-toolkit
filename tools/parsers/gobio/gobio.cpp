@@ -318,8 +318,10 @@ std::string Gobio::leafSymbolToCategory_(
     if (symbol == "przyimek_spośród")              return "PR";
     if (symbol == "spójnik")                       return "S";
     if (symbol == "zaimek_dzierżawczy")            return "ZP";
+    if (symbol == "zaimek_przysłowny")             return "ZS";
     if (symbol == "zaimek_rzeczowny_nieokreślony") return "ZRn";
     if (symbol == "zaimek_rzeczowny_osobowy")      return "ZRo";
+    if (symbol == "zaimek_wskazujący")             return "ZRw";
 
     if (symbol == "czasownik_być") return "'$być'";
 
