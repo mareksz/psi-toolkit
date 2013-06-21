@@ -85,9 +85,10 @@ CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Se
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
 CAT = przysłówek, trudno >> Typ = modalny, Dop2 = bk
 CAT = przysłówek, siebie się >> CAT = '@się'
-CAT = przysłówek, dlaczego >> CAT = zaimek_przysłowny, Typ = pytajny
+CAT = przysłówek, dlaczego którędy >> CAT = zaimek_przysłowny, Typ = pytajny
 CAT = spójnik >> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1,Typ=0
 CAT = spójnik, albo >> Typ=albo,Ps5=1
+CAT = spójnik, czy jak kiedy >> CAT = zaimek_przysłowny, Typ = pytajny
 CAT = wykrzyknienie >> Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny >> R = $Rp, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny, jeden jedna jedno jedni jedne >> Typ = kwant
