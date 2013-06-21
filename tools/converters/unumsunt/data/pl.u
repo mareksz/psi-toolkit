@@ -98,7 +98,7 @@ CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
 CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny, A = 0, R = $Rp
 CAT = czasownik, C = bezokolicznik >> R = 0, L = 0, O = 0
-CAT = czasownik, można >> C = teraźniejszy, Typ = modalny
+CAT = czasownik, można trzeba >> C=teraźniejszy, Typ=modalny, Podmiot=brak, A=0
 CAT = przyimek >> Length=1,Amb=1,Typ=0
 CAT = '@się' >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
