@@ -3,6 +3,7 @@
 use strict;
 use Getopt::Long;
 use File::Temp qw(tempfile tempdir);
+use File::Basename qw(fileparse);
 
 my $name = "rules";
 my $copy = 0;
@@ -193,3 +194,22 @@ print STDERR "Binarizing and resorting automaton by access counts\n";
 if($copy) {
     `cp $src_fsa_txt_file $name.src.fsa.txt`;
 }
+
+my ($pref, $path, undef) = fileparse($name);
+print STDERR "Writing transfer.ini to '$path'\n";
+open(INI, ">$path/transfer.ini");
+print INI <<RULEINI;
+[source.rules]
+
+index=$pref.src.idx
+symbols=$pref.src.sym
+mode=0
+
+[target.rules]
+
+index=$pref.trg.huf
+symbols=$pref.trg.sym
+costs=5
+RULEINI
+close(INI);
+
