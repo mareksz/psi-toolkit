@@ -11,16 +11,11 @@
 #include <boost/shared_ptr.hpp>
 
 #include "regexp.hpp"
+#include "psi_exception.hpp"
 
-class TPTokenizerException: public std::exception {
-    std::string cause;
+class TPTokenizerException: public PsiException {
 public:
-    TPTokenizerException(std::string c) {
-        cause = c;
-    }
-
-    virtual const char* what() const throw() {
-        return cause.c_str();
+    TPTokenizerException(std::string c): PsiException(c) {
     }
 
     virtual ~TPTokenizerException() throw() {};

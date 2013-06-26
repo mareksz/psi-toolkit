@@ -10,6 +10,7 @@
 #include <boost/foreach.hpp>
 
 #include "xml_property_tree.hpp"
+#include "psi_exception.hpp"
 
 class SrxRule {
 
@@ -28,20 +29,14 @@ private:
 
 class SrxRulesReader {
 public:
-    class Exception : public std::exception {
+    class Exception : public PsiException {
     public:
         Exception(const std::string& msg)
-            :msg_(msg) {
+            :PsiException(msg) {
         }
 
         virtual ~Exception() throw() {
         }
-
-        virtual const char* what() const throw() {
-            return msg_.c_str();
-        }
-    private:
-        std::string msg_;
     };
 
     class UnexpectedElementException : public Exception {

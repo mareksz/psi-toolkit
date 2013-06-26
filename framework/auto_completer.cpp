@@ -21,9 +21,13 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
 
     complete_(sequence);
 
-    boost::optional<std::exception> firstException;
+    boost::shared_ptr<PsiException> firstException;
 
-    while (!alternativeSequences_.empty()) {
+    bestFound_.reset();
+
+    while (!bestFound_ && !alternativeSequences_.empty()) {
+
+        INFO("number of alternative sequences is " << alternativeSequences_.size());
 
         std::list<ProcessorPromiseSequence>::iterator bestIter =
             alternativeSequences_.end();
@@ -46,17 +50,26 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
 
             INFO("checking promise sequence...");
 
-            boost::optional<std::exception> ex = checkSolution_(*bestFound_);
+            boost::shared_ptr<PsiException> ex = checkSolution_(*bestFound_);
 
-            if (ex)
-                firstException = ex;
+            if (ex) {
+                if (!firstException)
+                    firstException = ex;
+
+                bestFound_.reset();
+            }
 
             INFO("checking done...");
         }
     }
 
-    if (!bestFound_ && firstException)
-        throw firstException;
+    if (!bestFound_ && firstException) {
+        INFO("raising " << firstException->what() << " exception");
+
+        throw *firstException;
+    }
+
+    INFO("some promise sequence found");
 
     return bestFound_;
 }
@@ -383,17 +396,24 @@ bool AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence
     return false;
 }
 
-boost::optional<std::exception> AutoCompleter::checkSolution_(const ProcessorPromiseSequence& promiseSequence) {
+boost::shared_ptr<PsiException> AutoCompleter::checkSolution_(const ProcessorPromiseSequence& promiseSequence) {
     try {
         BOOST_FOREACH(ProcessorPromiseSharedPtr promise, promiseSequence) {
             promise->createProcessor();
         }
-    } catch (std::exception& ex) {
+    } catch (PsiException& ex) {
+        // ugly, but necessary, see:
+        // http://stackoverflow.com/questions/6577513/exceptions-inside-exceptions-in-c
+
         DEBUG("cannot run this promise sequence [" << ex.what() << "]");
-        return boost::optional<std::exception>(ex);
+        return boost::shared_ptr<PsiException>(new PsiException(ex));
+    } catch (std::exception& ex) {
+        WARN("unexpected exception [" << ex.what()
+             << "], wrapping as PsiException");
+        return boost::shared_ptr<PsiException>(new PsiException(ex.what()));
     }
 
-    return boost::optional<std::exception>();
+    return boost::shared_ptr<PsiException>();
 }
 
 
