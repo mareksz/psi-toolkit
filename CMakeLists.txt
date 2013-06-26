@@ -799,7 +799,7 @@ if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/bilexicon/data/plit.bin")
     download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
     download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
-    download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/pl-valency.bin")
+    download_artifact("tools/lexica/mapper/data/pl-valency.bin")
 
     download_project_artifact(psi-toolkit-data-sumo "tools/lemmatizers/lamerlemma/data/pl.bin")
     download_artifact("tools/lemmatizers/lamerlemma/data/fr.bin")
