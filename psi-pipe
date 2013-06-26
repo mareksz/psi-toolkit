@@ -1,0 +1,62 @@
+_psi-pipe()
+{
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    # result of: psi-pipe --help 2> /dev/null | grep -oP '(?=(\[| )) --[a-z\-]+'
+    local pipe_opts="--help --version --line-by-line --processors --aliases --list-encodings --from-encoding --log-level --log-file"
+
+    local procs=$( psi-pipe --processors 2> /dev/null | tail -n +2 )
+    local aliases=$( psi-pipe --aliases 2> /dev/null | grep -oP '.+(?= -> )' )
+    local all_procs="${procs} ${aliases}"
+
+    if [[ ${cur} == -* ]] ; then
+        case "${all_procs}" in
+            *${prev}*)
+                local proc_opts=$( psi-pipe --help ${prev} 2> /dev/null | grep -oP '(?=(\[| )) --[a-z\-]+' | sort -u )
+                COMPREPLY=( $(compgen -W "${proc_opts}" -- ${cur}) )
+                return 0
+                ;;
+            *)
+                COMPREPLY=( $(compgen -W "${pipe_opts}" -- ${cur}) )
+                return 0
+            ;;
+        esac
+    fi
+
+    case "${prev}" in
+        # show only readers and annotators
+        psi-pipe)
+            local procs=$( echo "${all_procs}" | grep -vP 'write|get\-|draw|show' )
+            COMPREPLY=( $(compgen -W "${pipe_opts} ${procs}" -- ${cur}) )
+            return 0
+            ;;
+        --from-encoding)
+            local encodings=$( psi-pipe --list-encodings 2> /dev/null | tail -n +2 )
+            COMPREPLY=( $(compgen -W "${encodings}" -- ${cur}) )
+            return 0
+            ;;
+        --log-level)
+            local levels="TRACE DEBUG INFO WARN ERROR FATAL"
+            COMPREPLY=( $(compgen -W "${levels}" -- ${cur}) )
+            return 0
+            ;;
+        # show only annotators and writers
+        !)
+            local procs=$( echo "${all_procs}" | grep -vP '\-reader|read-' )
+            COMPREPLY=( $(compgen -W "${procs}" -- ${cur}) )
+            return 0
+            ;;
+        --help)
+            COMPREPLY=( $(compgen -W "${all_procs}" -- ${cur}) )
+            return 0
+            ;;
+        *)
+        ;;
+    esac
+
+    _filedir
+}
+complete -F _psi-pipe psi-pipe
