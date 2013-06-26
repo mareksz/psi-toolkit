@@ -453,16 +453,19 @@ sub write_config {
     print STDERR "(8) writing config file @ ".`date`;
     open(CFG, ">$___ROOT_DIR/$___F$___E/$___F$___E.cfg");
     print CFG <<END;
+lang=$___F
+trg-lang=$___E
+    
 tm_weight=0.6312883667850879
 tm_weight=-0.13812683402985232
 tm_weight=-0.1221699872305712
 tm_weight=0.2979169074770424
 tm_weight=-0.009559895081666011
 
-rs=tools/translators/bonsai/data/$___F$___E/binary/$___F$___E
+rs=binary
 rs_weight=-0.11747987321008765
 
-lm=tools/translators/bonsai/data/$___F$___E/binary/$___E.blm
+lm=binary/$___E.blm
 lm_weight=0.27170275451007214
 
 word_penalty=-1.0
