@@ -14,26 +14,18 @@ RuleSet::RuleSet(std::string path, int max_length_, int max_nt_, int rule_set_in
    namespace po = boost::program_options;
    po::options_description desc("rule options");
    desc.add_options()
-       ("source.target.map", po::value<std::string>()->default_value("plfr.map"), "")
        ("source.rules.index", po::value<std::string>()->default_value("plfr.src.idx"), "")
        ("source.rules.symbols", po::value<std::string>()->default_value("plfr.src.symbols"), "")
        ("source.rules.mode", po::value<int>()->default_value(0), "")
        ("target.rules.index", po::value<std::string>()->default_value("plfr.trg.idx"), "")
        ("target.rules.symbols", po::value<std::string>()->default_value("plfr.trg.symbols"), "")
        ("target.rules.costs", po::value<int>()->default_value(5), "")
-   //    ("target.rules.mode", po::value<int>()->default_value(0), "")
    ;
 
    boost::program_options::variables_map vm;
    std::ifstream config((path + "/transfer.ini").c_str());
    boost::program_options::store(boost::program_options::parse_config_file(config, desc), vm);
    boost::program_options::notify(vm);
-
-   //if (vm.count("source.target.map") == 0) {
-   //    std::cerr << "Error: No rule map file given." << std::endl;
-   //    exit(1);
-   //}
-   //std::string mapfile = path + "/" + vm["source.target.map"].as<std::string>();
 
    if (vm.count("source.rules.index") == 0) {
        std::cerr << "Error: No source rule index file given." << std::endl;
@@ -67,7 +59,7 @@ RuleSet::RuleSet(std::string path, int max_length_, int max_nt_, int rule_set_in
 
    int smode = vm["source.rules.mode"].as<int>();
    //int tmode = vm["target.rules.mode"].as<int>();
-
+   
    src_fsa.open(sindex, smode);
 
     if (verbosity > 1)
