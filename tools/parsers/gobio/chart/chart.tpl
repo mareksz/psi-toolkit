@@ -39,7 +39,6 @@ chart<C,S,V,R,I>::chart(
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection(terminalTag));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("form"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lemma"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
     inputTagMask_ = lattice.getLayerTagManager().getAlternativeMask(altTags);
 }
