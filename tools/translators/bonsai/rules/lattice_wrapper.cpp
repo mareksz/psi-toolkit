@@ -31,7 +31,7 @@ Lattice::EdgeSequence getWordTokenSequence(
         if (!lattice.isBlank(token)) {
             seqBuilder.addEdge(token);
         }
-        if (token == end) {
+        if (lattice.getEdgeTarget(token) >= end) {
             break;
         }
     }
@@ -60,7 +60,7 @@ Lattice::EdgeSequence getTopParseSequence(
         if (!lattice.isBlank(topCandidate)) {
             seqBuilder.addEdge(topCandidate);
         }
-        if (topCandidate == end) {
+        if (lattice.getEdgeTarget(topCandidate) >= end) {
             break;
         }
     }
@@ -87,7 +87,7 @@ std::map<int, int> getCharWordTokenMap(
             charTokenMap[lattice.getEdgeBeginIndex(token)] = tokenNo;
             charTokenMap[lattice.getEdgeEndIndex(token)] = ++tokenNo;
         }
-        if (token == end) {
+        if (lattice.getEdgeTarget(token) >= end) {
             break;
         }
     }

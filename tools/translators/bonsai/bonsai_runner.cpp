@@ -346,7 +346,7 @@ std::vector<std::string> BonsaiRunner::normalizePaths_(
             outPaths.push_back(path);
         else {
             boost::filesystem::path parent = config.parent_path();
-            outPaths.push_back(parent.string() + "/" + temp.string()); // EVIL, but path::append not working?
+            outPaths.push_back(parent.string() + "/" + temp.string()); //@TODO: EVIL, but path::append not working?
         }
     }
     return outPaths;
