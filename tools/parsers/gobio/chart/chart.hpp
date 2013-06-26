@@ -215,6 +215,12 @@ private:
     LayerTagCollection outputTags_;
     LayerTagMask inputTagMask_;
 
+    LayerTagCollection formTag_;
+    LayerTagCollection lexemeTag_;
+    LayerTagCollection lemmaTag_;
+    LayerTagCollection gobioTag_;
+    LayerTagMask toBePutInApostrophesTagMask_;
+
     const LayerTagCollection& getChartOutputTags_() const;
     const LayerTagMask& getChartInputTagMask_() const;
 
