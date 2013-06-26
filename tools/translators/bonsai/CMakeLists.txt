@@ -5,6 +5,7 @@ include_directories("${psi-toolkit_SOURCE_DIR}/tools/parsers/puddle")
 link_directories("${psi-toolkit_BINARY_DIR}/tools/parsers/puddle")
 
 add_library(tools-translators-bonsai SHARED
+    bonsai_runner.cpp
     bonsai.cpp
     translator/Translator.hpp
     irstlm/mfstream.cpp

@@ -22,32 +22,36 @@ void Translator::translate(Lattice& lattice,
 
     std::map<Symbol, Lattice::EdgeDescriptor, SymbolSorterMap2> symbolEdgeMap;
     EdgeTransformationsPtr et = rl->get_edge_transformations(lattice, start, end, symbolEdgeMap);
-
-    Symbol top = add_top_symbol(lattice, start, end, langCode, symbolEdgeMap, et);
-
-    if (verbosity >= 1)
-    std::cerr << "Starting translation ..." << std::endl;
-
-    TranslationQueuePtr translations = translate_recursive(top, et);
-
-    boost::posix_time::ptime pt_end = boost::posix_time::microsec_clock::local_time();
-    boost::posix_time::time_duration delta = pt_end - pt_start;
-    int d = delta.total_milliseconds();
-    total_time += d;
-    if (verbosity > 0) {
-    std::cerr << "Time: " << d << " ms." << std::endl << std::endl;
-    }
-    sentence_no++;
-    lm->clear_memory();
-
-    static std::map<int, Lattice::EdgeDescriptor> idEdgeMap;
-    int i = 0;
-    for (TranslationQueue::iterator it = translations->begin(); it != translations->end() && i < n; it++) {
-    if (verbosity > 1)
-        std::cerr << (*it)->back_track(0);
-
-        (*it)->annotateLattice(lattice, symbolEdgeMap, idEdgeMap);
-    i++;
+    
+    Lattice::EdgeSequence topParseSeq = getTopParseSequence(lattice, start, end);
+    Lattice::EdgeSequence::Iterator topParseSeqIt(lattice, topParseSeq);
+    if(topParseSeqIt.hasNext()) {
+        Symbol top = add_top_symbol(lattice, start, end, langCode, symbolEdgeMap, et);
+    
+        if (verbosity >= 1)
+            std::cerr << "Starting translation ..." << std::endl;
+    
+        TranslationQueuePtr translations = translate_recursive(top, et);
+    
+        boost::posix_time::ptime pt_end = boost::posix_time::microsec_clock::local_time();
+        boost::posix_time::time_duration delta = pt_end - pt_start;
+        int d = delta.total_milliseconds();
+        total_time += d;
+        if (verbosity > 0) {
+            std::cerr << "Time: " << d << " ms." << std::endl << std::endl;
+        }
+        sentence_no++;
+        lm->clear_memory();
+    
+        static std::map<int, Lattice::EdgeDescriptor> idEdgeMap;
+        int i = 0;
+        for (TranslationQueue::iterator it = translations->begin(); it != translations->end() && i < n; it++) {
+            if (verbosity > 1)
+                std::cerr << (*it)->back_track(0);
+        
+            (*it)->annotateLattice(lattice, symbolEdgeMap, idEdgeMap);
+            i++;
+        }
     }
 }
 
@@ -55,21 +59,21 @@ TranslationQueuePtr& Translator::translate_recursive(Symbol& s, EdgeTransformati
 {
     bool is_top = false;
     if (s.label() == "<TOP>") {
-    is_top = true;
+        is_top = true;
     }
 
     if (node_translation_memory.count(s) > 0) {
-    return node_translation_memory[s];
+        return node_translation_memory[s];
     }
     else {
-    TranslationQueuePtr node_translations( new TranslationQueue() );
-    if (et->count(s) == 0)
-        std::cerr << "Symbol " << s.str() << " is empty!" << std::endl;
-    HyperEdgeSetPtr hyper_edges = (*et)[s];
-    node_translations = merge(hyper_edges, et, is_top);
-    node_translation_memory[s] = node_translations;
-
-    return node_translation_memory[s];
+        TranslationQueuePtr node_translations( new TranslationQueue() );
+        if (et->count(s) == 0)
+            std::cerr << "Symbol " << s.str() << " is empty!" << std::endl;
+        HyperEdgeSetPtr hyper_edges = (*et)[s];
+        node_translations = merge(hyper_edges, et, is_top);
+        node_translation_memory[s] = node_translations;
+    
+        return node_translation_memory[s];
     }
 }
 
@@ -176,21 +180,21 @@ Symbol Translator::add_top_symbol(Lattice& lattice,
     Lattice::EdgeSequence topParseSeq = getTopParseSequence(lattice, start, end);
     Lattice::EdgeSequence::Iterator topParseSeqIt(lattice, topParseSeq);
     while (topParseSeqIt.hasNext()) {
-    Lattice::EdgeDescriptor topEdge = topParseSeqIt.next();
-
-    int topStart = charTokenMap[lattice.getEdgeBeginIndex(topEdge)];
-    int topEnd   = charTokenMap[lattice.getEdgeEndIndex(topEdge)];
-
-    if (isNonTerminal(topEdge, lattice)) {
-        std::string label = "<" + lattice.getAnnotationCategory(topEdge) + ">";
-        source->push_back(Symbol(label, Range(topStart, topEnd), true));
+        Lattice::EdgeDescriptor topEdge = topParseSeqIt.next();
+    
+        int topStart = charTokenMap[lattice.getEdgeBeginIndex(topEdge)];
+        int topEnd   = charTokenMap[lattice.getEdgeEndIndex(topEdge)];
+    
+        if (isNonTerminal(topEdge, lattice)) {
+            std::string label = "<" + lattice.getAnnotationCategory(topEdge) + ">";
+            source->push_back(Symbol(label, Range(topStart, topEnd), true));
+        }
+        else {
+            std::string label = lattice.getEdgeText(topEdge);
+            source->push_back(Symbol(label, Range(topStart, topEnd), false));
+        }
     }
-    else {
-        std::string label = lattice.getEdgeText(topEdge);
-        source->push_back(Symbol(label, Range(topStart, topEnd), false));
-    }
-    }
-
+    
     int startPos = source->front().start();
     int endPos =   source->back().end();
 
