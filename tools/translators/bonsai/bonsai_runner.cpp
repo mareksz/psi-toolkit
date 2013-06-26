@@ -286,8 +286,7 @@ std::string BonsaiRunner::getContinuation(
     if (options.count("trg-lang")) {
         std::string trgLang = options["trg-lang"].as<std::string>();
 
-        return "detok --lang " + trgLang
-            + " ! simple-writer --tags trans";
+        return "simple-writer --tags trans";
     }
 
     return "psi-toolkit";
@@ -341,7 +340,9 @@ std::vector<std::string> BonsaiRunner::normalizePaths_(
     std::vector<std::string> outPaths;
     BOOST_FOREACH(std::string path, paths) {
         boost::filesystem::path temp(path);
-        if (temp.is_absolute()) 
+	// @TODO: use something nicer when new boost becomes minimal requirement
+        // if (temp.is_absolute())
+	if(temp.string().at(0) == '/')
             outPaths.push_back(path);
         else {
             boost::filesystem::path parent = config.parent_path();
