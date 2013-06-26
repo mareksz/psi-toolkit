@@ -103,28 +103,28 @@ bool UnumsuntRule::apply(
             continue;
         }
         BOOST_FOREACH(StringPair command, commands) {
-            if (command.first == CATEGORY_MARKER) {
-                if (command.second[0] == REFERENCE_MARKER) {
-                    manager.setCategory(*item,
-                        manager.getValueAsString(*item, command.second.substr(1)));
+            std::vector<std::string> alternativeValues;
+            boost::split(
+                alternativeValues,
+                command.second,
+                boost::is_any_of(ALTERNATIVE_SEPARATORS));
+            for (size_t i = 0; i < alternativeValues.size(); ++i) {
+                boost::shared_ptr<AnnotationItem> itemCopy;
+                if (i == 0) {
+                    itemCopy = item;
                 } else {
-                    manager.setCategory(*item, command.second);
+                    items.push_back(boost::shared_ptr<AnnotationItem>(
+                        new AnnotationItem(*item)));
+                    itemCopy = items.back();
                 }
-            } else {
-                std::vector<std::string> alternativeValues;
-                boost::split(
-                    alternativeValues,
-                    command.second,
-                    boost::is_any_of(ALTERNATIVE_SEPARATORS));
-                for (size_t i = 0; i < alternativeValues.size(); ++i) {
-                    boost::shared_ptr<AnnotationItem> itemCopy;
-                    if (i == 0) {
-                        itemCopy = item;
+                if (command.first == CATEGORY_MARKER) {
+                    if (command.second[0] == REFERENCE_MARKER) {
+                        manager.setCategory(*itemCopy,
+                            manager.getValueAsString(*itemCopy, alternativeValues[i].substr(1)));
                     } else {
-                        items.push_back(boost::shared_ptr<AnnotationItem>(
-                            new AnnotationItem(*item)));
-                        itemCopy = items.back();
+                        manager.setCategory(*itemCopy, alternativeValues[i]);
                     }
+                } else {
                     if (alternativeValues[i][0] == REFERENCE_MARKER) {
                         manager.setValue(*itemCopy, command.first,
                             manager.getValue(*itemCopy, alternativeValues[i].substr(1)));
