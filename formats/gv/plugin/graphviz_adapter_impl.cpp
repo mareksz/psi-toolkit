@@ -82,7 +82,14 @@ void GraphvizAdapterImpl::setRankDir(std::string dir) {
 
 
 void GraphvizAdapterImpl::setOrdering(std::string ordering) {
+/*
+ * TODO
+ * Remove this #if-clause when GraphViz developers fix bug 2266
+ * http://www.graphviz.org/mantisbt/view.php?id=2266
+ */
+#if GRAPHVIZ_CGRAPH
     agsafeset(g_, (char*)"ordering", (char*)(ordering.c_str()), (char*)"");
+#endif
 }
 
 
