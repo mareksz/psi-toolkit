@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+#include <boost/regex.hpp>
+
 #include "exceptions.hpp"
 
 #include "put_zsyntree_into_lattice.hpp"
@@ -120,14 +122,70 @@ Gobio::Gobio(
     rulesPath_(rulesPath),
     terminalTag_(terminalTag)
 {
+    // Set edge number limit.
     if (edgeNumberLimit > -1) {
         limitChecker_.reset(new LimitChecker(edgeNumberLimit));
     } else {
         limitChecker_.reset(new GobioLimitChecker(lang));
     }
+
+    // Find which @-symbols are used in rules.
+    std::ifstream rulesFs(rulesPath.c_str());
+    std::string line;
+    boost::regex reAtCategory("'@([^']+)'");
+    while (rulesFs.good()) {
+        std::getline(rulesFs, line);
+        boost::sregex_iterator reIt(line.begin(), line.end(), reAtCategory);
+        boost::sregex_iterator reEnd;
+        for (; reIt != reEnd; ++reIt) {
+            atCategories_.insert(reIt->str(1));
+        }
+    }
 }
 
 void Gobio::parse(Lattice & lattice) {
+
+    LayerTagMask maskGobio = lattice.getLayerTagManager().getAlternativeMask(
+        boost::assign::list_of
+            (lattice.getLayerTagManager().createSingletonTagCollection("gobio"))
+            (lattice.getLayerTagManager().createSingletonTagCollection(terminalTag_))
+    );
+    LayerTagCollection tagTerminal = lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")("parse-terminal")
+    );
+    LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")("parse")
+    );
+
+    // Add edges with '@...' categories.
+
+    Lattice::EdgesSortedBySourceIterator ei = lattice.edgesSortedBySource(maskGobio);
+    while (ei.hasNext()) {
+        Lattice::EdgeDescriptor edge = ei.next();
+        std::string edgeAnnotationText = lattice.getAnnotationText(edge);
+        if (atCategories_.count(edgeAnnotationText)) {
+            std::stringstream categorySs;
+            categorySs << "'@" << edgeAnnotationText << "'";
+            AnnotationItem annotationItem(
+                lattice.getEdgeAnnotationItem(edge),
+                categorySs.str());
+            Lattice::EdgeSequence::Builder builder(lattice);
+            builder.addEdge(edge);
+            try {
+                lattice.addEdge(
+                    lattice.getEdgeSource(edge),
+                    lattice.getEdgeTarget(edge),
+                    annotationItem,
+                    tagTerminal,
+                    builder.build());
+            } catch (EdgeSelfReferenceException) {
+                // This exception here is invalid (bug #322).
+            }
+        }
+    }
+
+    // Do parsing.
+
     zsymbolfactory * sym_fac = lattice.getAnnotationItemManager().getSymbolFactory();
 
     AnnotationItemManager & aim = lattice.getAnnotationItemManager();
@@ -155,15 +213,6 @@ void Gobio::parse(Lattice & lattice) {
 
     std::vector<Combinator::rule_holder> local_rules;
     std::vector<Edge> choosen_edges = chr->go(ch, combinator, local_rules);
-
-    LayerTagMask maskGobio = lattice.getLayerTagManager().getAlternativeMask(
-        boost::assign::list_of
-            (lattice.getLayerTagManager().createSingletonTagCollection("gobio"))
-            (lattice.getLayerTagManager().createSingletonTagCollection(terminalTag_))
-    );
-    LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
-        boost::assign::list_of("gobio")("parse")
-    );
 
     std::vector<zvalue> results;
     BOOST_FOREACH(Edge edge, choosen_edges) {
