@@ -78,7 +78,8 @@ CAT = przymiotnik, R = mnż >> R = mnż|mno
 CAT = przymiotnik, R = mo >> R = mo|mż
 CAT = przymiotnik, R = m >> R = mo|mno|mż|mnż
 CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
-CAT = przymiotnik, ten ta to tego tej temu tę tym tą ci te tych tym tymi >> CAT = zaimek_przymiotny|'$to'
+CAT = przymiotnik, ten ta tej tę tą ci te tych tymi >> CAT = zaimek_przymiotny|'$ten'
+CAT = przymiotnik, to tego temu tym >> CAT = zaimek_przymiotny|'$ten'|'$to'
 CAT = '$to' >> Składnia = any
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
