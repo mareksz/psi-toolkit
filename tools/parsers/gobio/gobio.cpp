@@ -161,12 +161,7 @@ void Gobio::parse(Lattice & lattice) {
                 tagTerminal,
                 builder.build());
         } catch (EdgeSelfReferenceException) {
-            Lattice::EdgeDescriptor addedEdge = lattice.addEdge(
-                lattice.getEdgeSource(edge),
-                lattice.getEdgeTarget(edge),
-                annotationItem,
-                tagTerminal,
-                Lattice::EdgeSequence());
+            // This exception is invalid (bug #322).
         }
     }
 
