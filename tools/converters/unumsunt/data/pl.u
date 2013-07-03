@@ -67,12 +67,16 @@
 @attr   accommodability Typ
 @val    congr   zg
 @val    rec d
+CAT = rzeczownik, niż >> CAT = rzeczownik|przyimek
 CAT = rzeczownik >> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
 CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno
 CAT = rzeczownik, wszystko >> CAT = '@wszystko'
 CAT = rzeczownik, ktoś kogoś komuś kimś coś czegoś czemuś czymś nikt nikogo nikomu nikim nic niczego niczemu niczym >> CAT = zaimek_rzeczowny_nieokreślony
-CAT = zaimek_rzeczowny_osobowy >> R = $Rp
+CAT = zaimek_rzeczowny_osobowy >> R = $Rp, Składnia = 0
+CAT = zaimek_rzeczowny_osobowy, Rp = fail >> R = 0
+CAT = zaimek_rzeczowny_osobowy, jego jej ich >> CAT=zaimek_rzeczowny_osobowy|zaimek_dzierżawczy
+CAT = zaimek_dzierżawczy >> P = 0, R = 0, L = 0
 CAT = przymiotnik >> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = any
 CAT = przymiotnik, R = mnż >> R = mnż|mno
 CAT = przymiotnik, R = mo >> R = mo|mż
@@ -82,12 +86,13 @@ CAT = przymiotnik, twój twoja twoje twojego twojej twojemu twoją twoim twoi tw
 CAT = przymiotnik, swój swoja swoje swojego swojej swojemu swoją swoim swoi swoich swoimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = przymiotnik, nasz nasza nasze naszego naszej naszemu naszą naszym nasi naszych naszymi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = przymiotnik, wasz wasza wasze waszego waszej waszemu waszą waszym wasi waszych waszymi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
-CAT = rzeczownik, moje mojego mojemu moim moich moimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
-CAT = rzeczownik, twoje twojego twojemu twoim twoich twoimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
-CAT = rzeczownik, swoje swojego swojemu swoim swoich swoimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
-CAT = rzeczownik, nasze naszego naszemu naszym naszych naszymi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
-CAT = rzeczownik, wasze waszego waszemu waszym waszych waszymi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, moje mojego mojemu moim moich moimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, twoje twojego twojemu twoim twoich twoimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, swoje swojego swojemu swoim swoich swoimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, nasze naszego naszemu naszym naszych naszymi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, wasze waszego waszemu waszym waszych waszymi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
 CAT = przymiotnik, ten ta tej tę tą ci te tych tymi >> CAT = zaimek_przymiotny|'$ten'
+CAT = zaimek_przymiotny, ten ta tej tę tą ci te tych tymi >> Typ = wskazujący
 CAT = przymiotnik, to tego temu tym >> CAT = zaimek_przymiotny|'$ten'|'$to'
 CAT = '$to' >> Składnia = any
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
@@ -98,6 +103,7 @@ CAT = przysłówek, dlaczego którędy >> CAT = zaimek_przysłowny, Typ = pytajn
 CAT = spójnik >> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1,Typ=0
 CAT = spójnik, albo >> Typ=albo,Ps5=1
 CAT = spójnik, czy jak kiedy >> CAT = zaimek_przysłowny, Typ = pytajny
+CAT = spójnik, niż >> Typ = niż
 CAT = wykrzyknienie >> Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny >> R = $Rp, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = liczebnik_główny, jeden jedna jedno jedni jedne >> Typ = kwant
@@ -115,5 +121,6 @@ CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny, A = 0, R = $Rp
 CAT = czasownik, C = bezokolicznik >> R = 0, L = 0, O = 0, Podmiot = potencjalny
 CAT = czasownik, można trzeba >> C=teraźniejszy, Typ=modalny, Podmiot=brak, A=0, Dop3 = bk
 CAT = przyimek >> Length=1,Amb=1,Typ=0
+CAT = przyimek, niż >> P = mian, S = 0, Typ = niż, Amb = 2
 CAT = '@się' >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
