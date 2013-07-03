@@ -10,7 +10,7 @@
 
 LimitChecker::LimitChecker() :
     ready_(true),
-    absoluteLimit_(std::numeric_limits<int>::max())
+    absoluteLimit_((std::numeric_limits<int>::max)())
 { }
 
 
@@ -35,7 +35,7 @@ void LimitChecker::addLimitSpec(int argument, int limit) {
 
 
 void LimitChecker::addUnlimitedSpec(int argument) {
-    addLimitSpec(argument, std::numeric_limits<int>::max());
+    addLimitSpec(argument, (std::numeric_limits<int>::max)());
 }
 
 

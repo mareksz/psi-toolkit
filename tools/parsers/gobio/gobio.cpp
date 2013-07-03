@@ -302,7 +302,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
         combinator.get_master().string_representation(tb->root()).c_str());
     if (strcmp(zcat->to_string(), "NULL_ZVALUE")) {
         result->setCategory(zcat);
-    } else if(tb->is_supported()) {
+    } else if (tb->is_supported()) {
         result->setCategory(
             sym_fac->get_symbol(
                 leafSymbolToCategory_(
