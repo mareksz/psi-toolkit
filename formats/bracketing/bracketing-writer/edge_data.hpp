@@ -20,6 +20,8 @@ struct EdgeData {
     std::map<std::string, std::string> avMap;
     double score;
     std::string role;
+    boost::optional<int> begin;
+    boost::optional<int> end;
 
     EdgeData() :
         tags(std::set<std::string>()),
@@ -48,7 +50,30 @@ struct EdgeData {
         avMap(a_avMap),
         score(a_score),
         role(a_role)
-    { }
+    {
+        try {
+            try {
+                begin = a_lattice.getEdgeBeginIndex(a_source);
+            } catch (WrongVertexException) {
+                if (parent) {
+                    begin = a_lattice.getEdgeBeginIndex(*parent);
+                } else {
+                    throw WrongVertexException("Loose edge.");
+                }
+            }
+            try {
+                end = a_lattice.getEdgeEndIndex(a_source);
+            } catch (WrongVertexException) {
+                if (parent) {
+                    end = a_lattice.getEdgeEndIndex(*parent);
+                } else {
+                    throw WrongVertexException("Loose edge.");
+                }
+            }
+        } catch (WrongVertexException) {
+            // Leave begin and end uninitialized.
+        }
+    }
 
     bool operator<(const EdgeData & other) const {
         return category < other.category ||
@@ -56,7 +81,9 @@ struct EdgeData {
             score < other.score ||
             tags < other.tags ||
             avMap < other.avMap ||
-            role < other.role;
+            role < other.role ||
+            begin < other.begin ||
+            end < other.end;
     }
 };
 
