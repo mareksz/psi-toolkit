@@ -15,11 +15,12 @@ void initAndTokenize_(Lattice& lattice, const std::string& paragraph, bool addSy
 
 BOOST_AUTO_TEST_CASE( lattice_simple ) {
     AnnotationItemManager aim;
-    Lattice lattice(aim, "Ala ma kota");
+    std::string text("Ala ma kota");
+    Lattice lattice(aim, text);
 
     lattice.addSymbols(lattice.getFirstVertex(), lattice.getLastVertex());
 
-    BOOST_CHECK_EQUAL(lattice.getAllText(), "Ala ma kota");
+    BOOST_CHECK_EQUAL(lattice.getAllText(), text);
 
     Lattice::EdgesSortedBySourceIterator ei
         = lattice.edgesSortedBySource(lattice.getLayerTagManager().anyTag());
@@ -70,71 +71,111 @@ BOOST_AUTO_TEST_CASE( lattice_simple ) {
     LayerTagCollection
         token_tag = lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
             "token", "pl");
+    LayerTagCollection
+        lemma_tag = lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
+            "lemma", "pl");
+    LayerTagCollection
+        form_tag = lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
+            "form", "pl");
 
     LayerTagMask rawMask = lattice.getLayerTagManager().getMask(raw_tag);
     LayerTagMask tokenMask = lattice.getLayerTagManager().getMask(token_tag);
+    LayerTagMask lemmaMask = lattice.getLayerTagManager().getMask(lemma_tag);
+    LayerTagMask formMask = lattice.getLayerTagManager().getMask(form_tag);
 
-    AnnotationItem word_token("word");
-    AnnotationItem blank_token("blank");
+    AnnotationItem word_token("T");
+    AnnotationItem blank_token("B");
 
-    {
-        Lattice::EdgeSequence::Builder ala_builder(lattice);
-        ala_builder.addEdge(lattice.firstOutEdge(
-                                lattice.getVertexForRawCharIndex(0),
-                                rawMask));
-        ala_builder.addEdge(lattice.firstOutEdge(
-                                lattice.getVertexForRawCharIndex(1),
-                                rawMask));
-        ala_builder.addEdge(lattice.firstOutEdge(
-                                lattice.getVertexForRawCharIndex(2),
-                                rawMask));
+    AnnotationItem aiAlaLemma("word", StringFrag("Ala"));
+    AnnotationItem aiMiecLemma("word", StringFrag("mieć"));
+    AnnotationItem aiKotLemma("word", StringFrag("kot"));
 
-        lattice.addEdge(pre_ala, post_ala, word_token, token_tag, ala_builder.build());
-    }
+    AnnotationItem aiAlaForm("rzeczownik", StringFrag(text, 0, 3));
+    AnnotationItem aiMaForm("czasownik", StringFrag(text, 4, 2));
+    AnnotationItem aiKotaForm("rzeczownik", StringFrag(text, 7, 4));
 
-    {
-        Lattice::EdgeSequence::Builder first_blank_builder(lattice);
-        first_blank_builder.addEdge(lattice.firstOutEdge(
-                                        lattice.getVertexForRawCharIndex(3),
-                                        rawMask));
-        lattice.addEdge(post_ala, pre_ma, blank_token, token_tag, first_blank_builder.build());
-    }
+    Lattice::EdgeSequence::Builder ala_builder(lattice);
+    ala_builder.addEdge(lattice.firstOutEdge(
+                            lattice.getVertexForRawCharIndex(0),
+                            rawMask));
+    ala_builder.addEdge(lattice.firstOutEdge(
+                            lattice.getVertexForRawCharIndex(1),
+                            rawMask));
+    ala_builder.addEdge(lattice.firstOutEdge(
+                            lattice.getVertexForRawCharIndex(2),
+                            rawMask));
+    Lattice::EdgeDescriptor alaTokenEdge
+        = lattice.addEdge(pre_ala, post_ala, word_token, token_tag, ala_builder.build());
 
-    {
-        Lattice::EdgeSequence::Builder ma_builder(lattice);
-        ma_builder.addEdge(lattice.firstOutEdge(
-                               lattice.getVertexForRawCharIndex(4),
-                               rawMask));
-        ma_builder.addEdge(lattice.firstOutEdge(
-                               lattice.getVertexForRawCharIndex(5),
-                               rawMask));
-        lattice.addEdge(pre_ma, post_ma, word_token, token_tag, ma_builder.build());
-    }
+    Lattice::EdgeSequence::Builder first_blank_builder(lattice);
+    first_blank_builder.addEdge(lattice.firstOutEdge(
+                                    lattice.getVertexForRawCharIndex(3),
+                                    rawMask));
+    Lattice::EdgeDescriptor firstBlankTokenEdge
+        = lattice.addEdge(post_ala, pre_ma, blank_token, token_tag, first_blank_builder.build());
 
-    {
-        Lattice::EdgeSequence::Builder second_blank_builder(lattice);
-        second_blank_builder.addEdge(lattice.firstOutEdge(
-                                         lattice.getVertexForRawCharIndex(6),
-                                         rawMask));
-        lattice.addEdge(post_ma, pre_kota, blank_token, token_tag, second_blank_builder.build());
-    }
+    Lattice::EdgeSequence::Builder ma_builder(lattice);
+    ma_builder.addEdge(lattice.firstOutEdge(
+                           lattice.getVertexForRawCharIndex(4),
+                           rawMask));
+    ma_builder.addEdge(lattice.firstOutEdge(
+                           lattice.getVertexForRawCharIndex(5),
+                           rawMask));
+    Lattice::EdgeDescriptor maTokenEdge
+        = lattice.addEdge(pre_ma, post_ma, word_token, token_tag, ma_builder.build());
 
-    {
-        Lattice::EdgeSequence::Builder kota_builder(lattice);
-        kota_builder.addEdge(lattice.firstOutEdge(
-                                 lattice.getVertexForRawCharIndex(7),
-                                 rawMask));
-        kota_builder.addEdge(lattice.firstOutEdge(
-                                 lattice.getVertexForRawCharIndex(8),
-                                 rawMask));
-        kota_builder.addEdge(lattice.firstOutEdge(
-                                 lattice.getVertexForRawCharIndex(9),
-                                 rawMask));
-        kota_builder.addEdge(lattice.firstOutEdge(
-                                 lattice.getVertexForRawCharIndex(10),
-                                 rawMask));
-        lattice.addEdge(pre_kota, post_kota, word_token, token_tag, kota_builder.build());
-    }
+    Lattice::EdgeSequence::Builder second_blank_builder(lattice);
+    second_blank_builder.addEdge(lattice.firstOutEdge(
+                                     lattice.getVertexForRawCharIndex(6),
+                                     rawMask));
+    Lattice::EdgeDescriptor secondBlankTokenEdge
+        = lattice.addEdge(post_ma, pre_kota, blank_token, token_tag, second_blank_builder.build());
+
+    Lattice::EdgeSequence::Builder kota_builder(lattice);
+    kota_builder.addEdge(lattice.firstOutEdge(
+                             lattice.getVertexForRawCharIndex(7),
+                             rawMask));
+    kota_builder.addEdge(lattice.firstOutEdge(
+                             lattice.getVertexForRawCharIndex(8),
+                             rawMask));
+    kota_builder.addEdge(lattice.firstOutEdge(
+                             lattice.getVertexForRawCharIndex(9),
+                             rawMask));
+    kota_builder.addEdge(lattice.firstOutEdge(
+                             lattice.getVertexForRawCharIndex(10),
+                             rawMask));
+    Lattice::EdgeDescriptor kotaTokenEdge
+        = lattice.addEdge(pre_kota, post_kota, word_token, token_tag, kota_builder.build());
+
+    Lattice::EdgeSequence::Builder alaLemmaBuilder(lattice);
+    alaLemmaBuilder.addEdge(alaTokenEdge);
+    Lattice::EdgeDescriptor alaLemmaEdge
+        = lattice.addEdge(pre_ala, post_ala, aiAlaLemma, lemma_tag, alaLemmaBuilder.build());
+
+    Lattice::EdgeSequence::Builder maLemmaBuilder(lattice);
+    maLemmaBuilder.addEdge(maTokenEdge);
+    Lattice::EdgeDescriptor maLemmaEdge
+        = lattice.addEdge(pre_ma, post_ma, aiMiecLemma, lemma_tag, maLemmaBuilder.build());
+
+    Lattice::EdgeSequence::Builder kotaLemmaBuilder(lattice);
+    kotaLemmaBuilder.addEdge(kotaTokenEdge);
+    Lattice::EdgeDescriptor kotaLemmaEdge
+        = lattice.addEdge(pre_kota, post_kota, aiKotLemma, lemma_tag, kotaLemmaBuilder.build());
+
+    Lattice::EdgeSequence::Builder alaFormBuilder(lattice);
+    alaFormBuilder.addEdge(alaLemmaEdge);
+    Lattice::EdgeDescriptor alaFormEdge
+        = lattice.addEdge(pre_ala, post_ala, aiAlaForm, form_tag, alaFormBuilder.build());
+
+    Lattice::EdgeSequence::Builder maFormBuilder(lattice);
+    maFormBuilder.addEdge(maLemmaEdge);
+    Lattice::EdgeDescriptor maFormEdge
+        = lattice.addEdge(pre_ma, post_ma, aiMaForm, form_tag, maFormBuilder.build());
+
+    Lattice::EdgeSequence::Builder kotaFormBuilder(lattice);
+    kotaFormBuilder.addEdge(kotaLemmaEdge);
+    Lattice::EdgeDescriptor kotaFormEdge
+        = lattice.addEdge(pre_kota, post_kota, aiKotaForm, form_tag, kotaFormBuilder.build());
 
     // tests
 
@@ -188,6 +229,21 @@ BOOST_AUTO_TEST_CASE( lattice_simple ) {
         lattice.getVertexForRawCharIndex(lattice.getVertexRawCharIndex(lattice.getLastVertex())+1),
         NoVertexException
     );
+
+    BOOST_CHECK(lattice.getEdgeLemma(alaFormEdge));
+    BOOST_CHECK_EQUAL(
+        *lattice.getEdgeLemma(alaFormEdge),
+        lattice.getAnnotationText(alaLemmaEdge));
+    BOOST_CHECK(lattice.getEdgeLemma(maFormEdge));
+    BOOST_CHECK_EQUAL(
+        *lattice.getEdgeLemma(maFormEdge),
+        lattice.getAnnotationText(maLemmaEdge));
+    BOOST_CHECK(lattice.getEdgeLemma(kotaFormEdge));
+    BOOST_CHECK_EQUAL(
+        *lattice.getEdgeLemma(kotaFormEdge),
+        lattice.getAnnotationText(kotaLemmaEdge));
+    BOOST_CHECK(!lattice.getEdgeLemma(firstBlankTokenEdge));
+    BOOST_CHECK(!lattice.getEdgeLemma(secondBlankTokenEdge));
 
 }
 
