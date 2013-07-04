@@ -151,7 +151,7 @@ void Gobio::parse(Lattice & lattice) {
             (lattice.getLayerTagManager().createSingletonTagCollection(terminalTag_))
     );
     LayerTagCollection tagTerminal = lattice.getLayerTagManager().createTagCollectionFromList(
-        boost::assign::list_of("gobio")("parse-terminal")
+        boost::assign::list_of("gobio")(terminalTag_.c_str())
     );
     LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
         boost::assign::list_of("gobio")("parse")
@@ -162,10 +162,16 @@ void Gobio::parse(Lattice & lattice) {
     Lattice::EdgesSortedBySourceIterator ei = lattice.edgesSortedBySource(maskGobio);
     while (ei.hasNext()) {
         Lattice::EdgeDescriptor edge = ei.next();
-        std::string edgeAnnotationText = lattice.getAnnotationText(edge);
-        if (atCategories_.count(edgeAnnotationText)) {
+        boost::optional<std::string> lemma = lattice.getEdgeLemma(edge);
+        std::string atCategory;
+        if (lemma) {
+            atCategory = *lemma;
+        } else {
+            atCategory = lattice.getAnnotationText(edge);
+        }
+        if (atCategories_.count(atCategory)) {
             std::stringstream categorySs;
-            categorySs << "'@" << edgeAnnotationText << "'";
+            categorySs << "'@" << atCategory << "'";
             AnnotationItem annotationItem(
                 lattice.getEdgeAnnotationItem(edge),
                 categorySs.str());
