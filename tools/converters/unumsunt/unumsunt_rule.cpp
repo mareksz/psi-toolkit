@@ -81,7 +81,8 @@ bool UnumsuntRule::apply(
     std::vector< boost::shared_ptr<AnnotationItem> > & items
 ) {
     bool result = false;
-    BOOST_FOREACH(boost::shared_ptr<AnnotationItem> item, items) {
+    for (int i = 0; i < items.size(); ++i) {
+        boost::shared_ptr<AnnotationItem> item = items[i];
         if (!words.empty() && !words.count(item->getText().substr(0, item->getText().find('+')))) {
             continue;
         }
