@@ -181,21 +181,7 @@ void BracketingLatticeWriter::Worker::doRun_() {
         }
 
         BOOST_FOREACH(EdgeData ed, collectedEdges) {
-            try {
-                int begin;
-                int end;
-                try {
-                    begin = lattice_.getEdgeBeginIndex(*ed.source);
-                } catch (WrongVertexException) {
-                    begin = lattice_.getEdgeBeginIndex(*ed.parent);
-                }
-                try {
-                    end = lattice_.getEdgeEndIndex(*ed.source);
-                } catch (WrongVertexException) {
-                    end = lattice_.getEdgeEndIndex(*ed.parent);
-                }
-                BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], ed);
-            } catch (WrongVertexException) { }
+            BracketPrinter::insertElementIntoContainer(edgeStore[*ed.begin][*ed.end], ed);
         }
 
     } else {
@@ -207,30 +193,10 @@ void BracketingLatticeWriter::Worker::doRun_() {
             if (shouldBeSkipped_(edge)) {
                 continue;
             }
-            int begin;
-            int end;
-            try {
-                begin = lattice_.getEdgeBeginIndex(edge);
-            } catch (WrongVertexException) {
-                boost::optional<Lattice::EdgeDescriptor> parent = lattice_.getParent(edge);
-                if (parent) {
-                    begin = lattice_.getEdgeBeginIndex(*parent);
-                } else {
-                    throw WrongVertexException("Loose edge.");
-                }
-            }
-            try {
-                end = lattice_.getEdgeEndIndex(edge);
-            } catch (WrongVertexException) {
-                boost::optional<Lattice::EdgeDescriptor> parent = lattice_.getParent(edge);
-                if (parent) {
-                    end = lattice_.getEdgeEndIndex(*parent);
-                } else {
-                    throw WrongVertexException("Loose edge.");
-                }
-            }
             EdgeData edgeData = getEdgeData_(edge);
-            BracketPrinter::insertElementIntoContainer(edgeStore[begin][end], edgeData);
+            BracketPrinter::insertElementIntoContainer(
+                edgeStore[*edgeData.begin][*edgeData.end],
+                edgeData);
         }
 
     }

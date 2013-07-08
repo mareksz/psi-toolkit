@@ -5,3 +5,7 @@
 @cat    category    Kategoria
 @attr   attribute   Atrybut
 @val    value   Wartość
+@val    value2  Wartość2
+@val    value3  Wartość3
+CAT = Kategoria, Atrybut = Wartość2 >> Atrybut = NowaWartość
+CAT = Kategoria, Atrybut = Wartość3 >> SKIP

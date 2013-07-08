@@ -137,6 +137,43 @@ BOOST_AUTO_TEST_CASE( unumsunt_rule ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( unumsunt_rule_skip ) {
+
+    UnumsuntRule rule;
+    rule.addCondition("CAT", "cat");
+    rule.addCondition("A", "a");
+    rule.addCondition("B", "b");
+    rule.makeSkip();
+
+    BOOST_CHECK_THROW(rule.addCommand("A", "aa"), TagsetConverterException);
+
+    AnnotationItemManager aim;
+
+    {
+        std::vector< boost::shared_ptr<AnnotationItem> > items;
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("cat")));
+        aim.setValue(*(items[0]), "A", "a");
+        aim.setValue(*(items[0]), "B", "b");
+        aim.setValue(*(items[0]), "C", "c");
+        items.push_back(boost::shared_ptr<AnnotationItem>(
+            new AnnotationItem("dog")));
+        aim.setValue(*(items[1]), "A", "a");
+        aim.setValue(*(items[1]), "B", "b");
+        aim.setValue(*(items[1]), "C", "c");
+
+        BOOST_CHECK(rule.apply(aim, items));
+        BOOST_CHECK_EQUAL(items.size(), 2);
+        BOOST_CHECK_EQUAL(items[1]->getCategory(), "dog");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(*(items[1]), "A"), "a");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(*(items[1]), "B"), "b");
+        BOOST_CHECK_EQUAL(aim.getValueAsString(*(items[1]), "C"), "c");
+        BOOST_CHECK(!(items[0]));
+    }
+
+}
+
+
 BOOST_AUTO_TEST_CASE( unumsunt_rule_with_alternative ) {
 
     UnumsuntRule rule;

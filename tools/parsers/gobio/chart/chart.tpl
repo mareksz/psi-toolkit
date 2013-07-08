@@ -39,7 +39,6 @@ chart<C,S,V,R,I>::chart(
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection(terminalTag));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("form"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lemma"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
     inputTagMask_ = lattice.getLayerTagManager().getAlternativeMask(altTags);
 }
@@ -315,59 +314,18 @@ typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
 {
     AnnotationItem annotationItem = lattice_.getEdgeAnnotationItem(edge);
     LayerTagCollection tags = lattice_.getEdgeLayerTags(edge);
-
     if (matches(tags, toBePutInApostrophesTagMask_)) {
-
         std::stringstream categorySs;
         categorySs << "'" << annotationItem.getText() << "'";
         annotationItem = AnnotationItem(annotationItem, categorySs.str());
-
     } else if (isSubset(formTag_, tags)) {
-
-        bool edgeLexemeFound = false;
-        Lattice::EdgeDescriptor edgeLexeme;
-        const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edge);
-        BOOST_FOREACH(Lattice::Partition partition, partitions) {
-            Lattice::Partition::Iterator pi(lattice_, partition);
-            while (pi.hasNext()) {
-                edgeLexeme = pi.next();
-                if (isSubset(lexemeTag_, lattice_.getEdgeLayerTags(edgeLexeme))) {
-                    edgeLexemeFound = true;
-                    break;
-                }
-            }
-            if (edgeLexemeFound) {
-                break;
-            }
+        std::stringstream categorySs;
+        boost::optional<std::string> lemma = lattice_.getEdgeLemma(edge);
+        if (lemma) {
+            categorySs << "'$" << (*lemma) << "'";
         }
-        if (edgeLexemeFound) {
-
-            bool edgeLemmaFound = false;
-            Lattice::EdgeDescriptor edgeLemma;
-            const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edgeLexeme);
-            BOOST_FOREACH(Lattice::Partition partition, partitions) {
-                Lattice::Partition::Iterator pi(lattice_, partition);
-                while (pi.hasNext()) {
-                    edgeLemma = pi.next();
-                    if (isSubset(lemmaTag_, lattice_.getEdgeLayerTags(edgeLemma))) {
-                        edgeLemmaFound = true;
-                        break;
-                    }
-                }
-                if (edgeLemmaFound) {
-                    break;
-                }
-            }
-            if (edgeLemmaFound) {
-
-                std::stringstream categorySs;
-                categorySs << "'$" << lattice_.getAnnotationText(edgeLemma) << "'";
-                annotationItem = AnnotationItem(annotationItem, categorySs.str());
-
-            }
-        }
+        annotationItem = AnnotationItem(annotationItem, categorySs.str());
     }
-
     return av_ai_converter_.toAVMatrix<category_type>(annotationItem);
 }
 

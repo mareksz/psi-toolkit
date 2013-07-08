@@ -2,6 +2,8 @@
 #define GOBIO_HDR
 
 
+#include <set>
+
 #include <boost/program_options.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -134,6 +136,8 @@ private:
     std::string terminalTag_;
 
     int edgeNumberLimit_;
+
+    std::set<std::string> atCategories_;
 
     zvalue edgeToZsyntree_(
         Chart & ch,

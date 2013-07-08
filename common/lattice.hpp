@@ -584,6 +584,11 @@ public:
         LayerTagMask mask);
 
 
+    /**
+     * Get the lemma of the given edge.
+     */
+    boost::optional<std::string> getEdgeLemma(EdgeDescriptor edge);
+
     void runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask);
 
     bool isBlank(Lattice::EdgeDescriptor edge);
@@ -825,6 +830,8 @@ private:
     std::list<Partition> emptyPartitionList_;
 
     static const std::string DISCARDED_TAG_NAME;
+    static const std::string LEMMA_TAG_NAME;
+    static const std::string TOKEN_TAG_NAME;
 };
 
 

@@ -1,0 +1,3 @@
+Z[FC[FR[R[Komputer]] C[czyta] FR[R[zdania]]]koniec_zdania[.]]
+FC[FR[zaimek_przymiotny[Każde] R[zdanie]] C[ma] FR[ZP[swoje] R[drzewo] FP[P[składniowe]]]].
+Z[FC[C[Zrobiłem] FPS[PS[już]] FR[LG[trzy] R[zdania]]]koniec_zdania[.]]
