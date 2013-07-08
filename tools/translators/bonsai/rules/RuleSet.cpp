@@ -151,7 +151,7 @@ EdgeTransformationsPtr RuleSet::get_edge_transformations(Lattice &lattice,
                         }
                     }
                 }
-        
+                
                 (*et)[slit->first]->insert(he);
         
                 while ((*et)[slit->first]->size() > max_hyper_sym) {
@@ -184,20 +184,22 @@ TransformationPtr RuleSet::word_to_transformation(Symbol &lhs, SListPtr &srcSymb
 
    int non_terminals = 0;
    for (size_t i = 0; i < word.size(); i++) {
-    std::string trgSymbol = trg_sym_map[word[i]];
-    int srcIndex;
-    if (std::sscanf(trgSymbol.c_str(), "<X>[%d]", &srcIndex)) {
-        int i = srcSymbols->nt_index( srcIndex );
-        if (i != -1) {
-            trgSymbols->push_back(srcSymbols->at(i));
-            non_terminals++;
-        }
-        else {
-            trgSymbols->push_back(Symbol(trgSymbol, Range(-1, -1)));
-        }
-    }
-        else {
-            trgSymbols->push_back(Symbol(trgSymbol, Range(-1, -1)));
+        if(trg_sym_map.size() > word[i]) {
+            std::string trgSymbol = trg_sym_map[word[i]];
+            int srcIndex;
+            if (std::sscanf(trgSymbol.c_str(), "<X>[%d]", &srcIndex)) {
+                int i = srcSymbols->nt_index( srcIndex );
+                if (i != -1) {
+                    trgSymbols->push_back(srcSymbols->at(i));
+                    non_terminals++;
+                }
+                else {
+                    trgSymbols->push_back(Symbol(trgSymbol, Range(-1, -1)));
+                }
+            }
+            else {
+                trgSymbols->push_back(Symbol(trgSymbol, Range(-1, -1)));
+            }
         }
     }
 
@@ -206,10 +208,13 @@ TransformationPtr RuleSet::word_to_transformation(Symbol &lhs, SListPtr &srcSymb
    for (i = 0, j = 0; j < tm_weights.size(); i++, j++) { // only tm_weight.size() costs are used
        if (i < probs.size()) {
             try {
-                costs.push_back(boost::lexical_cast<float>( trg_sym_map[probs[i]] ));
+                if(trg_sym_map.size() > probs[i])
+                    costs.push_back(boost::lexical_cast<float>( trg_sym_map[probs[i]] ));
+                else
+                    costs.push_back(0); //FIX
             }
             catch (...) {
-            costs.push_back(0);
+                costs.push_back(0);
             }
     }
        else
