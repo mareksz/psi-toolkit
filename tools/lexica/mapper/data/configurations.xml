@@ -22,4 +22,10 @@
       options="--lang pl --in-tags gobio-tagset,lexeme --out-tags gobio-tagset,valency --consider-text --clone-text --clone-category --add-attributes --binary %ITSDATA%/pl-valency.bin"
       description="A valency lexicon for Polish.">
   </configuration>
+  <configuration
+      name="delemma-pl"
+      annotator="mapper"
+      options="--lang pl --in-tags token --out-tags form,inflector --consider-text --add-attributes --binary %ITSDATA%/pl-inflector.bin"
+      description="A valency lexicon for Polish.">
+  </configuration>
 </configurations>
