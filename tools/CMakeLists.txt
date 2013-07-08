@@ -36,6 +36,7 @@ set(tools_DIRS
     datastructures/lexica
     datastructures/psi_query
     taggers/metagger
+    taggers/inflector
     spellcheckers/aspell
     converters/unumsunt
     converters/joiner

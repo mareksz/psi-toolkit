@@ -529,7 +529,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet fr
     formats-apertium formats-bracketing formats-dot formats-guessing formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
-    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
+    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai
     tools-converters-unumsunt tools-converters-joiner tools-translators-transferer tools-lemmatizers-lamerlemma)
 
 # ----------------------------------------------------
@@ -788,38 +788,38 @@ function(download_and_unpack URL FILE CHECKSUM DESTINATION)
 endfunction(download_and_unpack)
 
 if(DOWNLOAD_DATA)
-    download_artifact("tools/parsers/gobio/data/pl/rules.g")
-    download_artifact("tools/lexica/bilexicon/data/depl.bin")
-    download_artifact("tools/lexica/bilexicon/data/enpl.bin")
-    download_artifact("tools/lexica/bilexicon/data/espl.bin")
-    download_artifact("tools/lexica/bilexicon/data/frpl.bin")
-    download_artifact("tools/lexica/bilexicon/data/itpl.bin")
-    download_artifact("tools/lexica/bilexicon/data/plde.bin")
-    download_artifact("tools/lexica/bilexicon/data/plen.bin")
-    download_artifact("tools/lexica/bilexicon/data/ples.bin")
-    download_artifact("tools/lexica/bilexicon/data/plfr.bin")
-    download_artifact("tools/lexica/bilexicon/data/plit.bin")
-    download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
-    download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
-    download_artifact("tools/lexica/mapper/data/pl-valency.bin")
-
-    download_project_artifact(psi-toolkit-data-sumo "tools/lemmatizers/lamerlemma/data/pl.bin")
-    download_artifact("tools/lemmatizers/lamerlemma/data/fr.bin")
-    download_artifact("tools/lemmatizers/lamerlemma/data/de.bin")
-    download_artifact("tools/lemmatizers/lamerlemma/data/en.bin")
-    download_artifact("tools/lemmatizers/lamerlemma/data/es.bin")
-    download_artifact("tools/lemmatizers/lamerlemma/data/it.bin")
-
-    if (HAVE_SFST)
-       file(MAKE_DIRECTORY "${psi-toolkit_SOURCE_DIR}/tools/lemmatizers/sfst/data")
-
-       download_and_unpack(
-           "http://www.let.rug.nl/coltekin/trmorph/trmorph-0.2.1.tar.gz"
-           "trmorph-0.2.1/trmorph-0.2.1.a"
-           "0d8a94791fce28f862e2890406e81727"
-           "tools/lemmatizers/sfst/data/tr.a")
-    endif()
-
+#    download_artifact("tools/parsers/gobio/data/pl/rules.g")
+#    download_artifact("tools/lexica/bilexicon/data/depl.bin")
+#    download_artifact("tools/lexica/bilexicon/data/enpl.bin")
+#    download_artifact("tools/lexica/bilexicon/data/espl.bin")
+#    download_artifact("tools/lexica/bilexicon/data/frpl.bin")
+#    download_artifact("tools/lexica/bilexicon/data/itpl.bin")
+#    download_artifact("tools/lexica/bilexicon/data/plde.bin")
+#    download_artifact("tools/lexica/bilexicon/data/plen.bin")
+#    download_artifact("tools/lexica/bilexicon/data/ples.bin")
+#    download_artifact("tools/lexica/bilexicon/data/plfr.bin")
+#    download_artifact("tools/lexica/bilexicon/data/plit.bin")
+#    download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
+#    download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
+#    download_artifact("tools/lexica/mapper/data/pl-valency.bin")
+#
+#    download_project_artifact(psi-toolkit-data-sumo "tools/lemmatizers/lamerlemma/data/pl.bin")
+#    download_artifact("tools/lemmatizers/lamerlemma/data/fr.bin")
+#    download_artifact("tools/lemmatizers/lamerlemma/data/de.bin")
+#    download_artifact("tools/lemmatizers/lamerlemma/data/en.bin")
+#    download_artifact("tools/lemmatizers/lamerlemma/data/es.bin")
+#    download_artifact("tools/lemmatizers/lamerlemma/data/it.bin")
+#
+#    if (HAVE_SFST)
+#       file(MAKE_DIRECTORY "${psi-toolkit_SOURCE_DIR}/tools/lemmatizers/sfst/data")
+#
+#       download_and_unpack(
+#           "http://www.let.rug.nl/coltekin/trmorph/trmorph-0.2.1.tar.gz"
+#           "trmorph-0.2.1/trmorph-0.2.1.a"
+#           "0d8a94791fce28f862e2890406e81727"
+#           "tools/lemmatizers/sfst/data/tr.a")
+#    endif()
+#
 endif(DOWNLOAD_DATA)
 
 # ====================================================

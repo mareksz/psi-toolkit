@@ -65,6 +65,7 @@
 #endif
 
 #include "me_tagger.hpp"
+#include "inflector.hpp"
 
 #if HAVE_ASPELL
 #include "psi_aspell.hpp"
@@ -212,6 +213,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 #endif
 
     keeper_.takeProcessorFactory(new MeTagger::Factory());
+    keeper_.takeProcessorFactory(new Inflector::Factory());
 
 #if HAVE_ASPELL
     keeper_.takeProcessorFactory(new PSIAspell::Factory());
