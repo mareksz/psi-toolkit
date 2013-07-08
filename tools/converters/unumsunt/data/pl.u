@@ -119,6 +119,9 @@ CAT = czasownik >> Przyim = brak, Przyim1 = brak, Podmiot = 1, Length = 1, Amb =
 CAT = czasownik, C = teraźniejszy >> R = 0
 CAT = czasownik, C = przyszły >> R = 0
 CAT = czasownik, C = przeszły >> R = $Rp, R1 = 0
+CAT = czasownik, R = mnż >> R = mnż|mno
+CAT = czasownik, R = mo >> R = mo|mż
+CAT = czasownik, R = m >> R = mo|mno|mż|mnż
 CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
