@@ -1,5 +1,3 @@
-UNDER CONSTRUCTION!!!
-
 Rule-based machine translation system. Uses rules expressed in a
 special Perl-like imperative programming language dedicated to the
 manipulation of syntax trees.
