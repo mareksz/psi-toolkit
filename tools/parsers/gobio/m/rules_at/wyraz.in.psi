@@ -1,0 +1,7 @@
+01 0000 05    wyraz        gobio,token                 wyraz      T
+02 0005 01    _            gobio,token                 _          B
+03 0006 06    słowo        gobio,token                 słowo      T
+04 0000 05    wyraz        gobio,lemma                 wyraz      wyraz+rzeczownik[1]
+05 0006 06    słowo        gobio,lemma                 słowo      słowo+rzeczownik[3]
+06 0000 05    wyraz        gobio,form                  wyraz      rzeczownik[4]
+07 0006 06    słowo        gobio,form                  słowo      rzeczownik[5]

@@ -1,0 +1,12 @@
+01 0000 05    wyraz        gobio,token           wyraz       T
+02 0000 05    wyraz        gobio,lemma           wyraz       wyraz+rzeczownik[1]
+03 0000 05    wyraz        form,gobio            wyraz       rzeczownik[2]
+04 0000 05    wyraz        gobio,parse-terminal  wyraz       '@wyraz'[1,2,3]
+05 0000 05    wyraz        gobio,parse-aux                   word[4]
+06 0000 05    wyraz        gobio,parse                       'wyraz'[1]
+07 0005 01    _            gobio,token           _           B
+08 0005 01    _            gobio,parse                       '_'[7]
+09 0006 06    słowo        gobio,token           słowo       T
+10 0006 06    słowo        gobio,lemma           słowo       słowo+rzeczownik[9]
+11 0006 06    słowo        form,gobio            słowo       rzeczownik[10]
+12 0006 06    słowo        gobio,parse                       'słowo'[9]
