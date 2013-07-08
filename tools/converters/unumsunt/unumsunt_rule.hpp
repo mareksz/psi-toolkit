@@ -18,7 +18,7 @@ typedef std::pair< std::string, std::string > StringPair;
 class UnumsuntRule {
 
 public:
-    UnumsuntRule() : numberOfBreedCommands_(0) { }
+    UnumsuntRule() : isSkipRule_(false), numberOfBreedCommands_(0) { }
 
     operator std::string() const;
 
@@ -33,6 +33,11 @@ public:
     void addCommand(std::string arg, std::string val);
 
     /**
+     * Turn this rule into a skipping rule.
+     */
+    void makeSkip();
+
+    /**
      * Remove all commands.
      */
     void clearCommands();
@@ -45,6 +50,11 @@ private:
     std::set<std::string> words;
     std::vector<StringPair> conditions;
     std::vector<StringPair> commands;
+
+    /**
+     * A skip rule tells to skip the edge that satisfy the conditions.
+     */
+    bool isSkipRule_;
 
     /**
      * A rule cannot contain more than one alterantive ("breeding") command.

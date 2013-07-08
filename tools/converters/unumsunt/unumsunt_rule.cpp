@@ -35,9 +35,13 @@ UnumsuntRule::operator std::string() const {
     }
     {
         std::string comma(" then ");
-        BOOST_FOREACH(StringPair command, commands) {
-            sstr << comma << "[" << command.first << "] := [" << command.second << "]";
-            comma = ", ";
+        if (isSkipRule_) {
+            sstr << comma << "SKIP";
+        } else {
+            BOOST_FOREACH(StringPair command, commands) {
+                sstr << comma << "[" << command.first << "] := [" << command.second << "]";
+                comma = ", ";
+            }
         }
     }
     return sstr.str();
@@ -55,6 +59,11 @@ void UnumsuntRule::addCondition(std::string arg, std::string val) {
 
 
 void UnumsuntRule::addCommand(std::string arg, std::string val) {
+    if (isSkipRule_) {
+        std::stringstream errorSs;
+        errorSs << "Tagset converter error: cannot add another command to the SKIP rule.";
+        throw TagsetConverterException(errorSs.str());
+    }
     if (val.find_first_of(ALTERNATIVE_SEPARATORS) != std::string::npos) {
         if (numberOfBreedCommands_ == 0) {
             numberOfBreedCommands_ = 1;
@@ -70,9 +79,17 @@ void UnumsuntRule::addCommand(std::string arg, std::string val) {
 }
 
 
+void UnumsuntRule::makeSkip() {
+    commands.clear();
+    numberOfBreedCommands_ = 0;
+    isSkipRule_ = true;
+}
+
+
 void UnumsuntRule::clearCommands() {
     commands.clear();
     numberOfBreedCommands_ = 0;
+    isSkipRule_ = false;
 }
 
 
@@ -81,8 +98,11 @@ bool UnumsuntRule::apply(
     std::vector< boost::shared_ptr<AnnotationItem> > & items
 ) {
     bool result = false;
-    for (int i = 0; i < items.size(); ++i) {
+    for (size_t i = 0; i < items.size(); ++i) {
         boost::shared_ptr<AnnotationItem> item = items[i];
+        if (!item) {
+            continue;
+        }
         if (!words.empty() && !words.count(item->getText().substr(0, item->getText().find('+')))) {
             continue;
         }
@@ -102,6 +122,10 @@ bool UnumsuntRule::apply(
         }
         if (!allConditionsSatisfied) {
             continue;
+        }
+        if (isSkipRule_) {
+            items[i].reset();
+            result = true;
         }
         BOOST_FOREACH(StringPair command, commands) {
             std::vector<std::string> alternativeValues;
