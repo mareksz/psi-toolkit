@@ -185,20 +185,25 @@ Unumsunt::Unumsunt(
                         }
                     }
                     BOOST_FOREACH(std::string command, rItem.commands) {
-                        UnumsuntAssignmentItem aItem;
-                        std::string::const_iterator aBegin = command.begin();
-                        std::string::const_iterator aEnd = command.end();
-                        if (parse(aBegin, aEnd, aGrammar, aItem)) {
-                            try {
-                                aux_rules_.back().addCommand(
-                                    boost::algorithm::trim_copy(aItem.arg),
-                                    boost::algorithm::trim_copy(aItem.val));
-                            } catch (TagsetConverterException) {
-                                aux_rules_.push_back(UnumsuntRule(aux_rules_.back()));
-                                aux_rules_.back().clearCommands();
-                                aux_rules_.back().addCommand(
-                                    boost::algorithm::trim_copy(aItem.arg),
-                                    boost::algorithm::trim_copy(aItem.val));
+                        boost::algorithm::trim(command);
+                        if (command == "SKIP") {
+                            aux_rules_.back().makeSkip();
+                        } else {
+                            UnumsuntAssignmentItem aItem;
+                            std::string::const_iterator aBegin = command.begin();
+                            std::string::const_iterator aEnd = command.end();
+                            if (parse(aBegin, aEnd, aGrammar, aItem)) {
+                                try {
+                                    aux_rules_.back().addCommand(
+                                        boost::algorithm::trim_copy(aItem.arg),
+                                        boost::algorithm::trim_copy(aItem.val));
+                                } catch (TagsetConverterException) {
+                                    aux_rules_.push_back(UnumsuntRule(aux_rules_.back()));
+                                    aux_rules_.back().clearCommands();
+                                    aux_rules_.back().addCommand(
+                                        boost::algorithm::trim_copy(aItem.arg),
+                                        boost::algorithm::trim_copy(aItem.val));
+                                }
                             }
                         }
                     }
