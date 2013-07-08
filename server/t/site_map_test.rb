@@ -20,8 +20,9 @@ class SiteMapTest < Test::Unit::TestCase
     assert !links.empty?
 
     links.each do |link|
-      assert_not_equal link.click_and_attach.status_code, 404,
-        "link #{link} returns Error 404"
+      site = nil
+      assert_nothing_raised { site = link.click_and_attach }
+      assert_not_equal site.status_code, 404, "link #{link} returns Error 404"
     end
   end
 
