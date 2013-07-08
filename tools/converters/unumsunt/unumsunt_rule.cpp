@@ -100,6 +100,9 @@ bool UnumsuntRule::apply(
     bool result = false;
     for (size_t i = 0; i < items.size(); ++i) {
         boost::shared_ptr<AnnotationItem> item = items[i];
+        if (!item) {
+            continue;
+        }
         if (!words.empty() && !words.count(item->getText().substr(0, item->getText().find('+')))) {
             continue;
         }

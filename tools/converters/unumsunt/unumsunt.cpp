@@ -298,7 +298,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
                     builder.addEdge(ri->second);
                 }
             }
-            if (items.size() == 1) {
+            if (items.size() == 1 && items.front()) {
                 replacements.insert(std::pair<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor>(
                     edge,
                     lattice.addEdge(
@@ -311,6 +311,9 @@ void Unumsunt::convertTags(Lattice & lattice) {
                 ));
             } else {
                 BOOST_FOREACH(boost::shared_ptr<AnnotationItem> pitem, items) {
+                    if (!pitem) {
+                        continue;
+                    }
                     lattice.addEdge(
                         lattice.getEdgeSource(edge),
                         lattice.getEdgeTarget(edge),
