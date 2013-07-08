@@ -377,6 +377,7 @@ std::string Gobio::leafSymbolToCategory_(
     if (symbol == "zaimek_rzeczowny_nieokreślony") return "ZRn";
     if (symbol == "zaimek_rzeczowny_osobowy")      return "ZRo";
     if (symbol == "zaimek_wskazujący")             return "ZRw";
+    if (symbol == "zaimek_rzeczowny_się")          return "ZRs";
 
     if (symbol == "czasownik_być") return "'$być'";
 

@@ -14,7 +14,6 @@
 @cat    pred    czasownik
 @cat    prep    przyimek
 @cat    qub przysłówek
-@cat    siebie  '@się'
 @cat    subst   rzeczownik
 @cat    verb    czasownik
 @attr   number  L
@@ -101,7 +100,7 @@ CAT = '$to' >> Składnia = any
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
 CAT = przysłówek, trudno >> Typ = modalny, Dop2 = bk
-CAT = przysłówek, siebie się >> CAT = '@się'
+CAT = przysłówek, siebie się >> CAT = zaimek_rzeczowny_się
 CAT = przysłówek, dlaczego którędy >> CAT = zaimek_przysłowny, Typ = pytajny
 CAT = przysłówek, tudzież >> CAT = spójnik
 CAT = spójnik >> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1,Typ=0
