@@ -36,6 +36,11 @@ void LatticeIterWriter::run() {
         // gather information about edges
         while (oei.hasNext()) {
             edge = oei.next();
+
+            if (lattice_.isDiscarded(edge)) {
+                continue;
+            }
+
             LayerTagCollection tagCollection = lattice_.getEdgeLayerTags(edge);
             std::list<std::string> tagNames
                 = lattice_.getLayerTagManager().getTagNames(tagCollection);
