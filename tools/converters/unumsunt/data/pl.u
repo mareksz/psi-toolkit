@@ -72,6 +72,7 @@ CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno
 CAT = rzeczownik, wszystko >> CAT = '@wszystko'
 CAT = rzeczownik, ktoś kogoś komuś kimś coś czegoś czemuś czymś nikt nikogo nikomu nikim nic niczego niczemu niczym >> CAT = zaimek_rzeczowny_nieokreślony
+CAT = rzeczownik, L = 2, P = woł >> SKIP
 CAT = zaimek_rzeczowny_osobowy >> R = $Rp, Składnia = 0
 CAT = zaimek_rzeczowny_osobowy, Rp = fail >> R = 0
 CAT = zaimek_rzeczowny_osobowy, jego jej ich >> CAT=zaimek_rzeczowny_osobowy|zaimek_dzierżawczy
