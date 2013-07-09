@@ -3,7 +3,7 @@
 
 #include <sstream>
 
-#include <boost/regex.hpp>
+#include "regexp.hpp"
 
 #include "exceptions.hpp"
 
@@ -132,13 +132,13 @@ Gobio::Gobio(
     // Find which @-symbols are used in rules.
     std::ifstream rulesFs(rulesPath.c_str());
     std::string line;
-    boost::regex reAtCategory("'@([^']+)'");
+    PerlRegExp reAtCategory("'@([^']+)'");
     while (rulesFs.good()) {
         std::getline(rulesFs, line);
-        boost::sregex_iterator reIt(line.begin(), line.end(), reAtCategory);
-        boost::sregex_iterator reEnd;
-        for (; reIt != reEnd; ++reIt) {
-            atCategories_.insert(reIt->str(1));
+        PerlStringPiece input(line);
+        std::string atSymbol;
+        while (PerlRegExp::FindAndConsume(&input, reAtCategory, &atSymbol)) {
+            atCategories_.insert(atSymbol);
         }
     }
 }
