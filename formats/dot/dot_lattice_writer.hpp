@@ -89,6 +89,8 @@ private:
     bool align_;
     bool showSymbolEdges_;
 
+    static const std::string DISCARDED_STYLE;
+
 };
 
 #endif
