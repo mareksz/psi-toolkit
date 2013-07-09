@@ -218,6 +218,9 @@ void GVLatticeWriter::Worker::doRun() {
 
         while (ei.hasNext()) {
             Lattice::EdgeDescriptor edge = ei.next();
+            if (lattice_.isDiscarded(edge)) {
+                continue;
+            }
             if (edgeOrdinalMap.find(edge) != edgeOrdinalMap.end()) {
                 continue;
             }

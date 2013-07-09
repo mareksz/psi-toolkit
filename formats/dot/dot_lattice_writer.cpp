@@ -97,6 +97,10 @@ void DotLatticeWriter::Worker::doRun() {
 
         Lattice::EdgeDescriptor edge = ei.next();
 
+        if (lattice_.isDiscarded(edge)) {
+            continue;
+        }
+
         std::list<std::string> tagNames
             = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
 
