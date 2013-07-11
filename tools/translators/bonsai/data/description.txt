@@ -6,4 +6,4 @@ the weights have already been optimized.
 You can now run a Polish to English toy translation model using the following
 pipe:
 
-gobio --lang pl | bonsai --lang pl --trg-lang en
+    gobio --lang pl ! bonsai --lang pl --trg-lang en
