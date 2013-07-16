@@ -323,7 +323,13 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             ch.edge_source(tb->supporting_edge()),
             ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
 
-        result->setOrigin(tb->supporting_edge());
+        boost::optional<Lattice::EdgeDescriptor> originEdge
+            = ch.edge_terminal_origin(tb->supporting_edge());
+        if (originEdge) {
+            result->setOrigin(*ch.edge_terminal_origin(tb->supporting_edge()));
+        } else {
+            result->setOrigin(tb->supporting_edge());
+        }
 
         Atom def = combinator.get_master().false_value();
         const Category & avm = ch.edge_category(tb->supporting_edge());

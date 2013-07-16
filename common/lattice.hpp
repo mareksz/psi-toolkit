@@ -587,7 +587,7 @@ public:
     /**
      * For the given edge, return its nearest ancestor with layer tag of the given kind.
      */
-    boost::optional<std::string> getEdgeOrigin(std::string tagName, EdgeDescriptor edge);
+    boost::optional<EdgeDescriptor> getEdgeOrigin(std::string tagName, EdgeDescriptor edge);
 
     /**
      * Return the lemma of the given edge.

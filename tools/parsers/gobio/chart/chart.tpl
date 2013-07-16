@@ -28,7 +28,8 @@ chart<C,S,V,R,I>::chart(
     lemmaTag_(lattice.getLayerTagManager().createSingletonTagCollection("lemma")),
     gobioTag_(lattice.getLayerTagManager().createSingletonTagCollection("gobio")),
     toBePutInApostrophesTagMask_(lattice.getLayerTagManager().anyTag()),
-    limitChecker_(limitChecker)
+    limitChecker_(limitChecker),
+    terminalTag_(terminalTag)
 {
     std::vector<LayerTagCollection> altTags;
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("normalization"));
@@ -348,6 +349,12 @@ void chart<C,S,V,R,I>::mark_edge_as_accommodated(edge_descriptor edge)
     graph_[edge].is_accommodated = true;
 }
 */
+
+template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
+boost::optional< typename chart<C,S,V,R,I>::edge_descriptor >
+chart<C,S,V,R,I>::edge_terminal_origin(edge_descriptor edge) {
+    return lattice_.getEdgeOrigin(terminalTag_, edge);
+}
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 bool chart<C,S,V,R,I>::could_be_final(edge_descriptor edge) const {
