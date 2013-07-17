@@ -34,6 +34,7 @@
 @val    m3  mnż
 @val    f   ż
 @val    n   n
+@val    n1  n
 @val    n2  n
 @val    p1  n
 @val    p2  n
@@ -77,10 +78,15 @@ CAT = zaimek_rzeczowny_osobowy >> R = $Rp, Składnia = 0
 CAT = zaimek_rzeczowny_osobowy, Rp = fail >> R = 0
 CAT = zaimek_rzeczowny_osobowy, jego jej ich >> CAT=zaimek_rzeczowny_osobowy|zaimek_dzierżawczy
 CAT = zaimek_dzierżawczy >> P = 0, R = 0, L = 0
+CAT = przymiotnik, Rp = mo, L = 1 >> Rp = mż
+CAT = przymiotnik, Rp = mno, L = 1 >> Rp = mnż
+CAT = przymiotnik, Rp = m, L = 1 >> Rp = mż|mnż
+CAT = przymiotnik, Rp = mż, L = 2 >> Rp = mo
+CAT = przymiotnik, Rp = mnż, L = 2 >> Rp = mno
+CAT = przymiotnik, Rp = m, L = 2 >> Rp = mo|mno
+CAT = przymiotnik, Rp = ż, L = 2 >> Rp = mno
+CAT = przymiotnik, Rp = n, L = 2 >> Rp = mno
 CAT = przymiotnik >> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = any
-CAT = przymiotnik, R = mnż >> R = mnż|mno
-CAT = przymiotnik, R = mo >> R = mo|mż
-CAT = przymiotnik, R = m >> R = mo|mno|mż|mnż
 CAT = przymiotnik, mój moja moje mojego mojej mojemu moją moim moi moich moimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = przymiotnik, twój twoja twoje twojego twojej twojemu twoją twoim twoi twoich twoimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
 CAT = przymiotnik, swój swoja swoje swojego swojej swojemu swoją swoim swoi swoich swoimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
@@ -135,13 +141,18 @@ CAT = liczebnik_główny, pięciuset sześciuset siedmiuset osmiuset dziewięciu
 CAT = liczebnik_główny, dwoje troje czworo pięcioro sześcioro siedmioro ośmioro dziewięcioro >> Typ = d, R = zbiorowy
 CAT = liczebnik_główny, Accommodability = congr >> Typ = zg
 CAT = liczebnik_główny, Accommodability = rec >> Typ = d
+CAT = czasownik, Rp = mo, L = 1 >> Rp = mż
+CAT = czasownik, Rp = mno, L = 1 >> Rp = mnż
+CAT = czasownik, Rp = m, L = 1 >> Rp = mż|mnż
+CAT = czasownik, Rp = mż, L = 2 >> Rp = mo
+CAT = czasownik, Rp = mnż, L = 2 >> Rp = mno
+CAT = czasownik, Rp = m, L = 2 >> Rp = mo|mno
+CAT = czasownik, Rp = ż, L = 2 >> Rp = mno
+CAT = czasownik, Rp = n, L = 2 >> Rp = mno
 CAT = czasownik >> Przyim = brak, Przyim1 = brak, Podmiot = 1, Length = 1, Amb = 1, Dop1=bier,Przyim1=brak,Sem1=any, S = any
 CAT = czasownik, C = teraźniejszy >> R = 0
 CAT = czasownik, C = przyszły >> R = 0
 CAT = czasownik, C = przeszły >> R = $Rp, R1 = 0
-CAT = czasownik, R = mnż >> R = mnż|mno
-CAT = czasownik, R = mo >> R = mo|mż
-CAT = czasownik, R = m >> R = mo|mno|mż|mnż
 CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
