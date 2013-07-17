@@ -2,6 +2,8 @@
 #define CHART_HPP_HDR
 
 
+#include <boost/optional.hpp>
+
 #include "av_ai_converter.hpp"
 #include "lattice.hpp"
 #include "limit_checker.hpp"
@@ -148,6 +150,11 @@ public:
     // bool edge_accommodated(edge_descriptor edge) const;
     // void mark_edge_as_accommodated(edge_descriptor edge);
 
+    /**
+     * Eeturn terminal edge that is an ancestor of the given edge.
+     */
+    boost::optional<edge_descriptor> edge_terminal_origin(edge_descriptor edge);
+
     bool could_be_final(edge_descriptor edge) const;
 
     std::pair<partition_iterator, partition_iterator> edge_partitions(edge_descriptor edge);
@@ -228,6 +235,8 @@ private:
     typedef Lattice::VertexPairHashFun vertex_pair_hash_fun;
 
     LimitChecker & limitChecker_;
+
+    std::string terminalTag_;
 
 public:
     struct vertex_hash_fun
