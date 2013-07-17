@@ -68,9 +68,17 @@
 @val    congr   zg
 @val    rec d
 CAT = rzeczownik, niż >> CAT = rzeczownik|przyimek
-CAT = rzeczownik >> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
+CAT = rzeczownik >> L1 = $L, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
 CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
+CAT = rzeczownik, L = 1, Rp = mż >> R = mż, R1 = mż
+CAT = rzeczownik, L = 1, Rp = mnż >> R = mnż, R1 = mnż
+CAT = rzeczownik, L = 1, Rp = ż >> R = ż, R1 = ż
+CAT = rzeczownik, L = 1, Rp = n >> R = n, R1 = n
+CAT = rzeczownik, L = 2, Rp = mo >> R = mo, R1 = mo
+CAT = rzeczownik, L = 2, Rp = mż >> R = mno, R1 = mno
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno
+CAT = rzeczownik, L = 2, Rp = ż >> R = mno, R1 = mno
+CAT = rzeczownik, L = 2, Rp = n >> R = mno, R1 = mno
 CAT = rzeczownik, wszystko >> CAT = '@wszystko'
 CAT = rzeczownik, ktoś kogoś komuś kimś coś czegoś czemuś czymś nikt nikogo nikomu nikim nic niczego niczemu niczym >> CAT = zaimek_rzeczowny_nieokreślony
 CAT = rzeczownik, L = 2, P = woł >> SKIP
