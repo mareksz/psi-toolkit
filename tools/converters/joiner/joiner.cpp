@@ -59,7 +59,8 @@ Annotator* Joiner::Factory::doCreateAnnotator(
         takeLeftText,
         takeLeftCategory,
         handlingAttributes,
-        outerJoin);
+        outerJoin,
+        extendedOuterJoin);
 }
 
 std::list<std::list<std::string> > Joiner::Factory::doRequiredLayerTags() {
