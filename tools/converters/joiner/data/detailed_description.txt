@@ -3,6 +3,10 @@ In a way, joiner generates a sort of *left outer join* for edges
 which no "right" edges were found, outer join can be switched off with
 `--no-outer-join` option).
 
+If you want to generate additional new edge for every "left" edge,
+even if some "right" edges were found for it, use the option
+`--extended-outer-join`.
+
 By default the new edge inherits the text and the category field from
 the "left" edge and inherits attributes from both the "left" and
 "right" edges. This could be changed with appropriate options.
