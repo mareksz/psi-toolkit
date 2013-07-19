@@ -8,7 +8,8 @@ Joiner::Joiner(
     bool takeLeftText,
     bool takeLeftCategory,
     HandlingAttributes handlingAttributes,
-    bool outerJoin)
+    bool outerJoin,
+    bool extendedOuterJoin)
     :langCode_(langCode),
      leftMaskSpecification_(
          LayerTagManager::multiplyMaskListByLangCode(
@@ -23,7 +24,8 @@ Joiner::Joiner(
      takeLeftText_(takeLeftText),
      takeLeftCategory_(takeLeftCategory),
      handlingAttributes_(handlingAttributes),
-     outerJoin_(outerJoin) {
+     outerJoin_(outerJoin),
+     extendedOuterJoin_(extendedOuterJoin) {
 }
 
 Annotator* Joiner::Factory::doCreateAnnotator(
@@ -47,6 +49,7 @@ Annotator* Joiner::Factory::doCreateAnnotator(
         : (options.count("take-right-attributes") ? TAKE_RIGHT_ATTRIBUTES
            : MERGE_ATTRIBUTES);
     bool outerJoin = !options.count("no-outer-join");
+    bool extendedOuterJoin = options.count("extended-outer-join");
 
     return new Joiner(
         lang,
@@ -130,7 +133,8 @@ void Joiner::Factory::doAddLanguageIndependentOptionsHandled(
         ("take-right-category", "take the text field from the \"right\" edge (by default, the right one is used")
         ("take-left-attributes", "take only attributes from the \"left\" edge (by default the attributes from the \"left\" one and the \"right\" one are merged")
         ("take-right-attributes", "take only attributes from the \"right\" edge")
-        ("no-outer-join", "switch off \"outer\" join");
+        ("no-outer-join", "switch off \"outer\" join")
+        ("extended-outer-join", "switch on \"extended\" outer join");
 }
 
 boost::filesystem::path Joiner::Factory::doGetFile() const {
@@ -228,7 +232,7 @@ void Joiner::Worker::doRun() {
             }
         }
 
-        if (!foundRightEdge && processor_.outerJoin_) {
+        if (processor_.extendedOuterJoin_ || (!foundRightEdge && processor_.outerJoin_)) {
 
             LayerTagCollection edgePlane = tagManager.onlyPlaneTags(
                 lattice_.getEdgeLayerTags(edge));

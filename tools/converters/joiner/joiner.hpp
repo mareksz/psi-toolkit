@@ -46,7 +46,8 @@ public:
         bool takeLeftText = true,
         bool takeLeftCategory = true,
         HandlingAttributes handlingAttributes = MERGE_ATTRIBUTES,
-        bool outerJoin = true);
+        bool outerJoin = true,
+        bool extendedOuterJoin = false);
 
 private:
     class Worker : public LatticeWorker {
@@ -69,4 +70,5 @@ private:
     bool takeLeftCategory_;
     HandlingAttributes handlingAttributes_;
     bool outerJoin_;
+    bool extendedOuterJoin_;
 };
