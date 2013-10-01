@@ -72,14 +72,6 @@ void SessionManager::setCurrentSession(std::string id) {
 
 void SessionManager::addSession(Session * session) {
     sessions_.insert(std::pair<std::string, Session> (session->getId(), *session));
-
-    std::string info = "Session IDs: ";
-    std::map<std::string, Session>::iterator it;
-    for (it = sessions_.begin(); it != sessions_.end(); ++it) {
-        info += it->first;
-        info += ", ";
-    }
-    INFO(info);
 }
 
 std::string SessionManager::generateNewId() {

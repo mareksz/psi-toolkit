@@ -2,6 +2,8 @@
 #define GOBIO_HDR
 
 
+#include <set>
+
 #include <boost/program_options.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -127,13 +129,15 @@ private:
 
     virtual std::string doInfo();
 
-    GobioLimitChecker limitChecker_;
+    boost::shared_ptr<LimitChecker> limitChecker_;
 
     std::string rulesPath_;
 
     std::string terminalTag_;
 
     int edgeNumberLimit_;
+
+    std::set<std::string> atCategories_;
 
     zvalue edgeToZsyntree_(
         Chart & ch,

@@ -3,7 +3,7 @@
 #include <boost/assign/list_of.hpp>
 
 #include "apertium_lattice_reader.hpp"
-#include "processor_file_fetcher.cpp"
+#include "processor_file_fetcher.hpp"
 
 
 std::string ApertiumLatticeReader::getFormatName() {

@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/marcinj/Badania/psi-toolkit
+CMAKE_SOURCE_DIR = /home/marcinj/Badania/psi/psi-toolkit
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/marcinj/Badania/psi-toolkit
+CMAKE_BINARY_DIR = /home/marcinj/Badania/psi/psi-toolkit
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -110,14 +110,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/marcinj/Badania/psi-toolkit && $(CMAKE_COMMAND) -E cmake_progress_start /home/marcinj/Badania/psi-toolkit/CMakeFiles /home/marcinj/Badania/psi-toolkit/sundown/CMakeFiles/progress.marks
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/marcinj/Badania/psi-toolkit/CMakeFiles 0
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(CMAKE_COMMAND) -E cmake_progress_start /home/marcinj/Badania/psi/psi-toolkit/CMakeFiles /home/marcinj/Badania/psi/psi-toolkit/sundown/CMakeFiles/progress.marks
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/marcinj/Badania/psi/psi-toolkit/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/clean
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/clean
 .PHONY : clean
 
 # The main clean target
@@ -126,22 +126,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/preinstall
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/preinstall
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/marcinj/Badania/psi-toolkit && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 sundown/CMakeFiles/sundown.dir/rule:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/CMakeFiles/sundown.dir/rule
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f CMakeFiles/Makefile2 sundown/CMakeFiles/sundown.dir/rule
 .PHONY : sundown/CMakeFiles/sundown.dir/rule
 
 # Convenience name for target.
@@ -150,7 +150,7 @@ sundown: sundown/CMakeFiles/sundown.dir/rule
 
 # fast build rule for target.
 sundown/fast:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/build
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/build
 .PHONY : sundown/fast
 
 cpp/stringwrapper.o: cpp/stringwrapper.cpp.o
@@ -158,7 +158,7 @@ cpp/stringwrapper.o: cpp/stringwrapper.cpp.o
 
 # target to build an object file
 cpp/stringwrapper.cpp.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/cpp/stringwrapper.cpp.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/cpp/stringwrapper.cpp.o
 .PHONY : cpp/stringwrapper.cpp.o
 
 cpp/stringwrapper.i: cpp/stringwrapper.cpp.i
@@ -166,7 +166,7 @@ cpp/stringwrapper.i: cpp/stringwrapper.cpp.i
 
 # target to preprocess a source file
 cpp/stringwrapper.cpp.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/cpp/stringwrapper.cpp.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/cpp/stringwrapper.cpp.i
 .PHONY : cpp/stringwrapper.cpp.i
 
 cpp/stringwrapper.s: cpp/stringwrapper.cpp.s
@@ -174,7 +174,7 @@ cpp/stringwrapper.s: cpp/stringwrapper.cpp.s
 
 # target to generate assembly for a file
 cpp/stringwrapper.cpp.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/cpp/stringwrapper.cpp.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/cpp/stringwrapper.cpp.s
 .PHONY : cpp/stringwrapper.cpp.s
 
 html/houdini_href_e.o: html/houdini_href_e.c.o
@@ -182,7 +182,7 @@ html/houdini_href_e.o: html/houdini_href_e.c.o
 
 # target to build an object file
 html/houdini_href_e.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_href_e.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_href_e.c.o
 .PHONY : html/houdini_href_e.c.o
 
 html/houdini_href_e.i: html/houdini_href_e.c.i
@@ -190,7 +190,7 @@ html/houdini_href_e.i: html/houdini_href_e.c.i
 
 # target to preprocess a source file
 html/houdini_href_e.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_href_e.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_href_e.c.i
 .PHONY : html/houdini_href_e.c.i
 
 html/houdini_href_e.s: html/houdini_href_e.c.s
@@ -198,7 +198,7 @@ html/houdini_href_e.s: html/houdini_href_e.c.s
 
 # target to generate assembly for a file
 html/houdini_href_e.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_href_e.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_href_e.c.s
 .PHONY : html/houdini_href_e.c.s
 
 html/houdini_html_e.o: html/houdini_html_e.c.o
@@ -206,7 +206,7 @@ html/houdini_html_e.o: html/houdini_html_e.c.o
 
 # target to build an object file
 html/houdini_html_e.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_html_e.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_html_e.c.o
 .PHONY : html/houdini_html_e.c.o
 
 html/houdini_html_e.i: html/houdini_html_e.c.i
@@ -214,7 +214,7 @@ html/houdini_html_e.i: html/houdini_html_e.c.i
 
 # target to preprocess a source file
 html/houdini_html_e.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_html_e.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_html_e.c.i
 .PHONY : html/houdini_html_e.c.i
 
 html/houdini_html_e.s: html/houdini_html_e.c.s
@@ -222,7 +222,7 @@ html/houdini_html_e.s: html/houdini_html_e.c.s
 
 # target to generate assembly for a file
 html/houdini_html_e.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_html_e.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/houdini_html_e.c.s
 .PHONY : html/houdini_html_e.c.s
 
 html/html.o: html/html.c.o
@@ -230,7 +230,7 @@ html/html.o: html/html.c.o
 
 # target to build an object file
 html/html.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html.c.o
 .PHONY : html/html.c.o
 
 html/html.i: html/html.c.i
@@ -238,7 +238,7 @@ html/html.i: html/html.c.i
 
 # target to preprocess a source file
 html/html.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html.c.i
 .PHONY : html/html.c.i
 
 html/html.s: html/html.c.s
@@ -246,7 +246,7 @@ html/html.s: html/html.c.s
 
 # target to generate assembly for a file
 html/html.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html.c.s
 .PHONY : html/html.c.s
 
 html/html_smartypants.o: html/html_smartypants.c.o
@@ -254,7 +254,7 @@ html/html_smartypants.o: html/html_smartypants.c.o
 
 # target to build an object file
 html/html_smartypants.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html_smartypants.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html_smartypants.c.o
 .PHONY : html/html_smartypants.c.o
 
 html/html_smartypants.i: html/html_smartypants.c.i
@@ -262,7 +262,7 @@ html/html_smartypants.i: html/html_smartypants.c.i
 
 # target to preprocess a source file
 html/html_smartypants.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html_smartypants.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html_smartypants.c.i
 .PHONY : html/html_smartypants.c.i
 
 html/html_smartypants.s: html/html_smartypants.c.s
@@ -270,7 +270,7 @@ html/html_smartypants.s: html/html_smartypants.c.s
 
 # target to generate assembly for a file
 html/html_smartypants.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html_smartypants.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/html/html_smartypants.c.s
 .PHONY : html/html_smartypants.c.s
 
 src/autolink.o: src/autolink.c.o
@@ -278,7 +278,7 @@ src/autolink.o: src/autolink.c.o
 
 # target to build an object file
 src/autolink.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/autolink.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/autolink.c.o
 .PHONY : src/autolink.c.o
 
 src/autolink.i: src/autolink.c.i
@@ -286,7 +286,7 @@ src/autolink.i: src/autolink.c.i
 
 # target to preprocess a source file
 src/autolink.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/autolink.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/autolink.c.i
 .PHONY : src/autolink.c.i
 
 src/autolink.s: src/autolink.c.s
@@ -294,7 +294,7 @@ src/autolink.s: src/autolink.c.s
 
 # target to generate assembly for a file
 src/autolink.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/autolink.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/autolink.c.s
 .PHONY : src/autolink.c.s
 
 src/buffer.o: src/buffer.c.o
@@ -302,7 +302,7 @@ src/buffer.o: src/buffer.c.o
 
 # target to build an object file
 src/buffer.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/buffer.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/buffer.c.o
 .PHONY : src/buffer.c.o
 
 src/buffer.i: src/buffer.c.i
@@ -310,7 +310,7 @@ src/buffer.i: src/buffer.c.i
 
 # target to preprocess a source file
 src/buffer.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/buffer.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/buffer.c.i
 .PHONY : src/buffer.c.i
 
 src/buffer.s: src/buffer.c.s
@@ -318,7 +318,7 @@ src/buffer.s: src/buffer.c.s
 
 # target to generate assembly for a file
 src/buffer.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/buffer.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/buffer.c.s
 .PHONY : src/buffer.c.s
 
 src/markdown.o: src/markdown.c.o
@@ -326,7 +326,7 @@ src/markdown.o: src/markdown.c.o
 
 # target to build an object file
 src/markdown.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/markdown.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/markdown.c.o
 .PHONY : src/markdown.c.o
 
 src/markdown.i: src/markdown.c.i
@@ -334,7 +334,7 @@ src/markdown.i: src/markdown.c.i
 
 # target to preprocess a source file
 src/markdown.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/markdown.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/markdown.c.i
 .PHONY : src/markdown.c.i
 
 src/markdown.s: src/markdown.c.s
@@ -342,7 +342,7 @@ src/markdown.s: src/markdown.c.s
 
 # target to generate assembly for a file
 src/markdown.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/markdown.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/markdown.c.s
 .PHONY : src/markdown.c.s
 
 src/stack.o: src/stack.c.o
@@ -350,7 +350,7 @@ src/stack.o: src/stack.c.o
 
 # target to build an object file
 src/stack.c.o:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/stack.c.o
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/stack.c.o
 .PHONY : src/stack.c.o
 
 src/stack.i: src/stack.c.i
@@ -358,7 +358,7 @@ src/stack.i: src/stack.c.i
 
 # target to preprocess a source file
 src/stack.c.i:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/stack.c.i
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/stack.c.i
 .PHONY : src/stack.c.i
 
 src/stack.s: src/stack.c.s
@@ -366,7 +366,7 @@ src/stack.s: src/stack.c.s
 
 # target to generate assembly for a file
 src/stack.c.s:
-	cd /home/marcinj/Badania/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/stack.c.s
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(MAKE) -f sundown/CMakeFiles/sundown.dir/build.make sundown/CMakeFiles/sundown.dir/src/stack.c.s
 .PHONY : src/stack.c.s
 
 # Help Target
@@ -420,6 +420,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/marcinj/Badania/psi-toolkit && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/marcinj/Badania/psi/psi-toolkit && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

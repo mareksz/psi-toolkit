@@ -23,18 +23,18 @@ if(CMAKE_CONFIGURATION_TYPES)
      FORCE)
 endif()
 
-SET( CMAKE_CXX_FLAGS_COVERAGE "-g -pg -Wall -Wundef -Wnon-virtual-dtor -Wextra -fprofile-arcs -ftest-coverage" CACHE STRING
+SET( CMAKE_CXX_FLAGS_COVERAGE "-g -pg -Wall -Wundef -Wnon-virtual-dtor -Wextra -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used by the C++ compiler during maintainer builds."
     FORCE )
-SET( CMAKE_C_FLAGS_COVERAGE "-g -pg -Wall -pedantic -fprofile-arcs -ftest-coverage" CACHE STRING
+SET( CMAKE_C_FLAGS_COVERAGE "-g -pg -Wall -pedantic -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used by the C compiler during maintainer builds."
     FORCE )
 SET( CMAKE_EXE_LINKER_FLAGS_COVERAGE
-    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage" CACHE STRING
+    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used for linking binaries during maintainer builds."
     FORCE )
 SET( CMAKE_SHARED_LINKER_FLAGS_COVERAGE
-    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage" CACHE STRING
+    "-g -pg -Wl,--warn-unresolved-symbols,--warn-once -fprofile-arcs -ftest-coverage -fPIC" CACHE STRING
     "Flags used by the shared libraries linker during maintainer builds."
     FORCE )
 MARK_AS_ADVANCED(
@@ -97,6 +97,11 @@ configure_file(
 
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+
+# Install bash-completion scripts
+
+install(FILES psi-pipe DESTINATION /etc/bash_completion.d)
+install(FILES psi-server DESTINATION /etc/bash_completion.d)
 
 # ====================================================
 # Finds and includes external libraries
@@ -527,7 +532,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet fr
     formats-apertium formats-bracketing formats-dot formats-guessing formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
-    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-translators-bonsai
+    tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai
     tools-converters-unumsunt tools-converters-joiner tools-translators-transferer tools-lemmatizers-lamerlemma)
 
 # ----------------------------------------------------
@@ -708,7 +713,7 @@ function(download_project_artifact PROJECT FILE)
     endif()
   endif()
 
-endfunction(download_artifact)
+endfunction(download_project_artifact)
 
 function(download_and_unpack URL FILE CHECKSUM DESTINATION)
   message(STATUS "Checking ${URL}...")
@@ -799,7 +804,7 @@ if(DOWNLOAD_DATA)
     download_artifact("tools/lexica/bilexicon/data/plit.bin")
     download_artifact("tools/lexica/mapper/data/en-lexdb-generation-forms.bin")
     download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/es-lexdb-generation-forms.bin")
-    download_project_artifact(psi-toolkit-data-sumo "tools/lexica/mapper/data/pl-valency.bin")
+    download_artifact("tools/lexica/mapper/data/pl-valency.bin")
 
     download_project_artifact(psi-toolkit-data-sumo "tools/lemmatizers/lamerlemma/data/pl.bin")
     download_artifact("tools/lemmatizers/lamerlemma/data/fr.bin")

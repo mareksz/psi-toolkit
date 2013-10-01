@@ -16,39 +16,12 @@
 #include "TransferTypes.hpp"
 #include "Translator.hpp"
 
-class Bonsai : public Annotator {
+class Bonsai {
     public:
-        class Factory : public LanguageDependentAnnotatorFactory {
-            virtual Annotator* doCreateAnnotator(
-                    const boost::program_options::variables_map& options);
-
-            virtual void doAddLanguageIndependentOptionsHandled(
-                boost::program_options::options_description& optionsDescription);
-
-            virtual std::string doGetName() const;
-            virtual std::string doGetSubType() const;
-            virtual boost::filesystem::path doGetFile() const;
-
-            virtual std::list<std::list<std::string> > doRequiredLayerTags();
-            virtual std::list<std::list<std::string> > doOptionalLayerTags();
-            virtual std::list<std::string> doProvidedLayerTags();
-
-        };
-
         Bonsai(poleng::bonsai::TranslatorPtr translator, const std::string& langCode);
-        void translate(Lattice &lattice);
+        void translate(Lattice &lattice, Lattice::EdgeDescriptor edge);
 
     private:
-        class Worker : public LatticeWorker {
-            public:
-                Worker(Bonsai& processor, Lattice& lattice);
-            private:
-                virtual void doRun();
-                Bonsai& processor_;
-        };
-        virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
-        virtual std::string doInfo();
-
         poleng::bonsai::TranslatorPtr translator_;
         std::string langCode_;
 };

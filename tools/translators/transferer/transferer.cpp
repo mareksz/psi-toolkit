@@ -728,7 +728,7 @@ void Transferer::compute_(Statement* S, zvector* DSS,
                             nenv->change(ttsslot->defined_subr->args->elementAt(tti),
                                        DSS->pop());
                             ++tti;
-                            tts = ZUNWRAP(Statement*,OSS->pop());
+                            tts = ZUNWRAP(Statement*, OSS->pop());
                             tts = tts->getNextStatement();
                         }
 
@@ -745,7 +745,7 @@ void Transferer::compute_(Statement* S, zvector* DSS,
                         {
                             OSS->push(ZWRAP(tts));
                             GOSUB(tts);
-                            tts = ZUNWRAP(Statement*,OSS->pop());
+                            tts = ZUNWRAP(Statement*, OSS->pop());
                             tts = tts->getNextStatement();
                         }
                         ttz = OSS->pop();
@@ -861,7 +861,7 @@ void Transferer::compute_(Statement* S, zvector* DSS,
                 THIS_TREE->deleteAllKeyValue(ttz, ttt);
                 THIS_TREE->deleteAllKeyValue(ttt, ttz);
 
-                THIS_TREE->insert(Sc->sref,ttt);
+                THIS_TREE->insert(Sc->sref, ttt);
                 THIS_TREE->insert(ttt, Sc->sref);
             }
 
@@ -881,7 +881,7 @@ void Transferer::compute_(Statement* S, zvector* DSS,
         {
             OSS->push(ZWRAP(tts));
             GOSUB(tts);
-            tts = ZUNWRAP(Statement*,OSS->pop());
+            tts = ZUNWRAP(Statement*, OSS->pop());
             tts = tts->getNextStatement();
         }
         break;
@@ -934,8 +934,8 @@ void Transferer::compute_(Statement* S, zvector* DSS,
 #undef STATEMENT_CLASS
 
 zsyntree* Transferer::doTransfer(zsyntree* a_source_tree
-        ,TransferSpecHash* a_local_transfer_spec
-        ,zsyntree* a_parent_node)
+        , TransferSpecHash* a_local_transfer_spec
+        , zsyntree* a_parent_node)
 {
     // @todo czy musi byæ replace_with_could... tak jak w starym transferze?
 
@@ -987,8 +987,8 @@ zsyntree* Transferer::doTransfer(zsyntree* a_source_tree
              subs_constructed = true;\
             for (int i=0; i<=a_source_tree->last_subtree; ++i) { \
             doTransfer(ZSYNTREEC(a_source_tree->fetch(INTEGER_TO_ZVALUE(i))) \
-                    ,transfer_spec->local_transfer_spec \
-                    ,a_target_tree); \
+                    , transfer_spec->local_transfer_spec \
+                    , a_target_tree); \
         }} \
         zenvironment* renv = zenvironment::generate(current_holder_, 8); \
         renv->change(sm_this, a_target_tree); \
@@ -1075,8 +1075,8 @@ zsyntree* Transferer::doTransfer(zsyntree* a_source_tree
                 subs_constructed = true;
                 for (int i=0; i<=a_source_tree->last_subtree; ++i) {
                     doTransfer(ZSYNTREEC(a_source_tree->fetch(INTEGER_TO_ZVALUE(i)))
-                               ,NULL
-                               ,a_target_tree);
+                               , NULL
+                               , a_target_tree);
                 }
             }
 
@@ -1665,7 +1665,7 @@ BUILDINDEF(find_left)
 BUILDINDEF(find_right)
 {
     find_param_test(find_right);
-    return ZOBJECT_TO_ZVALUE(node->find(cat, label,false));
+    return ZOBJECT_TO_ZVALUE(node->find(cat, label, false));
 }
 
 BUILDINDEF(first)
@@ -1856,7 +1856,7 @@ BUILDINDEF(insert_after)
         nt->setCategory(cat);
     }
 
-    node->insertBeside(nt,true);
+    node->insertBeside(nt, true);
     if (NULL!=label) nt->setLabel(label);
 
     return ZOBJECT_TO_ZVALUE(nt);
@@ -1874,7 +1874,7 @@ BUILDINDEF(insert_before)
         nt->setCategory(cat);
     }
 
-    node->insertBeside(nt,false);
+    node->insertBeside(nt, false);
     if (NULL!=label) nt->setLabel(label);
 
     return ZOBJECT_TO_ZVALUE(nt);
@@ -1966,7 +1966,7 @@ BUILDINDEF(is_upper)
     if (ZSYMBOLP(FIRST_ARG))
     {
         const char *s = ZSYMBOLC(FIRST_ARG)->get_string();
-	if (simpleWillBeTouchedWhenHeadConverted(*lowerCaseConverter_, std::string(s)))
+    if (simpleWillBeTouchedWhenHeadConverted(*lowerCaseConverter_, std::string(s)))
             return INTEGER_TO_ZVALUE(1);
     }
 
@@ -2199,7 +2199,7 @@ BUILDINDEF(semmatch)
         int s = -9999L;
 
 #ifndef TRANSFERER_NO_SEMANTICS
-        dsem_hierarchy->match(FIRST_ARG,NULL_ZVALUE,SECOND_ARG, s);
+        dsem_hierarchy->match(FIRST_ARG, NULL_ZVALUE, SECOND_ARG, s);
 #endif
 
         if (s < 0)
@@ -2215,7 +2215,7 @@ BUILDINDEF(set)
         warning_("argument of set should be a string",stat,NULL_ZVALUE);
         return NULL_ZVALUE;
     }
-    node->setAttr(ZSYMBOLC(FIRST_ARG),SECOND_ARG);
+    node->setAttr(ZSYMBOLC(FIRST_ARG), SECOND_ARG);
     return SECOND_ARG;
 }
 
@@ -2224,10 +2224,10 @@ BUILDINDEF(show_tree)
     char* r = node->zsyntree_to_string();
     char* s = new char[strlen(r)+3];
     strcpy(s, "\n");
-    strcat(s,r);
+    strcat(s, r);
     delete r;
     strcat(s, "\n");
-    warning_(s,stat,NULL_ZVALUE);
+    warning_(s, stat, NULL_ZVALUE);
     delete s;
     return ZOBJECT_TO_ZVALUE(node);
 }
@@ -2257,7 +2257,7 @@ BUILDINDEF(substring)
     int beg = ZVALUE_TO_INTEGER(SECOND_ARG);
     int len = DEFAULTP(THIRD_ARG) ? ( strlen(s) - beg ) : ZVALUE_TO_INTEGER(THIRD_ARG);
 
-    return subsymbol_(s,beg,len);
+    return subsymbol_(s, beg, len);
 }
 
 BUILDINDEF(suffix)
@@ -2358,7 +2358,7 @@ BUILDINDEF(do_transfer)
         warning_("first argument of cut_suffix should be a string",stat,NULL_ZVALUE);
         return NULL_ZVALUE;
     }
-    return doTransfer(ZSYNTREEC(FIRST_ARG),NULL,NULL);
+    return doTransfer(ZSYNTREEC(FIRST_ARG), NULL, NULL);
 }
 
 #undef THIRD_ARG
@@ -2426,7 +2426,7 @@ std::string Transferer::tree_representation_(zsyntree* t)
     return r;
 }
 
-std::string Transferer::tree_representation_attr_(zsyntree* t, std::string attr,bool& separator)
+std::string Transferer::tree_representation_attr_(zsyntree* t, std::string attr, bool& separator)
 {
     std::string r;
 

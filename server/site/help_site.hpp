@@ -1,14 +1,13 @@
 #ifndef HELP_SITE_HDR
 #define HELP_SITE_HDR
 
-#include "template_site.hpp"
+#include "help_template_site.hpp"
 #include "html_help_formatter.hpp"
 #include "file_storage.hpp"
 
 #include <boost/program_options/options_description.hpp>
 
-class HelpSite : public TemplateSite
-{
+class HelpSite : public HelpTemplateSite {
 
 public:
 
@@ -25,11 +24,6 @@ public:
     char * installationGuide();
 
     char * pipelineExamples();
-
-private:
-
-    FileStorage fileStorage_;
-    HtmlHelpFormatter htmlHelpFormatter_;
 
 };
 

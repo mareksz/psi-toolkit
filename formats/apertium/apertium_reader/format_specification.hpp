@@ -8,7 +8,7 @@
 
 #include "format_rules.hpp"
 #include "xml_property_tree.hpp"
-
+#include "psi_exception.hpp"
 
 class FormatSpecification {
 public:
@@ -44,16 +44,10 @@ private:
 class FormatSpecificationReader {
 public:
 
-    class Exception : public std::exception {
+    class Exception : public PsiException {
     public:
-        Exception(const std::string& msg) : msg_(msg) { }
+        Exception(const std::string& msg) : PsiException(msg) { }
         virtual ~Exception() throw() { }
-
-        virtual const char* what() const throw() {
-            return msg_.c_str();
-        }
-    private:
-        std::string msg_;
     };
 
     class UnexpectedElementException : public Exception {

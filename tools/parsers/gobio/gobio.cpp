@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+#include "regexp.hpp"
+
 #include "exceptions.hpp"
 
 #include "put_zsyntree_into_lattice.hpp"
@@ -117,16 +119,79 @@ Gobio::Gobio(
     std::string terminalTag,
     int edgeNumberLimit
 ) :
-    limitChecker_(lang),
     rulesPath_(rulesPath),
     terminalTag_(terminalTag)
 {
+    // Set edge number limit.
     if (edgeNumberLimit > -1) {
-        limitChecker_.setAbsoluteLimit(edgeNumberLimit);
+        limitChecker_.reset(new LimitChecker(edgeNumberLimit));
+    } else {
+        limitChecker_.reset(new GobioLimitChecker(lang));
+    }
+
+    // Find which @-symbols are used in rules.
+    std::ifstream rulesFs(rulesPath.c_str());
+    std::string line;
+    PerlRegExp reAtCategory("'@([^']+)'");
+    while (rulesFs.good()) {
+        std::getline(rulesFs, line);
+        PerlStringPiece input(line);
+        std::string atSymbol;
+        while (PerlRegExp::FindAndConsume(&input, reAtCategory, &atSymbol)) {
+            atCategories_.insert(atSymbol);
+        }
     }
 }
 
 void Gobio::parse(Lattice & lattice) {
+
+    LayerTagMask maskGobio = lattice.getLayerTagManager().getAlternativeMask(
+        boost::assign::list_of
+            (lattice.getLayerTagManager().createSingletonTagCollection("gobio"))
+            (lattice.getLayerTagManager().createSingletonTagCollection(terminalTag_))
+    );
+    LayerTagCollection tagTerminal = lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")(terminalTag_.c_str())
+    );
+    LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
+        boost::assign::list_of("gobio")("parse")
+    );
+
+    // Add edges with '@...' categories.
+
+    Lattice::EdgesSortedBySourceIterator ei = lattice.edgesSortedBySource(maskGobio);
+    while (ei.hasNext()) {
+        Lattice::EdgeDescriptor edge = ei.next();
+        boost::optional<std::string> lemma = lattice.getEdgeLemma(edge);
+        std::string atCategory;
+        if (lemma) {
+            atCategory = *lemma;
+        } else {
+            atCategory = lattice.getAnnotationText(edge);
+        }
+        if (atCategories_.count(atCategory)) {
+            std::stringstream categorySs;
+            categorySs << "'@" << atCategory << "'";
+            AnnotationItem annotationItem(
+                lattice.getEdgeAnnotationItem(edge),
+                categorySs.str());
+            Lattice::EdgeSequence::Builder builder(lattice);
+            builder.addEdge(edge);
+            try {
+                lattice.addEdge(
+                    lattice.getEdgeSource(edge),
+                    lattice.getEdgeTarget(edge),
+                    annotationItem,
+                    tagTerminal,
+                    builder.build());
+            } catch (EdgeSelfReferenceException) {
+                // This exception here is invalid (bug #322).
+            }
+        }
+    }
+
+    // Do parsing.
+
     zsymbolfactory * sym_fac = lattice.getAnnotationItemManager().getSymbolFactory();
 
     AnnotationItemManager & aim = lattice.getAnnotationItemManager();
@@ -142,7 +207,7 @@ void Gobio::parse(Lattice & lattice) {
         true
     );
 
-    Chart ch(lattice, av_ai_converter, terminalTag_, limitChecker_);
+    Chart ch(lattice, av_ai_converter, terminalTag_, *limitChecker_);
     Agenda agenda;
     Parser parser(ch, combinator, agenda);
 
@@ -154,15 +219,6 @@ void Gobio::parse(Lattice & lattice) {
 
     std::vector<Combinator::rule_holder> local_rules;
     std::vector<Edge> choosen_edges = chr->go(ch, combinator, local_rules);
-
-    LayerTagMask maskGobio = lattice.getLayerTagManager().getAlternativeMask(
-        boost::assign::list_of
-            (lattice.getLayerTagManager().createSingletonTagCollection("gobio"))
-            (lattice.getLayerTagManager().createSingletonTagCollection(terminalTag_))
-    );
-    LayerTagCollection tagParse = lattice.getLayerTagManager().createTagCollectionFromList(
-        boost::assign::list_of("gobio")("parse")
-    );
 
     std::vector<zvalue> results;
     BOOST_FOREACH(Edge edge, choosen_edges) {
@@ -252,7 +308,7 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
         combinator.get_master().string_representation(tb->root()).c_str());
     if (strcmp(zcat->to_string(), "NULL_ZVALUE")) {
         result->setCategory(zcat);
-    } else if(tb->is_supported()) {
+    } else if (tb->is_supported()) {
         result->setCategory(
             sym_fac->get_symbol(
                 leafSymbolToCategory_(
@@ -267,7 +323,17 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
             ch.edge_source(tb->supporting_edge()),
             ch.edge_target(tb->supporting_edge()) - ch.edge_source(tb->supporting_edge()));
 
-        result->setOrigin(tb->supporting_edge());
+        if (tb->nb_children() < 1) {
+            boost::optional<Lattice::EdgeDescriptor> originEdge
+                = ch.edge_terminal_origin(tb->supporting_edge());
+            if (originEdge) {
+                result->setOrigin(*ch.edge_terminal_origin(tb->supporting_edge()));
+            } else {
+                result->setOrigin(tb->supporting_edge());
+            }
+        } else {
+            result->setOrigin(tb->supporting_edge());
+        }
 
         Atom def = combinator.get_master().false_value();
         const Category & avm = ch.edge_category(tb->supporting_edge());
@@ -308,13 +374,34 @@ zvalue Gobio::edgeToZsyntreeWithSpec_(
 std::string Gobio::leafSymbolToCategory_(
     const std::string& symbol) {
 
-    if (symbol == "rzeczownik")         return "R";
-    if (symbol == "czasownik")          return "C";
-    if (symbol == "przymiotnik")        return "P";
-    if (symbol == "przysłówek")         return "PS";
-    if (symbol == "przyimek")           return "PR";
-    if (symbol == "spójnik")            return "S";
-    if (symbol == "zaimek_dzierżawczy") return "ZP";
+    if (symbol == "flicz")                         return "LG";
+    if (symbol == "rzeczownik")                    return "R";
+    if (symbol == "czasownik")                     return "C";
+    if (symbol == "przymiotnik")                   return "P";
+    if (symbol == "przysłówek")                    return "PS";
+    if (symbol == "przyimek")                      return "PR";
+    if (symbol == "przyimek_spośród")              return "PR";
+    if (symbol == "spójnik")                       return "S";
+    if (symbol == "zaimek_dzierżawczy")            return "ZP";
+    if (symbol == "zaimek_przymiotny")             return "ZP";
+    if (symbol == "zaimek_przysłowny")             return "ZS";
+    if (symbol == "zaimek_rzeczowny_nieokreślony") return "ZRn";
+    if (symbol == "zaimek_rzeczowny_osobowy")      return "ZRo";
+    if (symbol == "zaimek_wskazujący")             return "ZRw";
+    if (symbol == "zaimek_rzeczowny_się")          return "ZRs";
+    if (symbol == "zaimekktóry")                   return "ZP";
+    if (symbol == "zaimekktórypytajny")            return "ZP";
+
+    if (symbol == "czasownik_być") return "'$być'";
+
+    if (symbol == "przecinek") return "','";
+    if (symbol == "uuto")      return "'to'";
+
+    if (symbol.length() >= 2 && symbol[0] == 'z' && symbol[1] == 'z') {
+        std::stringstream resSs;
+        resSs << "'" << symbol.substr(2) << "'";
+        return resSs.str();
+    }
 
     return symbol;
 }

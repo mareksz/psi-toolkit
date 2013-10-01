@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
-use Encode qw(encode_utf8);
+#use Encode qw(encode_utf8);
 use Getopt::Long;
 
 my $symbols = "";
@@ -14,16 +14,16 @@ GetOptions(
 
 my %src;
 if($symbols) {
-    open(SRC, "<:utf8", $symbols);
+    open(SRC, $symbols);
     my $i = 0;
     %src = map{ chomp; [split]->[0] => $i++ } <SRC>;
     print STDERR "Loading symbols from '$symbols'\n";
     print STDERR "Loaded " . (scalar keys %src) . " symbols\n";
 }
 
-binmode(STDIN, ":utf8");
-binmode(STDOUT, ":utf8");
-binmode(STDERR, ":utf8");
+#binmode(STDIN, ":utf8");
+#binmode(STDOUT, ":utf8");
+#binmode(STDERR, ":utf8");
 
 while(<STDIN>) {
     chomp;

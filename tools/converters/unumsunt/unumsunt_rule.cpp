@@ -35,9 +35,13 @@ UnumsuntRule::operator std::string() const {
     }
     {
         std::string comma(" then ");
-        BOOST_FOREACH(StringPair command, commands) {
-            sstr << comma << "[" << command.first << "] := [" << command.second << "]";
-            comma = ", ";
+        if (isSkipRule_) {
+            sstr << comma << "SKIP";
+        } else {
+            BOOST_FOREACH(StringPair command, commands) {
+                sstr << comma << "[" << command.first << "] := [" << command.second << "]";
+                comma = ", ";
+            }
         }
     }
     return sstr.str();
@@ -55,6 +59,11 @@ void UnumsuntRule::addCondition(std::string arg, std::string val) {
 
 
 void UnumsuntRule::addCommand(std::string arg, std::string val) {
+    if (isSkipRule_) {
+        std::stringstream errorSs;
+        errorSs << "Tagset converter error: cannot add another command to the SKIP rule.";
+        throw TagsetConverterException(errorSs.str());
+    }
     if (val.find_first_of(ALTERNATIVE_SEPARATORS) != std::string::npos) {
         if (numberOfBreedCommands_ == 0) {
             numberOfBreedCommands_ = 1;
@@ -70,9 +79,17 @@ void UnumsuntRule::addCommand(std::string arg, std::string val) {
 }
 
 
+void UnumsuntRule::makeSkip() {
+    commands.clear();
+    numberOfBreedCommands_ = 0;
+    isSkipRule_ = true;
+}
+
+
 void UnumsuntRule::clearCommands() {
     commands.clear();
     numberOfBreedCommands_ = 0;
+    isSkipRule_ = false;
 }
 
 
@@ -81,8 +98,12 @@ bool UnumsuntRule::apply(
     std::vector< boost::shared_ptr<AnnotationItem> > & items
 ) {
     bool result = false;
-    BOOST_FOREACH(boost::shared_ptr<AnnotationItem> item, items) {
-        if (!words.empty() && !words.count(item->getText())) {
+    for (size_t i = 0; i < items.size(); ++i) {
+        boost::shared_ptr<AnnotationItem> item = items[i];
+        if (!item) {
+            continue;
+        }
+        if (!words.empty() && !words.count(item->getText().substr(0, item->getText().find('+')))) {
             continue;
         }
         bool allConditionsSatisfied = true;
@@ -102,29 +123,33 @@ bool UnumsuntRule::apply(
         if (!allConditionsSatisfied) {
             continue;
         }
+        if (isSkipRule_) {
+            items[i].reset();
+            result = true;
+        }
         BOOST_FOREACH(StringPair command, commands) {
-            if (command.first == CATEGORY_MARKER) {
-                if (command.second[0] == REFERENCE_MARKER) {
-                    manager.setCategory(*item,
-                        manager.getValueAsString(*item, command.second.substr(1)));
+            std::vector<std::string> alternativeValues;
+            boost::split(
+                alternativeValues,
+                command.second,
+                boost::is_any_of(ALTERNATIVE_SEPARATORS));
+            for (size_t i = 0; i < alternativeValues.size(); ++i) {
+                boost::shared_ptr<AnnotationItem> itemCopy;
+                if (i == 0) {
+                    itemCopy = item;
                 } else {
-                    manager.setCategory(*item, command.second);
+                    items.push_back(boost::shared_ptr<AnnotationItem>(
+                        new AnnotationItem(*item)));
+                    itemCopy = items.back();
                 }
-            } else {
-                std::vector<std::string> alternativeValues;
-                boost::split(
-                    alternativeValues,
-                    command.second,
-                    boost::is_any_of(ALTERNATIVE_SEPARATORS));
-                for (size_t i = 0; i < alternativeValues.size(); ++i) {
-                    boost::shared_ptr<AnnotationItem> itemCopy;
-                    if (i == 0) {
-                        itemCopy = item;
+                if (command.first == CATEGORY_MARKER) {
+                    if (command.second[0] == REFERENCE_MARKER) {
+                        manager.setCategory(*itemCopy,
+                            manager.getValueAsString(*itemCopy, alternativeValues[i].substr(1)));
                     } else {
-                        items.push_back(boost::shared_ptr<AnnotationItem>(
-                            new AnnotationItem(*item)));
-                        itemCopy = items.back();
+                        manager.setCategory(*itemCopy, alternativeValues[i]);
                     }
+                } else {
                     if (alternativeValues[i][0] == REFERENCE_MARKER) {
                         manager.setValue(*itemCopy, command.first,
                             manager.getValue(*itemCopy, alternativeValues[i].substr(1)));

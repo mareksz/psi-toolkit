@@ -1,0 +1,1 @@
+S[NP[I.p[I]] VP[see.v[see] NP[a[a] strange.a[strange] object.n[object]]].[.]]

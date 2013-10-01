@@ -27,8 +27,8 @@ public:
      * @return   A valid TScript or NULL in case of errors.
      */
     virtual TScript getScriptForName(const char* file_name,
-				     zsymbolfactory* a_zsymbolfactory,
-				     zobjects_holder* a_holder);
+                     zsymbolfactory* a_zsymbolfactory,
+                     zobjects_holder* a_holder);
 };
 
 }; //namespace tmil

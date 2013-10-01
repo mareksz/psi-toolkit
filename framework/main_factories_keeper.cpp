@@ -22,6 +22,7 @@
 #include "puddle.hpp"
 #include "unumsunt.hpp"
 #include "transferer_runner.hpp"
+#include "bonsai_runner.hpp"
 #include "lamerlemma.hpp"
 #include "detok.hpp"
 
@@ -64,6 +65,7 @@
 #endif
 
 #include "me_tagger.hpp"
+#include "inflector.hpp"
 
 #if HAVE_ASPELL
 #include "psi_aspell.hpp"
@@ -76,8 +78,6 @@
 #if HAVE_LINK_GRAMMAR
 #include "link_parser.hpp"
 #endif
-
-#include "bonsai.hpp"
 
 #include "joiner.hpp"
 
@@ -198,6 +198,8 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new poleng::bonsai::puddle::Puddle::Factory());
 
     keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
+    
+    keeper_.takeProcessorFactory(new BestPathAnnotator<BonsaiRunner>::Factory());
 
     keeper_.takeProcessorFactory(new Detok::Factory());
 
@@ -211,6 +213,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 #endif
 
     keeper_.takeProcessorFactory(new MeTagger::Factory());
+    keeper_.takeProcessorFactory(new Inflector::Factory());
 
 #if HAVE_ASPELL
     keeper_.takeProcessorFactory(new PSIAspell::Factory());
@@ -224,8 +227,6 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new LinkParser::Factory());
 #endif
 
-    keeper_.takeProcessorFactory(new Bonsai::Factory());
-
     keeper_.takeProcessorFactory(new Joiner::Factory());
 
     ConfigurationFinder configurationFinder(
@@ -233,6 +234,10 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
         keeper_);
 
     configurationFinder.run();
+}
+
+bool MainFactoriesKeeper::hasProcessorFactory(std::string processorName) {
+    return keeper_.hasProcessorFactory(processorName);
 }
 
 ProcessorFactory& MainFactoriesKeeper::getProcessorFactory(std::string processorName) {

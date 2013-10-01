@@ -7,6 +7,10 @@
 #include "lattice.hpp"
 #include "logging.hpp"
 
+
+const std::string DotLatticeWriter::DISCARDED_STYLE = "dotted";
+
+
 std::string DotLatticeWriter::getFormatName() {
     return "DOT";
 }
@@ -97,6 +101,10 @@ void DotLatticeWriter::Worker::doRun() {
 
         Lattice::EdgeDescriptor edge = ei.next();
 
+        if (lattice_.isDiscarded(edge)) {
+            continue;
+        }
+
         std::list<std::string> tagNames
             = lattice_.getLayerTagManager().getTagNames(lattice_.getEdgeLayerTags(edge));
 
@@ -129,6 +137,7 @@ void DotLatticeWriter::Worker::doRun() {
 
         if (processor_.isShowTags() || processor_.isColor()) {
             BOOST_FOREACH(std::string tagName, tagNames) {
+                if (tagName == Lattice::DISCARDED_TAG_NAME) continue;
                 if (!processor_.isInFilter(tagName)) continue;
                 if (!tagStr.empty()) {
                     tagStr += ",";
@@ -160,7 +169,10 @@ void DotLatticeWriter::Worker::doRun() {
 
             edgeSs << edgeIdSs.str() << " [label=\"" << edgeLabelSs.str() << "\"";
             if (processor_.isColor()) {
-                edgeSs << "color=\"" << colorSs.str() << "\"";
+                edgeSs << ",color=\"" << colorSs.str() << "\"";
+            }
+            if (lattice_.isDiscarded(edge)) {
+                edgeSs << ",style=\"" << DISCARDED_STYLE << "\"";
             }
             edgeSs << "]";
 
@@ -215,6 +227,9 @@ void DotLatticeWriter::Worker::doRun() {
             edgeSs << " [label=\"" << edgeLabelSs.str() << "\"";
             if (processor_.isColor()) {
                 edgeSs << ",color=\"" << colorSs.str() << "\"";
+            }
+            if (lattice_.isDiscarded(edge)) {
+                edgeSs << ",style=\"" << DISCARDED_STYLE << "\"";
             }
             edgeSs << "]";
 

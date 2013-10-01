@@ -82,8 +82,8 @@ std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::g
     {
         int topo_i = chart.topological_index(chart.edge_target(*ei));
 
-        typename Ch::score_type max_preference;
-        // typename Ch::score_type max_score;
+        typename Ch::score_type max_preference = 0.0;
+        typename Ch::score_type max_score = 0.0;
         typename std::vector<typename Ch::edge_descriptor>::iterator max_e;
         bool candidate_found = false;
 
@@ -132,17 +132,17 @@ std::vector<typename Ch::edge_descriptor> longest_left_to_right_chooser<Ch,K>::g
             if (tb) {
                 typename Ch::score_type j_preference
                     = combinator.get_preference(tb->root());
-                // typename Ch::score_type j_score
-                // = chart.variant_score(final_vit);
+                typename Ch::score_type j_score
+                    = chart.edge_score(*ej);
 
                 if (
                     !candidate_found
                     || j_preference > max_preference
-                   // || (j_preference == max_preference && j_score > max_score)
+                    || (j_preference == max_preference && j_score > max_score)
                 ) {
                     candidate_found = true;
                     max_preference = j_preference;
-                    // max_score = j_score;
+                    max_score = j_score;
                     max_e = ej;
                 }
             }

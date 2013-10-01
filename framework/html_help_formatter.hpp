@@ -11,10 +11,10 @@ class HtmlHelpFormatter : public HelpFormatter {
 
 public:
     HtmlHelpFormatter();
+    HtmlHelpFormatter(bool useJavaScript);
     ~HtmlHelpFormatter();
 
     void formatPipelineExamplesInJSON(std::ostream& output);
-    void formatDocumentationMenu(std::ostream& output);
     void formatHelpsWithTypes(std::ostream& output);
 
     /*
@@ -24,10 +24,14 @@ public:
     void setFileStorage(FileStorage* fileStorage);
     void unsetFileStorage();
 
+    void setUseJavaScript(bool onOff);
+
 private:
 
     FileStorage* fileStorage_;
     FileRecognizer fileRecognizer_;
+    bool useJavaScript_;
+
 
     void doFormatOneProcessorHelp(
         std::string processorName,
@@ -40,17 +44,18 @@ private:
         std::ostream& output);
 
     void formatDescription_(
-        std::string description,
-        std::string details,
+        const std::string& description,
+        const std::string& details,
+        const std::string& processorName,
         std::ostream& output);
 
     void formatAliases_(std::list<std::string> aliases, std::ostream& output);
 
     void formatUsingExamples_(std::vector<TestBatch> batches, std::ostream& output);
     void formatExampleInputOutput_(
-        boost::filesystem::path filePath,
+        const boost::filesystem::path& filePath,
         std::ostream& output,
-        std::string divClass);
+        const std::string& divClass);
 
     void formatAllowedOptions_(
         boost::program_options::options_description options,

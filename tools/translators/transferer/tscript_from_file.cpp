@@ -31,8 +31,8 @@ FileParsingScriptFactory::FileParsingScriptFactory():ScriptFactory() {}
 FileParsingScriptFactory::~FileParsingScriptFactory() {}
 
 TScript FileParsingScriptFactory::getScriptForName(const char* file_name,
-						   zsymbolfactory* a_zsymbolfactory,
-						   zobjects_holder* a_holder)
+                           zsymbolfactory* a_zsymbolfactory,
+                           zobjects_holder* a_holder)
 {
 //    static poleng::t5::Mutex ymutex;
 
@@ -40,7 +40,7 @@ TScript FileParsingScriptFactory::getScriptForName(const char* file_name,
     assert(NULL!=a_zsymbolfactory);
 
     std::ifstream ifile(file_name, std::ios::binary);
-    if(!ifile) {
+    if (!ifile) {
         ERROR_MELDER("\n[tmil:FileParsingScriptFactory] Could not open the script file: " << file_name << "\n");
         return NULL;
     }
@@ -53,9 +53,9 @@ TScript FileParsingScriptFactory::getScriptForName(const char* file_name,
     trlex_input_stream = &ifile;
     the_holder = a_holder;
 
-    if(trparserparse()) {
+    if (trparserparse()) {
         std::cerr << "!!trules parse::" << file_name << "::" << trerror_message << '\n';
-	exit(1);
+    exit(1);
     } else {
         result = trparser_all;
     }

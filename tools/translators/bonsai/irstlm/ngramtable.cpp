@@ -52,16 +52,16 @@ tabletype(ttype, codesize){
 
     inp >> header;
 
-    if (strncmp(header,"nGrAm",5)==0 ||
-                strncmp(header,"NgRaM",5)==0)
+    if (strncmp(header, "nGrAm", 5)==0 ||
+                strncmp(header, "NgRaM", 5)==0)
         {
             inp >> n;
             inp >> card;
             inp >> info;
-            if (strcmp(info,"LM_")==0){
+            if (strcmp(info, "LM_")==0){
                 inp >> resolution;
                 inp >> decay;
-                sprintf(info,"%s %d %f",info,resolution,decay);
+                sprintf(info, "%s %d %f", info, resolution, decay);
             }
             else{ //default for old LM probs
                 resolution=10000000;
@@ -147,16 +147,16 @@ tabletype(ttype, codesize){
 
   // switch to specific loading methods
 
-  if ((strncmp(header,"ngram",5)==0) ||
-      (strncmp(header,"NGRAM",5)==0))
+  if ((strncmp(header, "ngram", 5)==0) ||
+      (strncmp(header, "NGRAM", 5)==0))
     {
         cerr << "this ngram file format is no more supported!\n";
         exit(1);
     }
 
-  if (strncmp(header,"nGrAm",5)==0)
+  if (strncmp(header, "nGrAm", 5)==0)
     loadtxt(filename);
-  else if (strncmp(header,"NgRaM",5)==0)
+  else if (strncmp(header, "NgRaM", 5)==0)
     loadbin(filename);
   else if (dstco>0)
     generate_dstco(filename, dstco);
@@ -203,7 +203,7 @@ void ngramtable::savetxt(char *filename, int depth, int googleformat){
 
   scan(ng, INIT, depth);
 
-  while (scan(ng,CONT,depth)) out << ng <<"\n";
+  while (scan(ng, CONT, depth)) out << ng <<"\n";
 
   cerr << "\n";
 
@@ -520,7 +520,7 @@ void ngramtable::generate(char *filename){
 
   dict->incflag(0);
   inp.close();
-  strcpy(info,"ngram");
+  strcpy(info, "ngram");
 
   cerr << "\n";
 }
@@ -582,7 +582,7 @@ void ngramtable::generate_hmask(char *filename, char* hmask, int inplen){
 
   dict->incflag(0);
   inp.close();
-  sprintf(info,"hm%s\n",hmask);
+  sprintf(info, "hm%s\n", hmask);
 
   cerr << "\n";
 }
@@ -686,7 +686,7 @@ void ngramtable::generate_dstco(char *filename, int dstco){
   }
   dict->incflag(0);
   inp.close();
-  sprintf(info,"co-occ%d\n",dstco);
+  sprintf(info, "co-occ%d\n", dstco);
   cerr << "\n";
 }
 

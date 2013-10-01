@@ -14,7 +14,7 @@
 //#include "dicaux.h"
 
 #include <stack>
-#include "string_helpers.cpp"
+#include "string_helpers.hpp"
 
 EdgeToZsyntreeConverter::EdgeToZsyntreeConverter(Lattice& latticeArg)
     :lattice(latticeArg),
@@ -56,7 +56,7 @@ mloop:
 
     // ---------------- GENERATING zsyntree node ------------------
 
-//    if(a_pnode == NULL)
+//    if (a_pnode == NULL)
 //    {
 //        R = NULL;
 //        goto backtracking;
@@ -73,7 +73,7 @@ mloop:
 //    (*R).setSegmentInfo(a_pnode->segment_beg,
 //                        a_pnode->segment_length);
 
-//    if(a_pnode->is_variant)
+//    if (a_pnode->is_variant)
 //        (*R).makeVariant();
 
 //    (*R).setAttr(sm_Beg, INTEGER_TO_ZVALUE(a_pnode->segment_beg));
@@ -87,7 +87,7 @@ mloop:
         zsymbol* aname_sm = GETSYMBOL4STRING(av.first);
         (*R).setAttr(aname_sm, av.second);
 
-            // if(aname_sm == sm_S ||
+            // if (aname_sm == sm_S ||
             //    aname_sm == sm_Sem1 ||
             //    aname_sm == sm_Sem2 ||
             //    aname_sm == sm_Sem3)
@@ -101,7 +101,7 @@ mloop:
     if (eT)
         (*R).setEquivTree(eT);
 
-//     if(a_pnode->target_data != NULL)
+//     if (a_pnode->target_data != NULL)
 //     {
 //         zsyntree* eT = zsyntree::generate(holder);
 
@@ -117,47 +117,47 @@ mloop:
 //                       GETSYMBOL4STRING(a_pnode->target_data
 //                                        ->context));
 
-//         if(!a_pnode->target_data->spec_prep.empty())
+//         if (!a_pnode->target_data->spec_prep.empty())
 //             (*eT).setAttr(sm_SpecPrep,
-// 			      GETSYMBOL4STRING(a_pnode->target_data
+//                GETSYMBOL4STRING(a_pnode->target_data
 //                                                ->spec_prep));
 
-//         if(!a_pnode->target_data->spec_cat.empty())
+//         if (!a_pnode->target_data->spec_cat.empty())
 //             (*eT).setAttr(sm_SpecCat,
 //                           GETSYMBOL4STRING(a_pnode->target_data
 //                                            ->spec_cat));
 
-//         if(!a_pnode->target_data->spec_def.empty())
+//         if (!a_pnode->target_data->spec_def.empty())
 //             (*eT).setAttr(sm_SpecDef,
 //                           GETSYMBOL4STRING(a_pnode->target_data
 //                                            ->spec_def));
 
 // #define ENPLSYNTREE_COMPLEMENTATION(ic)                                 \
 //                                                                         \
-//         if(!a_pnode->target_data->compls[(ic) - 1].empty())             \
+//         if (!a_pnode->target_data->compls[(ic) - 1].empty())             \
 //             (*eT).setAttr(sm_Dop##ic,                                   \
 //                           GETSYMBOL4STRING(a_pnode->target_data         \
 //                                            ->compls[(ic) - 1]));        \
-//         if(!a_pnode->target_data->preps[(ic) - 1].empty())              \
+//         if (!a_pnode->target_data->preps[(ic) - 1].empty())              \
 //             (*eT).setAttr(sm_Przyim##ic,                                \
 //                           GETSYMBOL4STRING(a_pnode->target_data         \
 //                                            ->preps[(ic) - 1]));         \
-//         if(!a_pnode->target_data->defs[(ic) - 1].empty())               \
+//         if (!a_pnode->target_data->defs[(ic) - 1].empty())               \
 //             (*eT).setAttr(sm_Def##ic,                                   \
 //                           GETSYMBOL4STRING(a_pnode->target_data         \
 //                                            ->defs[(ic) - 1]));
 
 // #define PLENSYNTREE_COMPLEMENTATION(ic)                                 \
-// 	    								 \
-//         if(!a_pnode->target_data->compls[(ic) - 1].empty())             \
+//                                       \
+//         if (!a_pnode->target_data->compls[(ic) - 1].empty())             \
 //             (*eT).setAttr(sm_Compl##ic,                                 \
 //                           GETSYMBOL4STRING(a_pnode->target_data         \
 //                                            ->compls[(ic) - 1]));        \
-// 		if(!a_pnode->target_data->preps[(ic) - 1].empty())	\
+//      if (!a_pnode->target_data->preps[(ic) - 1].empty())  \
 //                     (*eT).setAttr(sm_Prep##ic,                          \
 //                                   GETSYMBOL4STRING(a_pnode->target_data \
 //                                                    ->preps[(ic) - 1])); \
-// 		if(!a_pnode->target_data->defs[(ic) - 1].empty())	\
+//      if (!a_pnode->target_data->defs[(ic) - 1].empty())   \
 //                     (*eT).setAttr(sm_Def##ic,                           \
 //                                   GETSYMBOL4STRING(a_pnode->target_data \
 //                                                    ->defs[(ic) - 1]));
@@ -168,7 +168,7 @@ mloop:
 
 //         std::string esyn = a_pnode->target_data->syntax;
 
-//         if(esyn.length() != 0)
+//         if (esyn.length() != 0)
 //         {
 //             std::list<std::string> LR;
 
@@ -177,14 +177,14 @@ mloop:
 //             std::list<std::string>::const_iterator iter =
 //                 LR.begin();
 
-//             for( ; iter != LR.end() ; ++iter)
+//             for ( ; iter != LR.end() ; ++iter)
 //             {
 //                 aname = (*iter);
 //                 aname[0] = toupper(aname[0]);
 
 //                 size_t f = aname.find('=');
 
-//                 if(f != std::string::npos)
+//                 if (f != std::string::npos)
 //                 {
 //                     std::string value =
 //                         aname.substr(f+1);
@@ -193,14 +193,14 @@ mloop:
 //                     char* ec;
 //                     int v = strtol(value.c_str(), &ec, 10);
 
-//                     if(*ec == '\0')
+//                     if (*ec == '\0')
 //                         (*eT).setAttr(GETSYMBOL4STRING(aname),
 //                                       INTEGER_TO_ZVALUE(v));
 //                     else
 //                     {
-//                         if(value.length() >= 2 &&
+//                         if (value.length() >= 2 &&
 //                            value[0] == '\'' &&
-// 			       value[value.length()-1] == '\'')
+//                 value[value.length()-1] == '\'')
 //                             value = value.substr(1, value.length()-2);
 
 //                         (*eT).setAttr(GETSYMBOL4STRING(aname),

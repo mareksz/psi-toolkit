@@ -13,7 +13,8 @@ class TemplateSite{
 
 public:
 
-    TemplateSite(PsiServer& server) : psiServer_(server) {};
+    TemplateSite(PsiServer& server) : psiServer_(server) { }
+    virtual ~TemplateSite() { }
 
 protected:
 
@@ -46,6 +47,10 @@ protected:
         }
 
         return content;
+    }
+
+    virtual std::string pageNotFoundMessage() {
+        return "Page not found.";
     }
 };
 

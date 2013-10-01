@@ -12,6 +12,9 @@
 #include "plugin_manager.hpp"
 
 
+const std::string GVLatticeWriter::DISCARDED_STYLE = "dotted";
+
+
 GVLatticeWriter::GVLatticeWriter(
     bool showTags,
     bool color,
@@ -305,6 +308,7 @@ void GVLatticeWriter::Worker::printEdge(
 
     if (processor_.isShowTags() || processor_.isColor()) {
         BOOST_FOREACH(std::string tagName, tagNames) {
+            if (tagName == Lattice::DISCARDED_TAG_NAME) continue;
             if (!processor_.isInFilter(tagName)) continue;
             if (!tagStr.empty()) {
                 tagStr += ",";
@@ -346,6 +350,10 @@ void GVLatticeWriter::Worker::printEdge(
 
         if (processor_.isColor()) {
             processor_.getAdapter()->setNodeColor(n, colorSs.str());
+        }
+
+        if (lattice_.isDiscarded(edge)) {
+            processor_.getAdapter()->setNodeStyle(n, DISCARDED_STYLE);
         }
 
         int partitionNumber = 0;
@@ -432,6 +440,9 @@ void GVLatticeWriter::Worker::printEdge(
             processor_.getAdapter()->setEdgeColor(e, colorSs.str());
         }
 
+        if (lattice_.isDiscarded(edge)) {
+            processor_.getAdapter()->setEdgeStyle(e, DISCARDED_STYLE);
+        }
     }
 
 }

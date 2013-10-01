@@ -6,6 +6,7 @@ add_library(server SHARED
     site/pipe_site.cpp
     site/help_site.cpp
     site/json_site.cpp
+    site/processor_documentation_site.cpp
     session.cpp
     session_manager.cpp
     server_runner.cpp

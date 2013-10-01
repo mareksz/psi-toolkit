@@ -20,7 +20,7 @@ if ($SCRIPTS_ROOTDIR eq '') {
     $SCRIPTS_ROOTDIR = dirname(__FILE__);
 }
 
-my $BONSAI_BIN_DIR = "$SCRIPTS_ROOTDIR/../build/binaries";
+my $BONSAI_BIN_DIR = "$SCRIPTS_ROOTDIR/../binaries";
 
 my($_EXTERNAL_BINDIR, $_ROOT_DIR, $_CORPUS_DIR, $_GIZA_E2F, $_GIZA_F2E, $_MODEL_DIR, $_TEMP_DIR, $_SORT_BUFFER_SIZE, $_SORT_BATCH_SIZE,  $_SORT_COMPRESS, $_SORT_PARALLEL, $_CORPUS,
    $_CORPUS_COMPRESSION, $_FIRST_STEP, $_LAST_STEP, $_F, $_E, $_MAX_PHRASE_LENGTH,
@@ -299,8 +299,6 @@ $___CORPUS_DIR = $_CORPUS_DIR if $_CORPUS_DIR;
 die("ERROR: use --corpus to specify corpus") unless $_CORPUS || !($STEPS[1] || $STEPS[4] || $STEPS[5] || $STEPS[8]);
 my $___CORPUS      = $_CORPUS;
 
-my $___BINARY_DIR  = $___ROOT_DIR."/binary";
-
 # check the final-alignment-model switch
 my $___FINAL_ALIGNMENT_MODEL = undef;
 $___FINAL_ALIGNMENT_MODEL = 'hmm' if $_HMM_ALIGN;
@@ -436,6 +434,8 @@ $___DECODING_STEPS = $_DECODING_STEPS if defined($_DECODING_STEPS);
 die("ERROR: format for decoding steps is \"t0,g0,t1,g1:t2\", you provided $___DECODING_STEPS\n") 
   if defined $_DECODING_STEPS && $_DECODING_STEPS !~ /^[tg]\d+([,:][tg]\d+)*$/;
 
+my $___BINARY_DIR  = $___ROOT_DIR."/$___F$___E/binary";
+
 ### MAIN
 
 &prepare()                 if $STEPS[1];
@@ -445,14 +445,39 @@ die("ERROR: format for decoding steps is \"t0,g0,t1,g1:t2\", you provided $___DE
 &extract_phrase_factored() if $STEPS[5];
 &score_phrase_factored()   if $STEPS[6];
 &binarize_bonsai()   	   if $STEPS[7];
+&write_config()   	   if $STEPS[8];
 
 ### (1) PREPARE CORPUS
+
+sub write_config {
+    print STDERR "(8) writing config file @ ".`date`;
+    open(CFG, ">$___ROOT_DIR/$___F$___E/$___F$___E.cfg");
+    print CFG <<END;
+lang=$___F
+trg-lang=$___E
+    
+tm_weight=0.6312883667850879
+tm_weight=-0.13812683402985232
+tm_weight=-0.1221699872305712
+tm_weight=0.2979169074770424
+tm_weight=-0.009559895081666011
+
+rs=binary
+rs_weight=-0.11747987321008765
+
+lm=binary/$___E.blm
+lm_weight=0.27170275451007214
+
+word_penalty=-1.0
+END
+    close(CFG);
+}
 
 sub binarize_bonsai {
     print STDERR "(7) binarizing bonsai rules @ ".`date`;
     safesystem("mkdir -p $___BINARY_DIR") or die("ERROR: could not create corpus dir $___BINARY_DIR");
     my $file = "$___MODEL_DIR/rule-table.gz";
-    safesystem("$ZCAT $file | $BINARIZE --bindir $BONSAI_BIN_DIR --scriptdir $SCRIPTS_ROOTDIR --prefix $___BINARY_DIR/$___F-$___E");
+    safesystem("$ZCAT $file | $BINARIZE --bindir $BONSAI_BIN_DIR --scriptdir $SCRIPTS_ROOTDIR --prefix $___BINARY_DIR/$___F$___E");
 }
 
 sub prepare {

@@ -106,6 +106,8 @@ private:
 
     GraphvizAdapterInterface * adapter_;
 
+    static const std::string DISCARDED_STYLE;
+
 };
 
 

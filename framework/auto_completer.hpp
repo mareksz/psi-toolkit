@@ -54,7 +54,8 @@ private:
 
     ProcessorPromiseSequence toPromiseSequence_(const ProcessorPromiseAlternativeSequence& seq);
 
-    void trySolution_(const ProcessorPromiseSequence& promiseSequence);
+    bool trySolution_(const ProcessorPromiseSequence& promiseSequence);
+    boost::shared_ptr<PsiException> checkSolution_(const ProcessorPromiseSequence& promiseSequence);
 
     double calculateQualityScore_(const ProcessorPromiseSequence& promiseSequence);
     double calculateEstimatedTime_(const ProcessorPromiseSequence& promiseSequence);
@@ -72,6 +73,8 @@ private:
     boost::optional<ProcessorPromiseSequence> bestFound_;
     boost::optional<double> bestQualityScore_;
     boost::optional<double> bestEstimatedTime_;
+
+    std::list<ProcessorPromiseSequence> alternativeSequences_;
 };
 
 #endif

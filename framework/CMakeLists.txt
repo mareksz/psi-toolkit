@@ -61,6 +61,8 @@ target_link_libraries(psi-pipe ${Boost_LIBRARIES} framework common common-plugin
 
 include_directories("${psi-toolkit_SOURCE_DIR}/maxent")
 
+include_directories("${psi-toolkit_SOURCE_DIR}/utf8case")
+
 if(USE_JAVA)
     target_link_libraries(psi-pipe tools-lemmatizers-morfologik)
 endif(USE_JAVA)

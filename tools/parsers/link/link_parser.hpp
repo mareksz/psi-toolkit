@@ -25,7 +25,7 @@ public:
         virtual double doGetQualityScore(
             const boost::program_options::variables_map& /*options*/) const {
 
-            return 1.0;
+            return 0.0;
         }
 
         virtual std::string doGetName() const;

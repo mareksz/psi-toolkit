@@ -172,7 +172,7 @@ std::ostream& operator<<(std::ostream& os, const SyntaxTree& t)
       if (t.HasNode( start, start+(length-1) )) {
         std::string label = t.GetNodes( start, start+(length-1) )[0]->GetLabel() + "#######";
 
-        os << label.substr(0,7) << " ";
+        os << label.substr(0, 7) << " ";
       } else {
         os << "------- ";
       }

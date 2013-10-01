@@ -16,6 +16,7 @@
 #include "site/pipe_site.hpp"
 #include "site/help_site.hpp"
 #include "site/json_site.hpp"
+#include "site/processor_documentation_site.hpp"
 
 ServerRunner::ServerRunner(int argc, char * argv[])
     : optionsDescription_(
@@ -94,6 +95,7 @@ int ServerRunner::run() {
         PipeSite pipe(psiServer, opts, DEFAULT_TEXT);
         HelpSite help(psiServer);
         JsonSite json(psiServer);
+        ProcessorDocumentationSite documentation(psiServer);
 
         // run server
         psiServer.run();
@@ -108,7 +110,6 @@ int ServerRunner::run() {
 bool ServerRunner::stopAfterExecutingOptions_() {
     if (options_.count("help")) {
         std::cout << optionsDescription_ << std::endl;
-        ConsoleHelpFormatter().formatHelps(std::cout);
         return true;
     }
 

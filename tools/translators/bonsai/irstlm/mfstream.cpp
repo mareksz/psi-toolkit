@@ -32,13 +32,13 @@ void mfstream::open(const char *name, openmode mode){
 
   if (strchr(name, ' ')!=0){
     if (mode & ios::in)
-      strcpy(cmode,"r");
+      strcpy(cmode, "r");
     else
       if (mode & ios::out)
-    strcpy(cmode,"w");
+    strcpy(cmode, "w");
       else
     if (mode & ios::app)
-      strcpy(cmode,"a");
+      strcpy(cmode, "a");
     else{
       cerr << "cannot open file\n";
       exit(1);
@@ -118,7 +118,7 @@ mfstream& mfstream::writex(void *p, int sz, int n)
 
   write((char *)p, sz * n);
 
-  if (*(short *)"AB"==0x4241) swapbytes((char*)p, sz,n);
+  if (*(short *)"AB"==0x4241) swapbytes((char*)p, sz, n);
 
   return *this;
 }
@@ -133,8 +133,8 @@ int main()
 
   char word[1000];
 
-  mfstream inp("cat pp",ios::in);
-  mfbstream outp("aa",ios::out,100);
+  mfstream inp("cat pp", ios::in);
+  mfbstream outp("aa", ios::out, 100);
 
   while (inp >> word){
     outp << word << "\n";

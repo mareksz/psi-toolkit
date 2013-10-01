@@ -1,0 +1,11 @@
+Inflector is a small postprocessor tool to turn lemmatized text into their inflected 
+forms based on context and other features. To turn a sequence of lemmas into their 
+inflected use for instance
+
+delemma-pl ! inflector --lang pl
+
+Try for instance the phrase "do dom kobieta z Wrocław" which should be turned into
+"do domu kobiety z Wrocławia". Unused forms have the "discarded" flag, forms without
+this tag are to be kept as chosen inflected versions. The current inflection model has
+been built on an automatically lemmatized text, better results can be achieved with a
+bigger and part-of-speech tagged or manually annotated training text.

@@ -7,6 +7,8 @@
 
 const std::string Lattice::SYMBOL_TAG_NAME = "symbol";
 const std::string Lattice::DISCARDED_TAG_NAME = "discarded";
+const std::string Lattice::LEMMA_TAG_NAME = "lemma";
+const std::string Lattice::TOKEN_TAG_NAME = "token";
 
 
 Lattice::Lattice(AnnotationItemManager & annotationItemManager) :
@@ -706,6 +708,27 @@ boost::optional<Lattice::EdgeDescriptor> Lattice::getParent(
 }
 
 
+boost::optional<Lattice::EdgeDescriptor> Lattice::getEdgeOrigin(std::string tagName, EdgeDescriptor edge) {
+    boost::optional<EdgeDescriptor> parent = getParent(edge);
+    while (parent) {
+        if (getLayerTagManager().isThere(tagName, getEdgeLayerTags(*parent))) {
+            return boost::optional<EdgeDescriptor>(*parent);
+        }
+        parent = getParent(*parent);
+    }
+    return boost::optional<EdgeDescriptor>();
+}
+
+
+boost::optional<std::string> Lattice::getEdgeLemma(EdgeDescriptor edge) {
+    boost::optional<EdgeDescriptor> resultEdge = getEdgeOrigin(LEMMA_TAG_NAME, edge);
+    if (resultEdge) {
+        return boost::optional<std::string>(getAnnotationText(*resultEdge));
+    }
+    return boost::optional<std::string>();
+}
+
+
 void Lattice::runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask) {
     EdgesSortedBySourceIterator edgeIter(*this, superMask);
 
@@ -717,7 +740,7 @@ void Lattice::runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMas
 
 bool Lattice::isBlank(EdgeDescriptor edge) {
     if (
-        matches(getEdgeLayerTags(edge), getLayerTagManager().getMask("token")) &&
+        matches(getEdgeLayerTags(edge), getLayerTagManager().getMask(TOKEN_TAG_NAME)) &&
         getAnnotationCategory(edge) == "B"
     ) {
         return true;

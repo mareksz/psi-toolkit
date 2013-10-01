@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/</loc>
+  <changefreq>weekly</changefreq>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/about.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/start.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/tutorial.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/documentation.html</loc>
+  <changefreq>weekly</changefreq>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/download.html</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/publications.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/bindings.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/contact.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/installation.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/psi-format.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/aliases.html</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/faq.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/api.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/search.html</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/sitemap.html</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/pipe.psis?pipe-text=read-text+!+tokenize+!+write-simple&amp;input-text=Pi%C4%99kna+gra+trwa%C5%82a+d%C5%82ugo.</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/pipe.psis?pipe-text=read-text+!+tokenize+--lang+pl+!+lemmatize+!+write-simple+--tags+lemma&amp;input-text=Pi%C4%99kna+gra+trwa%C5%82a+d%C5%82ugo.</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/pipe.psis?pipe-text=tokenize&amp;input-text=Pi%C4%99kna+gra+trwa%C5%82a+d%C5%82ugo.</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/pipe.psis?pipe-text=tokenize+!+write-simple+--tags+token&amp;input-text=Pi%C4%99kna+gra+trwa%C5%82a+d%C5%82ugo.</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=apertium-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/18cb02b23c80441c21e9163057d78a80.docx</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/ed33e779887ea8587d9de91e44a34e9e.rtf</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/778ca8d7d38111cb4efe0cbc2268f3ff.html</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=guessing-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/058261a34f30f5a3436fde0efddcfcd1.html</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=nkjp-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=pdf-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/a2a22b143493cbef56e7337a30bd186a.pdf</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=psi-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/d6f880133a719061199f7417a3a1a0d9.psi</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=txt-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=utt-reader</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=joiner</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=morfologik-to-gobio-converter</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=pl-join-forms-and-valency</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=tagset-converter</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=lamerlemma</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=morfologik</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=bilexicon</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=generate-lexdb-forms-en</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=generate-lexdb-forms-es</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=mapper</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=pl-valency</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=gobio</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=link-parser</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=puddle</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/d0185f4371291039129cb3023173b07d.svg</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=srx-segmenter</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=aspell</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=lang-guesser</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=metagger</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=detok</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=tp-tokenizer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=bonsai</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=transferer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=bracketing-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=dot-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=gv-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/5fbf036358957e0ba6a158b39014bfdb.svg</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/1d27046bea7def09a6709db10eeeaf76.svg</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/storage/eb67f82bef1073f24033cf8b96188fb3.svg</loc>
+  <changefreq>never</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=json-simple-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=perl-simple-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=psi-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://psi-toolkit.amu.edu.pl/help/processor.psis?name=simple-writer</loc>
+  <changefreq>weekly</changefreq>
+  <priority>0.64</priority>
+</url>
+</urlset>

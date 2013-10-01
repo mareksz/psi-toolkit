@@ -47,7 +47,7 @@ void removefile(const std::string &filePath)
     ::DeleteFileA(filePath.c_str());
 #else
   char cmd[100];
-  sprintf(cmd,"rm %s",filePath.c_str());
+  sprintf(cmd, "rm %s", filePath.c_str());
   system(cmd);
 #endif
 }

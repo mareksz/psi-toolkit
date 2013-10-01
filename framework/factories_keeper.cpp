@@ -40,6 +40,10 @@ std::string FactoriesKeeper::getBaseAliasForTag(const std::string& tag) {
     return tag + "-generator";
 }
 
+bool FactoriesKeeper::hasProcessorFactory(std::string processorName) {
+    return nameToFactoryMap_.count(processorName);
+}
+
 ProcessorFactory& FactoriesKeeper::getProcessorFactory(std::string processorName) {
     if (nameToFactoryMap_.count(processorName))
         return *nameToFactoryMap_[processorName];

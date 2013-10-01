@@ -154,19 +154,19 @@ int main(int argc, char* argv[])
 
   for (int i=optionInd; i<argc; i++) {
     // maximum span length
-    if (strcmp(argv[i],"--MaxSpan") == 0) {
+    if (strcmp(argv[i], "--MaxSpan") == 0) {
       options.maxSpan = atoi(argv[++i]);
       if (options.maxSpan < 1) {
         cerr << "extract error: --maxSpan should be at least 1" << endl;
         exit(1);
       }
-    } else if (strcmp(argv[i],"--MinHoleTarget") == 0) {
+    } else if (strcmp(argv[i], "--MinHoleTarget") == 0) {
       options.minHoleTarget = atoi(argv[++i]);
       if (options.minHoleTarget < 1) {
         cerr << "extract error: --minHoleTarget should be at least 1" << endl;
         exit(1);
       }
-    } else if (strcmp(argv[i],"--MinHoleSource") == 0) {
+    } else if (strcmp(argv[i], "--MinHoleSource") == 0) {
       options.minHoleSource = atoi(argv[++i]);
       if (options.minHoleSource < 1) {
         cerr << "extract error: --minHoleSource should be at least 1" << endl;
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
       }
     }
     // maximum number of words in hierarchical phrase
-    else if (strcmp(argv[i],"--MaxSymbolsTarget") == 0) {
+    else if (strcmp(argv[i], "--MaxSymbolsTarget") == 0) {
       options.maxSymbolsTarget = atoi(argv[++i]);
       if (options.maxSymbolsTarget < 1) {
         cerr << "extract error: --MaxSymbolsTarget should be at least 1" << endl;
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
       }
     }
     // maximum number of words in hierarchical phrase
-    else if (strcmp(argv[i],"--MaxSymbolsSource") == 0) {
+    else if (strcmp(argv[i], "--MaxSymbolsSource") == 0) {
       options.maxSymbolsSource = atoi(argv[++i]);
       if (options.maxSymbolsSource < 1) {
         cerr << "extract error: --MaxSymbolsSource should be at least 1" << endl;
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
       }
     }
     // minimum number of words in hierarchical phrase
-    else if (strcmp(argv[i],"--MinWords") == 0) {
+    else if (strcmp(argv[i], "--MinWords") == 0) {
       options.minWords = atoi(argv[++i]);
       if (options.minWords < 0) {
         cerr << "extract error: --MinWords should be at least 0" << endl;
@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
       }
     }
     // maximum number of non-terminals
-    else if (strcmp(argv[i],"--MaxNonTerm") == 0) {
+    else if (strcmp(argv[i], "--MaxNonTerm") == 0) {
       options.maxNonTerm = atoi(argv[++i]);
       if (options.maxNonTerm < 1) {
         cerr << "extract error: --MaxNonTerm should be at least 1" << endl;
@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
       }
     }
     // maximum scope (see Hopkins and Langmead (2010))
-    else if (strcmp(argv[i],"--MaxScope") == 0) {
+    else if (strcmp(argv[i], "--MaxScope") == 0) {
       options.maxScope = atoi(argv[++i]);
       if (options.maxScope < 0) {
         cerr << "extract error: --MaxScope should be at least 0" << endl;
@@ -217,23 +217,23 @@ int main(int argc, char* argv[])
       options.gzOutput = true;
     }
     // allow consecutive non-terminals (X Y | X Y)
-    else if (strcmp(argv[i],"--TargetSyntax") == 0) {
+    else if (strcmp(argv[i], "--TargetSyntax") == 0) {
       options.targetSyntax = true;
-    } else if (strcmp(argv[i],"--SourceSyntax") == 0) {
+    } else if (strcmp(argv[i], "--SourceSyntax") == 0) {
       options.sourceSyntax = true;
-    } else if (strcmp(argv[i],"--AllowOnlyUnalignedWords") == 0) {
+    } else if (strcmp(argv[i], "--AllowOnlyUnalignedWords") == 0) {
       options.requireAlignedWord = false;
-    } else if (strcmp(argv[i],"--DisallowNonTermConsecTarget") == 0) {
+    } else if (strcmp(argv[i], "--DisallowNonTermConsecTarget") == 0) {
       options.nonTermConsecTarget = false;
-    } else if (strcmp(argv[i],"--NonTermConsecSource") == 0) {
+    } else if (strcmp(argv[i], "--NonTermConsecSource") == 0) {
       options.nonTermConsecSource = true;
-    } else if (strcmp(argv[i],"--NoNonTermFirstWord") == 0) {
+    } else if (strcmp(argv[i], "--NoNonTermFirstWord") == 0) {
       options.nonTermFirstWord = false;
-    } else if (strcmp(argv[i],"--OnlyOutputSpanInfo") == 0) {
+    } else if (strcmp(argv[i], "--OnlyOutputSpanInfo") == 0) {
       options.onlyOutputSpanInfo = true;
-    } else if (strcmp(argv[i],"--OnlyDirect") == 0) {
+    } else if (strcmp(argv[i], "--OnlyDirect") == 0) {
       options.onlyDirectFlag = true;
-    } else if (strcmp(argv[i],"--GlueGrammar") == 0) {
+    } else if (strcmp(argv[i], "--GlueGrammar") == 0) {
       options.glueGrammarFlag = true;
       if (++i >= argc) {
         cerr << "ERROR: Option --GlueGrammar requires a file name" << endl;
@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
       }
       fileNameGlueGrammar = string(argv[i]);
       cerr << "creating glue grammar in '" << fileNameGlueGrammar << "'" << endl;
-    } else if (strcmp(argv[i],"--UnknownWordLabel") == 0) {
+    } else if (strcmp(argv[i], "--UnknownWordLabel") == 0) {
       options.unknownWordLabelFlag = true;
       if (++i >= argc) {
         cerr << "ERROR: Option --UnknownWordLabel requires a file name" << endl;
@@ -251,23 +251,23 @@ int main(int argc, char* argv[])
       cerr << "creating unknown word labels in '" << fileNameUnknownWordLabel << "'" << endl;
     }
     // TODO: this should be a useful option
-    //else if (strcmp(argv[i],"--ZipFiles") == 0) {
+    //else if (strcmp(argv[i], "--ZipFiles") == 0) {
     //  zipFiles = true;
     //}
     // if an source phrase is paired with two target phrases, then count(t|s) = 0.5
-    else if (strcmp(argv[i],"--NoFractionalCounting") == 0) {
+    else if (strcmp(argv[i], "--NoFractionalCounting") == 0) {
       options.fractionalCounting = false;
-    } else if (strcmp(argv[i],"--PCFG") == 0) {
+    } else if (strcmp(argv[i], "--PCFG") == 0) {
       options.pcfgScore = true;
-    } else if (strcmp(argv[i],"--OutputNTLengths") == 0) {
+    } else if (strcmp(argv[i], "--OutputNTLengths") == 0) {
       options.outputNTLengths = true;
-    } else if (strcmp(argv[i],"--UnpairedExtractFormat") == 0) {
+    } else if (strcmp(argv[i], "--UnpairedExtractFormat") == 0) {
       options.unpairedExtractFormat = true;
-    } else if (strcmp(argv[i],"--ConditionOnTargetLHS") == 0) {
+    } else if (strcmp(argv[i], "--ConditionOnTargetLHS") == 0) {
       options.conditionOnTargetLhs = true;
-    } else if (strcmp(argv[i],"-threads") == 0 ||
-               strcmp(argv[i],"--threads") == 0 ||
-               strcmp(argv[i],"--Threads") == 0) {
+    } else if (strcmp(argv[i], "-threads") == 0 ||
+               strcmp(argv[i], "--threads") == 0 ||
+               strcmp(argv[i], "--Threads") == 0) {
 #ifdef WITH_THREADS
       thread_count = atoi(argv[++i]);
 #else
@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
         exit(1);
       }
       sentenceOffset = atoi(argv[++i]);
-    } else if (strcmp(argv[i],"--BoundaryRules") == 0) {
+    } else if (strcmp(argv[i], "--BoundaryRules") == 0) {
       options.boundaryRules = true;
     } else {
       cerr << "extract: syntax error, unknown option '" << string(argv[i]) << "'\n";
@@ -491,7 +491,7 @@ void ExtractTask::preprocessSourceHieroPhrase( int startT, int endT, int startS,
 
       int labelI = labelIndex[ 2+holeCount+holeTotal ];
       string label = m_options.sourceSyntax ?
-                     m_sentence.sourceTree.GetNodes(currPos,hole.GetEnd(0))[ labelI ]->GetLabel() : "X";
+                     m_sentence.sourceTree.GetNodes(currPos, hole.GetEnd(0))[ labelI ]->GetLabel() : "X";
       hole.SetLabel(label, 0);
 
       currPos = hole.GetEnd(0);
@@ -671,7 +671,7 @@ void ExtractTask::saveHieroPhrase( int startT, int endT, int startS, int endS
   }
 
   string sourceLabel = m_options.sourceSyntax ?
-                       m_sentence.sourceTree.GetNodes(startS,endS)[ labelIndex[1] ]->GetLabel() : "X";
+                       m_sentence.sourceTree.GetNodes(startS, endS)[ labelIndex[1] ]->GetLabel() : "X";
 
   // create non-terms on the source side
   preprocessSourceHieroPhrase(startT, endT, startS, endS, indexS, holeColl, labelIndex);
@@ -900,7 +900,7 @@ void ExtractTask::addRule( int startT, int endT, int startS, int endS, int count
   }
   else {
     sourceLabel = m_options.sourceSyntax ?
-                  m_sentence.sourceTree.GetNodes(startS,endS)[0]->GetLabel() : "X";
+                  m_sentence.sourceTree.GetNodes(startS, endS)[0]->GetLabel() : "X";
 
     if (m_options.targetSyntax) {
       targetLabel = m_sentence.targetTree.GetNodes(startT, endT)[0]->GetLabel();

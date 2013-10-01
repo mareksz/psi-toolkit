@@ -5,6 +5,7 @@ include_directories("${psi-toolkit_SOURCE_DIR}/tools/parsers/puddle")
 link_directories("${psi-toolkit_BINARY_DIR}/tools/parsers/puddle")
 
 add_library(tools-translators-bonsai SHARED
+    bonsai_runner.cpp
     bonsai.cpp
     translator/Translator.hpp
     irstlm/mfstream.cpp
@@ -41,4 +42,6 @@ endforeach(subdir)
 target_link_libraries(tools-translators-bonsai ${Boost_LIBRARIES} tools-parsers-puddle z common)
 
 install(TARGETS tools-translators-bonsai DESTINATION lib/)
-install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/bonsai)
+install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/bonsai-runner)
+
+add_subdirectory(utils)

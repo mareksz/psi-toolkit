@@ -21,6 +21,56 @@ boost::optional<ProcessorPromiseSequence> AutoCompleter::complete() {
 
     complete_(sequence);
 
+    boost::shared_ptr<PsiException> firstException;
+
+    bestFound_.reset();
+
+    while (!bestFound_ && !alternativeSequences_.empty()) {
+
+        INFO("number of alternative sequences is " << alternativeSequences_.size());
+
+        std::list<ProcessorPromiseSequence>::iterator bestIter =
+            alternativeSequences_.end();
+
+        bestFound_.reset();
+        bestQualityScore_.reset();
+        bestEstimatedTime_.reset();
+
+        for (std::list<ProcessorPromiseSequence>::iterator iter =
+                 alternativeSequences_.begin();
+             iter != alternativeSequences_.end();
+             ++iter) {
+
+            if (trySolution_(*iter))
+                bestIter = iter;
+        }
+
+        if (bestFound_) {
+            alternativeSequences_.erase(bestIter);
+
+            INFO("checking promise sequence...");
+
+            boost::shared_ptr<PsiException> ex = checkSolution_(*bestFound_);
+
+            if (ex) {
+                if (!firstException)
+                    firstException = ex;
+
+                bestFound_.reset();
+            }
+
+            INFO("checking done...");
+        }
+    }
+
+    if (!bestFound_ && firstException) {
+        INFO("raising " << firstException->what() << " exception");
+
+        throw *firstException;
+    }
+
+    INFO("some promise sequence found");
+
     return bestFound_;
 }
 
@@ -143,7 +193,7 @@ void AutoCompleter::complete_(ProcessorPromiseAlternativeSequence& sequence) {
 
     } while (!allFulfilled);
 
-    trySolution_(toPromiseSequence_(sequence));
+    alternativeSequences_.push_back(toPromiseSequence_(sequence));
 }
 
 bool AutoCompleter::isMultilingualProcessorPromiseAlternative_(
@@ -329,7 +379,7 @@ ProcessorPromiseSequence AutoCompleter::toPromiseSequence_(
     return promiseSeq;
 }
 
-void AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence) {
+bool AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence) {
     double seqScore = calculateQualityScore_(promiseSequence);
     double seqTime = calculateEstimatedTime_(promiseSequence);
 
@@ -339,8 +389,33 @@ void AutoCompleter::trySolution_(const ProcessorPromiseSequence& promiseSequence
         bestQualityScore_ = seqScore;
         bestEstimatedTime_ = seqTime;
         bestFound_ = promiseSequence;
+
+        return true;
     }
+
+    return false;
 }
+
+boost::shared_ptr<PsiException> AutoCompleter::checkSolution_(const ProcessorPromiseSequence& promiseSequence) {
+    try {
+        BOOST_FOREACH(ProcessorPromiseSharedPtr promise, promiseSequence) {
+            promise->createProcessor();
+        }
+    } catch (PsiException& ex) {
+        // ugly, but necessary, see:
+        // http://stackoverflow.com/questions/6577513/exceptions-inside-exceptions-in-c
+
+        DEBUG("cannot run this promise sequence [" << ex.what() << "]");
+        return boost::shared_ptr<PsiException>(new PsiException(ex));
+    } catch (std::exception& ex) {
+        WARN("unexpected exception [" << ex.what()
+             << "], wrapping as PsiException");
+        return boost::shared_ptr<PsiException>(new PsiException(ex.what()));
+    }
+
+    return boost::shared_ptr<PsiException>();
+}
+
 
 double AutoCompleter::calculateQualityScore_(const ProcessorPromiseSequence& promiseSequence) {
     double sum = 0.0;

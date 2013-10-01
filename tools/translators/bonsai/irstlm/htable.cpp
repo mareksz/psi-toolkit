@@ -302,7 +302,7 @@ htable *ht=new htable(1000/5);
 
   for (int i=0;i<n;i++)
     {
-      sprintf(w[i],"ciao%d",i);
+      sprintf(w[i], "ciao%d", i);
       ht->search((char *)&w[i], HT_ENTER);
     }
 

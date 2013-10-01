@@ -23,16 +23,24 @@ chart<C,S,V,R,I>::chart(
     outputTags_(lattice.getLayerTagManager().createTagCollectionFromList(
         boost::assign::list_of("gobio")("parse-aux"))),
     inputTagMask_(lattice.getLayerTagManager().anyTag()),
-    limitChecker_(limitChecker)
+    formTag_(lattice.getLayerTagManager().createSingletonTagCollection("form")),
+    lexemeTag_(lattice.getLayerTagManager().createSingletonTagCollection("lexeme")),
+    lemmaTag_(lattice.getLayerTagManager().createSingletonTagCollection("lemma")),
+    gobioTag_(lattice.getLayerTagManager().createSingletonTagCollection("gobio")),
+    toBePutInApostrophesTagMask_(lattice.getLayerTagManager().anyTag()),
+    limitChecker_(limitChecker),
+    terminalTag_(terminalTag)
 {
     std::vector<LayerTagCollection> altTags;
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection(terminalTag));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lemma"));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("lexeme"));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));
-    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("normalization"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("term"));
     altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("token"));
+    toBePutInApostrophesTagMask_ = lattice.getLayerTagManager().getAlternativeMask(altTags);
+
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection(terminalTag));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("form"));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("gobio"));
+    altTags.push_back(lattice.getLayerTagManager().createSingletonTagCollection("parse-aux"));
     inputTagMask_ = lattice.getLayerTagManager().getAlternativeMask(altTags);
 }
 
@@ -307,69 +315,18 @@ typename chart<C,S,V,R,I>::category_type chart<C,S,V,R,I>::edge_category(
 {
     AnnotationItem annotationItem = lattice_.getEdgeAnnotationItem(edge);
     LayerTagCollection tags = lattice_.getEdgeLayerTags(edge);
-
-    if (
-        lattice_.getLayerTagManager().isThere("normalization", tags) ||
-        lattice_.getLayerTagManager().isThere("term", tags) ||
-        lattice_.getLayerTagManager().isThere("token", tags)
-    ) {
-
+    if (matches(tags, toBePutInApostrophesTagMask_)) {
         std::stringstream categorySs;
         categorySs << "'" << annotationItem.getText() << "'";
         annotationItem = AnnotationItem(annotationItem, categorySs.str());
-
-    } else if (lattice_.getLayerTagManager().isThere("form", tags)) {
-
-        bool edgeLexemeFound = false;
-        Lattice::EdgeDescriptor edgeLexeme;
-        const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edge);
-        BOOST_FOREACH(Lattice::Partition partition, partitions) {
-            Lattice::Partition::Iterator pi(lattice_, partition);
-            while (pi.hasNext()) {
-                edgeLexeme = pi.next();
-                if (
-                    lattice_.getLayerTagManager().isThere(
-                        "lexeme", lattice_.getEdgeLayerTags(edgeLexeme))
-                ) {
-                    edgeLexemeFound = true;
-                    break;
-                }
-            }
-            if (edgeLexemeFound) {
-                break;
-            }
+    } else if (isSubset(formTag_, tags)) {
+        std::stringstream categorySs;
+        boost::optional<std::string> lemma = lattice_.getEdgeLemma(edge);
+        if (lemma) {
+            categorySs << "'$" << (*lemma) << "'";
         }
-        if (edgeLexemeFound) {
-
-            bool edgeLemmaFound = false;
-            Lattice::EdgeDescriptor edgeLemma;
-            const std::list<Lattice::Partition> & partitions = lattice_.getEdgePartitions(edgeLexeme);
-            BOOST_FOREACH(Lattice::Partition partition, partitions) {
-                Lattice::Partition::Iterator pi(lattice_, partition);
-                while (pi.hasNext()) {
-                    edgeLemma = pi.next();
-                    if (
-                        lattice_.getLayerTagManager().isThere(
-                            "lemma", lattice_.getEdgeLayerTags(edgeLemma))
-                    ) {
-                        edgeLemmaFound = true;
-                        break;
-                    }
-                }
-                if (edgeLemmaFound) {
-                    break;
-                }
-            }
-            if (edgeLemmaFound) {
-
-                std::stringstream categorySs;
-                categorySs << "'$" << lattice_.getAnnotationText(edgeLemma) << "'";
-                annotationItem = AnnotationItem(annotationItem, categorySs.str());
-
-            }
-        }
+        annotationItem = AnnotationItem(annotationItem, categorySs.str());
     }
-
     return av_ai_converter_.toAVMatrix<category_type>(annotationItem);
 }
 
@@ -394,8 +351,14 @@ void chart<C,S,V,R,I>::mark_edge_as_accommodated(edge_descriptor edge)
 */
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
+boost::optional< typename chart<C,S,V,R,I>::edge_descriptor >
+chart<C,S,V,R,I>::edge_terminal_origin(edge_descriptor edge) {
+    return lattice_.getEdgeOrigin(terminalTag_, edge);
+}
+
+template<typename C, typename S, typename V, typename R, template<typename, typename> class I>
 bool chart<C,S,V,R,I>::could_be_final(edge_descriptor edge) const {
-    return lattice_.getLayerTagManager().isThere("gobio", lattice_.getEdgeLayerTags(edge));
+    return isSubset(gobioTag_, lattice_.getEdgeLayerTags(edge));
 }
 
 template<typename C, typename S, typename V, typename R, template<typename, typename> class I>

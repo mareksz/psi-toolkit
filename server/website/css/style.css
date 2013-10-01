@@ -173,6 +173,7 @@ input[type="submit"]:hover, #input-file > div:hover, a.button:hover {
 #output-type { display:none; visibility:hidden; }
 
 /* bookmarks */
+
 .bookmarks { margin-top:-4px; }
 .bookmarks > a { color:#eee; }
 #bookmark-file { display:none; }
@@ -225,7 +226,8 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 /* help */
 
 .help-item { border-top:1px dotted #ccc; }
-.help-item > div { margin-bottom:12px; display:none; }
+.help-item > div { margin-bottom:12px; }
+#documentation .help-item > div { display:none; }
 .help-item > h2 { cursor:pointer; }
 .help-desc { clear:both; }
 
@@ -233,7 +235,6 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 .type-container, .subtype-container, .help-examples, .help-opts, .help-alias, .help-langs {
     margin-left:24px; }
 
-/*.help-example { display:none; }*/
 .alias-item { margin-left:24px; }
 .example-desc { margin-top:6px; }
 
@@ -242,17 +243,18 @@ footer li > a:hover { color:#fff; text-decoration:none; }
 .in-out > a { display:block; }
 .in, .out { float:left; font-weight:bold; margin-right:5px; }
 
-.toggler { color:#004767; font-size:.7em; text-decoration:none; cursor:pointer; float:right; }
+.toggler { color:#004767; font-size:.8em; text-decoration:none; cursor:pointer; float:right; }
 .toggler:hover { text-decoration:underline; }
 
 #show-all-toggler, #hide-all-toggler { float:right; }
-#show-all-toggler { margin-right:5px; }
-#hide-all-toggler { margin-right:190px; }
+#show-all-toggler { font-size:13px; margin-right:5px; }
+#hide-all-toggler { font-size:13px; margin-right:190px; }
 
 img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
     width:770px; }
 
 .wrapper svg { width:100%; }
+span.fullName { color:#004767; }
 
 /* right menu */
 
@@ -265,6 +267,14 @@ img.screen { border:1px solid #ddd; display:block; margin:0 auto 30px auto;
 .right-menu-element-H1 {  }
 .right-menu-element-H2 { margin-left:15px; }
 .right-menu-element-H3 { margin-left:30px; }
+
+#content.with-right-menu { min-height:750px; }
+
+/* site map */
+
+#sitemap { font-size:15px; }
+#sitemap li { list-style-type:disc; }
+#sitemap .processor-list li { line-height:1.7em; }
 
 /* about */
 

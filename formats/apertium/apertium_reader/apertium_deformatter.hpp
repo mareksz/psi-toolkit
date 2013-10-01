@@ -7,6 +7,7 @@
 
 #include "regexp.hpp"
 #include "format_specification.hpp"
+#include "psi_exception.hpp"
 
 struct DeformatIndex {
     int begin;
@@ -33,13 +34,10 @@ public:
 
     void setUnzipData(bool);
 
-    class ApertiumException : public std::exception {
+    class ApertiumException : public PsiException {
     public:
-        ApertiumException(const std::string& msg) : msg_(msg) { }
+        ApertiumException(const std::string& msg) : PsiException(msg) { }
         virtual ~ApertiumException() throw() { }
-        virtual const char* what() const throw() { return msg_.c_str(); }
-    private:
-        std::string msg_;
     };
 
 private:

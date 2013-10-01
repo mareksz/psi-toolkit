@@ -69,8 +69,8 @@ dictionary::dictionary(char *filename, int size, char* isymb, char* oovlexfile){
 
   inp.close();
 
-  if ((strncmp(buffer,"dict",4)==0) ||
-      (strncmp(buffer,"DICT",4)==0))
+  if ((strncmp(buffer, "dict", 4)==0) ||
+      (strncmp(buffer, "DICT", 4)==0))
     load(filename);
   else
     generate(filename);
@@ -141,10 +141,10 @@ void dictionary::load(char* filename){
   cerr << "dict:";
 
   inp.getline(header, 100);
-  if (strncmp(header,"DICT",4)==0)
+  if (strncmp(header, "DICT", 4)==0)
     freqflag=1;
   else
-    if (strncmp(header,"dict",4)!=0){
+    if (strncmp(header, "dict", 4)!=0){
       cerr << "\ndictionary file " << filename << " has a wrong header\n";
       exit(1);
     }

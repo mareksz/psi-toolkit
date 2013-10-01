@@ -108,7 +108,7 @@ class dictionary{
 
   int isprintable(char* w){
     char buffer[MAX_WORD];
-    sprintf(buffer,"%s",w);
+    sprintf(buffer, "%s", w);
     return strcmp(w, buffer)==0;
   }
 

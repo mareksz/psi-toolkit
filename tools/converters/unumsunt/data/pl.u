@@ -14,7 +14,6 @@
 @cat    pred    czasownik
 @cat    prep    przyimek
 @cat    qub przysłówek
-@cat    siebie  '@się'
 @cat    subst   rzeczownik
 @cat    verb    czasownik
 @attr   number  L
@@ -35,6 +34,7 @@
 @val    m3  mnż
 @val    f   ż
 @val    n   n
+@val    n1  n
 @val    n2  n
 @val    p1  n
 @val    p2  n
@@ -64,34 +64,110 @@
 @val    pant    imiesłów_uprzedni
 @val    pcon    imiesłów_współczesny
 @val    ppas    imiesłów_bierny
-#@attr   mode    C
-#@val    pot przypuszczający
-#@val    impt    rozkazujący
-CAT = rzeczownik >> L1 = $L, R = $Rp, R1 = $Rp, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
+@attr   accommodability Typ
+@val    congr   zg
+@val    rec d
+CAT = rzeczownik, niż >> CAT = rzeczownik|przyimek
+CAT = rzeczownik >> L1 = $L, Przyim = brak, Składnia = any, Length = 1, Amb = 1,Sem1=any, S = any, O=3
 CAT = rzeczownik, L = 1, Rp = mo >> R = mż, R1 = mż
+CAT = rzeczownik, L = 1, Rp = mż >> R = mż, R1 = mż
+CAT = rzeczownik, L = 1, Rp = mnż >> R = mnż, R1 = mnż
+CAT = rzeczownik, L = 1, Rp = ż >> R = ż, R1 = ż
+CAT = rzeczownik, L = 1, Rp = n >> R = n, R1 = n
+CAT = rzeczownik, L = 2, Rp = mo >> R = mo, R1 = mo
+CAT = rzeczownik, L = 2, Rp = mż >> R = mno, R1 = mno
 CAT = rzeczownik, L = 2, Rp = mnż >> R = mno, R1 = mno
+CAT = rzeczownik, L = 2, Rp = ż >> R = mno, R1 = mno
+CAT = rzeczownik, L = 2, Rp = n >> R = mno, R1 = mno
+CAT = rzeczownik, wszystko >> CAT = '@wszystko'
+CAT = rzeczownik, ktoś kogoś komuś kimś coś czegoś czemuś czymś nikt nikogo nikomu nikim nic niczego niczemu niczym >> CAT = zaimek_rzeczowny_nieokreślony
+CAT = rzeczownik, L = 2, P = woł >> SKIP
+CAT = zaimek_rzeczowny_osobowy >> R = $Rp, Składnia = 0
+CAT = zaimek_rzeczowny_osobowy, Rp = fail >> R = 0
+CAT = zaimek_rzeczowny_osobowy, jego jej ich >> CAT=zaimek_rzeczowny_osobowy|zaimek_dzierżawczy
+CAT = zaimek_dzierżawczy >> P = 0, R = 0, L = 0
+CAT = przymiotnik, Rp = mo, L = 1 >> Rp = mż
+CAT = przymiotnik, Rp = mno, L = 1 >> Rp = mnż
+CAT = przymiotnik, Rp = m, L = 1 >> Rp = mż|mnż
+CAT = przymiotnik, Rp = mż, L = 2 >> Rp = mo
+CAT = przymiotnik, Rp = mnż, L = 2 >> Rp = mno
+CAT = przymiotnik, Rp = m, L = 2 >> Rp = mo|mno
+CAT = przymiotnik, Rp = ż, L = 2 >> Rp = mno
+CAT = przymiotnik, Rp = n, L = 2 >> Rp = mno
 CAT = przymiotnik >> Przyim = brak, Length = 1, Amb = 1, R = $Rp,Sem1=any, S = any
-CAT = przymiotnik, R = mnż >> R = mnż|mno
-CAT = przymiotnik, R = mo >> R = mo|mż
-CAT = przymiotnik, R = m >> R = mo|mno|mż|mnż
-CAT = przymiotnik, mój twój nasz wasz >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, mój moja moje mojego mojej mojemu moją moim moi moich moimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, twój twoja twoje twojego twojej twojemu twoją twoim twoi twoich twoimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, swój swoja swoje swojego swojej swojemu swoją swoim swoi swoich swoimi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, nasz nasza nasze naszego naszej naszemu naszą naszym nasi naszych naszymi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+CAT = przymiotnik, wasz wasza wasze waszego waszej waszemu waszą waszym wasi waszych waszymi >> CAT = zaimek_przymiotny, Typ = dzierżawczy
+#CAT = rzeczownik, moje mojego mojemu moim moich moimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, twoje twojego twojemu twoim twoich twoimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, swoje swojego swojemu swoim swoich swoimi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, nasze naszego naszemu naszym naszych naszymi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+#CAT = rzeczownik, wasze waszego waszemu waszym waszych waszymi >> CAT = zaimek_rzeczowny, Typ = dzierżawczy
+CAT = przymiotnik, ten ta tej tę tą ci te tych tymi >> CAT = zaimek_przymiotny|'$ten'
+CAT = przymiotnik, jaki jaka jakie jakiego jakiej jakiemu jaką jakim jacy jakich jakimi >> CAT = zaimek_przymiotny, O = 0, Typ = pytajny|względny
+CAT = przymiotnik, który która które którego której któremu którą którym którzy których którymi >> CAT = zaimek_przymiotny, O = 0, Typ = pytajny|względny
+CAT = przymiotnik, każdy każda każde każdego każdej każdemu każdą każdym >> CAT = zaimek_przymiotny, O = 0, Typ = kwant|nominalny
+CAT = przymiotnik, wszyscy wszystkie wszystkich wszystkim wszystkimi >> CAT = zaimek_przymiotny, O = 0, Typ = kwant
+CAT = zaimek_przymiotny, ten ta tej tę tą ci te tych tymi >> Typ = wskazujący
+CAT = przymiotnik, to tego temu tym >> CAT = zaimek_przymiotny|'$ten'|'$to'
+CAT = '$to' >> Składnia = any
 CAT = po_przymiotnik >> Przyim = brak, Stopień = równy, Length = 1, Amb = 1,Sem1=any, S = any
 CAT = przysłówek >> Przyim2 = brak, Typ = czasow, Length = 1, Amb = 2, Sem1=any, S = any
+CAT = przysłówek, trudno >> Typ = modalny, Dop2 = bk
+CAT = przysłówek, siebie się >> CAT = zaimek_rzeczowny_się
+CAT = przysłówek, dlaczego którędy >> CAT = zaimek_przysłowny, Typ = pytajny
+CAT = przysłówek, tudzież >> CAT = spójnik
 CAT = spójnik >> Sem1=any, S = any,Ps1=0,Ps2=0,Ps3=0,Ps4=0,Ps5=0,Length=1,Amb=1,Typ=0
 CAT = spójnik, albo >> Typ=albo,Ps5=1
+CAT = spójnik, czy jak kiedy >> CAT = spójnik|zaimek_przysłowny
+CAT = zaimek_przysłowny, czy jak kiedy >> Typ = pytajny
+CAT = spójnik, niż >> Typ = niż
 CAT = wykrzyknienie >> Length = 1, Amb = 1,Sem1=any, S = any
+CAT = liczebnik_główny, Typ = zg >> Accommodability = congr
+CAT = liczebnik_główny, Typ = d >> Accommodability = rec
 CAT = liczebnik_główny >> R = $Rp, Length = 1, Amb = 1,Sem1=any, S = any
-CAT = liczebnik_główny, jeden jedna jedno jedni jedne >> Typ = kwant
-CAT = liczebnik_główny, dwa dwie trzy cztery >> Typ = zg
+CAT = liczebnik_główny, jeden jedna jedno jednego jednej jednemu jedną jednym jednej jedni jedne jednych jednym jednymi >> Typ = kwant
+CAT = liczebnik_główny, dwa dwaj dwie dwóch dwóm dwoma dwiema >> Typ = zg
+CAT = liczebnik_główny, trzy trzej trzech trzem trzema >> Typ = zg
+CAT = liczebnik_główny, cztery czterej czterech czterem czterema >> Typ = zg
 CAT = liczebnik_główny, pięć sześć siedem osiem dziewięć dziesięć >> Typ = d
+CAT = liczebnik_główny, pięciu sześciu siedmiu ośmiu dziewięciu dziesięciu >> Typ = zg
+CAT = liczebnik_główny, pięcioma sześcioma siedmioma ośmioma dziewięcioma dziesięcioma >> Typ = zg
+CAT = liczebnik_główny, jedenaście dwanaście trzynaście czternaście piętnaście szesnaście siedemnaście osiemnaście dziewiętnaście >> Typ = d
+CAT = liczebnik_główny, jedenastu dwunastu trzynastu czternastu piętnastu szesnastu siedemnastu osiemnastu dziewiętnastu >> Typ = zg
+CAT = liczebnik_główny, jedenastoma dwunastoma trzynastoma czternastoma piętnastoma szesnastoma siedemnastoma osiemnastoma dziewiętnastoma >> Typ = zg
+CAT = liczebnik_główny, dwadzieścia trzydzieści czterdzieści pięćdziesiąt sześćdziesiąt siedemdziesiąt osiemdziesiąt dziewięćdziesiąt >> Typ = d
+CAT = liczebnik_główny, dwudziestu trzydziestu czterdziestu pięćdziesięciu sześćdziesięciu siedemdziesięciu osiemdziesięciu dziewięćdziesięciu >> Typ = zg
+CAT = liczebnik_główny, dwudziestoma trzydziestoma czterdziestoma pięćdziesięcioma sześćdziesięcioma siedemdziesięcioma osiemdziesięcioma dziewięćdziesięcioma >> Typ = zg
+CAT = liczebnik_główny, sto dwieście trzysta czterysta >> Typ = d
+CAT = liczebnik_główny, stu dwustu trzystu czterystu >> Typ = zg
+CAT = liczebnik_główny, stoma dwustoma trzystoma czterystoma >> Typ = zg
+CAT = liczebnik_główny, pięćset sześćset siedemset osiemset dziewięćset >> Typ = d
+CAT = liczebnik_główny, pięciuset sześciuset siedmiuset osmiuset dziewięciuset >> Typ = zg
 CAT = liczebnik_główny, dwoje troje czworo pięcioro sześcioro siedmioro ośmioro dziewięcioro >> Typ = d, R = zbiorowy
+CAT = liczebnik_główny, Accommodability = congr >> Typ = zg
+CAT = liczebnik_główny, Accommodability = rec >> Typ = d
+CAT = czasownik, Rp = mo, L = 1 >> Rp = mż
+CAT = czasownik, Rp = mno, L = 1 >> Rp = mnż
+CAT = czasownik, Rp = m, L = 1 >> Rp = mż|mnż
+CAT = czasownik, Rp = mż, L = 2 >> Rp = mo
+CAT = czasownik, Rp = mnż, L = 2 >> Rp = mno
+CAT = czasownik, Rp = m, L = 2 >> Rp = mo|mno
+CAT = czasownik, Rp = ż, L = 2 >> Rp = mno
+CAT = czasownik, Rp = n, L = 2 >> Rp = mno
 CAT = czasownik >> Przyim = brak, Przyim1 = brak, Podmiot = 1, Length = 1, Amb = 1, Dop1=bier,Przyim1=brak,Sem1=any, S = any
 CAT = czasownik, C = teraźniejszy >> R = 0
+CAT = czasownik, C = przyszły >> R = 0
 CAT = czasownik, C = przeszły >> R = $Rp, R1 = 0
 CAT = czasownik, A = dk, C = teraźniejszy >> C = przyszły
 CAT = czasownik, mode = pot >> C = przypuszczający
 CAT = czasownik, mode = impt >> C = rozkazujący
-CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny
+CAT = czasownik, C = imiesłów_bierny >> Podmiot=potencjalny, A = 0, R = $Rp
+CAT = czasownik, C = bezokolicznik >> R = 0, L = 0, O = 0, Podmiot = potencjalny
+CAT = czasownik, można trzeba >> C=teraźniejszy, Typ=modalny, Podmiot=brak, A=0, Dop3 = bk
 CAT = przyimek >> Length=1,Amb=1,Typ=0
-siebie sobie >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
+CAT = przyimek, niż >> P = mian, S = 0, Typ = niż, Amb = 2
+CAT = '@się' >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2

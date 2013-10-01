@@ -1,3 +1,5 @@
+enable_language(C)
+
 add_executable(extract-rules
     ExtractedRule.cpp
     extract-rules-main.cpp
@@ -58,9 +60,8 @@ add_executable(txt2monotonic
     ../../rules/ThrowingFwrite.cpp
 )
 
-
-target_link_libraries(extract-rules boost_iostreams)
-target_link_libraries(score boost_iostreams)
-target_link_libraries(consolidate boost_iostreams)
+target_link_libraries(extract-rules z boost_iostreams)
+target_link_libraries(score z boost_iostreams)
+target_link_libraries(consolidate z boost_iostreams)
 target_link_libraries(minfsa boost_regex boost_serialization boost_program_options)
 target_link_libraries(binfsa boost_regex boost_program_options)

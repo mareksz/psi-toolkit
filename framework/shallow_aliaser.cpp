@@ -44,6 +44,11 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
         ("write-parse-tree",    "gv-writer --tree --tags parse")
         ("get-parse-tree",      "gv-writer --tree --tags parse")
         ("draw-parse-tree",     "gv-writer --tree --tags parse")
+
+        ("translate-plen",  "gobio --lang pl ! bilexicon --lang pl --trg-lang en ! transferer"
+            " --lang pl --trg-lang en")
+        ("translate-ples",  "gobio --lang pl ! bilexicon --lang pl --trg-lang es ! transferer"
+            " --lang pl --trg-lang es")
         ;
 
 

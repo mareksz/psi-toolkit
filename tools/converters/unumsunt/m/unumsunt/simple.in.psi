@@ -2,3 +2,5 @@
 01 0000 04    text         source-tagset,tag1    text        c[]
 02 0000 04    text         source-tagset,tag2    text        category[1]
 03 0000 04    text         source-tagset,tag3    text        category,attribute=value[2]
+04 0000 04    text         source-tagset,tag3    text        category,attribute=value2[2]
+05 0000 04    text         source-tagset,tag3    text        category,attribute=value3[2]

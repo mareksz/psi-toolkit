@@ -1,0 +1,26 @@
+_psi-server()
+{
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    if [[ ${cur} == -* ]] ; then
+        local opts=$( psi-server --help 2> /dev/null | grep -oP '(?=(\[| )) --[a-z\-]+')
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    case "${prev}" in
+        --log-level)
+            local levels="TRACE DEBUG INFO WARN ERROR FATAL"
+            COMPREPLY=( $(compgen -W "${levels}" -- ${cur}) )
+            return 0
+            ;;
+        *)
+        ;;
+    esac
+
+    _filedir
+}
+complete -F _psi-server psi-server

@@ -13,7 +13,17 @@
 std::set<std::string> HtmlHelpFormatter::extensionsForRandomExamples_ =
     boost::assign::list_of("txt")("html");
 
-HtmlHelpFormatter::HtmlHelpFormatter() : fileStorage_(NULL) { }
+HtmlHelpFormatter::HtmlHelpFormatter()
+    : fileStorage_(NULL),
+    useJavaScript_(true) { }
+
+HtmlHelpFormatter::HtmlHelpFormatter(bool useJavaScript)
+    : fileStorage_(NULL),
+    useJavaScript_(useJavaScript) { }
+
+void HtmlHelpFormatter::setUseJavaScript(bool onOff) {
+    useJavaScript_ = onOff;
+}
 
 void HtmlHelpFormatter::doFormatOneProcessorHelp(
     std::string processorName,
@@ -28,7 +38,7 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
     output << "<div class=\"help-item\">"
         << "<h2 id=\"" << processorName << "\">" << processorName << "</h2>" << std::endl;
 
-    formatDescription_(description, detailedDescription, output);
+    formatDescription_(description, detailedDescription, processorName, output);
 
     if (!aliases.empty()) {
         formatAliases_(aliases, output);
@@ -48,17 +58,26 @@ void HtmlHelpFormatter::doFormatOneProcessorHelp(
     output << "</div>" << std::endl;
 }
 
-void HtmlHelpFormatter::formatDescription_(std::string description,
-                                           std::string details,
+void HtmlHelpFormatter::formatDescription_(const std::string& description,
+                                           const std::string& details,
+                                           const std::string& processorName,
                                            std::ostream& output) {
     if (!description.empty()) {
         output << "<div class=\"help-desc\">" << markdownString2String(description);
 
         if (!details.empty()) {
-            output << "<div class=\"help-details\" style=\"display:none;\">"
+            output << "<div class=\"help-details\""
+                << (useJavaScript_ ? " style=\"display:none;\"" : "") << ">"
                 << markdownString2String(details)
                 << "</div>" << std::endl
-                << "<span class=\"toggler help-toggler\">[show more]</span>" << std::endl;
+                << (useJavaScript_
+                    ? "<span class=\"toggler help-toggler\"> [show more] </span>" : "")
+                << std::endl;
+        }
+
+        if (useJavaScript_) {
+            output << "<a href=\"/help/processor.psis?name=" << processorName << "\" "
+                << "class=\"toggler\" target=\"_blank\"> [open in single page] </a>" << std::endl;
         }
 
         output << "</div>" << std::endl;
@@ -114,9 +133,9 @@ void HtmlHelpFormatter::formatUsingExamples_(std::vector<TestBatch> batches, std
 }
 
 void HtmlHelpFormatter::formatExampleInputOutput_(
-    boost::filesystem::path filePath,
+    const boost::filesystem::path& filePath,
     std::ostream& output,
-    std::string divClass) {
+    const std::string& divClass) {
 
     output << "<div class=\"" << divClass << "\">" << divClass << ":</div>" << std::endl;
     std::string fileContent = getFileContent(filePath);
@@ -162,11 +181,9 @@ void HtmlHelpFormatter::doFormatDataFile(std::string text, std::ostream& output)
 }
 
 void HtmlHelpFormatter::formatPipelineExamplesInJSON(std::ostream& output) {
-    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
-
     output << "var pipelineExamples = [" << std::endl;
 
-    BOOST_FOREACH(std::string processorName, processors) {
+    BOOST_FOREACH(std::string processorName, getProcessorNames()) {
         BOOST_FOREACH(TestBatch testBatch, getProcessorUsingExamples(processorName)) {
             formatPipelineExampleInJSON_(testBatch, output);
         };
@@ -198,17 +215,6 @@ void HtmlHelpFormatter::formatPipelineExampleInJSON_(TestBatch batch, std::ostre
     output << "    \"text\" : \"" << escapeJSON_(text) << "\"" << std::endl;
 
     output << "  }, " << std::endl;
-}
-
-void HtmlHelpFormatter::formatDocumentationMenu(std::ostream& output) {
-    std::vector<std::string> processors = MainFactoriesKeeper::getInstance().getProcessorNames();
-
-    output << "<ul>" << std::endl;
-    BOOST_FOREACH(std::string processorName, processors) {
-        output << "<li><a href=\"#" << processorName << "\">" << processorName << "</a></li>"
-            << std::endl;
-    };
-    output << "</ul>" << std::endl;
 }
 
 void HtmlHelpFormatter::formatHelpsWithTypes(std::ostream& output) {
@@ -263,19 +269,26 @@ void HtmlHelpFormatter::doFormatOneAlias(
     if (processorNames.empty())
         return;
 
-    output << "<div class=\"alias-item\">" << aliasName << " &rarr; ";
+    output << "<div class=\"alias-item\">";
+    if (processorNames.size() > 1) {
+        output << "<a href=\"/help/processor.psis?name=" << aliasName << "\">";
+    }
+    output << aliasName;
+    if (processorNames.size() > 1) {
+        output << "</a>";
+    }
+    output << " &rarr; ";
 
     unsigned int i = 0;
 
     BOOST_FOREACH(std::string processorName, processorNames) {
-        output << "<a href=\"/help/documentation.html#"
+        output << "<a href=\"/help/processor.psis?name="
             << getProcessorNameWithoutOptions(processorName) << "\">"
             << processorName << "</a>";
 
         if (++i != processorNames.size())
             output << ", ";
     }
-
 
     output << "</div>" << std::endl;
 }

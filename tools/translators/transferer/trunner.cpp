@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
         go();
     }
-    catch(std::exception& e)
+    catch (std::exception& e)
     {
         std::cerr << "błąd w parametrach programu: " << e.what() << "\n";
         return 1;

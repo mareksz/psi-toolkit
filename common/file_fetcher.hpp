@@ -10,24 +10,19 @@
 #include <boost/algorithm/string.hpp>
 
 #include "ant_like_path_glob.hpp"
+#include "psi_exception.hpp"
 
 class FileFetcher {
 
 public:
-    class Exception : public std::exception {
+    class Exception : public PsiException {
     public:
         Exception(const std::string& msg)
-            :msg_(msg) {
+            :PsiException(msg) {
         }
 
         virtual ~Exception() throw() {
         }
-
-        virtual const char* what() const throw() {
-            return msg_.c_str();
-        }
-    private:
-        std::string msg_;
     };
 
     FileFetcher() {

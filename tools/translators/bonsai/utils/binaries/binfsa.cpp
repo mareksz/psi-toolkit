@@ -11,10 +11,10 @@ int main (int argc, char* args[]) {
     po::options_description desc("Allowed options");
 
     desc.add_options()
-        ("help", "Display this message")
+        ("help,h", "Display this message")
         ("infile,i", po::value<std::string>(), "Sorted input text file (fsmlibrary format)")
         ("outfile,o", po::value<std::string>()->default_value("out"), "Prefix for states and arcs file")
-        ("mode", po::value<int>()->default_value(0), "Memory mode for temporary DAG")
+        ("mode,m", po::value<int>()->default_value(0), "Memory mode for temporary DAG")
     ;
 
     po::variables_map vm;

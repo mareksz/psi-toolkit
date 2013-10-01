@@ -22,6 +22,7 @@ public:
 
     static std::string getBaseAliasForTag(const std::string& tag);
 
+    bool hasProcessorFactory(std::string processorName);
     ProcessorFactory& getProcessorFactory(std::string processorName);
     std::vector<std::string> getProcessorNames();
     std::set<std::string> getAliasNames();

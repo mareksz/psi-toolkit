@@ -584,6 +584,16 @@ public:
         LayerTagMask mask);
 
 
+    /**
+     * For the given edge, return its nearest ancestor with layer tag of the given kind.
+     */
+    boost::optional<EdgeDescriptor> getEdgeOrigin(std::string tagName, EdgeDescriptor edge);
+
+    /**
+     * Return the lemma of the given edge.
+     */
+    boost::optional<std::string> getEdgeLemma(EdgeDescriptor edge);
+
     void runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMask);
 
     bool isBlank(Lattice::EdgeDescriptor edge);
@@ -656,6 +666,7 @@ public:
 
     int addTagMaskIndex_(LayerTagMask tagMask);
 
+    static const std::string DISCARDED_TAG_NAME;
     static const std::string SYMBOL_TAG_NAME;
 
 private:
@@ -824,7 +835,8 @@ private:
 
     std::list<Partition> emptyPartitionList_;
 
-    static const std::string DISCARDED_TAG_NAME;
+    static const std::string LEMMA_TAG_NAME;
+    static const std::string TOKEN_TAG_NAME;
 };
 
 
@@ -858,12 +870,8 @@ Lattice::EdgeSequence Lattice::getPathWithSkipping(
                         bestOne = iter.next();
                     }
                 }
-                if (skippingPredicate(*this, bestOne)) {
-                    pathBuilder.addEdge(bestOne);
-                    vertex = getEdgeTarget(bestOne);
-                } else {
-                    nextVertexFound = false;
-                }
+                pathBuilder.addEdge(bestOne);
+                vertex = getEdgeTarget(bestOne);
             } else {
                 nextVertexFound = false;
             }
