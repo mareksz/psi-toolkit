@@ -3,6 +3,8 @@
 #include <clocale>
 #include <cstring>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "exceptions.hpp"
 #include "logging.hpp"
 
@@ -63,6 +65,7 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
     if (!sentence_) {
         throw ParserException("Could not process sentence: " + sentenceStr);
     }
+    boost::algorithm::to_lower(sentenceStr);
     if (sentence_parse(sentence_, parseOptions)) {
 
         size_t currentPos = 0;
