@@ -72,11 +72,12 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
         size_t foundPos = 0;
         int wordNo = 0;
         while (wordNo < sentence_length(sentence_)) {
-            const char * word = sentence_get_word(sentence_, wordNo);
+            std::string word(sentence_get_word(sentence_, wordNo));
+            boost::algorithm::to_lower(word);
             foundPos = sentenceStr.find(word, currentPos);
             if (foundPos != std::string::npos) {
                 starts_[wordNo] = foundPos;
-                ends_[wordNo] = currentPos = foundPos + strlen(word);
+                ends_[wordNo] = currentPos = foundPos + word.length();
             }
             ++wordNo;
         }
