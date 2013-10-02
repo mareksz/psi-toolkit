@@ -2,6 +2,7 @@
 
 #include <clocale>
 #include <cstring>
+#include <sstream>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -24,7 +25,9 @@ void LinkParserAdapterImpl::setDictionary(std::string language) {
     freeDictionary();
     dictionary_ = dictionary_create_lang(language.c_str());
     if (!dictionary_) {
-        throw ParserException("No dictionary for language: " + language);
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to find a dictionary for language: " << language;
+        throw ParserException(errorSs.str());
     }
 }
 
@@ -43,12 +46,12 @@ void LinkParserAdapterImpl::setDictionary(
         affixName.empty() ? NULL : affixName.c_str()
     );
     if (!dictionary_) {
-        throw ParserException(
-            "Could not create dictionary from files: " + dictionaryName +
-            ", " + postProcessFileName +
-            ", " + constituentKnowledgeName +
-            ", " + affixName
-        );
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to create dictionary from files: " << dictionaryName
+            << ", " << postProcessFileName
+            << ", " << constituentKnowledgeName
+            << ", " << affixName;
+        throw ParserException(errorSs.str());
     }
 }
 
@@ -63,7 +66,9 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
     freeSentence();
     sentence_ = sentence_create(sentenceStr.c_str(), dictionary_);
     if (!sentence_) {
-        throw ParserException("Could not process sentence: " + sentenceStr);
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to tokenize the input text.";
+        throw ParserException(errorSs.str());
     }
     boost::algorithm::to_lower(sentenceStr);
     if (sentence_parse(sentence_, parseOptions)) {
@@ -88,6 +93,11 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
         linkage_free_constituent_tree(ctree);
         linkage_delete(linkage);
 
+    } else {
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to parse the input text.\n"
+            << "Your input text is probably not a correct sentence.";
+        throw ParserException(errorSs.str());
     }
     return edgeDescriptions_;
 }
