@@ -2,6 +2,9 @@
 
 #include <clocale>
 #include <cstring>
+#include <sstream>
+
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "exceptions.hpp"
 #include "logging.hpp"
@@ -22,7 +25,9 @@ void LinkParserAdapterImpl::setDictionary(std::string language) {
     freeDictionary();
     dictionary_ = dictionary_create_lang(language.c_str());
     if (!dictionary_) {
-        throw ParserException("No dictionary for language: " + language);
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to find a dictionary for language: " << language;
+        throw ParserException(errorSs.str());
     }
 }
 
@@ -41,12 +46,12 @@ void LinkParserAdapterImpl::setDictionary(
         affixName.empty() ? NULL : affixName.c_str()
     );
     if (!dictionary_) {
-        throw ParserException(
-            "Could not create dictionary from files: " + dictionaryName +
-            ", " + postProcessFileName +
-            ", " + constituentKnowledgeName +
-            ", " + affixName
-        );
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to create dictionary from files: " << dictionaryName
+            << ", " << postProcessFileName
+            << ", " << constituentKnowledgeName
+            << ", " << affixName;
+        throw ParserException(errorSs.str());
     }
 }
 
@@ -61,19 +66,23 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
     freeSentence();
     sentence_ = sentence_create(sentenceStr.c_str(), dictionary_);
     if (!sentence_) {
-        throw ParserException("Could not process sentence: " + sentenceStr);
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to tokenize the input text.";
+        throw ParserException(errorSs.str());
     }
+    boost::algorithm::to_lower(sentenceStr);
     if (sentence_parse(sentence_, parseOptions)) {
 
         size_t currentPos = 0;
         size_t foundPos = 0;
         int wordNo = 0;
         while (wordNo < sentence_length(sentence_)) {
-            const char * word = sentence_get_word(sentence_, wordNo);
+            std::string word(sentence_get_word(sentence_, wordNo));
+            boost::algorithm::to_lower(word);
             foundPos = sentenceStr.find(word, currentPos);
             if (foundPos != std::string::npos) {
                 starts_[wordNo] = foundPos;
-                ends_[wordNo] = currentPos = foundPos + strlen(word);
+                ends_[wordNo] = currentPos = foundPos + word.length();
             }
             ++wordNo;
         }
@@ -84,6 +93,11 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
         linkage_free_constituent_tree(ctree);
         linkage_delete(linkage);
 
+    } else {
+        std::stringstream errorSs;
+        errorSs << "Link-parser failed to parse the input text.\n"
+            << "Your input text is probably not a correct sentence.";
+        throw ParserException(errorSs.str());
     }
     return edgeDescriptions_;
 }
