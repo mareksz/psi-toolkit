@@ -44,7 +44,6 @@ BOOST_AUTO_TEST_CASE( gv_lattice_writer_simple ) {
     int linesCount = 0;
     while (getline(reference, refLine)) {
         if (refLine.find("pos") == std::string::npos) continue;
-        BOOST_CHECK(getline(outSs, outLine));
         while (outLine.find("pos") == std::string::npos && getline(outSs, outLine)) { }
         ++linesCount;
     }
