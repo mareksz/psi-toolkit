@@ -97,7 +97,7 @@ std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string 
         std::stringstream errorSs;
         errorSs << "Link-parser failed to parse the input text.\n"
             << "Your input text is probably not a correct sentence.";
-        throw ParserException(errorSs.str());
+        WARN(errorSs.str());
     }
     return edgeDescriptions_;
 }
