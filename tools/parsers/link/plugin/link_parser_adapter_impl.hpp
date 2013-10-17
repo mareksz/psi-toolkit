@@ -16,13 +16,6 @@ public:
 
     virtual void setDictionary(std::string language);
 
-    virtual void setDictionary(
-        std::string dictionaryName,
-        std::string postProcessFileName,
-        std::string constituentKnowledgeName,
-        std::string affixName
-    );
-
     virtual std::map<int, EdgeDescription> parseSentence(std::string sentenceStr);
 
 private:

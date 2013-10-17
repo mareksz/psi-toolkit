@@ -31,31 +31,6 @@ void LinkParserAdapterImpl::setDictionary(std::string language) {
     }
 }
 
-
-void LinkParserAdapterImpl::setDictionary(
-    std::string dictionaryName,
-    std::string postProcessFileName,
-    std::string constituentKnowledgeName,
-    std::string affixName
-) {
-    freeDictionary();
-    dictionary_ = dictionary_create(
-        dictionaryName.c_str(),
-        postProcessFileName.empty() ? NULL : postProcessFileName.c_str(),
-        constituentKnowledgeName.empty() ? NULL : constituentKnowledgeName.c_str(),
-        affixName.empty() ? NULL : affixName.c_str()
-    );
-    if (!dictionary_) {
-        std::stringstream errorSs;
-        errorSs << "Link-parser failed to create dictionary from files: " << dictionaryName
-            << ", " << postProcessFileName
-            << ", " << constituentKnowledgeName
-            << ", " << affixName;
-        throw ParserException(errorSs.str());
-    }
-}
-
-
 std::map<int, EdgeDescription> LinkParserAdapterImpl::parseSentence(std::string sentenceStr) {
     Parse_Options parseOptions = parse_options_create();
     int verbosity = psi_logger.getLoggingPriority() / 100 - 4;
