@@ -1,10 +1,9 @@
 digraph g {
+	graph [rankdir=TB];
 	node [label="\N"];
-	graph [rankdir=TB,
-		ordering=out];
-	1 [label="Ala word"];
-	2 [label="_ blank"];
-	3 [label="ma word"];
-	4 [label="_ blank"];
-	5 [label="słonia word"];
+	1	 [label="Ala word"];
+	2	 [label="_ blank"];
+	3	 [label="ma word"];
+	4	 [label="_ blank"];
+	5	 [label="słonia word"];
 }

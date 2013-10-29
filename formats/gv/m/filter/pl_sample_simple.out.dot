@@ -1,9 +1,9 @@
 digraph g {
-	node [label="\N"];
 	graph [rankdir=LR];
-	0 -> 3 [label="Ala (token) word"];
-	3 -> 4 [label="_ (token) blank"];
-	4 -> 6 [label="ma (token) word"];
-	6 -> 7 [label="_ (token) blank"];
-	7 -> 14 [label="słonia (token) word"];
+	node [label="\N"];
+	0 -> 3	 [label="Ala (token) word"];
+	3 -> 4	 [label="_ (token) blank"];
+	4 -> 6	 [label="ma (token) word"];
+	6 -> 7	 [label="_ (token) blank"];
+	7 -> 14	 [label="słonia (token) word"];
 }
