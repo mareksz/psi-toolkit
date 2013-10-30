@@ -4,17 +4,20 @@ require 'ci/reporter/rake/test_unit_loader'
 
 ENV['CI_REPORTS'] = File.dirname(__FILE__) + "/reports"
 
+TEST_FILES = %w{
+  psi_server_test
+  index_site_test
+  pipe_site_test
+  help_site_test
+  tutorial_site_test
+  json_site_test
+  site_map_test
+  processor_documentation_site_test
+}.map{ |f| f + '.rb' }
+
 task :test, :host, :port do |t, args|
   $host = args.host
   $port = args.port
 
-  require 'psi_server_test'
-
-  require 'index_site_test'
-  require 'pipe_site_test'
-  require 'help_site_test'
-  require 'tutorial_site_test'
-  require 'json_site_test'
-  require 'site_map_test'
-  require 'processor_documentation_site_test'
+  TEST_FILES.each{ |f| require f }
 end

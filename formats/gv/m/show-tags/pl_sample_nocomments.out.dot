@@ -1,21 +1,16 @@
 digraph g {
-	node [label="\N"];
 	graph [rankdir=LR];
-	0 -> 3 [label="Ala (token) 'Ala'"];
-	0 -> 3 [label="Ala (lemma,poleng-tagset) Ala"];
-	0 -> 3 [label="Ala (gobio,parse) rzeczownik"];
-	3 -> 4 [label="_ (token) ' '"];
-	4 -> 6 [label="ma (token) 'ma'"];
-	6 -> 12 [label="&nbsp; (token) ' '"];
-	12 -> 15 [label="<b> (html,markup) open"];
-	15 -> 18 [label="kta (token) 'kta'"];
-	15 -> 18 [label="kta (corrector,token) 'kota'"];
-	15 -> 18 [label="kta (gobio,parse) fraza_rzeczownikowa"];
-	18 -> 22 [label="</b> (html,markup) close"];
-	12 -> 22 [label="<b>kta</b> (gobio,parse) fraza_rzeczownikowa"];
-	4 -> 22 [label="ma&nbsp;<b>kta</b> (gobio,parse) fraza_czasownikowa"];
-	0 -> 22 [label="Ala_ma&nbsp;<b>kta</b> (gobio,parse) pełna_fraza_czasownikowa"];
-	22 -> 23 [label=". (token) '.'"];
-	0 -> 23 [label="Ala_ma&nbsp;<b>kta</b>. (splitter) sentence"];
-	0 -> 23 [label="Ala_ma&nbsp;<b>kta</b>. (gobio,parse) zdanie"];
+	node [label="\N"];
+	0 -> 3	 [label="Ala (gobio,parse) rzeczownik"];
+	0 -> 22	 [label="Ala_ma&nbsp;<b>kta</b> (gobio,parse) pełna_fraza_czasownikowa"];
+	0 -> 23	 [label="Ala_ma&nbsp;<b>kta</b>. (gobio,parse) zdanie"];
+	3 -> 4	 [label="_ (token) ' '"];
+	4 -> 6	 [label="ma (token) 'ma'"];
+	4 -> 22	 [label="ma&nbsp;<b>kta</b> (gobio,parse) fraza_czasownikowa"];
+	6 -> 12	 [label="&nbsp; (token) ' '"];
+	12 -> 15	 [label="<b> (html,markup) open"];
+	12 -> 22	 [label="<b>kta</b> (gobio,parse) fraza_rzeczownikowa"];
+	15 -> 18	 [label="kta (gobio,parse) fraza_rzeczownikowa"];
+	18 -> 22	 [label="</b> (html,markup) close"];
+	22 -> 23	 [label=". (token) '.'"];
 }

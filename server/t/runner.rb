@@ -39,8 +39,10 @@ end
 
 puts "working on: #{$server_address}"
 
-t_test = Thread.new { $tst = `jruby -S rake ci:setup:testunit test[#{$host},#{$port}]` }
+t_test = Thread.new do
+  $tst = `jruby -S rake ci:setup:testunit test[#{$host},#{$port}]`
+end
 
-sleep(1) and print "." while (t_test.status)
+sleep(1) and print "," while (t_test.status)
 
 exit

@@ -42,14 +42,6 @@ public:
 
     LinkParser(std::string langCode);
 
-    LinkParser(
-        std::string langCode,
-        std::string dictionaryName,
-        std::string postProcessFileName,
-        std::string constituentKnowledgeName,
-        std::string affixName
-    );
-
     ~LinkParser();
 
     LinkParserAdapterInterface * getAdapter();
