@@ -70,7 +70,7 @@ Lattice::VertexDescriptor Lattice::addLooseVertex() {
     ++nLooseVertices_;
     Graph::vertex_descriptor vertex = boost::add_vertex(VertexEntry(-nLooseVertices_), graph_);
     vertices_[-nLooseVertices_] = vertex;
-    BOOST_FOREACH(TagMasksBimapItem unused, indexedTagMasks_) {
+    for (size_t i = 0; i < indexedTagMasks_.size(); ++i) {
         graph_[vertex].outEdgesIndex.push_back(
             std::list<EdgeDescriptorWrapperToFoolBoost146OrGnu461>()
         );
@@ -265,7 +265,7 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         } else {
             boost_from = boost::add_vertex(VertexEntry(from), graph_);
             vertices_[from] = boost_from;
-            BOOST_FOREACH(TagMasksBimapItem unused, indexedTagMasks_) {
+            for (size_t i = 0; i < indexedTagMasks_.size(); ++i) {
                 graph_[boost_from].outEdgesIndex.push_back(
                     std::list<EdgeDescriptorWrapperToFoolBoost146OrGnu461>()
                 );
@@ -280,7 +280,7 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         } else {
             boost_to = boost::add_vertex(VertexEntry(to), graph_);
             vertices_[to] = boost_to;
-            BOOST_FOREACH(TagMasksBimapItem unused, indexedTagMasks_) {
+            for (size_t i = 0; i < indexedTagMasks_.size(); ++i) {
                 graph_[boost_to].outEdgesIndex.push_back(
                     std::list<EdgeDescriptorWrapperToFoolBoost146OrGnu461>()
                 );
@@ -302,10 +302,14 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         );
 
         if (result.second) {
-            for (size_t i = 0; i < indexedTagMasks_.size(); ++i) {
-                if (matches(tags, indexedTagMasks_.right.at(i))) {
-                    graph_[boost_from].outEdgesIndex[i].push_back(result.first);
-                    graph_[boost_to].inEdgesIndex[i].push_back(result.first);
+            for (
+                TagMasksHash::iterator iter = indexedTagMasks_.begin();
+                iter != indexedTagMasks_.end();
+                ++iter
+            ) {
+                if (matches(tags, iter->first)) {
+                    graph_[boost_from].outEdgesIndex[iter->second].push_back(result.first);
+                    graph_[boost_to].inEdgesIndex[iter->second].push_back(result.first);
                 }
             }
             if (!isLooseVertex(from) && !isLooseVertex(to)) {
@@ -471,7 +475,8 @@ Lattice::EdgeDescriptor Lattice::firstOutEdge(
     Lattice::VertexDescriptor vertex,
     LayerTagMask mask
 ) {
-    if (outEdges(vertex, mask).hasNext()) return outEdges(vertex, mask).next();
+    InOutEdgesIterator oe(outEdges(vertex, mask));
+    if (oe.hasNext()) return oe.next();
     std::stringstream errorSs;
     if (isLooseVertex(vertex)) {
         errorSs << "No out-edges found for loose vertex " << getLooseVertexIndex(vertex) << ".";
@@ -883,8 +888,8 @@ int Lattice::countAllVertices() {
 
 
 int Lattice::addTagMaskIndex_(LayerTagMask tagMask) {
-    TagMasksBimapLeftIterator li = indexedTagMasks_.left.find(tagMask);
-    if (li != indexedTagMasks_.left.end()) {
+    TagMasksHash::iterator li = indexedTagMasks_.find(tagMask);
+    if (li != indexedTagMasks_.end()) {
         return li->second;
     } else {
         int ix = indexedTagMasks_.size();
@@ -906,7 +911,7 @@ int Lattice::addTagMaskIndex_(LayerTagMask tagMask) {
                 }
             }
         }
-        indexedTagMasks_.insert(TagMasksBimapItem(tagMask, ix));
+        indexedTagMasks_.insert(std::pair<LayerTagMask, int>(tagMask, ix));
         return ix;
     }
 }

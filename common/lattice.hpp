@@ -725,11 +725,6 @@ private:
      */
     int nLooseVertices_;
 
-    typedef boost::bimap<LayerTagMask, int> TagMasksBimap;
-    typedef TagMasksBimap::value_type TagMasksBimapItem;
-    typedef TagMasksBimap::left_map::const_iterator TagMasksBimapLeftIterator;
-    TagMasksBimap indexedTagMasks_;
-
     void resizeImplicitEdgesStructures_();
 
     VertexDescriptor priorVertex_(VertexDescriptor vertex);
@@ -812,6 +807,30 @@ private:
     };
 
 
+    struct LayerTagMaskHashFun {
+        HASH_WRAPPER_EXTRA_STUFF
+
+        unsigned int operator()(
+            const LayerTagMask& k
+        ) const {
+#ifdef __VS__
+            return HASH_WRAPPER_FULL_HASH_TRAITS<long>().operator()(k.getHash());;
+#else
+            return int(k.getHash());
+#endif
+        }
+
+#ifdef __VS__
+        bool operator()(
+            const LayerTagMask& a,
+            const LayerTagMask& b
+        ) const {
+            return a != b;
+        }
+#endif
+    };
+
+
     typedef HashWrapper3<
         std::pair<
             std::pair<VertexDescriptor, VertexDescriptor>,
@@ -827,8 +846,15 @@ private:
         VertexPairHashFun
     >::type EdgeCounterHash;
 
+    typedef HashWrapper3<
+        LayerTagMask,
+        int,
+        LayerTagMaskHashFun
+    >::type TagMasksHash;
+
     VVCHash vvcHash_;
     EdgeCounterHash edgeCounterHash_;
+    TagMasksHash indexedTagMasks_;
 
     LayerTagCollection symbolTag_;
     LayerTagCollection discardedTag_;
