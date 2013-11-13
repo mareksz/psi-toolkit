@@ -108,8 +108,6 @@ public:
     }
 
 
-    LayerTagCollection createTagCollection(LayerTagMask mask);
-
     /**
      * returns tags sorted alphabetically
      */
