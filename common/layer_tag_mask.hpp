@@ -20,6 +20,11 @@ public:
 
     bool operator==(LayerTagMask other) const;
 
+    /**
+     * method for compatibility with HashWrapper3
+     */
+    unsigned long getHash() const;
+
     friend bool matches(
         LayerTagCollection tags,
         LayerTagMask mask);
