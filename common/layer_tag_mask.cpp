@@ -83,13 +83,13 @@ bool LayerTagMask::operator==(LayerTagMask other) const {
 }
 
 unsigned long LayerTagMask::getHash() const {
+    if (any_) return 1;
+    if (none_) return 0;
     unsigned long result = 0;
-    if (any_) result ^= 1;
-    if (none_) result ^= 2;
     BOOST_FOREACH(LayerTagCollection tagAlt, tagAlts_) {
         result ^= tagAlt.getHash();
     }
-    return result;
+    return result + 2;
 }
 
 bool matches(
