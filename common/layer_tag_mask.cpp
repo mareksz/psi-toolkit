@@ -83,13 +83,18 @@ bool LayerTagMask::operator==(LayerTagMask other) const {
 }
 
 unsigned long LayerTagMask::getHash() const {
-    if (any_) return 1;
-    if (none_) return 0;
-    unsigned long result = 0;
-    BOOST_FOREACH(LayerTagCollection tagAlt, tagAlts_) {
-        result ^= tagAlt.getHash();
+    return hash_;
+}
+
+void LayerTagMask::computeHash_() {
+    if (any_) {
+        hash_ = 1;
+    } else if (!none_) {
+        BOOST_FOREACH(LayerTagCollection tagAlt, tagAlts_) {
+            hash_ ^= tagAlt.getHash();
+        }
+        hash_ += 2;
     }
-    return result + 2;
 }
 
 bool matches(

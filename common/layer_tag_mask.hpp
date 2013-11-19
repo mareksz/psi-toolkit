@@ -38,13 +38,17 @@ private:
     LayerTagMask(LayerTagCollection tags) :
         tagAlts_(std::vector<LayerTagCollection>(1, tags)),
         any_(false),
-        none_(false){
+        none_(false),
+        hash_(0) {
+            computeHash_();
     }
 
     LayerTagMask(const std::vector<LayerTagCollection> & tagAlts) :
         tagAlts_(tagAlts),
         any_(false),
-        none_(false){
+        none_(false),
+        hash_(0) {
+            computeHash_();
     }
 
     /**
@@ -53,13 +57,19 @@ private:
      */
     LayerTagMask(bool val) :
         any_(val),
-        none_(!val) {
+        none_(!val),
+        hash_(0) {
+            computeHash_();
     }
 
     std::vector<LayerTagCollection> tagAlts_;
 
     bool any_;
     bool none_;
+
+    unsigned long hash_;
+
+    void computeHash_();
 };
 
 
