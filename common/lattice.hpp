@@ -663,6 +663,7 @@ public:
     int countAllVertices();
 
     const LayerTagCollection& getSymbolTag() const;
+    const LayerTagMask& getSymbolMask() const;
 
     int addTagMaskIndex_(LayerTagMask tagMask);
 
@@ -858,6 +859,9 @@ private:
 
     LayerTagCollection symbolTag_;
     LayerTagCollection discardedTag_;
+
+    LayerTagMask symbolMask_;
+    LayerTagMask tokenMask_;
 
     std::list<Partition> emptyPartitionList_;
 

@@ -15,7 +15,9 @@ Lattice::Lattice(AnnotationItemManager & annotationItemManager) :
     annotationItemManager_(annotationItemManager),
     nLooseVertices_(0),
     symbolTag_(layerTagManager_.createSingletonTagCollection(SYMBOL_TAG_NAME)),
-    discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME))
+    discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME)),
+    symbolMask_(layerTagManager_.getMask(SYMBOL_TAG_NAME)),
+    tokenMask_(layerTagManager_.getMask(TOKEN_TAG_NAME))
 {
     resizeImplicitEdgesStructures_();
 }
@@ -24,7 +26,9 @@ Lattice::Lattice(AnnotationItemManager & annotationItemManager, const std::strin
     annotationItemManager_(annotationItemManager),
     nLooseVertices_(0),
     symbolTag_(layerTagManager_.createSingletonTagCollection(SYMBOL_TAG_NAME)),
-    discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME))
+    discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME)),
+    symbolMask_(layerTagManager_.getMask(SYMBOL_TAG_NAME)),
+    tokenMask_(layerTagManager_.getMask(TOKEN_TAG_NAME))
 {
     appendString(text);
 }
@@ -763,7 +767,7 @@ void Lattice::runCutter(Cutter& cutter, LayerTagMask mask, LayerTagMask superMas
 
 bool Lattice::isBlank(EdgeDescriptor edge) {
     if (
-        matches(getEdgeLayerTags(edge), getLayerTagManager().getMask(TOKEN_TAG_NAME)) &&
+        matches(getEdgeLayerTags(edge), tokenMask_) &&
         getAnnotationCategory(edge) == "B"
     ) {
         return true;
@@ -962,6 +966,10 @@ const LayerTagCollection& Lattice::getSymbolTag() const {
     return symbolTag_;
 }
 
+const LayerTagMask& Lattice::getSymbolMask() const {
+    return symbolMask_;
+}
+
 int Lattice::getEdgeSourceInternalIndex_(Lattice::EdgeDescriptor edge) const {
     if (edge.isExplicit()) {
         return graph_[boost::source(edge.descriptor, graph_)].index;
@@ -1029,7 +1037,7 @@ Lattice::EdgeUsage Lattice::EdgeSequence::Iterator::nextUsage() {
         return Lattice::EdgeUsage(
             lattice_.firstOutEdge(
                 lattice_.getVertexForRawCharIndex(currentSymbol),
-                lattice_.getLayerTagManager().getMask(SYMBOL_TAG_NAME)));
+                lattice_.getSymbolMask()));
     } else {
         if (ei_ == edgeSequence_.links.end()) {
             throw NoEdgeException("EdgeSequence::Iterator has no next edges.");
@@ -1042,7 +1050,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::firstEdge(Lattice & lattice) cons
     if (links.empty()) {
         return lattice.firstOutEdge(
             lattice.getVertexForRawCharIndex(begin),
-            lattice.getLayerTagManager().getMask(SYMBOL_TAG_NAME)
+            lattice.getSymbolMask()
         );
     } else {
         return links.front().getEdge();
@@ -1053,7 +1061,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::lastEdge(Lattice & lattice) const
     if (links.empty()) {
         return lattice.firstInEdge(
             lattice.getVertexForRawCharIndex(end),
-            lattice.getLayerTagManager().getMask(SYMBOL_TAG_NAME)
+            lattice.getSymbolMask()
         );
     } else {
         return links.back().getEdge();
@@ -1071,7 +1079,7 @@ Lattice::EdgeDescriptor Lattice::EdgeSequence::nthEdge(Lattice & lattice, size_t
 
         return lattice.firstOutEdge(
             lattice.getVertexForRawCharIndex(foundIter - latticeText),
-            lattice.getLayerTagManager().getMask(SYMBOL_TAG_NAME)
+            lattice.getSymbolMask()
         );
     } else {
         return links[index].getEdge();
