@@ -237,6 +237,7 @@ private:
     typedef StringBimap::value_type StringBimapItem;
     StringBimap m_;
     LayerTagCollection symbolTag_;
+    LayerTagCollection planeTags_;
 
 };
 

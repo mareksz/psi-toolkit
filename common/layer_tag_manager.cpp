@@ -14,6 +14,12 @@ LayerTagCollection LayerTagManager::createSingletonTagCollection(std::string tag
         result.resize_(tagIndex + 1);
     }
     result.v_.set(tagIndex, true);
+    if (tagName[0] == '!') {
+        if (tagIndex >= planeTags_.v_.size()) {
+            planeTags_.resize_(tagIndex + 1);
+        }
+        planeTags_.v_.set(tagIndex, true);
+    }
     return result;
 }
 
@@ -26,6 +32,12 @@ LayerTagCollection LayerTagManager::createTagCollection(std::list<std::string> t
             result.resize_(tagIndex + 1);
         }
         result.v_.set(tagIndex, true);
+        if (tagName[0] == '!') {
+            if (tagIndex >= planeTags_.v_.size()) {
+                planeTags_.resize_(tagIndex + 1);
+            }
+            planeTags_.v_.set(tagIndex, true);
+        }
     }
     return result;
 }
@@ -39,6 +51,12 @@ LayerTagCollection LayerTagManager::createTagCollection(std::vector<std::string>
             result.resize_(tagIndex + 1);
         }
         result.v_.set(tagIndex, true);
+        if (tagName[0] == '!') {
+            if (tagIndex >= planeTags_.v_.size()) {
+                planeTags_.resize_(tagIndex + 1);
+            }
+            planeTags_.v_.set(tagIndex, true);
+        }
     }
     return result;
 }
@@ -96,26 +114,17 @@ LayerTagMask LayerTagManager::getAlternativeMaskFromTagNames(
 }
 
 LayerTagCollection LayerTagManager::planeTags() {
-    LayerTagCollection result = LayerTagCollection(m_.size());
-    for (size_t i = 0; i < m_.size(); ++i) {
-        if (m_.right.at(i).at(0) == '!') {
-            result.v_.set(i);
-        }
-    }
-    return result;
+    return planeTags_;
 }
 
 LayerTagCollection LayerTagManager::onlyPlaneTags(LayerTagCollection tags) {
-    return createIntersection(planeTags(), tags);
+    return createIntersection(planeTags_, tags);
 }
 
 bool LayerTagManager::areInTheSamePlane(LayerTagCollection tags1, LayerTagCollection tags2) {
-    for (size_t i = 0; i < m_.size(); ++i) {
-        if (m_.right.at(i)[0] == '!' && tags1.v_[i] != tags2.v_[i]) {
-            return false;
-        }
-    }
-    return true;
+    LayerTagCollection ptags1 = onlyPlaneTags(tags1);
+    LayerTagCollection ptags2 = onlyPlaneTags(tags2);
+    return ptags1 == ptags2;
 }
 
 bool LayerTagManager::isThere(std::string tagName, LayerTagCollection tags) {
