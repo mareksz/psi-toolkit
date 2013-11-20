@@ -9,10 +9,11 @@ LayerTagManager::LayerTagManager() : symbolTag_(createSingletonTagCollection("sy
 LayerTagCollection LayerTagManager::createSingletonTagCollection(std::string tagName) {
     LayerTagCollection result = LayerTagCollection();
     m_.insert(StringBimapItem(tagName, m_.size()));
-    if (m_.left.at(tagName) >= result.v_.size()) {
-        result.resize_(m_.left.at(tagName) + 1);
+    size_t tagIndex = m_.left.at(tagName);
+    if (tagIndex >= result.v_.size()) {
+        result.resize_(tagIndex + 1);
     }
-    result.v_.set(m_.left.at(tagName), true);
+    result.v_.set(tagIndex, true);
     return result;
 }
 
@@ -20,10 +21,11 @@ LayerTagCollection LayerTagManager::createTagCollection(std::list<std::string> t
     LayerTagCollection result = LayerTagCollection();
     BOOST_FOREACH(std::string tagName, tagNames) {
         m_.insert(StringBimapItem(tagName, m_.size()));
-        if (m_.left.at(tagName) >= result.v_.size()) {
-            result.resize_(m_.left.at(tagName) + 1);
+        size_t tagIndex = m_.left.at(tagName);
+        if (tagIndex >= result.v_.size()) {
+            result.resize_(tagIndex + 1);
         }
-        result.v_.set(m_.left.at(tagName), true);
+        result.v_.set(tagIndex, true);
     }
     return result;
 }
@@ -32,10 +34,11 @@ LayerTagCollection LayerTagManager::createTagCollection(std::vector<std::string>
     LayerTagCollection result = LayerTagCollection();
     BOOST_FOREACH(std::string tagName, tagNames) {
         m_.insert(StringBimapItem(tagName, m_.size()));
-        if (m_.left.at(tagName) >= result.v_.size()) {
-            result.resize_(m_.left.at(tagName) + 1);
+        size_t tagIndex = m_.left.at(tagName);
+        if (tagIndex >= result.v_.size()) {
+            result.resize_(tagIndex + 1);
         }
-        result.v_.set(m_.left.at(tagName), true);
+        result.v_.set(tagIndex, true);
     }
     return result;
 }
@@ -53,10 +56,14 @@ std::list<std::string> LayerTagManager::getTagNames(const LayerTagCollection& ta
     return result;
 }
 
+LayerTagMask LayerTagManager::getSingletonMask(std::string tagName) {
+    return getMask(createSingletonTagCollection(tagName));
+}
+
 LayerTagMask LayerTagManager::getMask(std::string specification) {
     std::list< std::list<std::string> > tagNames = splitMaskSpecification(specification);
     if (tagNames.empty()) {
-        return getMask(createSingletonTagCollection(specification));
+        return getSingletonMask(specification);
     } else {
         return getAlternativeMaskFromTagNames(tagNames);
     }
@@ -103,9 +110,12 @@ LayerTagCollection LayerTagManager::onlyPlaneTags(LayerTagCollection tags) {
 }
 
 bool LayerTagManager::areInTheSamePlane(LayerTagCollection tags1, LayerTagCollection tags2) {
-    LayerTagCollection tagsP1 = onlyPlaneTags(tags1);
-    LayerTagCollection tagsP2 = onlyPlaneTags(tags2);
-    return tagsP1 == tagsP2;
+    for (size_t i = 0; i < m_.size(); ++i) {
+        if (m_.right.at(i)[0] == '!' && tags1.v_[i] != tags2.v_[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool LayerTagManager::isThere(std::string tagName, LayerTagCollection tags) {

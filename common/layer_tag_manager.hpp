@@ -124,6 +124,8 @@ public:
         return LayerTagMask(tagCollection);
     }
 
+    LayerTagMask getSingletonMask(std::string tagName);
+
     /**
      * Return a mask that is an alternative of conjunctions of given tags.
      * Specification is a list of lists of tags separated by ',' (conjunction),
