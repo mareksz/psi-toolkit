@@ -194,7 +194,7 @@ void TpTokenizer::Worker::doRun() {
 
     TpTokenizer& tpProcessor = dynamic_cast<TpTokenizer&>(processor_);
 
-    LayerTagMask symbolMask = lattice_.getLayerTagManager().getMask("symbol");
+    LayerTagMask symbolMask = lattice_.getSymbolMask();
 
     LayerTagMask textMask = lattice_.getLayerTagManager().getMask(
         lattice_.getLayerTagManager()

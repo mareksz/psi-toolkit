@@ -163,7 +163,7 @@ void LinkParser::parse(Lattice & lattice) {
                 while (i < edgeDescription.end) {
                     Lattice::EdgeDescriptor e = lattice.firstOutEdge(
                         lattice.getVertexForRawCharIndex(i),
-                        lattice.getLayerTagManager().getMask("symbol")
+                        lattice.getSymbolMask()
                     );
                     builder.addEdge(e);
                     i += lattice.getEdgeLength(e);
@@ -221,7 +221,7 @@ void LinkParser::fillInBlanks(Lattice & lattice) {
                 while (i < edgeBeginIndex) {
                     Lattice::EdgeDescriptor e = lattice.firstOutEdge(
                         lattice.getVertexForRawCharIndex(i),
-                        lattice.getLayerTagManager().getMask("symbol")
+                        lattice.getSymbolMask()
                     );
                     builder.addEdge(e);
                     i += lattice.getEdgeLength(e);

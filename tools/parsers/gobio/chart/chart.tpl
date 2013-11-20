@@ -277,7 +277,7 @@ typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>::edge_source(
     bool skip_blank
 ) {
     if (skip_blank) {
-        LayerTagMask maskToken = lattice_.getLayerTagManager().getMask("token");
+        LayerTagMask maskToken = lattice_.getLayerTagManager().getSingletonMask("token");
         Lattice::InOutEdgesIterator iei
             = lattice_.inEdges(lattice_.getEdgeSource(edge), maskToken);
         while (iei.hasNext()) {
@@ -296,7 +296,7 @@ typename chart<C,S,V,R,I>::vertex_descriptor chart<C,S,V,R,I>::edge_target(
     bool skip_blank
 ) {
     if (skip_blank) {
-        LayerTagMask maskToken = lattice_.getLayerTagManager().getMask("token");
+        LayerTagMask maskToken = lattice_.getLayerTagManager().getSingletonMask("token");
         Lattice::InOutEdgesIterator oei
             = lattice_.outEdges(lattice_.getEdgeTarget(edge), maskToken);
         while (oei.hasNext()) {

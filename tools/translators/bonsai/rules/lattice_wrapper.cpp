@@ -21,7 +21,7 @@ Lattice::EdgeSequence getWordTokenSequence(
     Lattice::EdgeSequence::Builder seqBuilder(lattice);
 
     LayerTagMask tokenMask
-      = lattice.getLayerTagManager().getMask(__TOKEN_TAG__);
+      = lattice.getLayerTagManager().getSingletonMask(__TOKEN_TAG__);
     Lattice::EdgeSequence tokens = lattice.getPath(start, tokenMask);
     Lattice::EdgeSequence::Iterator tokensIt
       = Lattice::EdgeSequence::Iterator(lattice, tokens);
@@ -77,7 +77,7 @@ std::map<int, int> getCharWordTokenMap(
     std::map<int, int> charTokenMap;
 
     LayerTagMask tokenMask
-      = lattice.getLayerTagManager().getMask(__TOKEN_TAG__);
+      = lattice.getLayerTagManager().getSingletonMask(__TOKEN_TAG__);
     Lattice::EdgeSequence tokens = lattice.getPath(start, tokenMask);
     Lattice::EdgeSequence::Iterator tokensIt(lattice, tokens);
 

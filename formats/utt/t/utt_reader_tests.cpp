@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE( utt_lattice_reader ) {
 
     reader->readIntoLattice("../formats/utt/t/files/fr_simple_puddle_input.txt", lattice);
 
-    LayerTagMask rawMask = lattice.getLayerTagManager().getMask("symbol");
+    LayerTagMask rawMask = lattice.getSymbolMask();
     Lattice::EdgesSortedBySourceIterator rei = lattice.edgesSortedBySource(rawMask);
 
     BOOST_CHECK(rei.hasNext());
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE( utt_lattice_reader ) {
     BOOST_CHECK(rei.hasNext());
     BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(rei.next()), "'e");
 
-    LayerTagMask tokenMask = lattice.getLayerTagManager().getMask("token");
+    LayerTagMask tokenMask = lattice.getLayerTagManager().getSingletonMask("token");
     Lattice::EdgesSortedBySourceIterator tei = lattice.edgesSortedBySource(tokenMask);
 
     BOOST_CHECK(tei.hasNext());
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE( utt_lattice_reader ) {
     BOOST_CHECK(tei.hasNext());
     BOOST_CHECK_EQUAL(lattice.getAnnotationCategory(tei.next()), "'âge'");
 
-    LayerTagMask sentenceMask = lattice.getLayerTagManager().getMask("sentence");
+    LayerTagMask sentenceMask = lattice.getLayerTagManager().getSingletonMask("sentence");
     Lattice::EdgesSortedBySourceIterator sei = lattice.edgesSortedBySource(sentenceMask);
 
     BOOST_CHECK(sei.hasNext());

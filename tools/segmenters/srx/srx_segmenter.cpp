@@ -394,7 +394,7 @@ const std::string SrxSentenceCutter::DEFAULT_SENTENCE_CATEGORY="sen";
 void SrxSegmenter::Worker::doRun() {
     DEBUG("starting srx segmenter...");
 
-    LayerTagMask symbolMask = lattice_.getLayerTagManager().getMask("symbol");
+    LayerTagMask symbolMask = lattice_.getSymbolMask();
     SrxSentenceCutter sentenceCutter(dynamic_cast<SrxSegmenter&>(processor_));
 
     LayerTagMask textMask = lattice_.getLayerTagManager().getMask(

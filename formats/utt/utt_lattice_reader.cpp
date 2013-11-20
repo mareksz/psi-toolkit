@@ -133,7 +133,7 @@ void UTTLatticeReader::Worker::doRun() {
                 Lattice::VertexDescriptor to
                     = lattice_.getVertexForRawCharIndex(conv.psi(endPosition));
 
-                LayerTagMask rawMask = lattice_.getLayerTagManager().getMask("symbol");
+                LayerTagMask rawMask = lattice_.getSymbolMask();
 
                 Lattice::EdgeSequence::Builder seqBuilder(lattice_);
 
@@ -189,7 +189,7 @@ void UTTLatticeReader::Worker::doRun() {
                     throw FileFormatException(errorSs.str());
                 }
 
-                LayerTagMask tokenMask = lattice_.getLayerTagManager().getMask("token");
+                LayerTagMask tokenMask = lattice_.getLayerTagManager().getSingletonMask("token");
 
                 Lattice::EdgeSequence::Builder sentenceBuilder(lattice_);
                 for (int i = beginningOfSentencePosition; i < endPosition; ++i) {

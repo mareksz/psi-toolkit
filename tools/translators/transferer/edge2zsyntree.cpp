@@ -23,7 +23,7 @@ EdgeToZsyntreeConverter::EdgeToZsyntreeConverter(Lattice& latticeArg)
      lexemeTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("lexeme")),
      formTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("form")),
      parseTerminalTag_(latticeArg.getLayerTagManager().createSingletonTagCollection("parse-terminal")),
-     equivMask_(lattice.getLayerTagManager().getMask("bilexicon")) {
+     equivMask_(lattice.getLayerTagManager().getSingletonMask("bilexicon")) {
 }
 
 zsyntree* EdgeToZsyntreeConverter::convertEdgeToZsyntree(

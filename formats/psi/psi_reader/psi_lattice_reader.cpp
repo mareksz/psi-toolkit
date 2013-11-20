@@ -204,7 +204,7 @@ void PsiLatticeReader::Worker::doRun() {
 
             // Defining partitions.
 
-            LayerTagMask rawMask = lattice_.getLayerTagManager().getMask("symbol");
+            LayerTagMask rawMask = lattice_.getSymbolMask();
             std::list<PsiLRPartitionElements> partitionsElements;
             Lattice::VertexDescriptor currentVertex = from;
             Lattice::EdgeDescriptor currentEdge;

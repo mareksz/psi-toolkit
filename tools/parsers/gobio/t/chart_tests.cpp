@@ -430,22 +430,22 @@ BOOST_AUTO_TEST_CASE( chart_categories ) {
     BOOST_CHECK_EQUAL(
         ch.edge_category(
             lattice.firstOutEdge(lattice.getFirstVertex(),
-            lattice.getLayerTagManager().getMask("normalization"))),
+            lattice.getLayerTagManager().getSingletonMask("normalization"))),
         "'niebieskiego'");
     BOOST_CHECK_EQUAL(
         ch.edge_category(
             lattice.firstOutEdge(lattice.getFirstVertex(),
-            lattice.getLayerTagManager().getMask("term"))),
+            lattice.getLayerTagManager().getSingletonMask("term"))),
         "'niebieskiego'");
     BOOST_CHECK_EQUAL(
         ch.edge_category(
             lattice.firstOutEdge(lattice.getFirstVertex(),
-            lattice.getLayerTagManager().getMask("token"))),
+            lattice.getLayerTagManager().getSingletonMask("token"))),
         "'niebieskiego'");
     BOOST_CHECK_EQUAL(
         ch.edge_category(
             lattice.firstOutEdge(lattice.getFirstVertex(),
-            lattice.getLayerTagManager().getMask("form"))),
+            lattice.getLayerTagManager().getSingletonMask("form"))),
         "'$niebieski'");
 
 }

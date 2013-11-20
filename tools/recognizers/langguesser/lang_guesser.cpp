@@ -304,7 +304,7 @@ void LangGuesser::Worker::doRun() {
 }
 
 bool LangGuesser::Worker::guessLanguage_() {
-    LayerTagMask textMask = lattice_.getLayerTagManager().getMask("frag");
+    LayerTagMask textMask = lattice_.getLayerTagManager().getSingletonMask("frag");
     Lattice::EdgesSortedBySourceIterator edgeIter(lattice_, textMask);
 
     while (edgeIter.hasNext()) {

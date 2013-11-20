@@ -443,7 +443,7 @@ Lattice::EdgeDescriptor NKJPLatticeReader::Worker::appendSegmentToLattice_(
         Lattice::EdgeSequence::Builder sBuilder(lattice_);
         sBuilder.addEdge(lattice_.firstOutEdge(
             sFrom,
-            lattice_.getLayerTagManager().getMask("symbol")
+            lattice_.getSymbolMask()
         ));
         lattice_.addEdge(sFrom, sTo, sItem, getTags_(mainTag), sBuilder.build());
     }
@@ -463,7 +463,7 @@ Lattice::EdgeDescriptor NKJPLatticeReader::Worker::appendSegmentToLattice_(
         while (currentVertex != to) {
             currentEdge = lattice_.firstOutEdge(
                 currentVertex,
-                lattice_.getLayerTagManager().getMask("symbol")
+                lattice_.getSymbolMask()
             );
             seqBuilder.addEdge(currentEdge);
             currentVertex = lattice_.getEdgeTarget(currentEdge);

@@ -16,8 +16,8 @@ Lattice::Lattice(AnnotationItemManager & annotationItemManager) :
     nLooseVertices_(0),
     symbolTag_(layerTagManager_.createSingletonTagCollection(SYMBOL_TAG_NAME)),
     discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME)),
-    symbolMask_(layerTagManager_.getMask(SYMBOL_TAG_NAME)),
-    tokenMask_(layerTagManager_.getMask(TOKEN_TAG_NAME))
+    symbolMask_(layerTagManager_.getSingletonMask(SYMBOL_TAG_NAME)),
+    tokenMask_(layerTagManager_.getSingletonMask(TOKEN_TAG_NAME))
 {
     resizeImplicitEdgesStructures_();
 }
@@ -27,8 +27,8 @@ Lattice::Lattice(AnnotationItemManager & annotationItemManager, const std::strin
     nLooseVertices_(0),
     symbolTag_(layerTagManager_.createSingletonTagCollection(SYMBOL_TAG_NAME)),
     discardedTag_(layerTagManager_.createSingletonTagCollection(DISCARDED_TAG_NAME)),
-    symbolMask_(layerTagManager_.getMask(SYMBOL_TAG_NAME)),
-    tokenMask_(layerTagManager_.getMask(TOKEN_TAG_NAME))
+    symbolMask_(layerTagManager_.getSingletonMask(SYMBOL_TAG_NAME)),
+    tokenMask_(layerTagManager_.getSingletonMask(TOKEN_TAG_NAME))
 {
     appendString(text);
 }
@@ -235,9 +235,9 @@ Lattice::EdgeDescriptor Lattice::addEdge(
         // updating hidden edges, where applicable
         if (tags == getSymbolTag()) {
             try {
-                firstOutEdge(from, getLayerTagManager().getMask(getSymbolTag()));
+                firstOutEdge(from, symbolMask_);
                 visibleImplicitOutEdges_[from] = true;
-                EdgeDescriptor ed = firstInEdge(to, getLayerTagManager().getMask(getSymbolTag()));
+                EdgeDescriptor ed = firstInEdge(to, symbolMask_);
                 visibleImplicitOutEdges_[getEdgeSource(ed)] = true;
             } catch (NoEdgeException) {
             }
@@ -837,7 +837,7 @@ void Lattice::correctionInsert(VertexDescriptor here, std::string text) {
     }
     try {
         EdgeDescriptor nextEdge
-            = firstOutEdge(here, getLayerTagManager().getMask(getSymbolTag()));
+            = firstOutEdge(here, symbolMask_);
         addEdge(to, getEdgeTarget(nextEdge), getEdgeAnnotationItem(nextEdge), getSymbolTag());
     } catch (NoEdgeException) {
     }
@@ -847,7 +847,7 @@ void Lattice::correctionErase(VertexDescriptor from, VertexDescriptor to) {
     if (from != to) {
         try {
             EdgeDescriptor nextEdge
-                = firstOutEdge(to, getLayerTagManager().getMask(getSymbolTag()));
+                = firstOutEdge(to, symbolMask_);
             addEdge(
                 from,
                 getEdgeTarget(nextEdge),
@@ -857,7 +857,7 @@ void Lattice::correctionErase(VertexDescriptor from, VertexDescriptor to) {
         } catch (NoEdgeException) {
             try {
                 EdgeDescriptor prevEdge
-                    = firstOutEdge(to, getLayerTagManager().getMask(getSymbolTag()));
+                    = firstOutEdge(to, symbolMask_);
                 addEdge(
                     getEdgeSource(prevEdge),
                     to,
@@ -882,7 +882,7 @@ void Lattice::correctionReplace(VertexDescriptor from, VertexDescriptor to, std:
             std::string symbol;
             utf8::append(utf8::next(iter, end), std::back_inserter(symbol));
             EdgeDescriptor edge
-                = firstOutEdge(from, getLayerTagManager().getMask(getSymbolTag()));
+                = firstOutEdge(from, symbolMask_);
             VertexDescriptor vertex = getEdgeTarget(edge);
             if (symbol != getAnnotationText(edge)) {
                 addEdge(

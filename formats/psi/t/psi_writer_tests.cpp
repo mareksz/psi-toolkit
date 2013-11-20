@@ -316,7 +316,7 @@ BOOST_AUTO_TEST_CASE( psi_lattice_roles ) {
     lattice_preparators::prepareSimpleLattice(lattice);
 
     LayerTagMask
-        tokenTag = lattice.getLayerTagManager().getMask("token");
+        tokenTag = lattice.getLayerTagManager().getSingletonMask("token");
 
     Lattice::VertexDescriptor firstVertex = lattice.getFirstVertex();
 

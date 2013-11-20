@@ -223,7 +223,7 @@ void Unumsunt::convertTags(Lattice & lattice) {
 
     std::map<Lattice::EdgeDescriptor, Lattice::EdgeDescriptor> replacements;
 
-    LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getMask(sourceTagset_);
+    LayerTagMask maskSourceTagset = lattice.getLayerTagManager().getSingletonMask(sourceTagset_);
     LayerTagCollection tagTargetTagset
         = lattice.getLayerTagManager().createTagCollectionFromList(
             boost::assign::list_of("tagset-converter")(targetTagset_.c_str()));

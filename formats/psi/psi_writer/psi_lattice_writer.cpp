@@ -108,7 +108,7 @@ void PsiLatticeWriter::Worker::printEdge(
 
                 Lattice::EdgeDescriptor rawEdge = lattice_.firstOutEdge(
                     lattice_.getVertexForRawCharIndex(i),
-                    lattice_.getLayerTagManager().getMask("symbol")
+                    lattice_.getSymbolMask()
                 );
 
                 ++ordinal;

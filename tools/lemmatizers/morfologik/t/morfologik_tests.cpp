@@ -56,8 +56,8 @@ BOOST_AUTO_TEST_CASE( lexeme_level ) {
     lattice.appendStringWithSymbols(paragraph);
 
     BySpacesCutter cutter;
-    LayerTagMask symbolMask = lattice.getLayerTagManager().getMask("symbol");
-    LayerTagMask textMask = lattice.getLayerTagManager().getMask("text");
+    LayerTagMask symbolMask = lattice.getLayerTagManager().getSingletonMask("symbol");
+    LayerTagMask textMask = lattice.getLayerTagManager().getSingletonMask("text");
 
     LayerTagCollection textTags(
         lattice.getLayerTagManager().createSingletonTagCollection("text"));
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE( lexeme_level ) {
 
     // now checking
     {
-        LayerTagMask lemmaMask_ = lattice.getLayerTagManager().getMask("lexeme");
+        LayerTagMask lemmaMask_ = lattice.getLayerTagManager().getSingletonMask("lexeme");
         Lattice::EdgesSortedByTargetIterator lemmaIter = lattice.edgesSortedByTarget(lemmaMask_);
 
         BOOST_CHECK(lemmaIter.hasNext());
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE( lexeme_level ) {
     }
 
     {
-        LayerTagMask formMask_ = lattice.getLayerTagManager().getMask("form");
+        LayerTagMask formMask_ = lattice.getLayerTagManager().getSingletonMask("form");
         Lattice::EdgesSortedByTargetIterator formIter = lattice.edgesSortedByTarget(formMask_);
 
         BOOST_CHECK(formIter.hasNext());
@@ -135,8 +135,8 @@ BOOST_AUTO_TEST_CASE( many_lexemes ) {
     lattice.appendStringWithSymbols(paragraph);
 
     BySpacesCutter cutter;
-    LayerTagMask symbolMask = lattice.getLayerTagManager().getMask("symbol");
-    LayerTagMask textMask = lattice.getLayerTagManager().getMask("text");
+    LayerTagMask symbolMask = lattice.getLayerTagManager().getSingletonMask("symbol");
+    LayerTagMask textMask = lattice.getLayerTagManager().getSingletonMask("text");
 
     LayerTagCollection textTags(
         lattice.getLayerTagManager().createSingletonTagCollection("text"));
@@ -152,7 +152,7 @@ BOOST_AUTO_TEST_CASE( many_lexemes ) {
 
     // now checking
     {
-        LayerTagMask lemmaMask_ = lattice.getLayerTagManager().getMask("lexeme");
+        LayerTagMask lemmaMask_ = lattice.getLayerTagManager().getSingletonMask("lexeme");
         Lattice::EdgesSortedByTargetIterator lemmaIter = lattice.edgesSortedByTarget(lemmaMask_);
 
         BOOST_CHECK(lemmaIter.hasNext());
