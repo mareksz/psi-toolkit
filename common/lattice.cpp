@@ -226,10 +226,11 @@ Lattice::EdgeDescriptor Lattice::addEdge(
     if (needToAddEdge) {
 
         // updating the edge counter hash
-        if (!edgeCounterHash_[vpair]) {
-            edgeCounterHash_[vpair] = 1;
+        int & edgeCounter = edgeCounterHash_[vpair];
+        if (!edgeCounter) {
+            edgeCounter = 1;
         } else {
-            ++edgeCounterHash_[vpair];
+            ++edgeCounter;
         }
 
         // updating hidden edges, where applicable
