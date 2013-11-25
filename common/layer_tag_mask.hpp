@@ -1,7 +1,11 @@
 #ifndef LAYER_TAG_MASK_HDR
 #define LAYER_TAG_MASK_HDR
 
+
+#include <vector>
+
 #include "layer_tag_collection.hpp"
+
 
 class LayerTagMask {
 
