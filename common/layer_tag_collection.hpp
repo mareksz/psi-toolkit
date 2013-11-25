@@ -3,7 +3,6 @@
 
 #include <bitset>
 
-#include <boost/dynamic_bitset.hpp>
 
 /*!
   A large number of various annotations originated from various
@@ -82,12 +81,12 @@ private:
     /**
      * resizes to the nearest power of two
      */
-    boost::dynamic_bitset<>::size_type resize_(boost::dynamic_bitset<>::size_type size);
+    size_t resize_(size_t size);
 
     /**
      * equalizes lengths of two LayerTagCollection vectors
      */
-    boost::dynamic_bitset<>::size_type resize_(LayerTagCollection& other);
+    size_t resize_(LayerTagCollection& other);
 
 };
 

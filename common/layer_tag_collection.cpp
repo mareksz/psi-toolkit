@@ -1,5 +1,8 @@
 #include "layer_tag_collection.hpp"
 
+#include <cassert>
+
+
 bool LayerTagCollection::isEmpty() {
     return v_.none();
 }
@@ -24,16 +27,12 @@ unsigned long LayerTagCollection::getHash() const {
     return v_.to_ulong();
 }
 
-boost::dynamic_bitset<>::size_type LayerTagCollection::resize_(
-    boost::dynamic_bitset<>::size_type size) {
-
-    if (size > v_.size()) {
-        throw std::exception();
-    }
+size_t LayerTagCollection::resize_(size_t size) {
+    assert (size <= v_.size()); // TODO resize if size > 64
     return v_.size();
 }
 
-boost::dynamic_bitset<>::size_type LayerTagCollection::resize_(LayerTagCollection& other) {
+size_t LayerTagCollection::resize_(LayerTagCollection& other) {
     return resize_(other.resize_(v_.size()));
 }
 
