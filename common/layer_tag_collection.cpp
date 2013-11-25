@@ -9,7 +9,7 @@ bool LayerTagCollection::isNonempty() {
 }
 
 bool LayerTagCollection::operator<(LayerTagCollection other) const {
-    return v_.size() < other.v_.size() || (v_.size() == other.v_.size() && v_ < other.v_);
+    return v_.size() < other.v_.size() || (v_.size() == other.v_.size() && (v_ & other.v_) == v_);
 }
 
 bool LayerTagCollection::operator==(const LayerTagCollection& other) const {
@@ -28,7 +28,7 @@ boost::dynamic_bitset<>::size_type LayerTagCollection::resize_(
     boost::dynamic_bitset<>::size_type size) {
 
     if (size > v_.size()) {
-        v_.resize(size % 32 == 0 ? size : size + 32 - size % 32);
+        throw std::exception();
     }
     return v_.size();
 }
@@ -63,5 +63,5 @@ bool isSubset(
 
     tag_list_a.resize_(tag_list_b);
 
-    return tag_list_a.v_.is_subset_of(tag_list_b.v_);
+    return (tag_list_a.v_ & tag_list_b.v_) == tag_list_a.v_;
 }

@@ -1,6 +1,8 @@
 #ifndef LAYER_TAG_COLLECTION_HDR
 #define LAYER_TAG_COLLECTION_HDR
 
+#include <bitset>
+
 #include <boost/dynamic_bitset.hpp>
 
 /*!
@@ -68,14 +70,14 @@ private:
     /**
      * private constructor! only LayerTagManager can be used to create layer tag collecions
      */
-    LayerTagCollection() : v_(32) {};
+    LayerTagCollection() {};
 
     /**
      * private constructor! only LayerTagManager can be used to create layer tag collecions
      */
-    LayerTagCollection(int size) : v_(size % 32 == 0 ? size : size + 32 - size % 32) { };
+    LayerTagCollection(int /* size */) { };
 
-    boost::dynamic_bitset<> v_;
+    std::bitset<64> v_;
 
     /**
      * resizes to the nearest power of two
