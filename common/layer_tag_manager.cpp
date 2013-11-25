@@ -64,11 +64,13 @@ LayerTagCollection LayerTagManager::createTagCollection(std::vector<std::string>
 std::list<std::string> LayerTagManager::getTagNames(const LayerTagCollection& tagCollection) {
     std::list<std::string> result;
     for (
-        size_t i = tagCollection.v_.find_first();
-        i != boost::dynamic_bitset<>::npos;
-        i = tagCollection.v_.find_next(i)
+        size_t i = 0;
+        i < tagCollection.v_.size();
+        ++i
     ) {
-        result.push_back(m_.right.at(i));
+        if (tagCollection.v_[i]) {
+            result.push_back(m_.right.at(i));
+        }
     }
     result.sort();
     return result;
