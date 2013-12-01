@@ -736,7 +736,10 @@ boost::optional<Lattice::EdgeDescriptor> Lattice::getParent(
 }
 
 
-boost::optional<Lattice::EdgeDescriptor> Lattice::getEdgeOrigin(std::string tagName, EdgeDescriptor edge) {
+boost::optional<Lattice::EdgeDescriptor> Lattice::getEdgeOrigin(
+    std::string tagName,
+    EdgeDescriptor edge) {
+
     boost::optional<EdgeDescriptor> parent = getParent(edge);
     while (parent) {
         if (getLayerTagManager().isThere(tagName, getEdgeLayerTags(*parent))) {
