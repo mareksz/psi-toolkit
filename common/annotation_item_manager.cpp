@@ -4,6 +4,9 @@
 #include <sstream>
 
 
+#include "logging.hpp"
+
+
 AnnotationItemManager::AnnotationItemManager() {
     zObjectsHolder_ = zvector::generate(EMPTY_ZOBJECTS_HOLDER);
     zSymbolTable_ = zsymboltable::generate(zObjectsHolder_);
@@ -106,14 +109,16 @@ std::list< std::pair<std::string, zvalue> > AnnotationItemManager::getValuesAsZv
 ) {
     std::list< std::pair<std::string, zvalue> > result;
     for (
-        boost::dynamic_bitset<>::size_type i = annotationItem.attributes_.find_first();
-        i != boost::dynamic_bitset<>::npos && i < m_.size();
-        i = annotationItem.attributes_.find_next(i)
+        size_t i = 0;
+        i < m_.size();
+        ++i
     ) {
-        result.push_back(std::pair<std::string, zvalue>(
-            m_.right.at(i),
-            annotationItem.values_[i]
-        ));
+        if (annotationItem.attributes_[i]) {
+            result.push_back(std::pair<std::string, zvalue>(
+                m_.right.at(i),
+                annotationItem.values_[i]
+            ));
+        }
     }
     return result;
 }
@@ -123,14 +128,16 @@ std::list< std::pair<std::string, std::string> > AnnotationItemManager::getValue
 ) {
     std::list< std::pair<std::string, std::string> > result;
     for (
-        boost::dynamic_bitset<>::size_type i = annotationItem.attributes_.find_first();
-        i != boost::dynamic_bitset<>::npos && i < m_.size();
-        i = annotationItem.attributes_.find_next(i)
+        size_t i = 0;
+        i < m_.size();
+        ++i
     ) {
-        result.push_back(std::pair<std::string, std::string>(
-            m_.right.at(i),
-            to_string(annotationItem.values_[i])
-        ));
+        if (annotationItem.attributes_[i]) {
+            result.push_back(std::pair<std::string, std::string>(
+                m_.right.at(i),
+                to_string(annotationItem.values_[i])
+            ));
+        }
     }
     return result;
 }
