@@ -1,6 +1,7 @@
 #ifndef ANNOTATION_ITEM_HDR
 #define ANNOTATION_ITEM_HDR
 
+#include <bitset>
 #include <locale>
 #include <string>
 #include <vector>
@@ -16,24 +17,24 @@ class AnnotationItem {
 public:
     AnnotationItem(const std::string& category) :
         category_(category),
-        attributes_(32)
+        attributes_()
     { }
 
     AnnotationItem(const std::string& category, StringFrag text) :
         category_(category),
         text_(text),
-        attributes_(32)
+        attributes_()
     { }
 
     AnnotationItem(const std::string& category, int size) :
         category_(category),
-        attributes_(size % 32 == 0 ? size : size + 32 - size % 32)
+        attributes_()
     { }
 
     AnnotationItem(const std::string& category, StringFrag text, int size) :
         category_(category),
         text_(text),
-        attributes_(size % 32 == 0 ? size : size + 32 - size % 32)
+        attributes_()
     { }
 
     AnnotationItem(const AnnotationItem& item, const std::string& newCategory) :
@@ -103,7 +104,7 @@ private:
      * The value of attributes_[n] indicates whether the value of the n'th attribute
      * is present in the values_ vector.
      */
-    boost::dynamic_bitset<> attributes_;
+    std::bitset<128> attributes_;
 
     size_t resize_(size_t size);
     bool areAttributesTheSame_(const AnnotationItem& other) const;

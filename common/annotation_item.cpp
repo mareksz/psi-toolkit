@@ -38,9 +38,7 @@ size_t AnnotationItem::resize_(size_t size) {
     if (size > values_.size()) {
         values_.resize(size);
     }
-    if (size > attributes_.size()) {
-        attributes_.resize(size % 32 == 0 ? size : size + 32 - size % 32);
-    }
+    assert (size <= attributes_.size()); // TODO resize if size > 64
     return attributes_.size();
 }
 
