@@ -26,12 +26,12 @@ public:
         attributes_()
     { }
 
-    AnnotationItem(const std::string& category, int size) :
+    AnnotationItem(const std::string& category, int /* size */) :
         category_(category),
         attributes_()
     { }
 
-    AnnotationItem(const std::string& category, StringFrag text, int size) :
+    AnnotationItem(const std::string& category, StringFrag text, int /* size */) :
         category_(category),
         text_(text),
         attributes_()
