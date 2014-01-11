@@ -1,0 +1,15 @@
+Explanation of symbols used to denote grammatical categories for Polish:
+
+* C (_czasownik_) - verb
+* LG (_liczebnik główny_) - cardinal numeral
+* P (_przymiotnik_) - adjective
+* PR (_przyimek_) - preposition
+* PS (_przysłówek_) - adverb
+* R (_rzeczownik_) - noun
+* S (_spójnik_) - conjunction
+* ZP (_zaimek przymiotny_) - adjective pronoun
+* ZRn (_zaimek rzeczowny nieokreślony_) - indefinite noun pronoun
+* ZRo (_zaimek rzeczowny osobowy_) - personal noun pronoun
+* ZRs (_zaimek „się”_) - pronoun “się”
+* ZRw (_zaimek wskazujący_) - demonstrative pronoun
+* ZS (_zaimek przysłowny_) - adverbial pronoun
