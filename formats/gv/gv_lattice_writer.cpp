@@ -296,10 +296,17 @@ void GVLatticeWriter::Worker::printEdge(
     std::stringstream edgeLabelSs;
 
     const AnnotationItem& annotationItem = lattice_.getEdgeAnnotationItem(edge);
-    if (lattice_.isLooseVertex(source) || lattice_.isLooseVertex(target)) {
-        edgeLabelSs << quoter.escape(annotationItem.getText());
-    } else {
-        edgeLabelSs << quoter.escape(lattice_.getEdgeText(edge));
+    std::string annotationText = annotationItem.getText();
+    std::string edgeText;
+    if (!lattice_.isLooseVertex(source) && !lattice_.isLooseVertex(target)) {
+        edgeText = lattice_.getEdgeText(edge);
+    }
+    edgeLabelSs << quoter.escape(edgeText);
+    if (!annotationText.empty() && annotationText != edgeText) {
+        if (!edgeText.empty()) {
+            edgeLabelSs << "/";
+        }
+        edgeLabelSs << quoter.escape(annotationText);
     }
 
     std::string tagStr("");
