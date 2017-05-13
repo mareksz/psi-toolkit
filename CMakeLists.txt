@@ -533,7 +533,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet fr
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai
-    tools-converters-unumsunt tools-converters-joiner tools-translators-transferer tools-lemmatizers-lamerlemma)
+    tools-converters-unumsunt tools-converters-joiner tools-translators-transferer)
 
 # ----------------------------------------------------
 # TESTS_TARGETS
@@ -571,6 +571,8 @@ if(HAVE_CMPH)
 
     set(BASE_TARGETS ${BASE_TARGETS} tools-lexica-mapper)
 #    set(TESTS_TARGETS ${TESTS_TARGETS} tools-lexica-mapper-tests)
+
+    set(BASE_TARGETS ${BASE_TARGETS} tools-lemmatizers-lamerlemma)
 endif(HAVE_CMPH)
 
 if(USE_POSTGRESQL)

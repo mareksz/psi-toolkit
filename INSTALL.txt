@@ -23,7 +23,6 @@ Optional
 * Bison and Flex tools - (Ubuntu packages: bison flex) - for gobio
 * CMPH library: development files - (Ubuntu package: `libcmph-dev`)
 
-
 Ubuntu 11.10
 ------------
 
@@ -31,8 +30,8 @@ Required packages: g++ cmake make libpcre3-dev libboost-program-options-dev libb
 
 Optional packages: swig libperl-dev python python-all-dev openjdk-6-jdk libgraphviz-dev libpoppler-dev libpoppler-glib-dev libgtk2.0-dev libmagic-dev liblog4cpp4-dev libaspell-dev antiword libdjvulibre-dev liblink-grammar4-dev
 
-Ubuntu 10.04
-------------
+Ubuntu 10.04 LTS
+----------------
 
 Ubuntu 10.04 might use Boost 1.40, but Boost >=1.42 is needed:
 
@@ -62,6 +61,16 @@ running:
 e.g. simple tokenisation:
 
     framework/psi-pipe tp-tokenizer --lang pl
+
+Ubuntu 14.04 LTS
+================
+
+sudo apt-get install bison flex cmake libboost-all-dev libpcre3-dev libcmph-dev
+sudo apt-get install swig libperl-dev python python-all-dev openjdk-6-jdk libgraphviz-dev libpoppler-dev libpoppler-glib-dev libgtk2.0-dev libmagic-dev liblog4cpp5-dev libaspell-dev antiword libdjvulibre-dev liblink-grammar4-dev //optionally
+mkdir build
+cd build
+cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
+make
 
 Running tests
 =============
