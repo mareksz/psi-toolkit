@@ -23,54 +23,22 @@ Optional
 * Bison and Flex tools - (Ubuntu packages: bison flex) - for gobio
 * CMPH library: development files - (Ubuntu package: `libcmph-dev`)
 
-Ubuntu 11.10
-------------
+Compilation procedure on Ubuntu 16.04 LTS
+=========================================
 
-Required packages: g++ cmake make libpcre3-dev libboost-program-options-dev libboost-graph-dev libboost-filesystem-dev libboost-serialization-dev libboost-thread-dev libboost-system-dev libboost-test-dev
+    sudo apt-get install bison flex cmake libboost-all-dev libpcre3-dev libcmph-dev libz-dev libmagic-dev
+    sudo apt-get install swig libperl-dev python python-all-dev openjdk-6-jdk libgraphviz-dev libpoppler-dev libpoppler-glib-dev libgtk2.0-dev liblog4cpp5-dev libaspell-dev antiword libdjvulibre-dev liblink-grammar4-dev #optionally
+    mkdir build
+    cd build
+    cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
+    make
 
-Optional packages: swig libperl-dev python python-all-dev openjdk-6-jdk libgraphviz-dev libpoppler-dev libpoppler-glib-dev libgtk2.0-dev libmagic-dev liblog4cpp4-dev libaspell-dev antiword libdjvulibre-dev liblink-grammar4-dev
+Running – example
+=================
 
-Ubuntu 10.04 LTS
-----------------
-
-Ubuntu 10.04 might use Boost 1.40, but Boost >=1.42 is needed:
-
-    sudo apt-get install python-software-properties
-    sudo add-apt-repository ppa:lucid-bleed/ppa
-    sudo apt-get update
-    sudo apt-get upgrade
-    sudo apt-get install g++ cmake make libpcre3-dev swig libperl-dev python python-all-dev libboost-program-options1.42-dev libboost-graph1.42-dev libboost-filesystem1.42-dev libboost-serialization1.42-dev libboost-thread1.42-dev libboost-system1.42-dev libboost-test1.42-dev
-
-(Some of the above steps might turn out to be unnecessary, it depends
-on whether it is a server or regular version).
-
-Compilation procedure
-=====================
-
-(On Linux.)
-
-   cd psi-toolkit
-   mkdir -p build
-   cd build
-   cmake -DUSE_JAVA=OFF .. # <- note dots here
-   # or cmake -DUSE_JAVA=ON if morfologik is needed
-   # if problem with JAVA PATH occurs try forcing dirs by: cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-7-openjdk-amd64/include/linux/ -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-7-openjdk-amd64/include/ .. (remember to use correct java folder in command)
-   make
-
-running:
-e.g. simple tokenisation:
+E.g. for simple tokenization use:
 
     framework/psi-pipe tp-tokenizer --lang pl
-
-Ubuntu 14.04 LTS
-================
-
-sudo apt-get install bison flex cmake libboost-all-dev libpcre3-dev libcmph-dev
-sudo apt-get install swig libperl-dev python python-all-dev openjdk-6-jdk libgraphviz-dev libpoppler-dev libpoppler-glib-dev libgtk2.0-dev libmagic-dev liblog4cpp5-dev libaspell-dev antiword libdjvulibre-dev liblink-grammar4-dev //optionally
-mkdir build
-cd build
-cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
-make
 
 Running tests
 =============

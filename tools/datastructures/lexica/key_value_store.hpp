@@ -5,6 +5,7 @@
 #include "string_vector.hpp"
 
 #include <boost/optional/optional.hpp>
+#include <boost/optional/optional_io.hpp>
 
 class KeyValueStore {
 public:
