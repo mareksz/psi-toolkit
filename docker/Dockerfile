@@ -22,6 +22,5 @@ RUN mkdir build
 WORKDIR /psi-toolkit/build
 RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
 RUN make
-RUN apt-get -y install tree
 RUN ./tests/test_runner
-ENTRYPOINT ["./framework/psi-pipe"]
+ENTRYPOINT ["./psi-pipe-or-server.sh"]

@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+cmake_policy(SET CMP0026 OLD)
+cmake_policy(SET CMP0038 OLD)
+
 project(psi-toolkit CXX)
 
 if(CMAKE_SIZEOF_VOID_P MATCHES "8")
@@ -864,3 +867,8 @@ FOREACH(variable_name ${all_variables})
 endforeach(variable_name)
 
 message("RPATH is: ${CMAKE_INSTALL_RPATH}")
+
+configure_file(
+    "${psi-toolkit_SOURCE_DIR}/psi-pipe-or-server.sh"
+    "${psi-toolkit_BINARY_DIR}"
+    COPYONLY)
