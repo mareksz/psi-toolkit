@@ -16,6 +16,7 @@ RUN apt-get -y install \
         make
 RUN apt-get -y install \
         antiword \
+        aspell-en \
         aspell-pl \
         libaspell-dev \
         libdjvulibre-dev \
