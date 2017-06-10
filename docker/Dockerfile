@@ -14,6 +14,16 @@ RUN apt-get -y install \
         libpcre3-dev \
         libz-dev \
         make
+RUN apt-get -y install \
+        antiword \
+        aspell-pl \
+        libaspell-dev \
+        libdjvulibre-dev \
+        liblink-grammar4-dev \
+        liblog4cpp5-dev \
+        libperl-dev \
+        python-all-dev \
+        swig
 RUN git clone https://github.com/skorzewski/psi-toolkit.git
 RUN git clone https://github.com/skorzewski/psi-toolkit-data.git
 RUN cp psi-toolkit-data/tools/lemmatizers/lamerlemma/data/pl.bin psi-toolkit/tools/lemmatizers/lamerlemma/data/pl.bin
