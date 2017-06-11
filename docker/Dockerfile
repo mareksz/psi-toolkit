@@ -20,9 +20,12 @@ RUN apt-get -y install \
         aspell-pl \
         libaspell-dev \
         libdjvulibre-dev \
+        libgtk-2.0-dev \
         liblink-grammar4-dev \
         liblog4cpp5-dev \
         libperl-dev \
+        libpoppler-dev \
+        libpoppler-glib-dev \
         python-all-dev \
         swig
 RUN git clone https://github.com/skorzewski/psi-toolkit.git
