@@ -34,4 +34,5 @@ WORKDIR /psi-toolkit/build
 RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
 RUN make
 RUN ./tests/test_runner
+EXPOSE 3000
 ENTRYPOINT ["./psi-pipe-or-server.sh"]
