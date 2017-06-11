@@ -20,7 +20,7 @@ RUN apt-get -y install \
         aspell-pl \
         libaspell-dev \
         libdjvulibre-dev \
-        libgtk-2.0-dev \
+        libgtk2.0-dev \
         liblink-grammar4-dev \
         liblog4cpp5-dev \
         libperl-dev \
