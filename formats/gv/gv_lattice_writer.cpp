@@ -1,6 +1,8 @@
 #include "gv_lattice_writer.hpp"
 
+#include <climits>
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -191,13 +193,15 @@ void GVLatticeWriter::Worker::doRun() {
                 "wbmp(:cairo,:gd) xdot");
         }
 
-        char * tmpFile;
-        tmpFile = tempnam(NULL, "gv_");
+        static char tmpFileNameTemplate[] = "gv_XXXXXX";
+        char tmpFileName[PATH_MAX];
+        strcpy(tmpFileName, tmpFileNameTemplate);
+        mkstemp(tmpFileName);
 
         std::string arg0("dot");
         std::string arg1("-T" + processor_.getOutputFormat());
         std::string arg2("-o");
-        arg2 += tmpFile;
+        arg2 += tmpFileName;
 
         processor_.getAdapter()->init(arg0, arg1, arg2);
 
@@ -261,7 +265,7 @@ void GVLatticeWriter::Worker::doRun() {
         try {
             std::string line;
             std::string contents;
-            std::ifstream s(tmpFile);
+            std::ifstream s(tmpFileName);
             while (getline(s, line)) {
                 contents += line;
                 contents += "\n";
@@ -269,8 +273,7 @@ void GVLatticeWriter::Worker::doRun() {
             print_(contents);
         } catch (...) { }
 
-        std::remove(tmpFile);
-        free(tmpFile);
+        unlink(tmpFileName);
 
     }
 

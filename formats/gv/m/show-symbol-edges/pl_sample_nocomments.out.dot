@@ -12,7 +12,7 @@ digraph g {
 	4 -> 6	 [label="ma 'ma'"];
 	4 -> 22	 [label="ma&nbsp;<b>kta</b> fraza_czasownikowa"];
 	5 -> 6	 [label="a 'a"];
-	6 -> 12	 [label="&nbsp; ' '"];
+	6 -> 12	 [label="&nbsp;/_ ' '"];
 	12 -> 15	 [label="<b> open"];
 	12 -> 22	 [label="<b>kta</b> fraza_rzeczownikowa"];
 	15 -> L0	 [label="k 'k"];

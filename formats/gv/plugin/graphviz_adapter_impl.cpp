@@ -29,9 +29,10 @@ void GraphvizAdapterImpl::init(std::string arg0, std::string arg1, std::string a
     const char * const args[] = {
         arg0.c_str(),
         arg1.c_str(),
-        arg2.c_str()
+        arg2.c_str(),
+        "unused argument to avoid stack smashing"
     };
-    gvParseArgs(gvc_, sizeof(args)/sizeof(char*), (char**)args);
+    gvParseArgs(gvc_, 3, (char**)args);
     assert(gvc_);
 }
 

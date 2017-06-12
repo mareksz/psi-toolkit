@@ -20,8 +20,8 @@ digraph g {
 	11	 [label="ma 'ma'"];
 	11 -> 9;
 	11 -> 10;
-	12	 [label="&nbsp; ' "];
-	13	 [label="&nbsp; ' '"];
+	12	 [label="&nbsp;/_ ' "];
+	13	 [label="&nbsp;/_ ' '"];
 	13 -> 12;
 	14	 [label="<b> open"];
 	15	 [label="k 'k"];
@@ -33,7 +33,7 @@ digraph g {
 	20 -> 16;
 	20 -> 18;
 	20 -> 19;
-	21	 [label="kta 'kota'"];
+	21	 [label="kta/kota 'kota'"];
 	21 -> 15;
 	21 -> 17;
 	21 -> 18;

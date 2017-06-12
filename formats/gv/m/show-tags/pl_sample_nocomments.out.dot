@@ -7,7 +7,7 @@ digraph g {
 	3 -> 4	 [label="_ (token) ' '"];
 	4 -> 6	 [label="ma (token) 'ma'"];
 	4 -> 22	 [label="ma&nbsp;<b>kta</b> (gobio,parse) fraza_czasownikowa"];
-	6 -> 12	 [label="&nbsp; (token) ' '"];
+	6 -> 12	 [label="&nbsp;/_ (token) ' '"];
 	12 -> 15	 [label="<b> (html,markup) open"];
 	12 -> 22	 [label="<b>kta</b> (gobio,parse) fraza_rzeczownikowa"];
 	15 -> 18	 [label="kta (gobio,parse) fraza_rzeczownikowa"];

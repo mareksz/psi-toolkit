@@ -4,9 +4,9 @@ digraph g {
 	0 -> 3	 [label="Ala (token) 'Ala'"];
 	3 -> 4	 [label="_ (token) ' '"];
 	4 -> 6	 [label="ma (token) 'ma'"];
-	6 -> 12	 [label="&nbsp; (token) ' '"];
+	6 -> 12	 [label="&nbsp;/_ (token) ' '"];
 	12 -> 15	 [style=invis];
-	15 -> 18	 [label="kta (token) 'kota'"];
+	15 -> 18	 [label="kta/kota (token) 'kota'"];
 	18 -> 22	 [style=invis];
 	22 -> 23	 [label=". (token) '.'"];
 }

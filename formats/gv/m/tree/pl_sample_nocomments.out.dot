@@ -8,10 +8,10 @@ digraph g {
 	3 -> 2;
 	4	 [label="_ ' '"];
 	5	 [label="ma 'ma'"];
-	6	 [label="&nbsp; ' '"];
+	6	 [label="&nbsp;/_ ' '"];
 	7	 [label="<b> open"];
 	8	 [label="kta 'kta'"];
-	9	 [label="kta 'kota'"];
+	9	 [label="kta/kota 'kota'"];
 	10	 [label="kta fraza_rzeczownikowa"];
 	10 -> 9;
 	11	 [label="</b> close"];
