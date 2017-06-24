@@ -20,6 +20,7 @@ RUN apt-get -y install \
         aspell-pl \
         libaspell-dev \
         libdjvulibre-dev \
+        libgraphviz-dev \
         libgtk2.0-dev \
         liblink-grammar4-dev \
         liblog4cpp5-dev \
@@ -37,5 +38,6 @@ WORKDIR /psi-toolkit/build
 RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
 RUN make
 RUN ./tests/test_runner
+RUN ./framework/psi-pipe --version
 EXPOSE 3000
 ENTRYPOINT ["./psi-pipe-or-server.sh"]
