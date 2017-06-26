@@ -9,6 +9,7 @@ add_subdirectory(taggers)
 add_subdirectory(spellcheckers)
 add_subdirectory(converters)
 add_subdirectory(translators)
+add_subdirectory(normalizers)
 
 set(tools_DIRS
     tokenizers/tp
@@ -46,6 +47,7 @@ set(tools_DIRS
     translators/bonsai/translator
     translators/transferer
     lemmatizers/lamerlemma
+    normalizers/simplenorm
     CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE
 )
 

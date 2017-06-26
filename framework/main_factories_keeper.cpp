@@ -25,6 +25,7 @@
 #include "bonsai_runner.hpp"
 #include "lamerlemma.hpp"
 #include "detok.hpp"
+#include "simplenorm_normalizer.hpp"
 
 #if HAVE_GRAPHVIZ
 #include "gv_lattice_writer.hpp"
@@ -98,6 +99,9 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addAlias("spellchecker", "spell");
     keeper_.addAlias("spellcheck", "spell");
 
+    keeper_.addAlias("simplenorm", "simplenorm-normalizer");
+    keeper_.addAlias("simple-normalizer", "simplenorm-normalizer");
+
 #if HAVE_LIBMAGIC
     keeper_.addAlias("guess-input",  "guessing-reader");
     keeper_.addAlias("guess-format", "guessing-reader");
@@ -165,6 +169,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new LangGuesser::Factory());
     // keeper_.takeProcessorFactory(new Gobio::Factory());
     keeper_.takeProcessorFactory(new Unumsunt::Factory());
+    keeper_.takeProcessorFactory(new SimplenormNormalizer::Factory());
 
     keeper_.takeProcessorFactory(new LemmatizerAnnotator<LamerLemma>::Factory());
 
@@ -198,7 +203,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new poleng::bonsai::puddle::Puddle::Factory());
 
     keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
-    
+
     keeper_.takeProcessorFactory(new BestPathAnnotator<BonsaiRunner>::Factory());
 
     keeper_.takeProcessorFactory(new Detok::Factory());
