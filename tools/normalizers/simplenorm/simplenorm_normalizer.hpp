@@ -36,14 +36,16 @@ public:
     SimplenormNormalizer(const std::string& lang,
                          boost::filesystem::path rules);
 
+    void normalize(Lattice & lattice);
+
 private:
     class Worker : public LatticeWorker
     {
     public:
-        Worker(Processor& processor, Lattice& lattice);
+        Worker(SimplenormNormalizer& processor, Lattice& lattice);
     private:
         virtual void doRun();
-        Processor& processor_;
+        SimplenormNormalizer& processor_;
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);

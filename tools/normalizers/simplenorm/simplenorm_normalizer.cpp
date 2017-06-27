@@ -88,7 +88,6 @@ SimplenormNormalizer::SimplenormNormalizer(
     boost::filesystem::path rules):
     langCode_(lang)
 {
-    //TODO
 }
 
 
@@ -98,7 +97,7 @@ LatticeWorker* SimplenormNormalizer::doCreateLatticeWorker(Lattice& lattice)
 }
 
 
-SimplenormNormalizer::Worker::Worker(Processor& processor, Lattice& lattice):
+SimplenormNormalizer::Worker::Worker(SimplenormNormalizer& processor, Lattice& lattice):
     LatticeWorker(lattice), processor_(processor)
 {
 }
@@ -106,18 +105,43 @@ SimplenormNormalizer::Worker::Worker(Processor& processor, Lattice& lattice):
 
 void SimplenormNormalizer::Worker::doRun()
 {
-    DEBUG("Startnig simplenorm-normalizer...");
-
-    LayerTagMask symbolMask = lattice_.getSymbolMask();
-    LayerTagMask textMask = lattice_.getLayerTagManager().getMask(
-                                lattice_.getLayerTagManager()
-                                .createSingletonTagCollectionWithLangCode(
-                                    "text", dynamic_cast<SimplenormNormalizer&>(processor_).langCode_));
-
+    DEBUG("starting simplenorm-normalizer...");
+    processor_.normalize(lattice_);
 }
 
 
 std::string SimplenormNormalizer::doInfo()
 {
     return "Simplenorm normalizer";
+}
+
+
+void SimplenormNormalizer::normalize(Lattice & lattice) {
+    LayerTagMask maskToken = lattice.getLayerTagManager().getMaskWithLangCode(
+        "token",
+        langCode_
+    );
+    LayerTagCollection tagNormalization
+        = lattice.getLayerTagManager().createTagCollectionFromListWithLangCode(
+            boost::assign::list_of("simplenorm")("normalization"),
+            langCode_
+        );
+    Lattice::EdgesSortedBySourceIterator ei(lattice, maskToken);
+    while (ei.hasNext()) {
+        Lattice::EdgeDescriptor edge = ei.next();
+        std::string category = lattice.getAnnotationCategory(edge);
+        if ("T" == category) {
+            std::string text = lattice.getEdgeText(edge);
+            if ("dr" == text) {
+                Lattice::VertexDescriptor source = lattice.getEdgeSource(edge);
+                Lattice::VertexDescriptor target = lattice.getEdgeTarget(edge);
+                AnnotationItem ai("T", std::string("doktor"));
+                lattice.addEdge(
+                        source,
+                        target,
+                        ai,
+                        tagNormalization);
+            }
+        }
+    }
 }
