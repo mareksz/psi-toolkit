@@ -1,10 +1,17 @@
 #ifndef SIMPLENORM_NORMALIZER_HDR
 #define SIMPLENORM_NORMALIZER_HDR
 
-#include "annotator.hpp"
-#include "language_dependent_annotator_factory.hpp"
+#include <list>
+#include <map>
+#include <string>
 
-#include "lang_specific_processor_file_fetcher.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/variables_map.hpp>
+
+#include "annotator.hpp"
+#include "lattice.hpp"
+#include "language_dependent_annotator_factory.hpp"
 
 
 class SimplenormNormalizer : public Annotator
@@ -53,6 +60,8 @@ private:
     virtual std::string doInfo();
 
     std::string langCode_;
+
+    std::map<std::string, std::string> normalization_map_;
 };
 
 

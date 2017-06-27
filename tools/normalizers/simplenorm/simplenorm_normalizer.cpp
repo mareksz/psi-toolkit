@@ -1,13 +1,17 @@
 #include "simplenorm_normalizer.hpp"
 
-#include <cassert>
-#include <boost/function_output_iterator.hpp>
+#include <fstream>
+#include <vector>
 
-#include "logging.hpp"
-#include "config.hpp"
+#include <boost/algorithm/string.hpp>
+#include <boost/assign/list_of.hpp>
 
 #include "annotation_item.hpp"
-#include "escaping.hpp"
+#include "config.hpp"
+#include "lang_specific_processor_file_fetcher.hpp"
+#include "layer_tag_collection.hpp"
+#include "layer_tag_mask.hpp"
+#include "logging.hpp"
 
 
 Annotator* SimplenormNormalizer::Factory::doCreateAnnotator(
@@ -88,6 +92,13 @@ SimplenormNormalizer::SimplenormNormalizer(
     boost::filesystem::path rules):
     langCode_(lang)
 {
+    std::ifstream fin(rules.string().c_str());
+    std::string line;
+    while (std::getline(fin, line)) {
+        std::vector<std::string> pair;
+        boost::split(pair, line, boost::is_any_of("\t"));
+        normalization_map_[pair[0]] = pair[1];
+    }
 }
 
 
@@ -132,10 +143,11 @@ void SimplenormNormalizer::normalize(Lattice & lattice) {
         std::string category = lattice.getAnnotationCategory(edge);
         if ("T" == category) {
             std::string text = lattice.getEdgeText(edge);
-            if ("dr" == text) {
+            std::map<std::string, std::string>::iterator nmi = normalization_map_.find(text);
+            if (nmi != normalization_map_.end()) {
                 Lattice::VertexDescriptor source = lattice.getEdgeSource(edge);
                 Lattice::VertexDescriptor target = lattice.getEdgeTarget(edge);
-                AnnotationItem ai("T", std::string("doktor"));
+                AnnotationItem ai("T", std::string(nmi->second));
                 lattice.addEdge(
                         source,
                         target,
