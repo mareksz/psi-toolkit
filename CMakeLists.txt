@@ -159,6 +159,28 @@ else()
 endif(USE_ASPELL)
 
 # ----------------------------------------------------
+# Finds OpenFST
+# ----------------------------------------------------
+option(USE_IAYKO "Using iayko normalizer" ON)
+message(STATUS "Using iayko normalizer ${USE_IAYKO}")
+
+if (USE_IAYKO)
+    find_package(OpenFST)
+    if (OPENFST_FOUND)
+        message(STATUS "Found OpenFST")
+        include_directories(${OPENFST_INCLUDE_DIRS})
+        link_directories(${OPENFST_LIBRARIES})
+        link_directories("${psi-toolkit_BINARY_DIR}/tools/normalizers/iayko")
+        set(HAVE_OPENFST 1)
+    else (OPENFST_FOUND)
+        message(WARNING "OpenFST not found: iayko normalizer disabled")
+        set(HAVE_OPENFST 0)
+    endif (OPENFST_FOUND)
+else (USE_IAYKO)
+    set(HAVE_OPENFST 0)
+endif (USE_IAYKO)
+
+# ----------------------------------------------------
 # CMPH library (for perfect hashing)
 # ----------------------------------------------------
 find_library(CMPH_LIB NAMES cmph)
