@@ -108,6 +108,11 @@ if (HAVE_ASPELL)
   target_link_libraries(psi-pipe tools-spellcheckers-aspell)
 endif (HAVE_ASPELL)
 
+if (HAVE_OPENFST)
+  target_link_libraries(framework tools-normalizers-iayko)
+  target_link_libraries(psi-pipe tools-normalizers-iayko)
+endif (HAVE_OPENFST)
+
 # ----------------------------------------------------
 # install framework
 # ----------------------------------------------------

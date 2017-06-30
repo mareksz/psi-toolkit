@@ -1,6 +1,7 @@
 include_directories("${psi-toolkit_SOURCE_DIR}/tools/parsers/link")
 include_directories("${psi-toolkit_SOURCE_DIR}/tools/spellcheckers/aspell")
 include_directories("${psi-toolkit_SOURCE_DIR}/tools/lemmatizers/sfst")
+include_directories("${psi-toolkit_SOURCE_DIR}/tools/normalizers/iayko")
 include_directories("${psi-toolkit_SOURCE_DIR}/formats/djvu")
 include_directories("${psi-toolkit_SOURCE_DIR}/formats/doc")
 include_directories("${psi-toolkit_SOURCE_DIR}/formats/gv")
@@ -19,9 +20,10 @@ add_library(common-plugins SHARED
     archlinux_plugin_requirements_checker.cpp
 )
 
-target_link_libraries(
-  common-plugins
-  dl
-)
+target_link_libraries(common-plugins dl)
 
 install(TARGETS common-plugins DESTINATION lib/)
+
+if(HAVE_OPENFST)
+    target_link_libraries(common-plugins tools-normalizers-iayko)
+endif(HAVE_OPENFST)

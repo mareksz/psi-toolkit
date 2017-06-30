@@ -30,6 +30,10 @@
 #include "poppler_plugin.hpp"
 #endif
 
+#if HAVE_OPENFST
+#include "openfst_plugin.hpp"
+#endif
+
 PluginManager::PluginManager() {
 #if USE_DOC_READER
     registerPlugin_(new AntiwordPlugin());
@@ -51,6 +55,9 @@ PluginManager::PluginManager() {
 #endif
 #if HAVE_POPPLER
     registerPlugin_(new PopplerPlugin());
+#endif
+#if HAVE_OPENFST
+    registerPlugin_(new OpenFSTPlugin());
 #endif
 }
 

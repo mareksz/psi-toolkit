@@ -48,6 +48,7 @@ set(tools_DIRS
     translators/transferer
     lemmatizers/lamerlemma
     normalizers/simplenorm
+    normalizers/iayko
     CACHE PATH "Tools' paths to use in include_ and link_directories" FORCE
 )
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 cmake_policy(SET CMP0026 OLD)
 cmake_policy(SET CMP0038 OLD)
@@ -168,9 +168,8 @@ if (USE_IAYKO)
     find_package(OpenFST)
     if (OPENFST_FOUND)
         message(STATUS "Found OpenFST")
-        include_directories(${OPENFST_INCLUDE_DIRS})
         link_directories(${OPENFST_LIBRARIES})
-        link_directories("${psi-toolkit_BINARY_DIR}/tools/normalizers/iayko")
+        link_directories("${psi-toolkit_BINARY_DIR}/tools/normalizers/iayko/plugin")
         set(HAVE_OPENFST 1)
     else (OPENFST_FOUND)
         message(WARNING "OpenFST not found: iayko normalizer disabled")
@@ -578,6 +577,11 @@ if(HAVE_ASPELL)
     set(TESTS_TARGETS ${TESTS_TARGETS} tools-spellcheckers-aspell-tests)
 endif(HAVE_ASPELL)
 
+if(HAVE_OPENFST)
+    set(BASE_TARGETS ${BASE_TARGETS} tools-normalizers-iayko)
+    set(TESTS_TARGETS ${TESTS_TARGETS} tools-normalizers-iayko-tests)
+endif(HAVE_OPENFST)
+
 if(USE_JAVA)
     set(BASE_TARGETS ${BASE_TARGETS} tools-lemmatizers-morfologik)
     set(TESTS_TARGETS ${TESTS_TARGETS} tools-lemmatizers-morfologik-tests)
@@ -894,3 +898,8 @@ configure_file(
     "${psi-toolkit_SOURCE_DIR}/psi-pipe-or-server.sh"
     "${psi-toolkit_BINARY_DIR}"
     COPYONLY)
+
+if(HAVE_OPENFST)
+    target_include_directories(tools-normalizers-openfst-plugin PRIVATE ${OPENFST_INCLUDE_DIRS})
+    set_property(TARGET tools-normalizers-openfst-plugin PROPERTY CXX_STANDARD 11)
+endif(HAVE_OPENFST)

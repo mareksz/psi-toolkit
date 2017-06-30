@@ -1,8 +1,8 @@
 #include "tests.hpp"
 
-BOOST_AUTO_TEST_SUITE( simplenorm )
+BOOST_AUTO_TEST_SUITE( iayko )
 
-BOOST_AUTO_TEST_CASE( simplenorm_mock )
+BOOST_AUTO_TEST_CASE( iayko_mock )
 {
     BOOST_CHECK_EQUAL(2 + 2, 4);
 }
