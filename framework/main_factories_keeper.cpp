@@ -72,6 +72,10 @@
 #include "psi_aspell.hpp"
 #endif
 
+#if HAVE_OPENFST
+#include "iayko.hpp"
+#endif
+
 #if HAVE_LIBMAGIC
 #include "guessing_reader.hpp"
 #endif
@@ -222,6 +226,10 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 
 #if HAVE_ASPELL
     keeper_.takeProcessorFactory(new PSIAspell::Factory());
+#endif
+
+#if HAVE_OPENFST
+    keeper_.takeProcessorFactory(new Iayko::Factory());
 #endif
 
 #if HAVE_LIBMAGIC

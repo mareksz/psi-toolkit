@@ -67,7 +67,7 @@ boost::filesystem::path Iayko::Factory::doGetFile() const
 
 std::list<std::list<std::string> > Iayko::Factory::doRequiredLayerTags()
 {
-    return std::list<std::list<std::string> >();
+    return boost::assign::list_of(Iayko::tagsToOperateOn);
 }
 
 
@@ -80,6 +80,12 @@ std::list<std::list<std::string> > Iayko::Factory::doOptionalLayerTags()
 std::list<std::string> Iayko::Factory::doProvidedLayerTags()
 {
     return Iayko::tagsToPut;
+}
+
+
+std::list<std::string> Iayko::Factory::doAllLanguagesHandled() const {
+    return boost::assign::list_of
+        (std::string("pl"));
 }
 
 

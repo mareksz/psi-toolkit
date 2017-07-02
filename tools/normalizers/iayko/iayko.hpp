@@ -43,6 +43,8 @@ public:
         virtual std::string doGetContinuation(
             const boost::program_options::variables_map& options) const;
 
+        virtual std::list<std::string> doAllLanguagesHandled() const;
+
         virtual bool doCheckRequirements(
             const boost::program_options::variables_map& options,
             std::ostream & message) const;
