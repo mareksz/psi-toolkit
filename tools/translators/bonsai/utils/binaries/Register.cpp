@@ -38,7 +38,7 @@ int Register::find_equivalent(StateSignature p) {
 void Register::unflush() {
     if (verbose) std::cerr << "Unflushing memory (act_size: " << size() << ")" << std::endl;
     char filename[50];
-    int length = std::sprintf(filename, "%d.reg", sig_length);
+    std::sprintf(filename, "%d.reg", sig_length);
     std::ifstream in;
     in.open(filename, std::ios::binary);
 
@@ -61,7 +61,7 @@ void Register::unflush() {
 void Register::flush() {
     if (verbose) std::cerr << "Flushing memory" << std::endl;
     char filename[50];
-    int length = std::sprintf(filename, "%d.reg", sig_length);
+    std::sprintf(filename, "%d.reg", sig_length);
 
     std::ofstream out;
     out.open(filename, std::ios::binary);
@@ -105,7 +105,7 @@ RegisterManager::~RegisterManager() {
     loaded.clear();
     for (std::set<int>::iterator it = all.begin(); it != all.end(); it++) {
         char filename[50];
-        int length = std::sprintf(filename, "%d.reg", *it);
+        std::sprintf(filename, "%d.reg", *it);
         std::remove(filename);
     }
 }

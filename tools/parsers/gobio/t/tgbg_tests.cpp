@@ -131,7 +131,6 @@ BOOST_AUTO_TEST_CASE( compiling_binarized_rules ) {
 
 BOOST_AUTO_TEST_CASE( avinput ) {
 
-    typedef Lattice::EdgeDescriptor Edge;
     typedef zvalue Atom;
     typedef int BaseCategory;
     typedef av_matrix<BaseCategory, Atom> Category;
@@ -141,7 +140,6 @@ BOOST_AUTO_TEST_CASE( avinput ) {
     typedef tgbg_combinator<Atom, Score, Master, SemanticsMachine> Combinator;
     typedef Combinator::rule_type Rule;
     typedef Combinator::variant_type Variant;
-    typedef fifo_agenda<Edge> Agenda;
     typedef chart<Category, Score, Variant, Rule> Chart;
     typedef simple_converter<Atom> SimpleConverter;
 

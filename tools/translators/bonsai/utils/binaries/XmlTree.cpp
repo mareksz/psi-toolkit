@@ -248,7 +248,6 @@ bool ProcessAndStripXMLTags(string &line, SyntaxTree &tree, set< string > &label
 
   string cleanLine; // return string (text without xml)
   size_t wordPos = 0; // position in sentence (in terms of number of words)
-  bool isLinked = false;
 
   // loop through the tokens
   for (size_t xmlTokenPos = 0 ; xmlTokenPos < xmlTokens.size() ; xmlTokenPos++) {

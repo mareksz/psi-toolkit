@@ -87,12 +87,10 @@ typedef std::set<StateSignature, SignatureSorter> Signatures;
 class Register {
   private:
     Signatures sig;
-
     int sig_length;
-    int accesses;
-
-    int actual_load_index;
     bool verbose;
+    int accesses;
+    int actual_load_index;
 
     static int load_index;
 

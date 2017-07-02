@@ -539,7 +539,7 @@ void Inflector::applyTokenTags(Lattice &lattice, TokenEdgesMap tokenEdgesMap,
                 lattice.getEdgeSource(token);
             Lattice::InOutEdgesIterator formIt =
                 lattice.outEdges(currentVertex, formMask);
-            bool allFormsDiscarded = true;
+            // bool allFormsDiscarded = true;
             while (formIt.hasNext()) {
                 Lattice::EdgeDescriptor form = formIt.next();
                 if (isDiscarded(lattice, form))
@@ -547,8 +547,8 @@ void Inflector::applyTokenTags(Lattice &lattice, TokenEdgesMap tokenEdgesMap,
                 //if (getFormMorphoTag(lattice, form) != tag) {
                 if (!formMatchesTag(lattice, form, tag)) {
                     lattice.discard(form);
-                } else {
-                    allFormsDiscarded = false;
+                // } else {
+                //     allFormsDiscarded = false;
                 }
             }
             //if (allFormsDiscarded) {

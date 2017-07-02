@@ -644,7 +644,6 @@ template <typename DFSA> class Register;
 template <typename DFSA, typename Iterator>
 void minimize_incremental(DFSA &dst, Iterator current, Iterator end) {
     typedef typename DFSA::state_type State;
-    typedef typename DFSA::symbol_type Symbol;
     typedef typename DFSA::arc_type Arc;
     typedef typename DFSA::arc_iterator_type ArcIt;
 
@@ -699,7 +698,6 @@ void replace_or_register(DFSA &fsa,
                          typename DFSA::state_type state) {
 
     typedef typename DFSA::state_type State;
-    typedef typename DFSA::symbol_type Symbol;
     typedef typename DFSA::arc_type Arc;
     typedef typename DFSA::arc_iterator_type ArcIt;
 
