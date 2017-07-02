@@ -73,6 +73,7 @@ private:
         Processor& processor_;
         LayerTagCollection textTags_;
 
+        std::string fstNormalize_(const std::string & text);
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);

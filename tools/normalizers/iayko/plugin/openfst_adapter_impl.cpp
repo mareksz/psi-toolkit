@@ -11,6 +11,15 @@ OpenFSTAdapterImpl::~OpenFSTAdapterImpl()
 }
 
 
+std::string OpenFSTAdapterImpl::normalize(const std::string & input)
+{
+    if (input == "iayko") {
+        return "jajko";
+    }
+    return input;
+}
+
+
 // ==============================================
 
 extern "C" OpenFSTAdapterImpl* create()

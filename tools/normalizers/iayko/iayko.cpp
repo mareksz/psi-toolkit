@@ -141,9 +141,29 @@ void Iayko::Worker::doRun()
         {
             Lattice::EdgeDescriptor currentEdge = edgeIterator.next();
             std::string category = lattice_.getAnnotationCategory(currentEdge);
-            // TODO
+
+            Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
+            Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
+
+            std::string text = lattice_.getAnnotationText(currentEdge);
+            std::string normalized_text = fstNormalize_(text);
+
+            AnnotationItem ai("T", normalized_text);
+            lattice_.addEdge(
+                    source,
+                    target,
+                    ai,
+                    textTags_);
+
         }
     }
+}
+
+
+std::string Iayko::Worker::fstNormalize_(const std::string & text)
+{
+    Iayko & iaykoProcessor = dynamic_cast<Iayko&>(processor_);
+    return iaykoProcessor.getAdapter()->normalize(text);
 }
 
 
