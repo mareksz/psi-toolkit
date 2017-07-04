@@ -52,12 +52,12 @@ public:
         static const std::string DEFAULT_FAR_PATH;
     };
 
-    Iayko(const std::string & langCode);
-    Iayko(const std::string & langCode,
+    Iayko(const std::string& langCode);
+    Iayko(const std::string& langCode,
           const boost::program_options::variables_map& options);
     ~Iayko();
 
-    OpenFSTAdapterInterface * getAdapter();
+    OpenFSTAdapterInterface* getAdapter();
     bool isActive();
 
     static const std::list<std::string> tagsToOperateOn;
@@ -73,7 +73,7 @@ private:
         Processor& processor_;
         LayerTagCollection textTags_;
 
-        std::string fstNormalize_(const std::string & text);
+        std::string fstNormalize_(const std::string& text);
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
@@ -83,7 +83,7 @@ private:
     void init_(const std::string& langCode);
 
     std::string langCode_;
-    OpenFSTAdapterInterface * openFSTAdapter_;
+    OpenFSTAdapterInterface* openFSTAdapter_;
 };
 
 

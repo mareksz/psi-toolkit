@@ -98,7 +98,7 @@ std::string Iayko::Factory::doGetContinuation(
 
 bool Iayko::Factory::doCheckRequirements(
     const boost::program_options::variables_map& options,
-    std::ostream & message) const
+    std::ostream& message) const
 {
     return PluginManager::getInstance().checkPluginRequirements("openfst",
             options,
@@ -122,7 +122,7 @@ Iayko::Worker::Worker(Processor& processor, Lattice& lattice):
 
 void Iayko::Worker::doRun()
 {
-    Iayko & iaykoProcessor = dynamic_cast<Iayko&>(processor_);
+    Iayko& iaykoProcessor = dynamic_cast<Iayko&>(processor_);
 
     if (iaykoProcessor.isActive())
     {
@@ -160,9 +160,9 @@ void Iayko::Worker::doRun()
 }
 
 
-std::string Iayko::Worker::fstNormalize_(const std::string & text)
+std::string Iayko::Worker::fstNormalize_(const std::string& text)
 {
-    Iayko & iaykoProcessor = dynamic_cast<Iayko&>(processor_);
+    Iayko& iaykoProcessor = dynamic_cast<Iayko&>(processor_);
     return iaykoProcessor.getAdapter()->normalize(text);
 }
 
@@ -173,13 +173,13 @@ std::string Iayko::doInfo()
 }
 
 
-Iayko::Iayko(const std::string & langCode)
+Iayko::Iayko(const std::string& langCode)
 {
     init_(langCode);
 }
 
 
-Iayko::Iayko(const std::string & langCode,
+Iayko::Iayko(const std::string& langCode,
              const boost::program_options::variables_map& /* options */)
 {
 
@@ -205,7 +205,7 @@ void Iayko::init_(const std::string& langCode)
 }
 
 
-OpenFSTAdapterInterface * Iayko::getAdapter()
+OpenFSTAdapterInterface* Iayko::getAdapter()
 {
     return openFSTAdapter_;
 }

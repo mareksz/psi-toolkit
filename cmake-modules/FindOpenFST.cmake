@@ -7,9 +7,8 @@
 # Paths
 
 find_path(OPENFST_INCLUDE_DIR
-    NAMES fst.h
-    PATHS /usr/include /usr/local/include
-    PATH_SUFFIXES fst)
+    NAMES fst/fstlib.h
+    PATHS /usr/include /usr/local/include)
 if (NOT OPENFST_INCLUDE_DIR)
     message(STATUS "Could not find OpenFST include dir")
     set(OPENFST_FOUND FALSE)
@@ -17,8 +16,16 @@ endif (NOT OPENFST_INCLUDE_DIR)
 
 # Libraries
 
-find_library(OPENFST_LIBRARY
+find_library(FST_LIBRARY
     NAMES fst libfst
+    PATHS /usr/lib /usr/local/lib /usr/lib64 /usr/local/lib64)
+if (NOT OPENFST_INCLUDE_DIR)
+    message(STATUS "Could not find libfst")
+    set(OPENFST_FOUND FALSE)
+endif (NOT OPENFST_INCLUDE_DIR)
+
+find_library(FSTFAR_LIBRARY
+    NAMES fstfar libfstfar
     PATHS /usr/lib /usr/local/lib /usr/lib64 /usr/local/lib64)
 if (NOT OPENFST_INCLUDE_DIR)
     message(STATUS "Could not find libfst")
@@ -27,7 +34,7 @@ endif (NOT OPENFST_INCLUDE_DIR)
 
 
 set(OPENFST_INCLUDE_DIRS ${OPENFST_INCLUDE_DIR})
-set(OPENFST_LIBRARIES ${OPENFST_LIBRARY})
+set(OPENFST_LIBRARIES ${FST_LIBRARY} ${FSTFAR_LIBRARY})
 
 if (OPENFST_INCLUDE_DIRS AND OPENFST_LIBRARIES)
     set(OPENFST_FOUND TRUE)

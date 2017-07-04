@@ -4,6 +4,7 @@ add_library(tools-normalizers-openfst-plugin SHARED
 
 target_link_libraries(tools-normalizers-openfst-plugin
     ${OPENFST_LIBRARIES}
+    dl
 )
 
 install(TARGETS tools-normalizers-openfst-plugin DESTINATION lib/)

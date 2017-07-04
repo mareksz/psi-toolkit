@@ -5,13 +5,21 @@
 
 #include <string>
 
+#include <fst/extensions/far/far.h>
+#include <fst/fstlib.h>
+
+
 class OpenFSTAdapterImpl : public OpenFSTAdapterInterface
 {
 public:
     OpenFSTAdapterImpl();
     virtual ~OpenFSTAdapterImpl();
 
-    virtual std::string normalize(const std::string & input);
+    virtual std::string normalize(const std::string& input);
+
+private:
+    fst::StdVectorFst* compileBYTE(std::string& s);
 };
+
 
 #endif

@@ -13,7 +13,7 @@ public:
     {
     }
 
-    virtual std::string normalize(const std::string & input) = 0;
+    virtual std::string normalize(const std::string& input) = 0;
 };
 
 
