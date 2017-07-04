@@ -15,10 +15,21 @@ public:
     OpenFSTAdapterImpl();
     virtual ~OpenFSTAdapterImpl();
 
+    virtual void init(const std::string& far, const std::string& fst);
+
     virtual std::string normalize(const std::string& input);
 
 private:
-    fst::StdVectorFst* compileBYTE(std::string& s);
+    static const size_t MAX_LINE_LENGTH;
+
+    std::vector< const fst::Fst<fst::StdArc>* > automata_;
+    const fst::Fst<fst::StdArc>* filter_;
+
+    fst::StdVectorFst* compileByte_(const std::string& s);
+    const fst::Fst<fst::StdArc>* loadFstFromFar_(
+            const std::string& far,
+            const std::string& fst);
+    std::string fstToString_(fst::StdVectorFst& automaton);
 };
 
 

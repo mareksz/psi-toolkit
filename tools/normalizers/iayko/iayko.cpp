@@ -1,12 +1,15 @@
 #include "iayko.hpp"
 
 #include "config.hpp"
+#include "lang_specific_processor_file_fetcher.hpp"
 #include "logging.hpp"
-#include "psi_exception.hpp"
 
 
 const std::string Iayko::Factory::DEFAULT_FAR_PATH
     = "%ITSDATA%/%LANG%/all.far";
+
+const std::string Iayko::Factory::DEFAULT_FST_NAME
+    = "MAIN";
 
 const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of("token");
 
@@ -19,7 +22,13 @@ Annotator* Iayko::Factory::doCreateAnnotator(
 {
     std::string lang = options["lang"].as<std::string>();
 
-    return new Iayko(lang, options);
+    LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
+    std::string farFileSpec = options["far"].as<std::string>();
+    std::string far = fileFetcher.getOneFile(farFileSpec).string();
+
+    std::string fst = options["fst"].as<std::string>();
+
+    return new Iayko(lang, far, fst);
 }
 
 
@@ -32,7 +41,8 @@ void Iayko::Factory::doAddLanguageIndependentOptionsHandled(
          ->default_value(DEFAULT_FAR_PATH),
          "far archive with rules")
     ("fst",
-         boost::program_options::value<std::string>(),
+         boost::program_options::value<std::string>()
+         ->default_value(DEFAULT_FST_NAME),
          "fst name inside far")
     ;
 }
@@ -92,7 +102,7 @@ std::list<std::string> Iayko::Factory::doAllLanguagesHandled() const {
 std::string Iayko::Factory::doGetContinuation(
     const boost::program_options::variables_map& /* options */) const
 {
-    return "simple-writer";
+    return "simple-writer --tags normalization";
 }
 
 
@@ -173,17 +183,15 @@ std::string Iayko::doInfo()
 }
 
 
-Iayko::Iayko(const std::string& langCode)
-{
-    init_(langCode);
-}
-
-
 Iayko::Iayko(const std::string& langCode,
-             const boost::program_options::variables_map& /* options */)
+             const std::string& far,
+             const std::string& fst)
 {
-
     init_(langCode);
+
+    if ( isActive() ) {
+        openFSTAdapter_->init(far, fst);
+    }
 }
 
 

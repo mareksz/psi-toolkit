@@ -50,11 +50,12 @@ public:
             std::ostream & message) const;
 
         static const std::string DEFAULT_FAR_PATH;
+        static const std::string DEFAULT_FST_NAME;
     };
 
-    Iayko(const std::string& langCode);
     Iayko(const std::string& langCode,
-          const boost::program_options::variables_map& options);
+          const std::string& far,
+          const std::string& fst);
     ~Iayko();
 
     OpenFSTAdapterInterface* getAdapter();
