@@ -26,6 +26,16 @@ void OpenFSTAdapterImpl::init(const std::string& far, const std::string& fst)
 }
 
 
+void OpenFSTAdapterImpl::init(std::vector< std::pair<std::string, std::string> > spec)
+{
+    for (std::vector< std::pair<std::string, std::string> >::iterator iter = spec.begin();
+            iter != spec.end();
+            ++iter) {
+        automata_.push_back(loadFstFromFar_(iter->first, iter->second));
+    }
+}
+
+
 std::string OpenFSTAdapterImpl::normalize(const std::string& input)
 {
     fst::StdVectorFst* input_fst = compileByte_(input);

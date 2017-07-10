@@ -3,8 +3,6 @@
 
 #include "openfst_adapter_interface.hpp"
 
-#include <string>
-
 #include <fst/extensions/far/far.h>
 #include <fst/fstlib.h>
 
@@ -16,6 +14,7 @@ public:
     virtual ~OpenFSTAdapterImpl();
 
     virtual void init(const std::string& far, const std::string& fst);
+    virtual void init(std::vector< std::pair<std::string, std::string> > spec);
 
     virtual std::string normalize(const std::string& input);
 

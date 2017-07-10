@@ -1,15 +1,17 @@
 #include "iayko.hpp"
 
+#include <fstream>
+
 #include "config.hpp"
 #include "lang_specific_processor_file_fetcher.hpp"
-#include "logging.hpp"
+#include "psi_exception.hpp"
 
 
 const std::string Iayko::Factory::DEFAULT_FAR_PATH
     = "%ITSDATA%/%LANG%/all.far";
 
-const std::string Iayko::Factory::DEFAULT_FST_NAME
-    = "MAIN";
+const std::string Iayko::Factory::DEFAULT_FSTS_PATH
+    = "%ITSDATA%/%LANG%/rules.txt";
 
 const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of("token");
 
@@ -17,16 +19,71 @@ const std::list<std::string> Iayko::tagsToPut = boost::assign::list_of
         ("token")("iayko")("normalization");
 
 
+std::string Iayko::Factory::getRealFileName(std::string fileSpec, std::string lang) const
+{
+    LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
+    return fileFetcher.getOneFile(fileSpec).string();
+}
+
+
 Annotator* Iayko::Factory::doCreateAnnotator(
     const boost::program_options::variables_map& options)
 {
     std::string lang = options["lang"].as<std::string>();
-
-    LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
     std::string farFileSpec = options["far"].as<std::string>();
-    std::string far = fileFetcher.getOneFile(farFileSpec).string();
-
     std::string fst = options["fst"].as<std::string>();
+    std::string fstsFileSpec = options["fsts"].as<std::string>();
+
+    if (!fst.empty() && fstsFileSpec != DEFAULT_FSTS_PATH) {
+        throw PsiException("Options --fst and --fsts must not be used together");
+    }
+
+    std::vector< std::pair<std::string, std::string> > transducersSpec;
+    if (options.count("spec")) {
+        std::vector<std::string> spec = options["spec"].as< std::vector<std::string> >();
+        std::vector<std::string>::iterator si = spec.begin();
+        while (si != spec.end()) {
+            std::string far = getRealFileName(*si, lang);
+            ++si;
+            if (si == spec.end()) {
+                break;
+            }
+            std::string fst = *si;
+            transducersSpec.push_back(std::make_pair(far, fst));
+            ++si;
+        }
+    }
+
+    if (!transducersSpec.empty()) {
+        if (!fst.empty()) {
+            throw PsiException("Options --fst and --spec must not be used together");
+        }
+
+        if (fstsFileSpec != DEFAULT_FSTS_PATH) {
+            throw PsiException("Options --fsts and --spec must not be used together");
+        }
+
+        return new Iayko(lang, transducersSpec);
+    }
+
+    std::string far = getRealFileName(farFileSpec, lang);
+    std::string fsts = getRealFileName(fstsFileSpec, lang);
+
+    if (fst.empty()) {
+        std::ifstream fin(fsts.c_str());
+        if (!fin.is_open()) {
+            throw FileFormatException(std::string("Cannot open file ") + fsts);
+        }
+        std::string fstLine;
+        while (std::getline(fin, fstLine)) {
+            if (!fstLine.empty()) {
+                transducersSpec.push_back(std::make_pair(far, fstLine));
+            }
+        }
+        fin.close();
+
+        return new Iayko(lang, transducersSpec);
+    }
 
     return new Iayko(lang, far, fst);
 }
@@ -37,13 +94,20 @@ void Iayko::Factory::doAddLanguageIndependentOptionsHandled(
 {
     optionsDescription.add_options()
     ("far",
-         boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_FAR_PATH),
-         "far archive with rules")
+        boost::program_options::value<std::string>()
+        ->default_value(DEFAULT_FAR_PATH),
+        "far archive with rules")
     ("fst",
-         boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_FST_NAME),
-         "fst name inside far")
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "fst name inside far")
+    ("fsts",
+        boost::program_options::value<std::string>()
+        ->default_value(DEFAULT_FSTS_PATH),
+        "file with fst names to be used as a cascade")
+    ("spec",
+        boost::program_options::value< std::vector<std::string> >()->multitoken(),
+        "specification of more far:fst pairs to be used as cascade")
     ;
 }
 
@@ -191,6 +255,17 @@ Iayko::Iayko(const std::string& langCode,
 
     if ( isActive() ) {
         openFSTAdapter_->init(far, fst);
+    }
+}
+
+
+Iayko::Iayko(const std::string& langCode,
+             std::vector< std::pair<std::string, std::string> > spec)
+{
+    init_(langCode);
+
+    if ( isActive() ) {
+        openFSTAdapter_->init(spec);
     }
 }
 

@@ -4,6 +4,8 @@
 #include <list>
 #include <map>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/program_options/options_description.hpp>
@@ -49,13 +51,17 @@ public:
             const boost::program_options::variables_map& options,
             std::ostream & message) const;
 
+        std::string getRealFileName(std::string fileSpec, std::string lang) const;
+
         static const std::string DEFAULT_FAR_PATH;
-        static const std::string DEFAULT_FST_NAME;
+        static const std::string DEFAULT_FSTS_PATH;
     };
 
     Iayko(const std::string& langCode,
           const std::string& far,
           const std::string& fst);
+    Iayko(const std::string& langCode,
+          std::vector< std::pair<std::string, std::string> > spec);
     ~Iayko();
 
     OpenFSTAdapterInterface* getAdapter();
