@@ -1,7 +1,8 @@
 FROM ubuntu:16.04
+
 WORKDIR /
-RUN apt-get update
-RUN apt-get -y install \
+RUN apt-get update && \
+    apt-get -y install \
         bison \
         cmake \
         flex \
@@ -13,8 +14,7 @@ RUN apt-get -y install \
         libmagic-dev \
         libpcre3-dev \
         libz-dev \
-        make
-RUN apt-get -y install \
+        make \
         antiword \
         aspell-en \
         aspell-pl \
@@ -28,15 +28,31 @@ RUN apt-get -y install \
         libpoppler-glib-dev \
         python-all-dev \
         swig
-RUN git clone https://github.com/skorzewski/psi-toolkit.git
-RUN git clone https://github.com/skorzewski/psi-toolkit-data.git
-RUN cp psi-toolkit-data/tools/lemmatizers/lamerlemma/data/pl.bin psi-toolkit/tools/lemmatizers/lamerlemma/data/pl.bin
+
+ADD openfst-1.6.2.tar.gz /openfst
+WORKDIR /openfst/openfst-1.6.2
+RUN ./configure --enable-bin --enable-far --enable-pdt --enable-mpdt && \
+    make && \
+    make install
+
+ADD thrax-1.2.3.tar.gz /thrax
+WORKDIR /thrax/thrax-1.2.3
+RUN ./configure && \
+    make && \
+    make install
+
+WORKDIR /
+RUN git clone https://github.com/skorzewski/psi-toolkit.git && \
+    git clone https://github.com/skorzewski/psi-toolkit-data.git && \
+    cp psi-toolkit-data/tools/lemmatizers/lamerlemma/data/pl.bin psi-toolkit/tools/lemmatizers/lamerlemma/data/pl.bin
+
 WORKDIR /psi-toolkit
 RUN mkdir build
+
 WORKDIR /psi-toolkit/build
-RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF ..
-RUN make
-RUN ./tests/test_runner
-RUN ./framework/psi-pipe --version
+RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF .. && \
+    make && \
+    ./tests/test_runner && \
+    ./framework/psi-pipe --version
 EXPOSE 3000
 ENTRYPOINT ["./psi-pipe-or-server.sh"]
