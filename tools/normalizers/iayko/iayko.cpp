@@ -166,7 +166,7 @@ std::list<std::string> Iayko::Factory::doAllLanguagesHandled() const {
 std::string Iayko::Factory::doGetContinuation(
     const boost::program_options::variables_map& /* options */) const
 {
-    return "simple-writer --tags normalization";
+    return "simple-writer --tags normalization --sep ' '";
 }
 
 
