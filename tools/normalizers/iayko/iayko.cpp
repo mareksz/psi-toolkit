@@ -1,6 +1,9 @@
 #include "iayko.hpp"
 
+#include <climits>
+#include <cstdlib>
 #include <fstream>
+#include <sstream>
 
 #include "config.hpp"
 #include "lang_specific_processor_file_fetcher.hpp"
@@ -33,9 +36,15 @@ Annotator* Iayko::Factory::doCreateAnnotator(
     std::string farFileSpec = options["far"].as<std::string>();
     std::string fst = options["fst"].as<std::string>();
     std::string fstsFileSpec = options["fsts"].as<std::string>();
+    std::string grm = options["grm"].as<std::string>();
+    std::string saveFar= options["save-far"].as<std::string>();
 
     if (!fst.empty() && fstsFileSpec != DEFAULT_FSTS_PATH) {
         throw PsiException("Options --fst and --fsts must not be used together");
+    }
+
+    if (farFileSpec != DEFAULT_FAR_PATH && !grm.empty()) {
+        throw PsiException("Options --far and --grm must not be used together");
     }
 
     std::vector< std::pair<std::string, std::string> > transducersSpec;
@@ -68,6 +77,23 @@ Annotator* Iayko::Factory::doCreateAnnotator(
 
     std::string far = getRealFileName(farFileSpec, lang);
     std::string fsts = getRealFileName(fstsFileSpec, lang);
+
+    if (!grm.empty()) {
+        if (saveFar.empty()) {
+            static char tmpFileNameTemplate[] = "far_XXXXXX";
+            char tmpFileName[PATH_MAX];
+            strcpy(tmpFileName, tmpFileNameTemplate);
+            mkstemp(tmpFileName);
+            saveFar = tmpFileName;
+        }
+
+        std::stringstream commandSs;
+        commandSs << "thraxcompiler --input_grammar=" << grm
+            << " --output_far=" << saveFar << " 1>&2";
+        system(commandSs.str().c_str());
+
+        far = saveFar;
+    }
 
     if (fst.empty()) {
         std::ifstream fin(fsts.c_str());
@@ -108,6 +134,14 @@ void Iayko::Factory::doAddLanguageIndependentOptionsHandled(
     ("spec",
         boost::program_options::value< std::vector<std::string> >()->multitoken(),
         "specification of more far:fst pairs to be used as cascade")
+    ("grm",
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "text file with rules written in Thrax")
+    ("save-far",
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "where to save the far archive compiled from grm file")
     ;
 }
 
