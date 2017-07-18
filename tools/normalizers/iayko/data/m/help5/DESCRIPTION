@@ -1,0 +1,1 @@
+Perform normalization using transducer MyTransducer from text file with grammar written in Thrax (my\_grammar.grm). Grammar is compiled to FAR archive and saved to compiled\_grammar.far file.

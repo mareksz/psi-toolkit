@@ -83,5 +83,13 @@ void MassTester::runBatch_(const TestBatch& batch) {
         while (runner.runSingleTest());
     } catch (FactoriesKeeper::UnknownProcessorException& ex) {
         WARN("SKIPPING TEST (" << ex.what() << ")");
+    } catch (PsiException& ex) {
+        if (batch.isExampleOnly()) {
+            std::cout << "... IS ONLY AN EXAMPLE (so won't be checked),\n"
+                << "\tbut be aware of the exception thrown during this test:" << std::endl;
+            WARN("Exception: " << ex.what());
+        } else {
+            throw ex;
+        }
     }
 }

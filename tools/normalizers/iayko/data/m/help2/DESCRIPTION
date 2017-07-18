@@ -1,0 +1,1 @@
+Normalize old text to modern version, using only the transducer `Rule001_09` (Feliński’s rule „y/i→j”) from the default set of rules.

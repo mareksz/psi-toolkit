@@ -1,0 +1,1 @@
+Normalize old text to modern version, using two transducers from the default set of rules: `Rule001_09` (Feliński’s rule „y/i→j”) and `Rule100_02` („puhar→puchar”).
