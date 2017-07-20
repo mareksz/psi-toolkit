@@ -2,6 +2,7 @@
 
 #include <climits>
 #include <cstdlib>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 
@@ -15,6 +16,9 @@ const std::string Iayko::Factory::DEFAULT_FAR_PATH
 
 const std::string Iayko::Factory::DEFAULT_FSTS_PATH
     = "%ITSDATA%/%LANG%/rules.txt";
+
+const std::string Iayko::Factory::DEFAULT_EXCEPTIONS_PATH
+    = "%ITSDATA%/%LANG%/exceptions.lst";
 
 const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of("token");
 
@@ -38,6 +42,25 @@ Annotator* Iayko::Factory::doCreateAnnotator(
     std::string fstsFileSpec = options["fsts"].as<std::string>();
     std::string grm = options["grm"].as<std::string>();
     std::string saveFar= options["save-far"].as<std::string>();
+    std::string exceptionsFileSpec = options["exceptions"].as<std::string>();
+
+    std::vector<std::string> exceptions;
+    if (options.count("bypass-exceptions")) {
+        std::string exceptionsFile = getRealFileName(exceptionsFileSpec, lang);
+
+        std::ifstream fin(exceptionsFile.c_str());
+        if (!fin.is_open()) {
+            throw FileFormatException(
+                    std::string("Cannot open file ") + exceptionsFile);
+        }
+        std::string exception;
+        while (std::getline(fin, exception)) {
+            if (!exception.empty()) {
+                exceptions.push_back(exception);
+            }
+        }
+        fin.close();
+    }
 
     if (!fst.empty() && fstsFileSpec != DEFAULT_FSTS_PATH) {
         throw PsiException("Options --fst and --fsts must not be used together");
@@ -72,7 +95,7 @@ Annotator* Iayko::Factory::doCreateAnnotator(
             throw PsiException("Options --fsts and --spec must not be used together");
         }
 
-        return new Iayko(lang, transducersSpec);
+        return new Iayko(lang, transducersSpec, exceptions);
     }
 
     std::string far = getRealFileName(farFileSpec, lang);
@@ -108,10 +131,10 @@ Annotator* Iayko::Factory::doCreateAnnotator(
         }
         fin.close();
 
-        return new Iayko(lang, transducersSpec);
+        return new Iayko(lang, transducersSpec, exceptions);
     }
 
-    return new Iayko(lang, far, fst);
+    return new Iayko(lang, far, fst, exceptions);
 }
 
 
@@ -142,6 +165,12 @@ void Iayko::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
         "where to save the far archive compiled from grm file")
+    ("bypass-exceptions",
+        "bypass exceptions")
+    ("exceptions",
+        boost::program_options::value<std::string>()
+        ->default_value(DEFAULT_EXCEPTIONS_PATH),
+        "a text file with list of exceptions")
     ;
 }
 
@@ -231,6 +260,7 @@ Iayko::Worker::Worker(Processor& processor, Lattice& lattice):
 void Iayko::Worker::doRun()
 {
     Iayko& iaykoProcessor = dynamic_cast<Iayko&>(processor_);
+    //TODO iaykoProcessor.exceptions_;
 
     if (iaykoProcessor.isActive())
     {
@@ -254,7 +284,15 @@ void Iayko::Worker::doRun()
             Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
 
             std::string text = lattice_.getAnnotationText(currentEdge);
-            std::string normalized_text = fstNormalize_(text);
+
+            std::string normalized_text;
+            if (std::find(iaykoProcessor.exceptions_.begin(),
+                        iaykoProcessor.exceptions_.end(),
+                        text) != iaykoProcessor.exceptions_.end()) {
+                normalized_text = text;
+            } else {
+                normalized_text = fstNormalize_(text);
+            }
 
             AnnotationItem ai("T", normalized_text);
             lattice_.addEdge(
@@ -283,9 +321,10 @@ std::string Iayko::doInfo()
 
 Iayko::Iayko(const std::string& langCode,
              const std::string& far,
-             const std::string& fst)
+             const std::string& fst,
+             std::vector<std::string> exceptions)
 {
-    init_(langCode);
+    init_(langCode, exceptions);
 
     if ( isActive() ) {
         openFSTAdapter_->init(far, fst);
@@ -294,9 +333,10 @@ Iayko::Iayko(const std::string& langCode,
 
 
 Iayko::Iayko(const std::string& langCode,
-             std::vector< std::pair<std::string, std::string> > spec)
+             std::vector< std::pair<std::string, std::string> > spec,
+             std::vector<std::string> exceptions)
 {
-    init_(langCode);
+    init_(langCode, exceptions);
 
     if ( isActive() ) {
         openFSTAdapter_->init(spec);
@@ -313,9 +353,11 @@ Iayko::~Iayko()
 }
 
 
-void Iayko::init_(const std::string& langCode)
+void Iayko::init_(const std::string& langCode,
+                  std::vector<std::string> exceptions)
 {
     langCode_ = langCode;
+    exceptions_ = exceptions;
 
     openFSTAdapter_ = dynamic_cast<OpenFSTAdapterInterface*>(
             PluginManager::getInstance().createPluginAdapter("openfst"));
