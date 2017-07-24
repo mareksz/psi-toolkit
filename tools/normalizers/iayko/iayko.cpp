@@ -6,6 +6,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "config.hpp"
 #include "lang_specific_processor_file_fetcher.hpp"
 #include "psi_exception.hpp"
@@ -20,10 +22,14 @@ const std::string Iayko::Factory::DEFAULT_FSTS_PATH
 const std::string Iayko::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
 
-const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of("token");
+const std::list<std::string> Iayko::requiredTags = boost::assign::list_of
+        ("lemma");
+
+const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of
+        ("token");
 
 const std::list<std::string> Iayko::tagsToPut = boost::assign::list_of
-        ("token")("iayko")("normalization");
+        ("iayko")("normalization");
 
 
 std::string Iayko::Factory::getRealFileName(std::string fileSpec, std::string lang) const
@@ -204,7 +210,7 @@ boost::filesystem::path Iayko::Factory::doGetFile() const
 
 std::list<std::list<std::string> > Iayko::Factory::doRequiredLayerTags()
 {
-    return boost::assign::list_of(Iayko::tagsToOperateOn);
+    return boost::assign::list_of(Iayko::requiredTags);
 }
 
 
@@ -229,7 +235,7 @@ std::list<std::string> Iayko::Factory::doAllLanguagesHandled() const {
 std::string Iayko::Factory::doGetContinuation(
     const boost::program_options::variables_map& /* options */) const
 {
-    return "simple-writer --tags normalization --sep \" \"";
+    return "simple-writer --tags iayko --sep \" \"";
 }
 
 
@@ -260,14 +266,13 @@ Iayko::Worker::Worker(Processor& processor, Lattice& lattice):
 void Iayko::Worker::doRun()
 {
     Iayko& iaykoProcessor = dynamic_cast<Iayko&>(processor_);
-    //TODO iaykoProcessor.exceptions_;
 
     if (iaykoProcessor.isActive())
     {
 
         LayerTagMask tokenMask_ =
             lattice_.getLayerTagManager().getMaskWithLangCode(
-                Iayko::tagsToOperateOn, iaykoProcessor.langCode_);
+                "token", iaykoProcessor.langCode_);
 
         Lattice::EdgesSortedByTargetIterator edgeIterator
             = lattice_.edgesSortedByTarget(tokenMask_);
@@ -283,7 +288,9 @@ void Iayko::Worker::doRun()
             Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
             Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
 
-            std::string text = lattice_.getAnnotationText(currentEdge);
+            std::string text = specialNormalize_(
+                    iaykoProcessor.langCode_,
+                    currentEdge);
 
             std::string normalized_text;
             if (std::find(iaykoProcessor.exceptions_.begin(),
@@ -310,6 +317,38 @@ std::string Iayko::Worker::fstNormalize_(const std::string& text)
 {
     Iayko& iaykoProcessor = dynamic_cast<Iayko&>(processor_);
     return iaykoProcessor.getAdapter()->normalize(text);
+}
+
+
+std::string Iayko::Worker::specialNormalize_(
+        const std::string& langCode,
+        Lattice::EdgeDescriptor currentEdge)
+{
+    LayerTagMask lemmaMask_ =
+        lattice_.getLayerTagManager().getMaskWithLangCode("lemma", langCode);
+
+    Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
+    Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
+    std::string text = lattice_.getAnnotationText(currentEdge);
+
+    if (langCode == "pl") {
+        if (boost::starts_with(text, "nie")) {
+
+            bool currentTokenIsLemmatized = false;
+            Lattice::InOutEdgesIterator oe = lattice_.outEdges(source, lemmaMask_);
+            while (oe.hasNext()) {
+                if (lattice_.getEdgeTarget(oe.next()) == target) {
+                    currentTokenIsLemmatized = true;
+                    break;
+                }
+            }
+
+            if (!currentTokenIsLemmatized) {
+                return std::string("nie ") + text.substr(3);
+            }
+        }
+    }
+    return text;
 }
 
 

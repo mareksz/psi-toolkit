@@ -70,6 +70,7 @@ public:
     OpenFSTAdapterInterface* getAdapter();
     bool isActive();
 
+    static const std::list<std::string> requiredTags;
     static const std::list<std::string> tagsToOperateOn;
     static const std::list<std::string> tagsToPut;
 private:
@@ -84,6 +85,9 @@ private:
         LayerTagCollection textTags_;
 
         std::string fstNormalize_(const std::string& text);
+        std::string specialNormalize_(
+                const std::string& langCode,
+                Lattice::EdgeDescriptor currentEdge);
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
