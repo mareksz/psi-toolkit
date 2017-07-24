@@ -87,7 +87,7 @@ const fst::Fst<fst::StdArc>* OpenFSTAdapterImpl::loadFstFromFar_(
             const std::string& fst)
 {
     fst::FarReader<fst::StdArc>* r = fst::FarReader<fst::StdArc>::Open(far);
-    if (not r->Find(fst)) {
+    if (!r || r->Error() || !(r->Find(fst))) {
         std::stringstream errorSs;
         errorSs << "Iayko normalizer: failed to load FST \"" << fst << "\""
             << " from FAR \"" << far << "\"";
