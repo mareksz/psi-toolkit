@@ -684,32 +684,32 @@ function(download_artifact FILE)
 endfunction(download_artifact)
 
 function(download_project_artifact PROJECT FILE)
-  set(_url "http://mrt.wmi.amu.edu.pl:8080/job/${PROJECT}-${CPU_ARCH}/lastSuccessfulBuild/artifact/psi-toolkit-data/${FILE}")
+  set(_src "../psi-toolkit-data/${FILE}")
 
-  message(STATUS "Checking ${_url}...")
+  message(STATUS "Checking ${_src}...")
 
   set(_downloaded_file "${psi-toolkit_SOURCE_DIR}/${FILE}")
 
   set(_skip_download 0)
 
   if (EXISTS "${_downloaded_file}")
-     if ("${CMAKE_VERSION}" VERSION_LESS "2.8.7")
+     # if ("${CMAKE_VERSION}" VERSION_LESS "2.8.7")
          execute_process(COMMAND "md5sum" "-b" ${_downloaded_file}
         OUTPUT_VARIABLE _file_md5_line
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE)
          string(REGEX MATCH "^[0-9a-f]+" _file_md5 "${_file_md5_line}")
-     else()
-        file(MD5 "${_downloaded_file}" _file_md5)
-     endif ()
+     # else()
+     #    file(MD5 "${_downloaded_file}" _file_md5)
+     # endif ()
 
      message(STATUS "File ${_downloaded_file} already there with MD5 ${_file_md5}")
-     message(STATUS "Downloading MD5 ${_url}...")
+     message(STATUS "Downloading MD5 ${_src}...")
 
      set(_jenkins_fingerprint_file "${psi-toolkit_BINARY_DIR}/${FILE}.md5")
 
      file(DOWNLOAD
-         "${_url}/*fingerprint*/"
+         "${_src}/*fingerprint*/"
          "${_jenkins_fingerprint_file}"
          STATUS status)
 
@@ -731,19 +731,18 @@ function(download_project_artifact PROJECT FILE)
   endif ()
 
   if (NOT "${_skip_download}")
-    message(STATUS "Downloading ${_url}...")
-    file(DOWNLOAD
-          "${_url}"
-          "${psi-toolkit_SOURCE_DIR}/${FILE}"
-          STATUS status)
+    if (EXISTS "${_src}")
+        message(STATUS "copying ${_src}...")
+        file(COPY "${_src}"
+            DESTINATION "${psi-toolkit_SOURCE_DIR}/${FILE}")
 
-    list(GET status 0 _status )
-    list(GET status 1 _status_message )
-
-    if (NOT ${_status} EQUAL 0)
-       file(REMOVE "${psi-toolkit_SOURCE_DIR}/${FILE}")
-       message(FATAL_ERROR
-             "Cannot download ${_url}:${_status_message}. Try running cmake with -DDOWNLOAD_DATA=OFF")
+        if (NOT EXISTS "${psi-toolkit_SOURCE_DIR}/${FILE}")
+            message(ERROR
+                "Copying ${_src} failed. Try running cmake with -DDOWNLOAD_DATA=OFF")
+        endif()
+    else()
+        message(ERROR
+            "Cannot copy ${_src}: no such file or directory. Try running cmake with -DDOWNLOAD_DATA=OFF")
     endif()
   endif()
 
@@ -879,15 +878,17 @@ FOREACH(variable_name ${all_variables})
     if(variable_name MATCHES "_LIB_DEPENDS$")
         STRING(REGEX REPLACE "_LIB_DEPENDS.*" "" library_name ${variable_name})
 
-        GET_TARGET_PROPERTY(target_location ${library_name} LOCATION)
+        if(TARGET ${library_name})
+            GET_TARGET_PROPERTY(target_location ${library_name} LOCATION)
 
-        if(NOT target_location MATCHES "NOTFOUND")
-            # the prefix 'libpsitoolkit_' will not be added to any library enumerated
-            # in regexp below
-            if(NOT target_location MATCHES
-                "psitoolkit_perl_simple|python.*_PSIToolkit|psitoolkit_ruby_simple")
+            if(NOT target_location MATCHES "NOTFOUND")
+                # the prefix 'libpsitoolkit_' will not be added to any library enumerated
+                # in regexp below
+                if(NOT target_location MATCHES
+                    "psitoolkit_perl_simple|python.*_PSIToolkit|psitoolkit_ruby_simple")
 
-                SET_TARGET_PROPERTIES(${library_name} PROPERTIES PREFIX ${MY_TARGETLIB_PREFIX})
+                    SET_TARGET_PROPERTIES(${library_name} PROPERTIES PREFIX ${MY_TARGETLIB_PREFIX})
+                endif()
             endif()
         endif()
 
