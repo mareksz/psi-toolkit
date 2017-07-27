@@ -288,9 +288,7 @@ void Iayko::Worker::doRun()
             Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
             Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
 
-            std::string text = specialNormalize_(
-                    iaykoProcessor.langCode_,
-                    currentEdge);
+            std::string text = lattice_.getAnnotationText(currentEdge);
 
             std::string normalized_text;
             if (std::find(iaykoProcessor.exceptions_.begin(),
@@ -317,38 +315,6 @@ std::string Iayko::Worker::fstNormalize_(const std::string& text)
 {
     Iayko& iaykoProcessor = dynamic_cast<Iayko&>(processor_);
     return iaykoProcessor.getAdapter()->normalize(text);
-}
-
-
-std::string Iayko::Worker::specialNormalize_(
-        const std::string& langCode,
-        Lattice::EdgeDescriptor currentEdge)
-{
-    LayerTagMask lemmaMask_ =
-        lattice_.getLayerTagManager().getMaskWithLangCode("lemma", langCode);
-
-    Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
-    Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
-    std::string text = lattice_.getAnnotationText(currentEdge);
-
-    if (langCode == "pl") {
-        if (boost::starts_with(text, "nie")) {
-
-            bool currentTokenIsLemmatized = false;
-            Lattice::InOutEdgesIterator oe = lattice_.outEdges(source, lemmaMask_);
-            while (oe.hasNext()) {
-                if (lattice_.getEdgeTarget(oe.next()) == target) {
-                    currentTokenIsLemmatized = true;
-                    break;
-                }
-            }
-
-            if (!currentTokenIsLemmatized) {
-                return std::string("nie ") + text.substr(3);
-            }
-        }
-    }
-    return text;
 }
 
 
