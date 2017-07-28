@@ -680,73 +680,29 @@ configure_file(${psi-toolkit_SOURCE_DIR}/common/config.hpp.in
 # ====================================================
 
 function(download_artifact FILE)
-  download_project_artifact(psi-toolkit-data ${FILE})
+    download_project_artifact(psi-toolkit-data ${FILE})
 endfunction(download_artifact)
 
+
 function(download_project_artifact PROJECT FILE)
-  set(_src "../psi-toolkit-data/${FILE}")
+    set(_src "${psi-toolkit_SOURCE_DIR}/../psi-toolkit-data/${FILE}")
+    set(_trg "${psi-toolkit_SOURCE_DIR}/${FILE}")
+    get_filename_component(_trg_dir "${psi-toolkit_SOURCE_DIR}/${FILE}" DIRECTORY)
 
-  message(STATUS "Checking ${_src}...")
-
-  set(_downloaded_file "${psi-toolkit_SOURCE_DIR}/${FILE}")
-
-  set(_skip_download 0)
-
-  if (EXISTS "${_downloaded_file}")
-     # if ("${CMAKE_VERSION}" VERSION_LESS "2.8.7")
-         execute_process(COMMAND "md5sum" "-b" ${_downloaded_file}
-        OUTPUT_VARIABLE _file_md5_line
-        ERROR_QUIET
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-         string(REGEX MATCH "^[0-9a-f]+" _file_md5 "${_file_md5_line}")
-     # else()
-     #    file(MD5 "${_downloaded_file}" _file_md5)
-     # endif ()
-
-     message(STATUS "File ${_downloaded_file} already there with MD5 ${_file_md5}")
-     message(STATUS "Downloading MD5 ${_src}...")
-
-     set(_jenkins_fingerprint_file "${psi-toolkit_BINARY_DIR}/${FILE}.md5")
-
-     file(DOWNLOAD
-         "${_src}/*fingerprint*/"
-         "${_jenkins_fingerprint_file}"
-         STATUS status)
-
-     # :( no '{..}' quantifiers in cmake regexps, should be ">([0-9a-f]{32})<"
-     set(_stupid_regexp ">([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])<")
-
-     file(STRINGS ${_jenkins_fingerprint_file} _md5_lines REGEX "${_stupid_regexp}")
-
-     string(REGEX MATCH "${_stupid_regexp}" _match "${_md5_lines}")
-
-     set(_remote_md5 "${CMAKE_MATCH_1}")
-
-     message(STATUS "Remote file MD5 is: ${_remote_md5}")
-
-     if ("${_remote_md5}" STREQUAL "${_file_md5}")
-        message(STATUS "MD5 is the same, skipping download")
-        set(_skip_download 1)
-     endif ("${_remote_md5}" STREQUAL "${_file_md5}")
-  endif ()
-
-  if (NOT "${_skip_download}")
+    message(STATUS "Checking ${_src}...")
     if (EXISTS "${_src}")
-        message(STATUS "copying ${_src}...")
-        file(COPY "${_src}"
-            DESTINATION "${psi-toolkit_SOURCE_DIR}/${FILE}")
-
-        if (NOT EXISTS "${psi-toolkit_SOURCE_DIR}/${FILE}")
-            message(ERROR
+        message(STATUS "Copying ${_src} to ${psi-toolkit_SOURCE_DIR}/${FILE}")
+        file(COPY "${_src}" DESTINATION "${_trg_dir}")
+        if (NOT EXISTS "${_trg}")
+            message(WARNING
                 "Copying ${_src} failed. Try running cmake with -DDOWNLOAD_DATA=OFF")
         endif()
     else()
-        message(ERROR
+        message(WARNING
             "Cannot copy ${_src}: no such file or directory. Try running cmake with -DDOWNLOAD_DATA=OFF")
     endif()
-  endif()
-
 endfunction(download_project_artifact)
+
 
 function(download_and_unpack URL FILE CHECKSUM DESTINATION)
   message(STATUS "Checking ${URL}...")
