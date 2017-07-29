@@ -110,6 +110,18 @@ JAVA_APPEND_LIBRARY_DIRECTORIES(JAVA_AWT_LIBRARY_DIRECTORIES
   /usr/lib/jvm/java-6-openjdk/jre/lib/{libarch}
   /usr/lib/jvm/java-6-openjdk-i386/jre/lib/{libarch}
   /usr/lib/jvm/java-6-openjdk-amd64/jre/lib/{libarch}
+  /usr/lib/jvm/java-7-openjdk/jre/lib
+  /usr/lib/jvm/java-7-openjdk-i386/jre/lib
+  /usr/lib/jvm/java-7-openjdk-amd64/jre/lib
+  /usr/lib/jvm/java-7-openjdk/jre/lib/{libarch}
+  /usr/lib/jvm/java-7-openjdk-i386/jre/lib/{libarch}
+  /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/{libarch}
+  /usr/lib/jvm/java-8-openjdk/jre/lib
+  /usr/lib/jvm/java-8-openjdk-i386/jre/lib
+  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib
+  /usr/lib/jvm/java-8-openjdk/jre/lib/{libarch}
+  /usr/lib/jvm/java-8-openjdk-i386/jre/lib/{libarch}
+  /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/{libarch}
   /usr/lib
   /usr/local/lib
   /usr/lib/jvm/java/lib

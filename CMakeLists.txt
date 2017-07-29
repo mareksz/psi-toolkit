@@ -229,8 +229,6 @@ message(STATUS "Using Java components ${USE_JAVA}")
 if(USE_JAVA)
     enable_language(Java)
 
-    unset(JAVA_JVM_LIBRARY CACHE)
-
     find_package(Java REQUIRED)
     find_package(JNI)
 
