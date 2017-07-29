@@ -229,6 +229,8 @@ message(STATUS "Using Java components ${USE_JAVA}")
 if(USE_JAVA)
     enable_language(Java)
 
+    unset(JAVA_JVM_LIBRARY CACHE)
+
     find_package(Java REQUIRED)
     find_package(JNI)
 
@@ -237,6 +239,7 @@ if(USE_JAVA)
        find_package(JNIAlt REQUIRED)
     endif(NOT JNI_FOUND)
 
+    message(STATUS "Java JVM library: ${JAVA_JVM_LIBRARY}")
     string(REGEX REPLACE "(.*)/libjvm.so" "\\1" LD_LIBPATH ${JAVA_JVM_LIBRARY})
     message(STATUS "You may need to set LD_LIBRARY_PATH=${LD_LIBPATH} to run installed software")
 
@@ -245,6 +248,15 @@ if(USE_JAVA)
     include_directories(${JAVA_INCLUDE_PATH})
     include_directories(${JAVA_INCLUDE_PATH}/linux)
     include_directories("${psi-toolkit_SOURCE_DIR}/common/j")
+
+    list(APPEND CMAKE_JAVA_INCLUDE_PATH "${JAVA_INCLUDE_PATH}")
+    list(APPEND CMAKE_JAVA_INCLUDE_PATH "${psi-toolkit_SOURCE_DIR}/common/j")
+
+    set(CMAKE_JAVA_COMPILE_FLAGS "-cp ${CMAKE_JAVA_INCLUDE_PATH}")
+
+    message(STATUS "Java include path: ${JAVA_INCLUDE_PATH}")
+    message(STATUS "CMake Java include path: ${CMAKE_JAVA_INCLUDE_PATH}")
+    message(STATUS "Java flags: ${CMAKE_JAVA_COMPILE_FLAGS}")
 
     set(HAVE_JAVA 1)
 endif(USE_JAVA)

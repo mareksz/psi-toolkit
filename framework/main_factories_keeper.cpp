@@ -171,7 +171,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new TpTokenizer::Factory());
     keeper_.takeProcessorFactory(new SrxSegmenter::Factory());
     keeper_.takeProcessorFactory(new LangGuesser::Factory());
-    // keeper_.takeProcessorFactory(new Gobio::Factory());
+    keeper_.takeProcessorFactory(new Gobio::Factory());
     keeper_.takeProcessorFactory(new Unumsunt::Factory());
     keeper_.takeProcessorFactory(new SimplenormNormalizer::Factory());
 

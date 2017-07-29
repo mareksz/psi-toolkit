@@ -136,6 +136,8 @@ FOREACH(dir ${JAVA_AWT_LIBRARY_DIRECTORIES})
     "${dir}"
     "${dir}/client"
     "${dir}/server"
+    "${dir}/include"
+    "${dir}/include/linux"
     )
 ENDFOREACH(dir)
 

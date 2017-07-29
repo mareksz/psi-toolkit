@@ -1,6 +1,7 @@
 FROM ubuntu:16.04
 
 WORKDIR /
+ADD psi-toolkit-data.tar.gz .
 RUN apt-get update && \
     apt-get -y install \
         bison \
@@ -42,9 +43,7 @@ RUN ./configure && \
     make install
 
 WORKDIR /
-RUN git clone https://github.com/skorzewski/psi-toolkit.git && \
-    git clone https://github.com/skorzewski/psi-toolkit-data.git && \
-    cp psi-toolkit-data/tools/lemmatizers/lamerlemma/data/pl.bin psi-toolkit/tools/lemmatizers/lamerlemma/data/pl.bin
+RUN git clone https://github.com/skorzewski/psi-toolkit.git
 
 WORKDIR /psi-toolkit
 RUN mkdir build
@@ -52,7 +51,14 @@ RUN mkdir build
 WORKDIR /psi-toolkit/build
 RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF .. && \
     make && \
-    ./tests/test_runner && \
-    ./framework/psi-pipe --version
+    ./tests/test_runner
+
+WORKDIR /psi-toolkit-data
+RUN make
+
+WORKDIR /psi-toolkit/build
+RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=ON .. && \
+    make && \
+    ./tests/test_runner
 EXPOSE 3000
 ENTRYPOINT ["./psi-pipe-or-server.sh"]
