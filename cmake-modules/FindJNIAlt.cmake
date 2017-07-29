@@ -162,6 +162,12 @@ SET(JAVA_AWT_INCLUDE_DIRECTORIES
   /usr/lib/jvm/java-6-openjdk/include
   /usr/lib/jvm/java-6-openjdk-amd64/include
   /usr/lib/jvm/java-6-openjdk-i386/include
+  /usr/lib/jvm/java-7-openjdk/include
+  /usr/lib/jvm/java-7-openjdk-amd64/include
+  /usr/lib/jvm/java-7-openjdk-i386/include
+  /usr/lib/jvm/java-8-openjdk/include
+  /usr/lib/jvm/java-8-openjdk-amd64/include
+  /usr/lib/jvm/java-8-openjdk-i386/include
   /usr/include
   /usr/local/include
   /usr/lib/java/include

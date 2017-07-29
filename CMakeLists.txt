@@ -238,6 +238,7 @@ if(USE_JAVA)
     endif(NOT JNI_FOUND)
 
     message(STATUS "Java JVM library: ${JAVA_JVM_LIBRARY}")
+    message(STATUS "Java AWT include path: ${JAVA_AWT_INCLUDE_PATH}")
     string(REGEX REPLACE "(.*)/libjvm.so" "\\1" LD_LIBPATH ${JAVA_JVM_LIBRARY})
     message(STATUS "You may need to set LD_LIBRARY_PATH=${LD_LIBPATH} to run installed software")
 
