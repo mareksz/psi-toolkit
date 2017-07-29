@@ -28,7 +28,12 @@ RUN apt-get update && \
         libpoppler-dev \
         libpoppler-glib-dev \
         python-all-dev \
-        swig
+        swig \
+        openjdk-8-jdk \
+        openjdk-8-jre-headless
+
+ENV JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/jvm/java-8-openjdk-amd64:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server"
 
 ADD openfst-1.6.2.tar.gz /openfst
 WORKDIR /openfst/openfst-1.6.2
@@ -49,7 +54,7 @@ WORKDIR /psi-toolkit
 RUN mkdir build
 
 WORKDIR /psi-toolkit/build
-RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=OFF .. && \
+RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=OFF .. && \
     make && \
     ./tests/test_runner
 
@@ -57,7 +62,7 @@ WORKDIR /psi-toolkit-data
 RUN make
 
 WORKDIR /psi-toolkit/build
-RUN cmake -DUSE_JAVA=OFF -DDOWNLOAD_DATA=ON .. && \
+RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=OFF .. && \
     make && \
     ./tests/test_runner
 EXPOSE 3000
