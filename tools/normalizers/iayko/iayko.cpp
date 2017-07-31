@@ -28,8 +28,11 @@ const std::list<std::string> Iayko::requiredTags = boost::assign::list_of
 const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of
         ("token");
 
-const std::list<std::string> Iayko::tagsToPut = boost::assign::list_of
+const std::list<std::string> Iayko::providedTags = boost::assign::list_of
         ("iayko")("normalization");
+
+const std::list<std::string> Iayko::tagsToPut = boost::assign::list_of
+        ("iayko")("normalization")("token");
 
 
 std::string Iayko::Factory::getRealFileName(std::string fileSpec, std::string lang) const
@@ -222,7 +225,7 @@ std::list<std::list<std::string> > Iayko::Factory::doOptionalLayerTags()
 
 std::list<std::string> Iayko::Factory::doProvidedLayerTags()
 {
-    return Iayko::tagsToPut;
+    return Iayko::providedTags;
 }
 
 
@@ -257,7 +260,7 @@ LatticeWorker* Iayko::doCreateLatticeWorker(Lattice& lattice)
 
 Iayko::Worker::Worker(Processor& processor, Lattice& lattice):
     LatticeWorker(lattice), processor_(processor),
-    textTags_(lattice_.getLayerTagManager().createTagCollectionFromListWithLangCode(
+    outputTags_(lattice_.getLayerTagManager().createTagCollectionFromListWithLangCode(
                   Iayko::tagsToPut, dynamic_cast<Iayko&>(processor_).langCode_))
 {
 }
@@ -304,7 +307,7 @@ void Iayko::Worker::doRun()
                     source,
                     target,
                     ai,
-                    textTags_);
+                    outputTags_);
 
         }
     }

@@ -72,6 +72,7 @@ public:
 
     static const std::list<std::string> requiredTags;
     static const std::list<std::string> tagsToOperateOn;
+    static const std::list<std::string> providedTags;
     static const std::list<std::string> tagsToPut;
 private:
 
@@ -82,7 +83,7 @@ private:
     private:
         virtual void doRun();
         Processor& processor_;
-        LayerTagCollection textTags_;
+        LayerTagCollection outputTags_;
 
         std::string fstNormalize_(const std::string& text);
         std::string specialNormalize_(
