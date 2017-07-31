@@ -74,6 +74,7 @@
 
 #if HAVE_OPENFST
 #include "iayko.hpp"
+#include "niema.hpp"
 #endif
 
 #if HAVE_LIBMAGIC
@@ -230,6 +231,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 
 #if HAVE_OPENFST
     keeper_.takeProcessorFactory(new Iayko::Factory());
+    keeper_.takeProcessorFactory(new Niema::Factory());
 #endif
 
 #if HAVE_LIBMAGIC

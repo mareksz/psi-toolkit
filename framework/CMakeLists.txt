@@ -111,6 +111,8 @@ endif (HAVE_ASPELL)
 if (HAVE_OPENFST)
   target_link_libraries(framework tools-normalizers-iayko)
   target_link_libraries(psi-pipe tools-normalizers-iayko)
+  target_link_libraries(framework tools-normalizers-niema)
+  target_link_libraries(psi-pipe tools-normalizers-niema)
 endif (HAVE_OPENFST)
 
 # ----------------------------------------------------

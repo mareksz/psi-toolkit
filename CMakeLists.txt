@@ -593,6 +593,8 @@ endif(HAVE_ASPELL)
 if(HAVE_OPENFST)
     set(BASE_TARGETS ${BASE_TARGETS} tools-normalizers-iayko)
     set(TESTS_TARGETS ${TESTS_TARGETS} tools-normalizers-iayko-tests)
+    set(BASE_TARGETS ${BASE_TARGETS} tools-normalizers-niema)
+    set(TESTS_TARGETS ${TESTS_TARGETS} tools-normalizers-niema-tests)
 endif(HAVE_OPENFST)
 
 if(USE_JAVA)
