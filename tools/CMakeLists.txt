@@ -41,6 +41,7 @@ set(tools_DIRS
     spellcheckers/aspell
     converters/unumsunt
     converters/joiner
+    converters/selector
     translators/bonsai
     translators/bonsai/irstlm
     translators/bonsai/rules
