@@ -59,11 +59,12 @@ RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/in
     ./tests/test_runner
 
 WORKDIR /psi-toolkit-data
-RUN make
+RUN make all tools/lexica/mapper/data/pl-valency.bin tools/lexica/mapper/data/es-lexdb-generation-forms.bin
 
 WORKDIR /psi-toolkit/build
-RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=OFF .. && \
+RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=ON .. && \
     make && \
-    ./tests/test_runner
+    ./tests/test_runner && \
+    ./tests/mass-tests ..
 EXPOSE 3000
 ENTRYPOINT ["./psi-pipe-or-server.sh"]
