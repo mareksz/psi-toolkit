@@ -32,7 +32,7 @@ const std::list<std::string> Niema::providedTags = boost::assign::list_of
         ("niema")("normalization");
 
 const std::list<std::string> Niema::tagsToPut = boost::assign::list_of
-        ("niema")("normalization")("token");
+        ("niema")("normalization")("token")("conditional");
 
 
 std::string Niema::Factory::getRealFileName(std::string fileSpec, std::string lang) const
