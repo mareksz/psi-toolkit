@@ -41,6 +41,7 @@ public:
 
     Selector(
         const std::string& inputTag,
+        const std::string& testTag,
         const std::string& outputTag);
 
 private:
@@ -59,6 +60,7 @@ private:
     virtual std::string doInfo();
 
     std::string inputTag_;
+    std::string testTag_;
     std::string outputTag_;
 };
 
