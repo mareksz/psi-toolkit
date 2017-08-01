@@ -23,7 +23,7 @@ const std::string Niema::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
 
 const std::list<std::string> Niema::requiredTags = boost::assign::list_of
-        ("lemma");
+        ("form");
 
 const std::list<std::string> Niema::tagsToOperateOn = boost::assign::list_of
         ("token");

@@ -23,7 +23,7 @@ const std::string Iayko::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
 
 const std::list<std::string> Iayko::requiredTags = boost::assign::list_of
-        ("lemma");
+        ("token");
 
 const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of
         ("token");
