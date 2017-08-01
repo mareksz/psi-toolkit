@@ -13,10 +13,15 @@ public:
     OpenFSTAdapterImpl();
     virtual ~OpenFSTAdapterImpl();
 
+    virtual void init();
     virtual void init(const std::string& far, const std::string& fst);
     virtual void init(std::vector< std::pair<std::string, std::string> > spec);
 
     virtual std::string normalize(const std::string& input);
+    virtual std::string normalize(
+            const std::string& far,
+            const std::string& fst,
+            const std::string& input);
 
 private:
     static const size_t MAX_LINE_LENGTH;

@@ -20,6 +20,11 @@ OpenFSTAdapterImpl::~OpenFSTAdapterImpl()
 }
 
 
+void OpenFSTAdapterImpl::init()
+{
+}
+
+
 void OpenFSTAdapterImpl::init(const std::string& far, const std::string& fst)
 {
     automata_.push_back(loadFstFromFar_(far, fst));
@@ -50,6 +55,30 @@ std::string OpenFSTAdapterImpl::normalize(const std::string& input)
         delete output_fst;
         output_fst = intermediate_fst;
     }
+
+    fst::Project(output_fst, fst::PROJECT_OUTPUT);
+    fst::RmEpsilon(output_fst);
+
+    fst::StdVectorFst output_fst_det;
+    fst::Determinize(*output_fst, &output_fst_det);
+    fst::Minimize(&output_fst_det);
+
+    std::string output(fstToString_(output_fst_det));
+    delete output_fst;
+    return output;
+}
+
+
+std::string OpenFSTAdapterImpl::normalize(
+        const std::string& far,
+        const std::string& fst,
+        const std::string& input)
+{
+    const fst::Fst<fst::StdArc>* automaton = loadFstFromFar_(far, fst);
+    fst::StdVectorFst* input_fst = compileByte_(input);
+    fst::StdVectorFst* output_fst = new fst::StdVectorFst;
+
+    fst::Compose(*input_fst, *automaton, output_fst);
 
     fst::Project(output_fst, fst::PROJECT_OUTPUT);
     fst::RmEpsilon(output_fst);

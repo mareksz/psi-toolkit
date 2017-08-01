@@ -1,1 +1,1 @@
-Niema is a normalizer for diachronic normalization
+Niema is a conditional normalizer for diachronic normalization

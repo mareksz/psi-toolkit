@@ -22,6 +22,7 @@ class Niema : public Annotator
 {
 
 public:
+    typedef std::vector< std::pair< std::pair<std::string, std::string>, std::string > > Spec;
     class Factory : public LanguageDependentAnnotatorFactory
     {
     private:
@@ -59,11 +60,7 @@ public:
     };
 
     Niema(const std::string& langCode,
-          const std::string& far,
-          const std::string& fst,
-          std::vector< std::string > exceptions);
-    Niema(const std::string& langCode,
-          std::vector< std::pair<std::string, std::string> > spec,
+          Niema::Spec spec,
           std::vector< std::string > exceptions);
     ~Niema();
 
@@ -85,10 +82,10 @@ private:
         Processor& processor_;
         LayerTagCollection outputTags_;
 
-        std::string fstNormalize_(const std::string& text);
-        std::string specialNormalize_(
-                const std::string& langCode,
-                Lattice::EdgeDescriptor currentEdge);
+        std::string fstNormalize_(
+                const std::string& far,
+                const std::string& fst,
+                const std::string& text);
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
@@ -96,9 +93,11 @@ private:
     virtual std::string doInfo();
 
     void init_(const std::string& langCode,
+               Niema::Spec spec,
                std::vector< std::string > exceptions);
 
     std::string langCode_;
+    Niema::Spec spec_;
     std::vector< std::string > exceptions_;
     OpenFSTAdapterInterface* openFSTAdapter_;
 };

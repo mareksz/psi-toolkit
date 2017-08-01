@@ -15,10 +15,15 @@ public:
     {
     }
 
+    virtual void init() = 0;
     virtual void init(const std::string& far, const std::string& fst) = 0;
     virtual void init(std::vector< std::pair<std::string, std::string> > spec) = 0;
 
     virtual std::string normalize(const std::string& input) = 0;
+    virtual std::string normalize(
+            const std::string& far,
+            const std::string& fst,
+            const std::string& input) = 0;
 };
 
 

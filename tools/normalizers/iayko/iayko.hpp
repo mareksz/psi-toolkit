@@ -86,9 +86,6 @@ private:
         LayerTagCollection outputTags_;
 
         std::string fstNormalize_(const std::string& text);
-        std::string specialNormalize_(
-                const std::string& langCode,
-                Lattice::EdgeDescriptor currentEdge);
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);

@@ -23,7 +23,7 @@ const std::string Niema::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
 
 const std::list<std::string> Niema::requiredTags = boost::assign::list_of
-        ("form");
+        ("token");
 
 const std::list<std::string> Niema::tagsToOperateOn = boost::assign::list_of
         ("token");
@@ -48,6 +48,7 @@ Annotator* Niema::Factory::doCreateAnnotator(
     std::string lang = options["lang"].as<std::string>();
     std::string farFileSpec = options["far"].as<std::string>();
     std::string fst = options["fst"].as<std::string>();
+    std::string condition = options["condition"].as<std::string>();
     std::string fstsFileSpec = options["fsts"].as<std::string>();
     std::string grm = options["grm"].as<std::string>();
     std::string saveFar= options["save-far"].as<std::string>();
@@ -79,23 +80,23 @@ Annotator* Niema::Factory::doCreateAnnotator(
         throw PsiException("Options --far and --grm must not be used together");
     }
 
-    std::vector< std::pair<std::string, std::string> > transducersSpec;
+    Niema::Spec spec;
     if (options.count("spec")) {
-        std::vector<std::string> spec = options["spec"].as< std::vector<std::string> >();
-        std::vector<std::string>::iterator si = spec.begin();
-        while (si != spec.end()) {
+        std::vector<std::string> optspec = options["spec"].as< std::vector<std::string> >();
+        std::vector<std::string>::iterator si = optspec.begin();
+        while (si != optspec.end()) {
             std::string far = getRealFileName(*si, lang);
             ++si;
-            if (si == spec.end()) {
+            if (si == optspec.end()) {
                 break;
             }
             std::string fst = *si;
-            transducersSpec.push_back(std::make_pair(far, fst));
+            spec.push_back(std::make_pair(std::make_pair(far, fst), condition));
             ++si;
         }
     }
 
-    if (!transducersSpec.empty()) {
+    if (!spec.empty()) {
         if (!fst.empty()) {
             throw PsiException("Options --fst and --spec must not be used together");
         }
@@ -104,7 +105,7 @@ Annotator* Niema::Factory::doCreateAnnotator(
             throw PsiException("Options --fsts and --spec must not be used together");
         }
 
-        return new Niema(lang, transducersSpec, exceptions);
+        return new Niema(lang, spec, exceptions);
     }
 
     std::string far = getRealFileName(farFileSpec, lang);
@@ -135,15 +136,16 @@ Annotator* Niema::Factory::doCreateAnnotator(
         std::string fstLine;
         while (std::getline(fin, fstLine)) {
             if (!fstLine.empty()) {
-                transducersSpec.push_back(std::make_pair(far, fstLine));
+                spec.push_back(std::make_pair(std::make_pair(far, fstLine), condition));
             }
         }
         fin.close();
 
-        return new Niema(lang, transducersSpec, exceptions);
+        return new Niema(lang, spec, exceptions);
     }
 
-    return new Niema(lang, far, fst, exceptions);
+    spec.push_back(std::make_pair(std::make_pair(far, fst), condition));
+    return new Niema(lang, spec, exceptions);
 }
 
 
@@ -159,6 +161,10 @@ void Niema::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
         "fst name inside far")
+    ("condition",
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "condition for fst")
     ("fsts",
         boost::program_options::value<std::string>()
         ->default_value(DEFAULT_FSTS_PATH),
@@ -293,31 +299,44 @@ void Niema::Worker::doRun()
 
             std::string text = lattice_.getAnnotationText(currentEdge);
 
-            std::string normalized_text;
-            if (std::find(niemaProcessor.exceptions_.begin(),
-                        niemaProcessor.exceptions_.end(),
-                        text) != niemaProcessor.exceptions_.end()) {
-                normalized_text = text;
-            } else {
-                normalized_text = fstNormalize_(text);
-            }
+            for (Spec::iterator si = niemaProcessor.spec_.begin();
+                    si != niemaProcessor.spec_.end();
+                    ++si) {
+                std::string normalized_text;
+                if (std::find(niemaProcessor.exceptions_.begin(),
+                            niemaProcessor.exceptions_.end(),
+                            text) != niemaProcessor.exceptions_.end()) {
+                    normalized_text = text;
+                } else {
+                    normalized_text = fstNormalize_(
+                            si->first.first,
+                            si->first.second,
+                            text);
+                }
 
-            AnnotationItem ai("T", normalized_text);
-            lattice_.addEdge(
-                    source,
-                    target,
-                    ai,
-                    outputTags_);
+                AnnotationItem ai("T", normalized_text);
+                lattice_.getAnnotationItemManager().setValue(
+                        ai, "condition", si->second);
+                lattice_.addEdge(
+                        source,
+                        target,
+                        ai,
+                        outputTags_);
+                text = normalized_text;
+            }
 
         }
     }
 }
 
 
-std::string Niema::Worker::fstNormalize_(const std::string& text)
+std::string Niema::Worker::fstNormalize_(
+        const std::string& far,
+        const std::string& fst,
+        const std::string& text)
 {
     Niema& niemaProcessor = dynamic_cast<Niema&>(processor_);
-    return niemaProcessor.getAdapter()->normalize(text);
+    return niemaProcessor.getAdapter()->normalize(far, fst, text);
 }
 
 
@@ -328,26 +347,13 @@ std::string Niema::doInfo()
 
 
 Niema::Niema(const std::string& langCode,
-             const std::string& far,
-             const std::string& fst,
+             Niema::Spec spec,
              std::vector<std::string> exceptions)
 {
-    init_(langCode, exceptions);
+    init_(langCode, spec, exceptions);
 
     if ( isActive() ) {
-        openFSTAdapter_->init(far, fst);
-    }
-}
-
-
-Niema::Niema(const std::string& langCode,
-             std::vector< std::pair<std::string, std::string> > spec,
-             std::vector<std::string> exceptions)
-{
-    init_(langCode, exceptions);
-
-    if ( isActive() ) {
-        openFSTAdapter_->init(spec);
+        openFSTAdapter_->init();
     }
 }
 
@@ -362,9 +368,11 @@ Niema::~Niema()
 
 
 void Niema::init_(const std::string& langCode,
+                  Niema::Spec spec,
                   std::vector<std::string> exceptions)
 {
     langCode_ = langCode;
+    spec_ = spec;
     exceptions_ = exceptions;
 
     openFSTAdapter_ = dynamic_cast<OpenFSTAdapterInterface*>(
