@@ -1,0 +1,1 @@
+niema --lang pl --fst Rule001_09 --condition case=acc ! morfologik ! selector --test-tag form

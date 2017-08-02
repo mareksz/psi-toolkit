@@ -1,0 +1,12 @@
+## beg. len.  text         tags                  annot.text  annotations
+01 0000 05    jayko        frag,txt-reader       jayko       FRAG[]
+02 0000 05    jayko        !pl,lang-guesser,text jayko       TEXT[1]
+03 0000 05    jayko        !pl,token             jayko       T
+04 0000 05    jayko        !pl,conditional,niema,normalization,token jajko T,condition=case=acc[]
+05 0000 05    jayko        !pl,morfologik,morfologik-tagset,normalization jajko term[4]
+06 0000 05    jayko        !pl,lemma,morfologik,morfologik-tagset jajko word[5]
+07 0000 05    jayko        !pl,lexeme,morfologik,morfologik-tagset jajko+subst subst,gender=n[6]
+08 0000 05    jayko        !pl,form,morfologik,morfologik-tagset jajko subst,gender=n,case=acc,number=sg[7]
+09 0000 05    jayko        !pl,form,morfologik,morfologik-tagset jajko subst,gender=n,case=nom,number=sg[7]
+10 0000 05    jayko        !pl,form,morfologik,morfologik-tagset jajko subst,gender=n,case=voc,number=sg[7]
+11 0000 05    jayko        selected              jajko       T,condition=case=acc[]

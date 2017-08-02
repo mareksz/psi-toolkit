@@ -1,0 +1,1 @@
+Basic usage of selector. From edges tagged as "conditional", selector selects the ones whose corresponding "form" edges satisfies the given condition, and tags them as "selected".
