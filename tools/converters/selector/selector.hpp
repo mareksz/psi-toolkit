@@ -1,6 +1,9 @@
 #ifndef SELECTOR_HDR
 #define SELECTOR_HDR
 
+#include <list>
+#include <string>
+
 #include <boost/program_options/options_description.hpp>
 
 #include "language_dependent_annotator_factory.hpp"
@@ -38,14 +41,14 @@ public:
         virtual std::string doGetName() const;
         virtual std::string doGetSubType() const;
 
-        static const std::string DEFAULT_INPUT_TAG;
-        static const std::string DEFAULT_OUTPUT_TAG;
+        static const std::string DEFAULT_IN_TAG;
+        static const std::string DEFAULT_OUT_TAGS;
     };
 
     Selector(
-        const std::string& inputTag,
+        const std::string& inTag,
         const std::string& testTag,
-        const std::string& outputTag);
+        const std::string& outTagsSpecification);
 
 private:
     class Worker : public LatticeWorker
@@ -55,16 +58,16 @@ private:
     private:
         virtual void doRun();
         Selector& processor_;
-        LayerTagCollection outputTags_;
+        LayerTagCollection outTags_;
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice);
 
     virtual std::string doInfo();
 
-    std::string inputTag_;
+    std::string inTag_;
     std::string testTag_;
-    std::string outputTag_;
+    std::list<std::string> outTags_;
 };
 
 #endif

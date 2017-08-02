@@ -3,17 +3,18 @@
 #include <boost/assign/list_of.hpp>
 
 
-const std::string Selector::Factory::DEFAULT_INPUT_TAG = "conditional";
-const std::string Selector::Factory::DEFAULT_OUTPUT_TAG = "selected";
+const std::string Selector::Factory::DEFAULT_IN_TAG = "conditional";
+const std::string Selector::Factory::DEFAULT_OUT_TAGS = "selected";
 
 
 Selector::Selector(
-    const std::string& inputTag,
+    const std::string& inTag,
     const std::string& testTag,
-    const std::string& outputTag)
-    : inputTag_(inputTag),
+    const std::string& outTagsSpecification)
+    : inTag_(inTag),
       testTag_(testTag),
-      outputTag_(outputTag)
+      outTags_(
+         LayerTagManager::splitCollectionSpecification(outTagsSpecification))
 {
 }
 
@@ -22,7 +23,7 @@ Annotator* Selector::Factory::doCreateAnnotator(
 {
     std::string inTag = options["in-tag"].as<std::string>();
     std::string testTag = options["test-tag"].as<std::string>();
-    std::string outTag = options["out-tag"].as<std::string>();
+    std::string outTag = options["out-tags"].as<std::string>();
 
     return new Selector(inTag, testTag, outTag);
 }
@@ -51,7 +52,7 @@ std::list<std::string> Selector::Factory::doProvidedLayerTags()
 std::list<std::string> Selector::Factory::doProvidedLayerTags(
     const boost::program_options::variables_map& options)
 {
-    return boost::assign::list_of(options["out-tag"].as<std::string>());
+    return boost::assign::list_of(options["out-tags"].as<std::string>());
 }
 
 void Selector::Factory::doAddLanguageIndependentOptionsHandled(
@@ -59,14 +60,14 @@ void Selector::Factory::doAddLanguageIndependentOptionsHandled(
 {
     optionsDescription.add_options()
         ("in-tag", boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_INPUT_TAG),
+         ->default_value(DEFAULT_IN_TAG),
          "tag to select from")
         ("test-tag", boost::program_options::value<std::string>()
          ->default_value(std::string()),
          "tag to test condition")
-        ("out-tag", boost::program_options::value<std::string>()
-         ->default_value(DEFAULT_OUTPUT_TAG),
-         "tag to mark selected edges");
+        ("out-tags", boost::program_options::value<std::string>()
+         ->default_value(DEFAULT_OUT_TAGS),
+         "tags to mark selected edges");
 }
 
 AnnotatorFactory::LanguagesHandling Selector::Factory::doLanguagesHandling(
@@ -99,7 +100,7 @@ LatticeWorker* Selector::doCreateLatticeWorker(Lattice & lattice)
 
 Selector::Worker::Worker(Selector & processor, Lattice & lattice) :
     LatticeWorker(lattice), processor_(processor),
-    outputTags_(lattice_.getLayerTagManager().createTagCollection(processor_.outputTag_))
+    outTags_(lattice_.getLayerTagManager().createTagCollection(processor_.outTags_))
 {
 }
 
@@ -111,7 +112,7 @@ void Selector::Worker::doRun()
     LayerTagManager& tagManager = lattice_.getLayerTagManager();
     AnnotationItemManager& aiManager = lattice_.getAnnotationItemManager();
 
-    LayerTagMask inputMask = tagManager.getMask(selectorProcessor.inputTag_);
+    LayerTagMask inputMask = tagManager.getMask(selectorProcessor.inTag_);
     LayerTagMask testMask = selectorProcessor.testTag_.empty()
         ? tagManager.anyTag()
         : tagManager.getMask(selectorProcessor.testTag_);
@@ -153,7 +154,7 @@ void Selector::Worker::doRun()
                 source,
                 target,
                 eai,
-                outputTags_);
+                outTags_);
         }
     }
 }
