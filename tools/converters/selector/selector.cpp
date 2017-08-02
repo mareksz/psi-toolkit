@@ -3,6 +3,10 @@
 #include <boost/assign/list_of.hpp>
 
 
+const std::string Selector::Factory::DEFAULT_INPUT_TAG = "conditional";
+const std::string Selector::Factory::DEFAULT_OUTPUT_TAG = "selected";
+
+
 Selector::Selector(
     const std::string& inputTag,
     const std::string& testTag,
@@ -55,13 +59,13 @@ void Selector::Factory::doAddLanguageIndependentOptionsHandled(
 {
     optionsDescription.add_options()
         ("in-tag", boost::program_options::value<std::string>()
-         ->required(),
+         ->default_value(DEFAULT_INPUT_TAG),
          "tag to select from")
         ("test-tag", boost::program_options::value<std::string>()
          ->default_value(std::string()),
          "tag to test condition")
         ("out-tag", boost::program_options::value<std::string>()
-         ->required(),
+         ->default_value(DEFAULT_OUTPUT_TAG),
          "tag to mark selected edges");
 }
 
@@ -137,8 +141,7 @@ void Selector::Worker::doRun()
                 for (std::list< std::pair<std::string, std::string> >::iterator vi = tvals.begin();
                         vi != tvals.end();
                         ++vi) {
-                    if ((vi->first != "condition" && vi->second == condition)
-                            || vi->first + "=" + vi->second == condition) {
+                    if (vi->first + "=" + vi->second == condition) {
                         conditionSatisfied = true;
                     }
                 }

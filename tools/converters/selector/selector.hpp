@@ -12,7 +12,7 @@ public:
 
     class Factory: public LanguageDependentAnnotatorFactory
     {
-    public:
+    private:
         virtual Annotator* doCreateAnnotator(const boost::program_options::variables_map& options);
 
         virtual std::list<std::list<std::string> > doRequiredLayerTags();
@@ -37,6 +37,9 @@ public:
 
         virtual std::string doGetName() const;
         virtual std::string doGetSubType() const;
+
+        static const std::string DEFAULT_INPUT_TAG;
+        static const std::string DEFAULT_OUTPUT_TAG;
     };
 
     Selector(
