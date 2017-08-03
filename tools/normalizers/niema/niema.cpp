@@ -173,10 +173,8 @@ Annotator* Niema::Factory::doCreateAnnotator(
 
             if (!command.empty()) {
                 if (!condition.empty() && boost::starts_with(command, "export ")) {
-                    DEBUG("COMMAND:" << command);
                     size_t pos = command.find_first_of(" =", 7);
                     std::string fst = command.substr(7, pos - 7);
-                    DEBUG(fst << ":" << condition);
                     spec.push_back(std::make_pair(std::make_pair(saveFar, fst), condition));
                 }
                 fout << command;
