@@ -51,6 +51,7 @@ Annotator* Iayko::Factory::doCreateAnnotator(
     std::string fst = options["fst"].as<std::string>();
     std::string fstsFileSpec = options["fsts"].as<std::string>();
     std::string grm = options["grm"].as<std::string>();
+    std::string md = options["md"].as<std::string>();
     std::string saveFar= options["save-far"].as<std::string>();
     std::string exceptionsFileSpec = options["exceptions"].as<std::string>();
 
@@ -78,6 +79,14 @@ Annotator* Iayko::Factory::doCreateAnnotator(
 
     if (farFileSpec != DEFAULT_FAR_PATH && !grm.empty()) {
         throw PsiException("Options --far and --grm must not be used together");
+    }
+
+    if (farFileSpec != DEFAULT_FAR_PATH && !md.empty()) {
+        throw PsiException("Options --far and --md must not be used together");
+    }
+
+    if (!grm.empty() && !md.empty()) {
+        throw PsiException("Options --grm and --md must not be used together");
     }
 
     std::vector< std::pair<std::string, std::string> > transducersSpec;
@@ -110,6 +119,37 @@ Annotator* Iayko::Factory::doCreateAnnotator(
 
     std::string far = getRealFileName(farFileSpec, lang);
     std::string fsts = getRealFileName(fstsFileSpec, lang);
+
+    if (!md.empty()) {
+        static char tmpFileNameTemplate[] = "grm_XXXXXX";
+        char tmpFileName[PATH_MAX];
+        strcpy(tmpFileName, tmpFileNameTemplate);
+        mkstemp(tmpFileName);
+        grm = tmpFileName;
+
+        std::ifstream fin(md.c_str());
+        if (!fin.is_open()) {
+            throw FileFormatException(std::string("Cannot open file ") + md);
+        }
+        std::ofstream fout(grm.c_str());
+        if (!fout.is_open()) {
+            throw FileFormatException(std::string("Cannot open file ") + grm);
+        }
+        std::string line;
+        while (std::getline(fin, line)) {
+            if (boost::starts_with(line, "    ")) {
+                fout << line.substr(4) << std::endl;
+            } else if (boost::starts_with(line, "\t")) {
+                fout << line.substr(1) << std::endl;
+            } else if (line.empty()) {
+                fout << line << std::endl;
+            } else {
+                fout << "# " << line << std::endl;
+            }
+        }
+        fin.close();
+        fout.close();
+    }
 
     if (!grm.empty()) {
         if (saveFar.empty()) {
@@ -171,6 +211,10 @@ void Iayko::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
         "text file with rules written in Thrax")
+    ("md",
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "text file with rules written in Thrax and their description in Markdown")
     ("save-far",
         boost::program_options::value<std::string>()
         ->default_value(std::string()),

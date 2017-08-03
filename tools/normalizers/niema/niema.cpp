@@ -51,6 +51,7 @@ Annotator* Niema::Factory::doCreateAnnotator(
     std::string condition = options["condition"].as<std::string>();
     std::string fstsFileSpec = options["fsts"].as<std::string>();
     std::string grm = options["grm"].as<std::string>();
+    std::string md = options["md"].as<std::string>();
     std::string saveFar= options["save-far"].as<std::string>();
     std::string exceptionsFileSpec = options["exceptions"].as<std::string>();
 
@@ -78,6 +79,14 @@ Annotator* Niema::Factory::doCreateAnnotator(
 
     if (farFileSpec != DEFAULT_FAR_PATH && !grm.empty()) {
         throw PsiException("Options --far and --grm must not be used together");
+    }
+
+    if (farFileSpec != DEFAULT_FAR_PATH && !md.empty()) {
+        throw PsiException("Options --far and --md must not be used together");
+    }
+
+    if (!grm.empty() && !md.empty()) {
+        throw PsiException("Options --grm and --md must not be used together");
     }
 
     Niema::Spec spec;
@@ -120,15 +129,71 @@ Annotator* Niema::Factory::doCreateAnnotator(
     std::string far = getRealFileName(farFileSpec, lang);
     std::string fsts = getRealFileName(fstsFileSpec, lang);
 
-    if (!grm.empty()) {
-        if (saveFar.empty()) {
-            static char tmpFileNameTemplate[] = "far_XXXXXX";
-            char tmpFileName[PATH_MAX];
-            strcpy(tmpFileName, tmpFileNameTemplate);
-            mkstemp(tmpFileName);
-            saveFar = tmpFileName;
+    if ((!grm.empty() || !md.empty()) && saveFar.empty()) {
+        static char tmpFileNameTemplate[] = "far_XXXXXX";
+        char tmpFileName[PATH_MAX];
+        strcpy(tmpFileName, tmpFileNameTemplate);
+        mkstemp(tmpFileName);
+        saveFar = tmpFileName;
+    }
+
+    if (!md.empty()) {
+        static char tmpFileNameTemplate[] = "grm_XXXXXX";
+        char tmpFileName[PATH_MAX];
+        strcpy(tmpFileName, tmpFileNameTemplate);
+        mkstemp(tmpFileName);
+        grm = tmpFileName;
+
+        std::ifstream fin(md.c_str());
+        if (!fin.is_open()) {
+            throw FileFormatException(std::string("Cannot open file ") + md);
         }
 
+        std::ofstream fout(grm.c_str());
+        if (!fout.is_open()) {
+            throw FileFormatException(std::string("Cannot open file ") + grm);
+        }
+
+        std::string line;
+        std::string command;
+        std::string comment;
+        std::string condition;
+        while (std::getline(fin, line)) {
+            if (boost::starts_with(line, "    ")) {
+                command = line.substr(4);
+            } else if (boost::starts_with(line, "\t")) {
+                command = line.substr(1);
+            } else if (boost::starts_with(line, "%")) {
+                condition = line.substr(1);
+            } else if (line.empty()) {
+                fout << std::endl;
+            } else {
+                comment = line;
+            }
+
+            if (!command.empty()) {
+                if (!condition.empty() && boost::starts_with(command, "export ")) {
+                    DEBUG("COMMAND:" << command);
+                    size_t pos = command.find_first_of(" =", 7);
+                    std::string fst = command.substr(7, pos - 7);
+                    DEBUG(fst << ":" << condition);
+                    spec.push_back(std::make_pair(std::make_pair(saveFar, fst), condition));
+                }
+                fout << command;
+            }
+            if (!comment.empty()) {
+                fout << "# " << comment;
+            }
+            fout << std::endl;
+
+            command = "";
+            comment = "";
+        }
+        fin.close();
+        fout.close();
+    }
+
+    if (!grm.empty()) {
         std::stringstream commandSs;
         commandSs << "thraxcompiler --input_grammar=" << grm
             << " --output_far=" << saveFar << " 1>&2";
@@ -185,6 +250,10 @@ void Niema::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
         "text file with rules written in Thrax")
+    ("md",
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "text file with rules written in Thrax and their description in Markdown")
     ("save-far",
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
