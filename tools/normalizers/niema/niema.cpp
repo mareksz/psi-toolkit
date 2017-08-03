@@ -324,8 +324,10 @@ void Niema::Worker::doRun()
                 }
 
                 AnnotationItem ai("T", normalized_text);
-                lattice_.getAnnotationItemManager().setValue(
-                        ai, "condition", si->second);
+                if (normalized_text != text) {
+                    lattice_.getAnnotationItemManager().setValue(
+                            ai, "condition", si->second);
+                }
                 lattice_.addEdge(
                         source,
                         target,

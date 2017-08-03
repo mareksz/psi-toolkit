@@ -20,9 +20,6 @@ public:
 
         virtual std::list<std::list<std::string> > doRequiredLayerTags();
 
-        virtual std::list<std::list<std::string> > doRequiredLayerTags(
-            const boost::program_options::variables_map& options);
-
         virtual std::list<std::list<std::string> > doOptionalLayerTags();
 
         virtual std::list<std::string> doProvidedLayerTags();
@@ -33,9 +30,6 @@ public:
         virtual AnnotatorFactory::LanguagesHandling doLanguagesHandling(
             const boost::program_options::variables_map& /* options */) const;
 
-        virtual std::list<std::string> doProvidedLayerTags(
-            const boost::program_options::variables_map& options);
-
         virtual std::string doGetContinuation(
             const boost::program_options::variables_map& options) const;
 
@@ -45,11 +39,13 @@ public:
         virtual std::string doGetSubType() const;
 
         static const std::string DEFAULT_IN_TAG;
+        static const std::string DEFAULT_FALLBACK_TAG;
         static const std::string DEFAULT_OUT_TAGS;
     };
 
     Selector(
         const std::string& inTag,
+        const std::string& fallbackTag,
         const std::string& testTag,
         const std::string& outTagsSpecification);
 
@@ -69,6 +65,7 @@ private:
     virtual std::string doInfo();
 
     std::string inTag_;
+    std::string fallbackTag_;
     std::string testTag_;
     std::list<std::string> outTags_;
 };
