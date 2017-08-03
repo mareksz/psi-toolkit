@@ -113,80 +113,91 @@ Selector::Worker::Worker(Selector & processor, Lattice & lattice) :
 
 void Selector::Worker::doRun()
 {
-    Selector& selectorProcessor = dynamic_cast<Selector&>(processor_);
-
     LayerTagManager& ltm = lattice_.getLayerTagManager();
-    AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
-
-    LayerTagMask fallbackMask = ltm.getMask(selectorProcessor.fallbackTag_);
-    LayerTagMask inMask = ltm.getMask(selectorProcessor.inTag_);
-    LayerTagMask testMask = selectorProcessor.testTag_.empty()
-        ? ltm.anyTag()
-        : ltm.getMask(selectorProcessor.testTag_);
+    LayerTagMask fallbackMask = ltm.getMask(processor_.fallbackTag_);
+    LayerTagMask inMask = ltm.getMask(processor_.inTag_);
 
     Lattice::EdgesSortedBySourceIterator fallbackIter(lattice_, fallbackMask);
     while (fallbackIter.hasNext())
     {
         Lattice::EdgeDescriptor fallbackEdge = fallbackIter.next();
+        LayerTagCollection fallbackTags = lattice_.getEdgeLayerTags(fallbackEdge);
+        if (ltm.isThere(processor_.inTag_, fallbackTags)) {
+            continue;
+        }
+
         Lattice::VertexDescriptor source = lattice_.getEdgeSource(fallbackEdge);
         Lattice::VertexDescriptor target = lattice_.getEdgeTarget(fallbackEdge);
-        AnnotationItem ai = lattice_.getEdgeAnnotationItem(fallbackEdge);
+
+        bool anyConditionSatisfied = false;
 
         Lattice::InOutEdgesIterator inIter = lattice_.outEdges(source, inMask);
         while (inIter.hasNext()) {
-            // Find in-edge that is co-located with the fallback edge.
+            // Find in-edges that are co-located with the fallback edge.
             Lattice::EdgeDescriptor inEdge = inIter.next();
-            if (lattice_.getEdgeTarget(inEdge) == target) {
-
-                bool conditionSatisfied = false;
-
-                AnnotationItem inAI = lattice_.getEdgeAnnotationItem(inEdge);
-                zvalue conditionValue = aim.getValue(inAI, "condition");
-
-                if (aim.is_false(conditionValue)) {
-                    // If no condition exists, it is treated as not satisfied.
-                    conditionSatisfied = true;
-                } else {
-                    std::string condition = aim.to_string(conditionValue);
-                    Lattice::InOutEdgesIterator testIter
-                        = lattice_.outEdges(source, testMask);
-                    while (testIter.hasNext()) {
-                        Lattice::EdgeDescriptor testEdge = testIter.next();
-                        if (lattice_.getEdgeTarget(testEdge) == target) {
-                            AnnotationItem testAI
-                                = lattice_.getEdgeAnnotationItem(testEdge);
-                            std::string testCat = aim.getCategory(testAI);
-                            if (testCat == condition) {
-                                conditionSatisfied = true;
-                                break;
-                            }
-                            std::list< std::pair<std::string, std::string> > testVals
-                                = aim.getValues(testAI);
-                            for (std::list< std::pair<std::string, std::string> >::iterator valIter = testVals.begin();
-                                    valIter != testVals.end();
-                                    ++valIter) {
-                                if (valIter->first + "=" + valIter->second == condition) {
-                                    conditionSatisfied = true;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (conditionSatisfied) {
-                    ai = inAI;
-                }
-                break;
+            if (lattice_.getEdgeTarget(inEdge) == target
+                    && isConditionSatisfied_(inEdge)) {
+                anyConditionSatisfied = true;
+                lattice_.addEdge(
+                    source,
+                    target,
+                    lattice_.getEdgeAnnotationItem(inEdge),
+                    outTags_);
             }
         }
 
-        lattice_.addEdge(
-            source,
-            target,
-            ai,
-            outTags_);
+        if (not anyConditionSatisfied) {
+            lattice_.addEdge(
+                source,
+                target,
+                lattice_.getEdgeAnnotationItem(fallbackEdge),
+                outTags_);
+        }
     }
 }
+
+
+bool Selector::Worker::isConditionSatisfied_(Lattice::EdgeDescriptor& edge) {
+    LayerTagManager& ltm = lattice_.getLayerTagManager();
+    AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
+    LayerTagMask testMask = processor_.testTag_.empty()
+        ? ltm.anyTag()
+        : ltm.getMask(processor_.testTag_);
+    Lattice::VertexDescriptor source = lattice_.getEdgeSource(edge);
+    Lattice::VertexDescriptor target = lattice_.getEdgeTarget(edge);
+
+    AnnotationItem ai = lattice_.getEdgeAnnotationItem(edge);
+    zvalue conditionValue = aim.getValue(ai, "condition");
+
+    if (aim.is_false(conditionValue)) {
+        // If no condition exists, it is treated as not satisfied.
+        return true;
+    } else {
+        std::string condition = aim.to_string(conditionValue);
+        Lattice::InOutEdgesIterator testIter = lattice_.outEdges(source, testMask);
+        while (testIter.hasNext()) {
+            Lattice::EdgeDescriptor testEdge = testIter.next();
+            if (lattice_.getEdgeTarget(testEdge) == target) {
+                AnnotationItem testAI = lattice_.getEdgeAnnotationItem(testEdge);
+                std::string testCat = aim.getCategory(testAI);
+                if (testCat == condition) {
+                    return true;
+                }
+                std::list< std::pair<std::string, std::string> > testVals
+                    = aim.getValues(testAI);
+                for (std::list< std::pair<std::string, std::string> >::iterator valIter = testVals.begin();
+                        valIter != testVals.end();
+                        ++valIter) {
+                    if (valIter->first + "=" + valIter->second == condition) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
 
 std::string Selector::doInfo()
 {

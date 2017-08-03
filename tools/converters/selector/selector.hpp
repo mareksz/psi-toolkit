@@ -56,6 +56,7 @@ private:
         Worker(Selector& processor, Lattice& lattice);
     private:
         virtual void doRun();
+        bool isConditionSatisfied_(Lattice::EdgeDescriptor& edge);
         Selector& processor_;
         LayerTagCollection outTags_;
     };

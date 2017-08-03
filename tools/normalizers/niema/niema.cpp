@@ -327,13 +327,12 @@ void Niema::Worker::doRun()
                 if (normalized_text != text) {
                     lattice_.getAnnotationItemManager().setValue(
                             ai, "condition", si->second);
+                    lattice_.addEdge(
+                            source,
+                            target,
+                            ai,
+                            outputTags_);
                 }
-                lattice_.addEdge(
-                        source,
-                        target,
-                        ai,
-                        outputTags_);
-                text = normalized_text;
             }
 
         }
