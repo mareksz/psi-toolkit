@@ -84,13 +84,22 @@ Annotator* Niema::Factory::doCreateAnnotator(
     if (options.count("spec")) {
         std::vector<std::string> optspec = options["spec"].as< std::vector<std::string> >();
         std::vector<std::string>::iterator si = optspec.begin();
+
         while (si != optspec.end()) {
             std::string far = getRealFileName(*si, lang);
+
             ++si;
             if (si == optspec.end()) {
                 break;
             }
             std::string fst = *si;
+
+            ++si;
+            if (si == optspec.end()) {
+                break;
+            }
+            std::string condition = *si;
+
             spec.push_back(std::make_pair(std::make_pair(far, fst), condition));
             ++si;
         }
