@@ -76,6 +76,15 @@ AnnotatorFactory::LanguagesHandling Selector::Factory::doLanguagesHandling(
     return AnnotatorFactory::LANGUAGE_INDEPENDENT;
 }
 
+std::string Selector::Factory::doGetContinuation(
+    const boost::program_options::variables_map& options) const
+{
+    return std::string("simple-writer --tags ")
+        + options["out-tags"].as<std::string>()
+        + std::string(" --sep \" \"");
+}
+
+
 boost::filesystem::path Selector::Factory::doGetFile() const
 {
     return __FILE__;

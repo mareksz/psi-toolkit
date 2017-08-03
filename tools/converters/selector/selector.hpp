@@ -36,6 +36,9 @@ public:
         virtual std::list<std::string> doProvidedLayerTags(
             const boost::program_options::variables_map& options);
 
+        virtual std::string doGetContinuation(
+            const boost::program_options::variables_map& options) const;
+
         virtual boost::filesystem::path doGetFile() const;
 
         virtual std::string doGetName() const;
