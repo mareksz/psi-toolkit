@@ -432,6 +432,22 @@ public:
      */
     size_t getVertexRawCharIndex(VertexDescriptor vd);
 
+    struct EdgeSpec {
+        int fromSpec;
+        int toSpec;
+        const AnnotationItem annotationItem;
+        LayerTagCollection tags;
+
+        EdgeSpec(int a_fromSpec,
+                int a_toSpec,
+                const AnnotationItem& a_annotationItem,
+                LayerTagCollection a_tags) :
+            fromSpec(a_fromSpec),
+            toSpec(a_toSpec),
+            annotationItem(a_annotationItem),
+            tags(a_tags) { }
+    };
+
     /**
      * Adds an edge from vertex `from` to vertex `to` with `annotationItem`
      * and `tags` as layer tags. The partition of the edge into subedges

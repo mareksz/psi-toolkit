@@ -88,6 +88,8 @@ std::string OpenFSTAdapterImpl::normalize(
     fst::Minimize(&output_fst_det);
 
     std::string output(fstToString_(output_fst_det));
+    delete automaton;
+    delete input_fst;
     delete output_fst;
     return output;
 }

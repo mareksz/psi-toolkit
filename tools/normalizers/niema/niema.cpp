@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "config.hpp"
@@ -359,24 +360,27 @@ void Niema::Worker::doRun()
         LayerTagMask tokenMask_ = ltm.getMaskWithLangCode(
                 "token", niemaProcessor.langCode_);
 
-        Lattice::EdgesSortedByTargetIterator edgeIterator
+        Lattice::EdgesSortedByTargetIterator edgeIter
             = lattice_.edgesSortedByTarget(tokenMask_);
 
         Lattice::EdgeDescriptor lastTokenEdge;
         Lattice::EdgeDescriptor lastSeparatingEdge;
 
-        while (edgeIterator.hasNext())
-        {
-            Lattice::EdgeDescriptor currentEdge = edgeIterator.next();
-            LayerTagCollection currentTags = lattice_.getEdgeLayerTags(currentEdge);
-            if (ltm.isThere("niema", currentTags)) {
-                continue;
-            }
+        std::list<Lattice::EdgeSpec> edgesToAdd;
+        std::vector<Lattice::VertexDescriptor> verticesToUse;
 
+        while (edgeIter.hasNext())
+        {
+            Lattice::EdgeDescriptor currentEdge = edgeIter.next();
             std::string category = lattice_.getAnnotationCategory(currentEdge);
 
             Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
+            int sourceSpec = verticesToUse.size();
+            verticesToUse.push_back(source);
+
             Lattice::VertexDescriptor target = lattice_.getEdgeTarget(currentEdge);
+            int targetSpec = verticesToUse.size();
+            verticesToUse.push_back(target);
 
             std::string text = lattice_.getAnnotationText(currentEdge);
 
@@ -395,18 +399,73 @@ void Niema::Worker::doRun()
                             text);
                 }
 
-                AnnotationItem ai("T", normalized_text);
                 if (normalized_text != text) {
-                    lattice_.getAnnotationItemManager().setValue(
-                            ai, "condition", si->second);
-                    lattice_.addEdge(
-                            source,
-                            target,
-                            ai,
-                            outputTags_);
+                    std::vector<std::string> normalized_text_tokenized;
+                    boost::split(
+                            normalized_text_tokenized,
+                            normalized_text,
+                            boost::is_any_of(" "));
+                    size_t normalized_parts = normalized_text_tokenized.size();
+                    if (normalized_parts == 1) {
+                        AnnotationItem ai("T", normalized_text);
+                        edgesToAdd.push_back(Lattice::EdgeSpec(
+                                source,
+                                target,
+                                ai,
+                                outputTags_));
+                    } else {
+                        int currentVertexSpec;
+                        int nextVertexSpec;
+                        for (size_t i = 0; i < normalized_parts; ++i) {
+                            if (i > 0) {
+                                AnnotationItem aiBlank("B", std::string(" "));
+                                currentVertexSpec = nextVertexSpec;
+                                nextVertexSpec = verticesToUse.size();
+                                verticesToUse.push_back(INT_MAX);
+                                edgesToAdd.push_back(Lattice::EdgeSpec(
+                                        currentVertexSpec,
+                                        nextVertexSpec,
+                                        aiBlank,
+                                        outputTags_));
+                            }
+
+                            AnnotationItem ai("T", normalized_text_tokenized[i]);
+                            if (i == 0) {
+                                currentVertexSpec = sourceSpec;
+                            } else {
+                                currentVertexSpec = nextVertexSpec;
+                            }
+                            if (i == normalized_parts - 1) {
+                                nextVertexSpec = targetSpec;
+                            } else {
+                                nextVertexSpec = verticesToUse.size();
+                                verticesToUse.push_back(INT_MAX);
+                            }
+                            edgesToAdd.push_back(Lattice::EdgeSpec(
+                                    currentVertexSpec,
+                                    nextVertexSpec,
+                                    ai,
+                                    outputTags_));
+                        }
+                    }
                 }
             }
+        }
 
+        for (size_t i = 0; i < verticesToUse.size(); ++i) {
+            if (verticesToUse[i] == INT_MAX) {
+                verticesToUse[i] = lattice_.addLooseVertex();
+            }
+        }
+
+        for (std::list<Lattice::EdgeSpec>::iterator esIter = edgesToAdd.begin();
+                esIter != edgesToAdd.end();
+                ++esIter) {
+            lattice_.addEdge(
+                    verticesToUse[esIter->fromSpec],
+                    verticesToUse[esIter->toSpec],
+                    esIter->annotationItem,
+                    esIter->tags);
         }
     }
 }

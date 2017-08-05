@@ -1404,13 +1404,25 @@ Lattice::EdgeDescriptor Lattice::InOutEdgesIterator::next() {
     }
     switch (type_) {
     case EDGE_DESCRIPTOR_ITER :
-        if (edi_ != ediEnd_) return EdgeDescriptor(*(edi_++));
+        if (edi_ != ediEnd_) {
+            EdgeDescriptor result(*edi_);
+            ++edi_;
+            return result;
+        }
         break;
     case OUT_EDGE_ITER :
-        if (oei_ != oeiEnd_) return EdgeDescriptor(*(oei_++));
+        if (oei_ != oeiEnd_) {
+            EdgeDescriptor result(*oei_);
+            ++oei_;
+            return result;
+        }
         break;
     case IN_EDGE_ITER :
-        if (iei_ != ieiEnd_) return EdgeDescriptor(*(iei_++));
+        if (iei_ != ieiEnd_) {
+            EdgeDescriptor result(*iei_);
+            ++iei_;
+            return result;
+        }
         break;
     case IMPLICIT_ITER :
         break;
