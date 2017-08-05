@@ -354,9 +354,9 @@ void Niema::Worker::doRun()
 
     if (niemaProcessor.isActive())
     {
+        LayerTagManager& ltm = lattice_.getLayerTagManager();
 
-        LayerTagMask tokenMask_ =
-            lattice_.getLayerTagManager().getMaskWithLangCode(
+        LayerTagMask tokenMask_ = ltm.getMaskWithLangCode(
                 "token", niemaProcessor.langCode_);
 
         Lattice::EdgesSortedByTargetIterator edgeIterator
@@ -368,6 +368,11 @@ void Niema::Worker::doRun()
         while (edgeIterator.hasNext())
         {
             Lattice::EdgeDescriptor currentEdge = edgeIterator.next();
+            LayerTagCollection currentTags = lattice_.getEdgeLayerTags(currentEdge);
+            if (ltm.isThere("niema", currentTags)) {
+                continue;
+            }
+
             std::string category = lattice_.getAnnotationCategory(currentEdge);
 
             Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);
