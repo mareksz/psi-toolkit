@@ -14,12 +14,14 @@ Selector::Selector(
     const std::string& inTag,
     const std::string& fallbackTag,
     const std::string& testTag,
-    const std::string& outTagsSpecification)
+    const std::string& outTagsSpecification,
+    bool withBlank)
     : inTag_(inTag),
       fallbackTag_(fallbackTag),
       testTag_(testTag),
       outTags_(
-         LayerTagManager::splitCollectionSpecification(outTagsSpecification))
+         LayerTagManager::splitCollectionSpecification(outTagsSpecification)),
+      withBlank_(withBlank)
 {
 }
 
@@ -30,8 +32,9 @@ Annotator* Selector::Factory::doCreateAnnotator(
     std::string fallbackTag = options["fallback-tag"].as<std::string>();
     std::string testTag = options["test-tag"].as<std::string>();
     std::string outTag = options["out-tags"].as<std::string>();
+    bool withBlank = options.count("with-blank");
 
-    return new Selector(inTag, fallbackTag, testTag, outTag);
+    return new Selector(inTag, fallbackTag, testTag, outTag, withBlank);
 }
 
 std::list<std::list<std::string> > Selector::Factory::doRequiredLayerTags()
@@ -64,7 +67,9 @@ void Selector::Factory::doAddLanguageIndependentOptionsHandled(
          "tag to test condition")
         ("out-tags", boost::program_options::value<std::string>()
          ->default_value(DEFAULT_OUT_TAGS),
-         "tags to mark selected edges");
+         "tags to mark selected edges")
+        ("with-blank",
+         "do not skip edges with whitespace text");
 }
 
 AnnotatorFactory::LanguagesHandling Selector::Factory::doLanguagesHandling(
@@ -113,13 +118,13 @@ Selector::Worker::Worker(Selector & processor, Lattice & lattice) :
 
 void Selector::Worker::doRun()
 {
+    AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
     LayerTagManager& ltm = lattice_.getLayerTagManager();
     LayerTagMask fallbackMask = ltm.getMask(processor_.fallbackTag_);
     LayerTagMask inMask = ltm.getMask(processor_.inTag_);
 
     Lattice::VertexDescriptor vertex = lattice_.getFirstVertex();
     Lattice::VertexDescriptor end = lattice_.getLastVertex();
-    Lattice::InOutEdgesIterator allFinalEdges = lattice_.allInEdges(end);
     while (vertex != end) {
         std::list<Lattice::EdgeSpec> edgesToAdd;
         bool allConditionsSatisfied = true;
@@ -164,19 +169,25 @@ void Selector::Worker::doRun()
             for (std::list<Lattice::EdgeSpec>::iterator esIter = edgesToAdd.begin();
                     esIter != edgesToAdd.end();
                     ++esIter) {
-                lattice_.addEdge(
-                        esIter->fromSpec,
-                        esIter->toSpec,
-                        esIter->annotationItem,
-                        esIter->tags);
+                if (processor_.withBlank_
+                        || aim.getCategory(esIter->annotationItem) != "B") {
+                    lattice_.addEdge(
+                            esIter->fromSpec,
+                            esIter->toSpec,
+                            esIter->annotationItem,
+                            esIter->tags);
+                }
             }
         } else {
             edgesToAdd.clear();
-            lattice_.addEdge(
-                vertex,
-                fallbackTarget,
-                lattice_.getEdgeAnnotationItem(fallbackEdge),
-                outTags_);
+            if (processor_.withBlank_
+                    || lattice_.getAnnotationCategory(fallbackEdge) != "B") {
+                lattice_.addEdge(
+                    vertex,
+                    fallbackTarget,
+                    lattice_.getEdgeAnnotationItem(fallbackEdge),
+                    outTags_);
+            }
         }
         vertex = fallbackTarget;
     }

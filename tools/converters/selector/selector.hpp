@@ -47,7 +47,8 @@ public:
         const std::string& inTag,
         const std::string& fallbackTag,
         const std::string& testTag,
-        const std::string& outTagsSpecification);
+        const std::string& outTagsSpecification,
+        bool withBlank);
 
 private:
     class Worker : public LatticeWorker
@@ -69,6 +70,7 @@ private:
     std::string fallbackTag_;
     std::string testTag_;
     std::list<std::string> outTags_;
+    bool withBlank_;
 };
 
 #endif

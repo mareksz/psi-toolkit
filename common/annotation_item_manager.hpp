@@ -38,7 +38,7 @@ public:
     zvalue getValue(AnnotationItem & annotationItem, std::string attribute);
     std::string getValueAsString(AnnotationItem & annotationItem, std::string attribute);
 
-    std::string getCategory(AnnotationItem & annotationItem) const {
+    std::string getCategory(const AnnotationItem & annotationItem) const {
         return annotationItem.category_;
     }
 
