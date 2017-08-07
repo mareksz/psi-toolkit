@@ -162,6 +162,9 @@ void Selector::Worker::doRun()
             if (!oneConditionSatisfied) {
                 allConditionsSatisfied = false;
             }
+            if (inSource == inTarget) {
+                break;
+            }
             inSource = inTarget;
         }
 
