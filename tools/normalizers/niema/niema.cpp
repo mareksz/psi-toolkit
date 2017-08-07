@@ -17,8 +17,8 @@
 const std::string Niema::Factory::DEFAULT_FAR_PATH
     = "%ITSDATA%/%LANG%/all.far";
 
-const std::string Niema::Factory::DEFAULT_FSTS_PATH
-    = "%ITSDATA%/%LANG%/rules.txt";
+const std::string Niema::Factory::DEFAULT_CONDITIONS_PATH
+    = "%ITSDATA%/%LANG%/conditions.txt";
 
 const std::string Niema::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
@@ -50,10 +50,11 @@ Annotator* Niema::Factory::doCreateAnnotator(
     std::string farFileSpec = options["far"].as<std::string>();
     std::string fst = options["fst"].as<std::string>();
     std::string condition = options["condition"].as<std::string>();
-    std::string fstsFileSpec = options["fsts"].as<std::string>();
+    std::string conditionsFileSpec = options["conditions"].as<std::string>();
     std::string grm = options["grm"].as<std::string>();
     std::string md = options["md"].as<std::string>();
-    std::string saveFar= options["save-far"].as<std::string>();
+    std::string saveFar = options["save-far"].as<std::string>();
+    std::string saveConditions = options["save-conditions"].as<std::string>();
     std::string exceptionsFileSpec = options["exceptions"].as<std::string>();
 
     std::vector<std::string> exceptions;
@@ -74,8 +75,8 @@ Annotator* Niema::Factory::doCreateAnnotator(
         fin.close();
     }
 
-    if (!fst.empty() && fstsFileSpec != DEFAULT_FSTS_PATH) {
-        throw PsiException("Options --fst and --fsts must not be used together");
+    if (!fst.empty() && conditionsFileSpec != DEFAULT_CONDITIONS_PATH) {
+        throw PsiException("Options --fst and --conditions must not be used together");
     }
 
     if (farFileSpec != DEFAULT_FAR_PATH && !grm.empty()) {
@@ -120,15 +121,15 @@ Annotator* Niema::Factory::doCreateAnnotator(
             throw PsiException("Options --fst and --spec must not be used together");
         }
 
-        if (fstsFileSpec != DEFAULT_FSTS_PATH) {
-            throw PsiException("Options --fsts and --spec must not be used together");
+        if (conditionsFileSpec != DEFAULT_CONDITIONS_PATH) {
+            throw PsiException("Options --conditions and --spec must not be used together");
         }
 
         return new Niema(lang, spec, exceptions);
     }
 
     std::string far = getRealFileName(farFileSpec, lang);
-    std::string fsts = getRealFileName(fstsFileSpec, lang);
+    std::string conditions = getRealFileName(conditionsFileSpec, lang);
 
     if ((!grm.empty() || !md.empty()) && saveFar.empty()) {
         static char tmpFileNameTemplate[] = "far_XXXXXX";
@@ -202,17 +203,32 @@ Annotator* Niema::Factory::doCreateAnnotator(
     }
 
     if (fst.empty()) {
-        std::ifstream fin(fsts.c_str());
+        std::ifstream fin(conditions.c_str());
         if (!fin.is_open()) {
-            throw FileFormatException(std::string("Cannot open file ") + fsts);
+            throw FileFormatException(std::string("Cannot open file ") + conditions);
         }
-        std::string fstLine;
-        while (std::getline(fin, fstLine)) {
-            if (!fstLine.empty()) {
-                spec.push_back(std::make_pair(std::make_pair(far, fstLine), condition));
+        std::string conditionLine;
+        while (std::getline(fin, conditionLine)) {
+            if (!conditionLine.empty()) {
+                std::vector<std::string> conditionLinePair;
+                boost::split(
+                        conditionLinePair,
+                        conditionLine,
+                        boost::is_any_of("\t"));
+                spec.push_back(std::make_pair(std::make_pair(far, conditionLinePair[0]), conditionLinePair[1]));
             }
         }
         fin.close();
+
+        if (!saveConditions.empty()) {
+            std::ofstream fout(saveConditions.c_str());
+            for (Niema::Spec::iterator si = spec.begin();
+                    si != spec.end();
+                    ++si) {
+                fout << si->first.second << "\t" << si->second << std::endl;
+            }
+            fout.close();
+        }
 
         return new Niema(lang, spec, exceptions);
     }
@@ -240,10 +256,10 @@ void Niema::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
         "condition for fst")
-    ("fsts",
+    ("conditions",
         boost::program_options::value<std::string>()
-        ->default_value(DEFAULT_FSTS_PATH),
-        "file with fst names to be used as a cascade")
+        ->default_value(DEFAULT_CONDITIONS_PATH),
+        "file with conditions")
     ("spec",
         boost::program_options::value< std::vector<std::string> >()->multitoken(),
         "specification of more far:fst pairs to be used as cascade")
@@ -259,6 +275,10 @@ void Niema::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(std::string()),
         "where to save the far archive compiled from grm file")
+    ("save-conditions",
+        boost::program_options::value<std::string>()
+        ->default_value(std::string()),
+        "where to save the conditions to file")
     ("bypass-exceptions",
         "bypass exceptions")
     ("exceptions",

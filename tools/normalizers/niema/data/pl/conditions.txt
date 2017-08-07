@@ -1,0 +1,2 @@
+RuleMAIN	*+verb
+RuleMAIN	*+verb
