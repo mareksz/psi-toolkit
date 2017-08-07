@@ -24,10 +24,10 @@ const std::string Niema::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
 
 const std::list<std::string> Niema::requiredTags = boost::assign::list_of
-        ("token");
+        ("iayko");
 
 const std::list<std::string> Niema::tagsToOperateOn = boost::assign::list_of
-        ("token");
+        ("iayko");
 
 const std::list<std::string> Niema::providedTags = boost::assign::list_of
         ("niema")("normalization");
@@ -217,7 +217,9 @@ Annotator* Niema::Factory::doCreateAnnotator(
         return new Niema(lang, spec, exceptions);
     }
 
-    spec.push_back(std::make_pair(std::make_pair(far, fst), condition));
+    if (spec.empty()) {
+        spec.push_back(std::make_pair(std::make_pair(far, fst), condition));
+    }
     return new Niema(lang, spec, exceptions);
 }
 
@@ -356,9 +358,10 @@ void Niema::Worker::doRun()
     if (niemaProcessor.isActive())
     {
         LayerTagManager& ltm = lattice_.getLayerTagManager();
+        AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
 
         LayerTagMask tokenMask_ = ltm.getMaskWithLangCode(
-                "token", niemaProcessor.langCode_);
+                Niema::tagsToOperateOn, niemaProcessor.langCode_);
 
         Lattice::EdgesSortedByTargetIterator edgeIter
             = lattice_.edgesSortedByTarget(tokenMask_);
@@ -398,6 +401,7 @@ void Niema::Worker::doRun()
                             si->first.second,
                             text);
                 }
+                std::string condition = si->second;
 
                 if (normalized_text != text) {
                     std::vector<std::string> normalized_text_tokenized;
@@ -406,8 +410,26 @@ void Niema::Worker::doRun()
                             normalized_text,
                             boost::is_any_of(" "));
                     size_t normalized_parts = normalized_text_tokenized.size();
+
+                    std::vector<std::string> conditions;
+                    boost::split(
+                            conditions,
+                            condition,
+                            boost::is_any_of("+"));
+                    size_t condition_parts = conditions.size();
+
+                    if (!condition.empty() && normalized_parts != condition_parts) {
+                        std::stringstream errorSs;
+                        errorSs << "Condition \"" << condition << "\" cannot be"
+                            << " applied for text \"" << normalized_text << "\"";
+                        throw FileFormatException(errorSs.str());
+                    }
+
                     if (normalized_parts == 1) {
                         AnnotationItem ai("T", normalized_text);
+                        if (!condition.empty()) {
+                            aim.setValue(ai, "condition", condition);
+                        }
                         edgesToAdd.push_back(Lattice::EdgeSpec(
                                 source,
                                 target,
@@ -430,6 +452,9 @@ void Niema::Worker::doRun()
                             }
 
                             AnnotationItem ai("T", normalized_text_tokenized[i]);
+                            if (!condition.empty()) {
+                                aim.setValue(ai, "condition", conditions[i]);
+                            }
                             if (i == 0) {
                                 currentVertexSpec = sourceSpec;
                             } else {

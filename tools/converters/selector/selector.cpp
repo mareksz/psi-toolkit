@@ -7,7 +7,7 @@
 
 const std::string Selector::Factory::DEFAULT_IN_TAG = "conditional";
 const std::string Selector::Factory::DEFAULT_FALLBACK_TAG = "token";
-const std::string Selector::Factory::DEFAULT_OUT_TAGS = "selected";
+const std::string Selector::Factory::DEFAULT_OUT_TAGS = "selected,token";
 
 
 Selector::Selector(
@@ -117,42 +117,68 @@ void Selector::Worker::doRun()
     LayerTagMask fallbackMask = ltm.getMask(processor_.fallbackTag_);
     LayerTagMask inMask = ltm.getMask(processor_.inTag_);
 
-    Lattice::EdgesSortedBySourceIterator fallbackIter(lattice_, fallbackMask);
-    while (fallbackIter.hasNext())
-    {
-        Lattice::EdgeDescriptor fallbackEdge = fallbackIter.next();
-        LayerTagCollection fallbackTags = lattice_.getEdgeLayerTags(fallbackEdge);
-        if (ltm.isThere(processor_.inTag_, fallbackTags)) {
+    Lattice::VertexDescriptor vertex = lattice_.getFirstVertex();
+    Lattice::VertexDescriptor end = lattice_.getLastVertex();
+    Lattice::InOutEdgesIterator allFinalEdges = lattice_.allInEdges(end);
+    while (vertex != end) {
+        std::list<Lattice::EdgeSpec> edgesToAdd;
+        bool allConditionsSatisfied = true;
+        Lattice::EdgeDescriptor fallbackEdge;
+        try {
+            fallbackEdge = lattice_.firstOutEdge(vertex, fallbackMask);
+        } catch (NoEdgeException) {
+            try {
+                vertex = lattice_.getEdgeTarget(lattice_.firstOutEdge(
+                            vertex, lattice_.getSymbolMask()));
+            } catch (NoEdgeException) {
+                ++vertex;
+            }
             continue;
         }
+        Lattice::VertexDescriptor fallbackTarget = lattice_.getEdgeTarget(fallbackEdge);
+        Lattice::VertexDescriptor inSource = vertex;
+        Lattice::VertexDescriptor inTarget = vertex;
 
-        Lattice::VertexDescriptor source = lattice_.getEdgeSource(fallbackEdge);
-        Lattice::VertexDescriptor target = lattice_.getEdgeTarget(fallbackEdge);
-
-        bool anyConditionSatisfied = false;
-
-        Lattice::InOutEdgesIterator inIter = lattice_.outEdges(source, inMask);
-        while (inIter.hasNext()) {
-            // Find in-edges that are co-located with the fallback edge.
-            Lattice::EdgeDescriptor inEdge = inIter.next();
-            if (lattice_.getEdgeTarget(inEdge) == target
-                    && isConditionSatisfied_(inEdge)) {
-                anyConditionSatisfied = true;
-                lattice_.addEdge(
-                    source,
-                    target,
-                    lattice_.getEdgeAnnotationItem(inEdge),
-                    outTags_);
+        while (inTarget != fallbackTarget) {
+            Lattice::InOutEdgesIterator inIter = lattice_.outEdges(inSource, inMask);
+            bool oneConditionSatisfied = false;
+            while (inIter.hasNext()) {
+                Lattice::EdgeDescriptor inEdge = inIter.next();
+                inTarget = lattice_.getEdgeTarget(inEdge);
+                if (isConditionSatisfied_(inEdge)) {
+                    oneConditionSatisfied = true;
+                    edgesToAdd.push_back(Lattice::EdgeSpec(
+                        inSource,
+                        inTarget,
+                        lattice_.getEdgeAnnotationItem(inEdge),
+                        outTags_));
+                }
             }
+            if (!oneConditionSatisfied) {
+                allConditionsSatisfied = false;
+            }
+            inSource = inTarget;
         }
 
-        if (not anyConditionSatisfied) {
+        if (allConditionsSatisfied) {
+            for (std::list<Lattice::EdgeSpec>::iterator esIter = edgesToAdd.begin();
+                    esIter != edgesToAdd.end();
+                    ++esIter) {
+                lattice_.addEdge(
+                        esIter->fromSpec,
+                        esIter->toSpec,
+                        esIter->annotationItem,
+                        esIter->tags);
+            }
+        } else {
+            edgesToAdd.clear();
             lattice_.addEdge(
-                source,
-                target,
+                vertex,
+                fallbackTarget,
                 lattice_.getEdgeAnnotationItem(fallbackEdge),
                 outTags_);
         }
+        vertex = fallbackTarget;
     }
 }
 
@@ -174,6 +200,9 @@ bool Selector::Worker::isConditionSatisfied_(Lattice::EdgeDescriptor& edge) {
         return true;
     } else {
         std::string condition = aim.to_string(conditionValue);
+        if (condition == "*") {
+            return true;
+        }
         Lattice::InOutEdgesIterator testIter = lattice_.outEdges(source, testMask);
         while (testIter.hasNext()) {
             Lattice::EdgeDescriptor testEdge = testIter.next();
