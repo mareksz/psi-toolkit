@@ -49,6 +49,8 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
             " --lang pl --trg-lang en")
         ("translate-ples",  "gobio --lang pl ! bilexicon --lang pl --trg-lang es ! transferer"
             " --lang pl --trg-lang es")
+
+        ("diachronize", "iayko ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
         ;
 
 
