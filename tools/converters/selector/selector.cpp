@@ -1,5 +1,6 @@
 #include "selector.hpp"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/assign/list_of.hpp>
 
 #include "zvalue.hpp"
@@ -213,25 +214,52 @@ bool Selector::Worker::isConditionSatisfied_(Lattice::EdgeDescriptor& edge) {
         // If no condition exists, it is treated as not satisfied.
         return true;
     } else {
-        std::string condition = aim.to_string(conditionValue);
-        if (condition == "*") {
+        std::string conditionString = aim.to_string(conditionValue);
+        if (conditionString == "*") {
             return true;
         }
+
         Lattice::InOutEdgesIterator testIter = lattice_.outEdges(source, testMask);
         while (testIter.hasNext()) {
             Lattice::EdgeDescriptor testEdge = testIter.next();
             if (lattice_.getEdgeTarget(testEdge) == target) {
                 AnnotationItem testAI = lattice_.getEdgeAnnotationItem(testEdge);
                 std::string testCat = aim.getCategory(testAI);
-                if (testCat == condition) {
-                    return true;
-                }
                 std::list< std::pair<std::string, std::string> > testVals
                     = aim.getValues(testAI);
-                for (std::list< std::pair<std::string, std::string> >::iterator valIter = testVals.begin();
-                        valIter != testVals.end();
-                        ++valIter) {
-                    if (valIter->first + "=" + valIter->second == condition) {
+
+                std::vector<std::string> conditionAlts;
+                boost::split(conditionAlts, conditionString, boost::is_any_of("|"));
+                for (std::vector<std::string>::iterator i = conditionAlts.begin();
+                        i != conditionAlts.end();
+                        ++i) {
+                    bool allConditionsSatisfied = true;
+
+                    std::vector<std::string> conditions;
+                    boost::split(conditions, *i, boost::is_any_of("&"));
+                    for (std::vector<std::string>::iterator j = conditions.begin();
+                            j != conditions.end();
+                            ++j) {
+
+                        bool conditionSatisfied = false;
+                        if (testCat == *j) {
+                            conditionSatisfied = true;
+                        }
+                        for (std::list< std::pair<std::string, std::string> >::iterator valIter = testVals.begin();
+                                valIter != testVals.end();
+                                ++valIter) {
+                            if (valIter->first + "=" + valIter->second == *j) {
+                                conditionSatisfied = true;
+                                break;
+                            }
+                        }
+                        if (!conditionSatisfied) {
+                            allConditionsSatisfied = false;
+                            break;
+                        }
+                    }
+
+                    if (allConditionsSatisfied) {
                         return true;
                     }
                 }
