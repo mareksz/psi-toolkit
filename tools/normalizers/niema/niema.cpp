@@ -451,8 +451,8 @@ void Niema::Worker::doRun()
                             aim.setValue(ai, "condition", condition);
                         }
                         edgesToAdd.push_back(Lattice::EdgeSpec(
-                                source,
-                                target,
+                                sourceSpec,
+                                targetSpec,
                                 ai,
                                 outputTags_));
                     } else {
