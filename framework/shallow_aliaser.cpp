@@ -51,6 +51,7 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
             " --lang pl --trg-lang es")
 
         ("diachronize", "iayko ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
+        ("diachronizer", "iayko ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
         ;
 
 

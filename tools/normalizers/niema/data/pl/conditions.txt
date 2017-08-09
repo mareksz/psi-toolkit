@@ -1,2 +1,2 @@
-RuleMAIN	*+verb
-RuleMAIN	*+verb
+Rule900_01	*+verb
+Rule900_02	verb&aspect=imperf&number=pl&person=pri
