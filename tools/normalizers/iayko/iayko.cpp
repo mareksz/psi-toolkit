@@ -120,6 +120,14 @@ Annotator* Iayko::Factory::doCreateAnnotator(
     std::string far = getRealFileName(farFileSpec, lang);
     std::string fsts = getRealFileName(fstsFileSpec, lang);
 
+    if ((!grm.empty() || !md.empty()) && saveFar.empty()) {
+        static char tmpFileNameTemplate[] = "far_XXXXXX";
+        char tmpFileName[PATH_MAX];
+        strcpy(tmpFileName, tmpFileNameTemplate);
+        mkstemp(tmpFileName);
+        saveFar = tmpFileName;
+    }
+
     if (!md.empty()) {
         static char tmpFileNameTemplate[] = "grm_XXXXXX";
         char tmpFileName[PATH_MAX];
@@ -131,10 +139,12 @@ Annotator* Iayko::Factory::doCreateAnnotator(
         if (!fin.is_open()) {
             throw FileFormatException(std::string("Cannot open file ") + md);
         }
+
         std::ofstream fout(grm.c_str());
         if (!fout.is_open()) {
             throw FileFormatException(std::string("Cannot open file ") + grm);
         }
+
         std::string line;
         while (std::getline(fin, line)) {
             if (boost::starts_with(line, "    ")) {
@@ -152,14 +162,6 @@ Annotator* Iayko::Factory::doCreateAnnotator(
     }
 
     if (!grm.empty()) {
-        if (saveFar.empty()) {
-            static char tmpFileNameTemplate[] = "far_XXXXXX";
-            char tmpFileName[PATH_MAX];
-            strcpy(tmpFileName, tmpFileNameTemplate);
-            mkstemp(tmpFileName);
-            saveFar = tmpFileName;
-        }
-
         std::stringstream commandSs;
         commandSs << "thraxcompiler --input_grammar=" << grm
             << " --output_far=" << saveFar << " 1>&2";
@@ -317,20 +319,21 @@ void Iayko::Worker::doRun()
 
     if (iaykoProcessor.isActive())
     {
+        LayerTagManager& ltm = lattice_.getLayerTagManager();
+        AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
 
-        LayerTagMask tokenMask_ =
-            lattice_.getLayerTagManager().getMaskWithLangCode(
-                "token", iaykoProcessor.langCode_);
+        LayerTagMask tokenMask_ = ltm.getMaskWithLangCode(
+                Iayko::tagsToOperateOn, iaykoProcessor.langCode_);
 
-        Lattice::EdgesSortedByTargetIterator edgeIterator
+        Lattice::EdgesSortedByTargetIterator edgeIter
             = lattice_.edgesSortedByTarget(tokenMask_);
 
         Lattice::EdgeDescriptor lastTokenEdge;
         Lattice::EdgeDescriptor lastSeparatingEdge;
 
-        while (edgeIterator.hasNext())
+        while (edgeIter.hasNext())
         {
-            Lattice::EdgeDescriptor currentEdge = edgeIterator.next();
+            Lattice::EdgeDescriptor currentEdge = edgeIter.next();
             std::string category = lattice_.getAnnotationCategory(currentEdge);
 
             Lattice::VertexDescriptor source = lattice_.getEdgeSource(currentEdge);

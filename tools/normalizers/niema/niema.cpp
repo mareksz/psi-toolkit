@@ -8,6 +8,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/assign/list_of.hpp>
 
 #include "config.hpp"
 #include "lang_specific_processor_file_fetcher.hpp"
