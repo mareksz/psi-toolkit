@@ -423,7 +423,8 @@ void Niema::Worker::doRun()
                     si != niemaProcessor.spec_.end();
                     ++si) {
                 std::string normalized_text;
-                if (std::find(niemaProcessor.exceptions_.begin(),
+                if (text == " "
+                        || std::find(niemaProcessor.exceptions_.begin(),
                             niemaProcessor.exceptions_.end(),
                             text) != niemaProcessor.exceptions_.end()) {
                     normalized_text = text;
