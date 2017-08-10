@@ -53,6 +53,7 @@ public:
 
         std::string getRealFileName(std::string fileSpec, std::string lang) const;
 
+        static const std::string AUXILLIARY_GRM_PATH;
         static const std::string DEFAULT_FAR_PATH;
         static const std::string DEFAULT_FSTS_PATH;
         static const std::string DEFAULT_EXCEPTIONS_PATH;

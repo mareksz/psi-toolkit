@@ -15,6 +15,9 @@
 #include "psi_exception.hpp"
 
 
+const std::string Niema::Factory::AUXILLIARY_GRM_PATH
+    = "%ITSDATA%/%LANG%/aux.grm";
+
 const std::string Niema::Factory::DEFAULT_FAR_PATH
     = "%ITSDATA%/%LANG%/all.far";
 
@@ -155,6 +158,14 @@ Annotator* Niema::Factory::doCreateAnnotator(
         std::ofstream fout(grm.c_str());
         if (!fout.is_open()) {
             throw FileFormatException(std::string("Cannot open file ") + grm);
+        }
+
+        std::ifstream auxin(getRealFileName(AUXILLIARY_GRM_PATH, lang).c_str());
+        if (auxin.is_open()) {
+            fout << auxin.rdbuf();
+            auxin.close();
+        } else {
+            WARN("Cannot open file " + AUXILLIARY_GRM_PATH);
         }
 
         std::string line;

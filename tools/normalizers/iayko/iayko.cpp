@@ -14,6 +14,9 @@
 #include "psi_exception.hpp"
 
 
+const std::string Iayko::Factory::AUXILLIARY_GRM_PATH
+    = "%ITSDATA%/%LANG%/aux.grm";
+
 const std::string Iayko::Factory::DEFAULT_FAR_PATH
     = "%ITSDATA%/%LANG%/all.far";
 
@@ -143,6 +146,14 @@ Annotator* Iayko::Factory::doCreateAnnotator(
         std::ofstream fout(grm.c_str());
         if (!fout.is_open()) {
             throw FileFormatException(std::string("Cannot open file ") + grm);
+        }
+
+        std::ifstream auxin(getRealFileName(AUXILLIARY_GRM_PATH, lang).c_str());
+        if (auxin.is_open()) {
+            fout << auxin.rdbuf();
+            auxin.close();
+        } else {
+            WARN("Cannot open file " + AUXILLIARY_GRM_PATH);
         }
 
         std::string line;
@@ -320,7 +331,6 @@ void Iayko::Worker::doRun()
     if (iaykoProcessor.isActive())
     {
         LayerTagManager& ltm = lattice_.getLayerTagManager();
-        AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
 
         LayerTagMask tokenMask_ = ltm.getMaskWithLangCode(
                 Iayko::tagsToOperateOn, iaykoProcessor.langCode_);
