@@ -50,8 +50,8 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
         ("translate-ples",  "gobio --lang pl ! bilexicon --lang pl --trg-lang es ! transferer"
             " --lang pl --trg-lang es")
 
-        ("diachronize", "iayko ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
-        ("diachronizer", "iayko ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
+        ("diachronize", "iayko --bypass-exceptions ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
+        ("diachronizer", "iayko --bypass-exceptions ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
         ;
 
 
