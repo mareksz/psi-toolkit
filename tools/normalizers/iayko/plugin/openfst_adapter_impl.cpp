@@ -133,21 +133,16 @@ std::string OpenFSTAdapterImpl::fstToString_(fst::StdVectorFst& automaton)
     std::stringstream resultSs;
     FstPathFinder finder;
     finder.extract_all_paths(automaton);
-    for (std::vector<PathData>::iterator p = finder.paths.begin();
-            p != finder.paths.end();
-            ++p) {
-        char buffer[MAX_LINE_LENGTH];
-        size_t len = p->path.size();
-        for (size_t i = 0; i < len; ++i) {
-            buffer[i] = (char)(p->path[i]);
-        }
-        buffer[len] = '\0';
-        if (p != finder.paths.begin()) {
-            resultSs << "\n";
-        }
-        resultSs << buffer;
+    if (finder.paths.size() == 0) {
+        return "";
     }
-    return resultSs.str();
+    char buffer[MAX_LINE_LENGTH];
+    size_t len = finder.paths[0].path.size();
+    for (size_t i = 0; i < len; ++i) {
+        buffer[i] = (char)(finder.paths[0].path[i]);
+    }
+    buffer[len] = '\0';
+    return buffer;
 }
 
 
