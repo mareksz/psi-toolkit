@@ -28,6 +28,7 @@ RUN apt-get update && \
         libpoppler-dev \
         libpoppler-glib-dev \
         python-all-dev \
+        python3 \
         swig \
         openjdk-8-jdk \
         openjdk-8-jre-headless
