@@ -24,3 +24,5 @@ information will be saved in the binary version. The `--morpho` option implies
 `--pos`. The default separators (tab for columns, space for inner-column
 features) can be changed with `--primary-separator` and `--secondary-separator`
 respectivly.
+
+The default morphological dictionary of Polish for Lammerlemma lemmatizer was created using linguistic data from SGJP Grammatical Dictionary of Polish.
