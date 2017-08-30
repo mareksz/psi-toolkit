@@ -92,7 +92,7 @@ Download source code from read-only git repository:
 
 or from GitHub:
 
-    $ git clone git://github.com/filipg/psi-toolkit.git
+    $ git clone git://github.com/skorzewski/psi-toolkit.git
 
 and install all the required and/or optional packages.
 
