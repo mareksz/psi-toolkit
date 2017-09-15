@@ -37,6 +37,10 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
             "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
             " --av-separator : --av-pairs-separator ;")
 
+        ("write-forms", "bracketing-writer --tags form --show-only-tags 0"
+            " --opening-bracket \n"
+            " --closing-bracket \" %T%*{ }{(%c %*[|][%A])}\"")
+
         ("write-tree",  "gv-writer --tree")
         ("get-tree",    "gv-writer --tree")
         ("draw-tree",   "gv-writer --tree")
@@ -50,8 +54,10 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
         ("translate-ples",  "gobio --lang pl ! bilexicon --lang pl --trg-lang es ! transferer"
             " --lang pl --trg-lang es")
 
-        ("diachronize", "iayko --bypass-exceptions ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
-        ("diachronizer", "iayko --bypass-exceptions ! niema ! morfologik ! selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
+        ("diachronize", "iayko --bypass-exceptions ! niema ! morfologik !"
+            " selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
+        ("diachronizer", "iayko --bypass-exceptions ! niema ! morfologik !"
+            " selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
         ;
 
 
