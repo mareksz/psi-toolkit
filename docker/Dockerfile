@@ -23,6 +23,7 @@ RUN apt-get update && \
         libdjvulibre-dev \
         libgraphviz-dev \
         libgtk2.0-dev \
+        liblink-grammar4-dev \
         liblog4cpp5-dev \
         libperl-dev \
         libpoppler-dev \
