@@ -28,6 +28,7 @@ RUN apt-get update && \
         libperl-dev \
         libpoppler-dev \
         libpoppler-glib-dev \
+        link-grammar-dictionaries-en \
         python-all-dev \
         python3 \
         swig \
