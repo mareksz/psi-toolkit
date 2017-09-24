@@ -72,7 +72,7 @@ void ServerRunner::setOptionsDescription_() {
         ;
 }
 
-const std::string ServerRunner::DEFAULT_PIPE = "parse --lang en ! draw --tree --tags parse";
+const std::string ServerRunner::DEFAULT_PIPE = "lemmatize --lang en ! write-morphology";
 const std::string ServerRunner::DEFAULT_TEXT = "My cat bit your dog.";
 
 int ServerRunner::run() {

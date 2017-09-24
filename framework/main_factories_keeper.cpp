@@ -149,6 +149,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.addAlias("write-simple", "simple-writer");
 
     keeper_.addAlias("write-morphology",       "morphology-writer");
+    keeper_.addAlias("write-forms-and-lemmas", "morphology-writer");
     keeper_.addAlias("write-lemmas-and-forms", "morphology-writer");
     keeper_.addAlias("morpho-writer",          "morphology-writer");
 
