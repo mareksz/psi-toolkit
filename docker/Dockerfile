@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:12.04
 
 WORKDIR /
 ADD psi-toolkit-data.tar.gz .
@@ -30,8 +30,8 @@ RUN apt-get update && \
         python-all-dev \
         python3 \
         swig \
-        openjdk-8-jdk \
-        openjdk-8-jre-headless
+        openjdk-7-jdk \
+        openjdk-7-jre-headless
 
 ENV JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/jvm/java-8-openjdk-amd64:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server"
@@ -55,7 +55,7 @@ WORKDIR /psi-toolkit
 RUN mkdir build
 
 WORKDIR /psi-toolkit/build
-RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=OFF .. && \
+RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=OFF -DWITH_RE2=ON .. && \
     make && \
     ./tests/test_runner
 
@@ -63,7 +63,7 @@ WORKDIR /psi-toolkit-data
 RUN make all tools/lexica/mapper/data/pl-valency.bin tools/lexica/mapper/data/es-lexdb-generation-forms.bin tools/lemmatizers/lamerlemma/data/pl.bin
 
 WORKDIR /psi-toolkit/build
-RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=ON .. && \
+RUN cmake -DUSE_JAVA=ON -DJAVA_INCLUDE_PATH=/usr/lib/jvm/java-8-openjdk-amd64/include/ -DJAVA_INCLUDE_PATH2=/usr/lib/jvm/java-8-openjdk-amd64/include/linux/ -DDOWNLOAD_DATA=ON -DWITH_RE2=ON .. && \
     make && \
     ./tests/test_runner && \
     ./tests/mass-tests ..
