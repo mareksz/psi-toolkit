@@ -8,6 +8,7 @@ namespace bonsai {
 
 namespace puddle {
 
+    // patched by RJ
     Annotator* Puddle::Factory::doCreateAnnotator(
             const boost::program_options::variables_map& options) {
 
