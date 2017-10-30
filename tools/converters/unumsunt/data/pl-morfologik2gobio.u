@@ -3,7 +3,6 @@
 @target gobio-tagset
 @tags   lexeme  form
 @cat    adj przymiotnik
-@cat    adja przymiotnik
 @cat    adjp    po_przymiotnik
 @cat    adv przysłówek
 #@cat    brev    rzeczownik
@@ -16,9 +15,7 @@
 @cat    prep    przyimek
 @cat    qub przysłówek
 @cat    subst   rzeczownik
-@cat    depr   rzeczownik
 @cat    verb    czasownik
-@cat    aglt    czasownik
 @attr   number  L
 @val    sg  1
 @val    pl  2
@@ -152,17 +149,6 @@ CAT = liczebnik_główny, pięciuset sześciuset siedmiuset osmiuset dziewięciu
 CAT = liczebnik_główny, dwoje troje czworo pięcioro sześcioro siedmioro ośmioro dziewięcioro >> Typ = d, R = zbiorowy
 CAT = liczebnik_główny, Accommodability = congr >> Typ = zg
 CAT = liczebnik_główny, Accommodability = rec >> Typ = d
-CAT = fin >> CAT = czasownik, C = teraźniejszy
-CAT = bedzie >> CAT = czasownik, C = przyszły
-CAT = praet >> CAT = czasownik, C = przeszły
-CAT = impt >> CAT = czasownik, C = rozkazujący
-CAT = imps >> CAT = czasownik, C = bezosobnik
-CAT = inf >> CAT = czasownik, C = bezokolicznik
-CAT = pcon >> CAT = czasownik, C = imiesłów_współczesny
-CAT = pant >> CAT = czasownik, C = imiesłów_uprzedni
-CAT = ger >> CAT = czasownik, C = odsłownik
-CAT = pact >> CAT = czasownik, C = imiesłów_czynny
-CAT = ppas >> CAT = czasownik, C = imiesłów_bierny
 CAT = czasownik, Rp = mo, L = 1 >> Rp = mż
 CAT = czasownik, Rp = mno, L = 1 >> Rp = mnż
 CAT = czasownik, Rp = m, L = 1 >> Rp = mż|mnż
@@ -184,5 +170,4 @@ CAT = czasownik, można trzeba >> C=teraźniejszy, Typ=modalny, Podmiot=brak, A=
 CAT = przyimek >> Length=1,Amb=1,Typ=0
 CAT = przyimek, niż >> P = mian, S = 0, Typ = niż, Amb = 2
 CAT = '@się' >> L=1, L1=1, R1=0, R=0, Rp=0, O=3, Składnia=0, Length=1, Amb=1
-CAT = winien >> CAT = czasownik, C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
 winien-like=winien >> C=teraźniejszy, Typ=modalny, Dop3=bk, Przyim3=brak, Oblig3=1, A=0, Amb=2
