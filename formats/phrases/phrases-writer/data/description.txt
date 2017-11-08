@@ -1,0 +1,1 @@
+Writes lemmatized NPs and VPs found in the sentence
