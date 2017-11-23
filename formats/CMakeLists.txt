@@ -1,8 +1,6 @@
 set(formats_SUBDIRS
-    apertium apertium/apertium_reader
     bracketing bracketing/bracketing-writer
     dot
-    guessing guessing/guessing_reader
     morphology morphology/morphology-writer
     nkjp
     psi psi/psi_reader psi/psi_writer

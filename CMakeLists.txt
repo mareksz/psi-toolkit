@@ -276,14 +276,14 @@ endif(USE_POSTGRESQL)
 # ----------------------------------------------------
 # Regular expression libraries
 # ----------------------------------------------------
-option(WITH_RE2 "Using RE2 regular expression library" OFF)
+option(WITH_RE2 "Using RE2 regular expression library" ON)
 message(STATUS "Using RE2 regular expression library ${WITH_RE2}")
 
 if(WITH_RE2)
     set(HAVE_RE2 1)
 endif(WITH_RE2)
 
-option(WITH_PCRE "Using PCRE regular expression library" ON)
+option(WITH_PCRE "Using PCRE regular expression library" OFF)
 message(STATUS "Using PCRE regular expression library ${WITH_PCRE}")
 
 if(WITH_PCRE)
@@ -556,7 +556,7 @@ endif (BISON_EXECUTABLE)
 # Sets compiler
 # ====================================================
 
-set(CMAKE_CXX_FLAGS "-g -Wall -Wundef -Wnon-virtual-dtor -Wextra")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -Wall -Wundef -Wnon-virtual-dtor -Wextra")
 
 if(WITH_LOW_MEMORY_COMPILATION)
   message("Setting low memory compilation flags")
@@ -567,9 +567,9 @@ endif(WITH_LOW_MEMORY_COMPILATION)
 # BASE_TARGETS
 # ----------------------------------------------------
 set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet framework
-    formats-apertium formats-bracketing formats-dot formats-guessing formats-morphology formats-nkjp formats-psi
+    formats-bracketing formats-dot formats-morphology formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
-    maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
+    maxent tools-tokenizers-tp tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai
     tools-converters-unumsunt tools-converters-joiner tools-converters-selector tools-translators-transferer tools-normalizers-simplenorm)
 
@@ -578,7 +578,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet fr
 # ----------------------------------------------------
 set(TESTS_TARGETS common-tests framework-tests utf8case-tests
     formats-bracketing-tests formats-dot-tests formats-utt-tests formats-psi-tests
-    formats-simple-tests formats-apertium-tests
+    formats-simple-tests
     tools-tokenizers-tp-tests tools-segmenters-srx-tests tools-datastructures-psi_query-tests
     tools-recognizers-langguesser-tests tools-parsers-gobio-tests tools-parsers-puddle-tests
     tools-taggers-metagger-tests  tools-converters-unumsunt-tests tools-translators-transferer-tests tools-normalizers-simplenorm-tests)
