@@ -78,10 +78,6 @@
 #include "niema.hpp"
 #endif
 
-#if HAVE_LIBMAGIC
-#include "guessing_reader.hpp"
-#endif
-
 #if HAVE_LINK_GRAMMAR
 #include "link_parser.hpp"
 #endif
@@ -240,10 +236,6 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 #if HAVE_OPENFST
     keeper_.takeProcessorFactory(new Iayko::Factory());
     keeper_.takeProcessorFactory(new Niema::Factory());
-#endif
-
-#if HAVE_LIBMAGIC
-    keeper_.takeProcessorFactory(new GuessingReader::Factory());
 #endif
 
 #if HAVE_LINK_GRAMMAR

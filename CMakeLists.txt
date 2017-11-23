@@ -283,7 +283,7 @@ if(WITH_RE2)
     set(HAVE_RE2 1)
 endif(WITH_RE2)
 
-option(WITH_PCRE "Using PCRE regular expression library" OFF)
+option(WITH_PCRE "Using PCRE regular expression library" ON)
 message(STATUS "Using PCRE regular expression library ${WITH_PCRE}")
 
 if(WITH_PCRE)
@@ -567,21 +567,21 @@ endif(WITH_LOW_MEMORY_COMPILATION)
 # BASE_TARGETS
 # ----------------------------------------------------
 set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet framework
-    formats-bracketing formats-dot formats-morphology formats-nkjp formats-psi
+    formats-apertium formats-bracketing formats-dot formats-morphology formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-segmenters-srx tools-recognizers-langguesser
-    tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai
-    tools-converters-unumsunt tools-converters-joiner tools-converters-selector tools-translators-transferer tools-normalizers-simplenorm)
+    tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector
+    tools-converters-unumsunt tools-converters-joiner tools-converters-selector tools-normalizers-simplenorm)
 
 # ----------------------------------------------------
 # TESTS_TARGETS
 # ----------------------------------------------------
 set(TESTS_TARGETS common-tests framework-tests utf8case-tests
     formats-bracketing-tests formats-dot-tests formats-utt-tests formats-psi-tests
-    formats-simple-tests
+    formats-simple-tests formats-apertium-tests
     tools-tokenizers-tp-tests tools-segmenters-srx-tests tools-datastructures-psi_query-tests
     tools-recognizers-langguesser-tests tools-parsers-puddle-tests
-    tools-taggers-metagger-tests  tools-converters-unumsunt-tests tools-translators-transferer-tests tools-normalizers-simplenorm-tests)
+    tools-taggers-metagger-tests  tools-converters-unumsunt-tests tools-normalizers-simplenorm-tests)
 
 
 set(TARGETS ${BASE_TARGETS} psi-pipe)

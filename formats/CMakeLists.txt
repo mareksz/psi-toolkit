@@ -1,4 +1,5 @@
 set(formats_SUBDIRS
+    apertium apertium/apertium_reader
     bracketing bracketing/bracketing-writer
     dot
     morphology morphology/morphology-writer

@@ -29,7 +29,7 @@ include_directories("${psi-toolkit_SOURCE_DIR}/utf8case")
 
 target_link_libraries(tools-translators-transferer common ${Boost_LIBRARIES} ${FLEX_LIBRARIES} utf8case)
 
-target_link_libraries(trunner ${Boost_LIBRARIES} tools-translators-transferer)
+target_link_libraries(trunner ${Boost_LIBRARIES} tools-translators-transferer re2)
 
 install(TARGETS tools-translators-transferer DESTINATION lib/)
 install(DIRECTORY data/ DESTINATION ${PSITOOLKIT_INSTALL_DATA_DIR}/transferer-runner)

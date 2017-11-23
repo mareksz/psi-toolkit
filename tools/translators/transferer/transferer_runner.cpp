@@ -113,7 +113,7 @@ std::list<std::string> TransfererRunner::providedLayerTags() {
 std::list<std::list<std::string> > TransfererRunner::requiredLayerTags() {
     return
         boost::assign::list_of(
-            boost::assign::list_of(std::string("parse")));
+            boost::assign::list_of(std::string("parse")).convert_to_container<std::list<std::string> >()).convert_to_container<std::list<std::list<std::string> > >();
 }
 
 std::string TransfererRunner::getContinuation(

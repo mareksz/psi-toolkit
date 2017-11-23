@@ -70,7 +70,7 @@ public:
 
         virtual std::list<std::list<std::string> > doRequiredLayerTags() {
             return boost::assign::list_of(
-                boost::assign::list_of(std::string("token")));
+                boost::assign::list_of(std::string("token")).convert_to_container<std::list<std::string> >()).convert_to_container<std::list<std::list<std::string> > >();
         }
 
         virtual std::list<std::list<std::string> > doOptionalLayerTags() {

@@ -25,7 +25,7 @@ BonsaiRunner::BonsaiRunner(const boost::program_options::variables_map& options)
     configFile_ =
         fileFetcher.getOneFile(
             options["config"].as<std::string>());
-        
+
     boost::program_options::variables_map cfg;
     if (options.count("config")) {
 	std::ifstream configStream(configFile_.string().c_str());
@@ -51,7 +51,7 @@ BonsaiRunner::BonsaiRunner(const boost::program_options::variables_map& options)
 	    // Co zamiast exitow? Wyjatki
 	}
     }
-    
+
     if (options.count("lm")) {
         lm_files = normalizePaths_(configFile_,
                                    options["lm"].as<std::vector<std::string> >());
@@ -197,18 +197,18 @@ std::list<std::string> BonsaiRunner::languagesHandled(
         : "";
 
     std::string fileSuffix = trgLang + ".cfg";
-    
+
     std::vector<std::string> langs;
-    
+
     boost::filesystem::path dataDirectory = getItsData(getFile());
-    
+
     boost::filesystem::directory_iterator end_iter;
     for (boost::filesystem::directory_iterator fiter(dataDirectory);
          fiter != end_iter;
          ++fiter) {
         boost::filesystem::path seg(fiter->path().filename());
         std::string lexiconFileName = seg.string();
-    
+
         if (lexiconFileName.length() > fileSuffix.length()
             && lexiconFileName.substr(
                 lexiconFileName.length() - fileSuffix.length())
@@ -219,7 +219,7 @@ std::list<std::string> BonsaiRunner::languagesHandled(
             } else {
                 langs.push_back(lexiconFileName.substr(
                                     0, lexiconFileName.length() - fileSuffix.length()));
-    
+
             }
         }
     }
@@ -241,7 +241,7 @@ boost::program_options::options_description BonsaiRunner::optionsHandled() {
          "Paths to translation rule sets")
 	("lm", boost::program_options::value<std::vector<std::string> >(),
          "Paths to language models")
-    
+
 	("stacksize", boost::program_options::value<int>()->default_value(20),
          "Node translation stack size")
 	("max_trans", boost::program_options::value<int>()->default_value(20),
@@ -252,12 +252,12 @@ boost::program_options::options_description BonsaiRunner::optionsHandled() {
          "Allowed transformation cost factor")
 	("nbest", boost::program_options::value<int>()->default_value(1),
          "Display n best translations")
-    
+
 	("verbose", boost::program_options::value<int>()->default_value(0),
          "Level of verbosity: 0, 1, 2")
 	("pedantic", "Pedantic cost calculation (for debugging)")
 	("mert", "Output for MERT (combine with nbest)")
-    
+
 	("tm_weight", boost::program_options::value<poleng::bonsai::Floats>(),
          "Weights for translation model parameters")
         ("rs_weight", boost::program_options::value<poleng::bonsai::Floats>(),
@@ -277,7 +277,7 @@ std::list<std::string> BonsaiRunner::providedLayerTags() {
 std::list<std::list<std::string> > BonsaiRunner::requiredLayerTags() {
     return
         boost::assign::list_of(
-            boost::assign::list_of(std::string("parse")));
+            boost::assign::list_of(std::string("parse")).convert_to_container<std::list<std::string> >()).convert_to_container<std::list<std::list<std::string> > >();
 }
 
 std::string BonsaiRunner::getContinuation(
@@ -299,7 +299,7 @@ std::list<std::string> BonsaiRunner::tagsToOperateOn() {
 
 void BonsaiRunner::processEdge(Lattice& lattice, Lattice::EdgeDescriptor edge) {
     boost::shared_ptr<Bonsai> Bonsai_;
-    
+
     Bonsai_.reset(new Bonsai(translator_, langCode_));
     Bonsai_->translate(lattice, edge);
 }
@@ -323,11 +323,11 @@ void BonsaiRunner::createTags_(const std::string& trgLang) {
 
     tags_ = mainLayerTags_();
     tags_.push_back(trgLangCode);
-    
+
     targetFormTags_ = coreLayerTags_();
     targetFormTags_.push_back("form");
     targetFormTags_.push_back(trgLangCode);
-    
+
     targetTokenTags_ = coreLayerTags_();
     targetTokenTags_.push_back("token");
     targetTokenTags_.push_back(trgLangCode);
@@ -336,7 +336,7 @@ void BonsaiRunner::createTags_(const std::string& trgLang) {
 std::vector<std::string> BonsaiRunner::normalizePaths_(
     boost::filesystem::path &config,
     const std::vector<std::string> &paths) {
-    
+
     std::vector<std::string> outPaths;
     BOOST_FOREACH(std::string path, paths) {
         boost::filesystem::path temp(path);

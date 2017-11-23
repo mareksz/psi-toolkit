@@ -53,7 +53,7 @@ std::map<std::string, std::string> FileExtractor::extractFilesByPath(
     handleError_( fex_open(&fex, archivePath.c_str()) );
 
     while (!fex_done(fex)) {
-        if (regexp.empty() || RegExp::FullMatch(fex_name(fex), PerlRegExp(regexp))) {
+        if (regexp.empty() || RegExp::FullMatch(fex_name(fex), RegExp(regexp))) {
             DEBUG("extracting file " << fex_name(fex));
             files.insert(std::pair<std::string, std::string>(
                 fex_name(fex),
