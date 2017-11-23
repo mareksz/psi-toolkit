@@ -75,8 +75,8 @@ namespace puddle {
     }
 
     std::list<std::list<std::string> > Puddle::Factory::doRequiredLayerTags() {
-        return boost::assign::list_of(
-            boost::assign::list_of(std::string("form")));
+        auto inner = boost::assign::list_of(std::string("form")).convert_to_container<std::list<std::string> >();
+        return boost::assign::list_of(inner).convert_to_container<std::list<std::list<std::string> > >();
     }
 
     std::list<std::list<std::string> > Puddle::Factory::doOptionalLayerTags() {

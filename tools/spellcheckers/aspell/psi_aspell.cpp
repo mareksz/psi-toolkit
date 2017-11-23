@@ -74,7 +74,7 @@ boost::filesystem::path PSIAspell::Factory::doGetFile() const {
 }
 
 std::list<std::list<std::string> > PSIAspell::Factory::doRequiredLayerTags() {
-    return boost::assign::list_of(boost::assign::list_of("token"));
+    return boost::assign::list_of(boost::assign::list_of("token").convert_to_container<std::list<std::string> >()).convert_to_container<std::list<std::list<std::string> > >();
 }
 
 std::list<std::list<std::string> > PSIAspell::Factory::doOptionalLayerTags() {

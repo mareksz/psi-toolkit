@@ -2,7 +2,7 @@ add_library(tools-recognizers-langguesser SHARED
     bigram_language_model.cpp
 	lang_guesser.cpp
 )
-target_link_libraries(tools-recognizers-langguesser common ${Boost_LIBRARIES})
+target_link_libraries(tools-recognizers-langguesser common ${Boost_LIBRARIES} re2)
 
 include_directories("${psi-toolkit_SOURCE_DIR}/tools/parsers/puddle")
 link_directories("${psi-toolkit_BINARY_DIR}/tools/parsers/puddle")
@@ -16,6 +16,6 @@ add_executable(bigram-generator bigram-generator.cpp)
 
 include_directories("${psi-toolkit_SOURCE_DIR}/tools/recognizers/langguesser")
 link_directories("${psi-toolkit_BINARY_DIR}/tools/recognizers/langguesser")
-target_link_libraries(bigram-generator ${Boost_LIBRARIES} pcre pcrecpp common tools-recognizers-langguesser)
+target_link_libraries(bigram-generator ${Boost_LIBRARIES} pcre pcrecpp common tools-recognizers-langguesser re2)
 
 install(TARGETS bigram-generator DESTINATION bin/)

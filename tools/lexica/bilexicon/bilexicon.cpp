@@ -150,7 +150,7 @@ std::list<std::string> BiLexicon::providedLayerTags(
 std::list<std::list<std::string> > BiLexicon::requiredLayerTags() {
     return
         boost::assign::list_of(
-            boost::assign::list_of(std::string("lexeme")));
+            boost::assign::list_of(std::string("lexeme")).convert_to_container<std::list<std::string >>()).convert_to_container<std::list<std::list<std::string > > >();
 }
 
 std::list<std::list<std::string> > BiLexicon::requiredLayerTags(
