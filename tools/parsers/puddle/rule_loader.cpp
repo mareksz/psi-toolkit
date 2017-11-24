@@ -441,6 +441,7 @@ std::string RuleLoader::compileToken(std::string &token,
         if (key == "head") {
             std::string head = getHead(token);
             if (head != "[]") {
+                std::cout << "compiling head: " << head << std::endl;
 #if HAVE_RE2
                 compiledHead = compileToken(head, negativePatterns, true);
 #else
@@ -1218,18 +1219,6 @@ std::string RuleLoader::generateCompiledTokenString(bool tokenMatch,
     std::cout<< "compiledHead: " << compiledHead << std::endl;
     std::cout<< "orth: " << orth << std::endl;
     std::cout<< "no_prefix: " << no_prefix << std::endl;
-    std::cout<< "TokenPatterns: " << std::endl;
-
-    for (TokenPatterns::iterator patternIt = tokenPatterns.begin();
-            patternIt != tokenPatterns.end(); ++ patternIt) {
-        if (attributeIndex == -1) {
-            patternIt->base.condition = conditionString;
-            patternIt->base.negative = false;
-        } else {
-            patternIt->parts[attributeIndex].condition = conditionString;
-            patternIt->parts[attributeIndex].negative = false;
-        }
-    }
 
 
     std::stringstream ss;
