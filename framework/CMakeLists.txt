@@ -45,8 +45,10 @@ foreach(dir ${formats_SUBDIRS})
 endforeach(dir)
 
 foreach(dir ${tools_DIRS})
-    include_directories("${psi-toolkit_SOURCE_DIR}/tools/${dir}")
-    link_directories("${psi-toolkit_BINARY_DIR}/tools/${dir}")
+    if ((NOT ${dir} STREQUAL "translators/transferer") AND (NOT ${dir} STREQUAL "translators/bonsai") AND (NOT ${dir} STREQUAL "parsers/gobio") AND (NOT ${dir} STREQUAL "tokenizers/detok"))
+      include_directories("${psi-toolkit_SOURCE_DIR}/tools/${dir}")
+      link_directories("${psi-toolkit_BINARY_DIR}/tools/${dir}")
+    endif((NOT ${dir} STREQUAL "translators/transferer") AND (NOT ${dir} STREQUAL "translators/bonsai") AND (NOT ${dir} STREQUAL "parsers/gobio") AND (NOT ${dir} STREQUAL "tokenizers/detok"))
 endforeach(dir)
 
 include_directories("${psi-toolkit_SOURCE_DIR}/tests")

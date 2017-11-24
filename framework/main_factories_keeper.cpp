@@ -19,13 +19,9 @@
 #include "best_path_annotator.hpp"
 #include "lemmatizer_annotator.hpp"
 #include "lang_guesser.hpp"
-#include "gobio.hpp"
 #include "puddle.hpp"
 #include "unumsunt.hpp"
-#include "transferer_runner.hpp"
-#include "bonsai_runner.hpp"
 #include "lamerlemma.hpp"
-#include "detok.hpp"
 #include "simplenorm_normalizer.hpp"
 
 #if HAVE_GRAPHVIZ
@@ -176,7 +172,6 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new TpTokenizer::Factory());
     keeper_.takeProcessorFactory(new SrxSegmenter::Factory());
     keeper_.takeProcessorFactory(new LangGuesser::Factory());
-    keeper_.takeProcessorFactory(new Gobio::Factory());
     keeper_.takeProcessorFactory(new Unumsunt::Factory());
     keeper_.takeProcessorFactory(new SimplenormNormalizer::Factory());
 
@@ -210,12 +205,6 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 #endif
 
     keeper_.takeProcessorFactory(new poleng::bonsai::puddle::Puddle::Factory());
-
-    keeper_.takeProcessorFactory(new BestPathAnnotator<TransfererRunner>::Factory());
-
-    keeper_.takeProcessorFactory(new BestPathAnnotator<BonsaiRunner>::Factory());
-
-    keeper_.takeProcessorFactory(new Detok::Factory());
 
 #if HAVE_CMPH
     keeper_.takeProcessorFactory(new OneEdgeAtATimeAnnotator<BiLexicon>::Factory());
