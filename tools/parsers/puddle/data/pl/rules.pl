@@ -1378,10 +1378,6 @@ Eval:  group(PP, 1);
 
 ####### Higher order noun phrases 2 #####
 
-Rule "NP11a: Noun phrase + prepositional attribute"
-Match: [type=NP] [type=PP]+;
-Eval:  group(NP, 1);
-
 Rule "NP11: Noun phrase (no pronoun) + prepositional attribute"
 Match: [type=NP && head=[pos!~"pron"]] [type=PP]+;
 Eval:  group(NP, 1);
