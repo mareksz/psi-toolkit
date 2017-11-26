@@ -769,6 +769,7 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns,
 #else
 std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns) {
 #endif
+    std::cout << "generateTokenPatternsString" << std::endl;
     std::stringstream ss;
     for (TokenPatterns::iterator patternIt = tokenPatterns.begin();
             patternIt != tokenPatterns.end(); ++ patternIt) {
@@ -776,7 +777,10 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns)
         std::string morphoPattern = "";
         std::string pattern = "";
         if (patternIt->base.condition != "") {
+            std::cout << "pattern condition: " <<  patternIt->base.condition << std::endl;
+
             if (patternIt->base.negative) {
+                std::cout << "pattern negative" << std::endl;
 #if HAVE_RE2
                 basePattern = "(?P<";
                 std::string negativePatternName = "neg";
@@ -794,6 +798,7 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns)
                 basePattern = "(?!" + patternIt->base.condition + ")[^<>]+";
 #endif
             } else {
+                std::cout << "pattern positive" << std::endl;
                 basePattern = patternIt->base.condition;
                 //@todo: nie trzeba owinac w nawiasy jeszcze tego?
             }
