@@ -1082,39 +1082,49 @@ Eval:  delete(pos!~"prep",1);
 
 ###### Non word items #####
 
+#> Jassem
 Rule "NE1.1: Naive named entity - starts with a capital letter and consists of several unknown items"
 #Match: [pos~"ign" && orth~"\p{Lu}{1}[\p{L}{1}\'\-\/\.\d]*"] [pos~"ign"]*;
 #Match: [pos~"ign" && orth~"[[:Lu:]][[[:L*:]]\'\-\/\.\d]*"] [pos~"ign"]*;
 Match: [pos~"ign" && orth~"\p{Lu}[\p{L}\.\d\'\-\/]*"] [pos~"ign"]*;
 Eval:  group(NE, 1);
 
+#> "Jassem"
 Rule "NE1.2: Naive named entity - surrounded by quotes and consists of unknown items"
 Left:  [base~"\""];
 Match: [pos~"ign"]+ ;
 Right: [base~"\""];
 Eval:  group(NE, 2);
 
+#> 2. stycznia 1965 r.
+#> 2. stycznia 1965 r
 Rule "DATE1: Date with month names and optional 'r.' (eg. 13 listopada 2008 r.)"
-Match: [base~"\d?\d"] [base~"styczeń|luty|marzec|kwieceń|maj|czerwiec|lipiec|sierpień|wrzesień|październik|listopad|grudzień"] [base~"\d\d\d\d"] [base~"r\.?|rok"]?;
-Eval:  group(DATE, 2);
+Match: [orth~"\d?\d"] [orth~"\."]? [base~"styczeń|luty|marzec|kwieceń|maj|czerwiec|lipiec|sierpień|wrzesień|październik|listopad|grudzień"] ([base~"\d\d\d\d"] ([orth~"r\.?"] | [orth~"roku"])?)?;
+Eval:  group(DATE, 3);
 
+## KJ: To trzeba załatwić w tokenizatorze, bo on zwraca typ X, a nie DATE
 Rule "DATE2: Simple numerical date (eg. 13.11.2008)"
 Match: [base~"\d?\d\.\d?\d\.(\d\d)?\d\d"];
 Eval:  group(DATE, 1);
 
+## KJ: To trzeba załatwić w tokenizatorze, bo on zwraca typ X, a nie DATE
 Rule "TIME1: Simple time (e.g. 12:01)"
 Match: [pos~"ign" && base~"\d?\d[\.\:]\d\d"];
 Eval:  group(TIME, 1);
 
-Rule "NUM1: All tokens that begin with a number, optional ) and % (eg. 34 %)"
-Match: [base~"\d.*"] [base~"\)|\%"]?;
+
+#> 34 %
+Rule "NUM1: All tokens that begin with a numeral, followed by space and %"
+Match: [orth~"\d?\d"] [orth~"%"]?;
 Eval:  group(NUM, 1);
 
+#KJ: group must have at least two tokens
 Rule "NUM2: Roman numbers from I to X with captial letters"
 Match: [orth~"(I|II|III|IV|V|VI|VII|VIII|IX|X)"];
 Eval:  group(NUM, 1);
 
-Rule "NUM4.1: Numerical tokens surrounded by rounded parentheses"
+
+Rule "NUM4.1: Numerical tokens surrounded by braces"
 Match: [base~"\("] [type=NUM] [base~"\)"];
 Eval:  group(NUM, 2);
 
@@ -1321,70 +1331,77 @@ Eval:  group(NP, 1);
 
 ###### Higher order noun phrases #####
 
+#KJ: Rule NP8 does not work (according to something wrong in puddle)
 Rule "NP8: Noun phrase + genitive attribute"
-Match: [type=NP && head=[pos!~"pron"]] [type=NP && head=[case~"gen"]]+;
+Match: [type=NP && head=[pos!~"pron"]] [type=NP && case~"gen"]+;
 Eval:  delete(case!~"gen", 2);
        group(NP, 1);
 
+#>i kot	   
 Rule "NP9.1: Conjunction + noun phrase"
-Match: [pos~"conj" && conj-type~"phrase"] [type=NP && head=[pos~"subst"]];
+Match: [pos~"conj"] [type=NP];
 Eval:  delete(conj-type!~"phrase", 1);
        group(CNP, 2);
 
+#>,kot
 Rule "NP9.2: Comma + noun phrase"
-Match: [base~","] [type=NP && head=[pos~"subst|ger"]];
-Right: (([base~","] [type=NP && head=[pos~"subst|ger"]])|[type=CNP]);
+Match: [base~","] [type=NP];
 Eval:  group(CNP, 2);
 
+#> pies i kot
 Rule "NP10: Noun phrase + conjunctional noun phrase"
 Match: [type=NP] [type=CNP]+;
 Eval:  unify(case, 1, 2);
        group(NP, 1);
 
 ###### Prepositional phrases #####
+##KJ: Removed optional adverbs
+## KJ: Changed the head of the group
+#> na śmieci
 
-Rule "PP1.1: Prepositions + noun phrase with optional adverbs"
-Match: [pos~"adv"]* [pos~"prep"] [pos~"adv"]* [type=NP];
-Eval:  unify(case, 2, 4);
-       delete(pos!~"adv", 1);
-       delete(pos!~"adv", 3);
-       delete(pos!~"prep", 2);
-       group(PP, 4);
+Rule "PP1.1: Prepositions + noun phrase"
+Match: [pos~"prep"] [type=NP];
+Eval:  unify(case, 1, 2);
+       delete(pos!~"prep", 1);
+       group(PP, 1);
 
-#Rule "PP1.1: Prepositions + noun phrase with optional adverbs"
-#Match: [pos~"prep"] [type=NP];
-#Eval:  unify(case, 1, 2);
-#       group(PP, 2);
-#       delete(pos!~"prep", 2);
-
+##KJ: Removed optional adverbs
+## KJ: Changed the head of the group
+#> Dla Jassema	   
 Rule "PP1.2: Named entity as prepositional phrase (eg. dla McCaina)"
-Match: [pos~"adv"]* [pos~"prep"] [type=NE];
-Eval:         delete(pos!~"adv", 1);
-       delete(pos!~"prep", 2);
-       group(PP, 3);
+Match: [pos~"prep"] [type=NE];
+Eval:  delete(pos!~"prep", 2);
+       group(PP, 1);
 
+#> i dla kota
 Rule "PP2.1: Conjunction + prepositional phrase"
 Match: [pos~"conj"] [type=PP];
-Eval:         delete(pos!~"conj", 1);
+Eval:  delete(pos!~"conj", 1);
        group(CPP, 2);
 
+#> , dla kota 	   
 Rule "PP2.2: Comma + prepositional phrase"
-Match: [base~","] [type=PP && head=[pos~"subst"]];
+Match: [base~","] [type=PP];
 Eval:  group(CPP, 2);
 
+#> dla psa, dla kota i dla wnuczki
 Rule "PP3: Prepositional phrase + conjunctional prepositional phrase"
 Match: [type=PP] [type=CPP]+;
 Eval:  group(PP, 1);
 
 ####### Higher order noun phrases 2 #####
 
+#KJ: Temporarily preposition 'do' does not work (discarded by lemmatization)
+#> Kosz na śmieci
+#> Miska na jedzenie dla psa
 Rule "NP11: Noun phrase (no pronoun) + prepositional attribute"
-Match: [type=NP && head=[pos!~"pron"]] [type=PP]+;
-Eval:  group(NP, 1);
+Match: [type=NP] [type=PP]+;
+Eval:  group(NP, 1); # lemmatize(1)
 
+#> " Miska dla psa"
 Rule "NP12.1: Noun phrase surrounded by quotes"
 Match: [base~"\""] [type=NP] [base~"\""];
-Eval:  group(NP, 2);
+Eval:  group(NP, 2); # lemmatize(2)
 
 Rule "NP12.2: Noun phrase surrounded by parenthesis"
 Match: [base~"\("] [type=NP] [base~"\)"];
@@ -1473,9 +1490,10 @@ autodelete;
 
 ##### Glue rules 2 ######
 
-Rule "G1: Series of non-verbal phrases"
-Match: ([type=NP && head=[pos!~"pron"]] | [type=CNP] | [type=NE] | [type=PP] | [type=CPP] | [type=IP]) ([type=NP && head=[pos!~"pron"]] | [type=CNP]| [type=NE]  | [type=PP] | [type=CPP] | [type=IP])+;
-Eval: group(SNP, 1);
+#KJ: De-activated the rule
+#Rule "G1: Series of non-verbal phrases"
+#Match: ([type=NP && head=[pos!~"pron"]] | [type=CNP] | [type=NE] | [type=PP] | [type=CPP] | [type=IP]) ([type=NP && head=[pos!~"pron"]] | [type=CNP]| [type=NE]  | [type=PP] | [type=CPP] | [type=IP])+;
+#Eval: group(SNP, 1);
 
 ##### Sentence rules #####
 
