@@ -8,6 +8,8 @@ LamerLemma::LamerLemma(const boost::program_options::variables_map& options)
 
     level_ = options["level"].as<int>();
 
+    lexeme_ids_ = options.count("lexeme-ids");
+
     LangSpecificProcessorFileFetcher fileFetcher(__FILE__, lang);
 
     if (options.count("plain-text-lexicon")) {
@@ -62,6 +64,10 @@ bool LamerLemma::lemmatize(const std::string& token,
         BOOST_FOREACH(LemmaMap::value_type lemmaPair, lemmaMap)
         {
             std::string lemma = lemmaPair.first;
+            if (not lexeme_ids_) {
+                size_t sep_pos = lemma.find(':');
+                lemma = lemma.substr(0, sep_pos);
+            }
             outputIterator.addLemma(lemma);
 
             if (level_ > 1) {
@@ -115,7 +121,9 @@ boost::program_options::options_description LamerLemma::optionsHandled() {
          "path to the lexicon in the plain text format")
         ("save-binary-lexicon",
          boost::program_options::value<std::string>(),
-         "as a side effect the lexicon in the binary format is generated");
+         "as a side effect the lexicon in the binary format is generated")
+        ("lexeme-ids",
+         "Disambiguate homonymic lexemes with lexeme ids");
 
     return desc;
 }
