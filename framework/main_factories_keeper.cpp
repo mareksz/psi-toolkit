@@ -10,6 +10,7 @@
 #include "simple_lattice_writer.hpp"
 #include "bracketing_lattice_writer.hpp"
 #include "morphology_lattice_writer.hpp"
+#include "phrases_lattice_writer.hpp"
 #include "json_lattice_writer.hpp"
 #include "dot_lattice_writer.hpp"
 #include "apertium_lattice_reader.hpp"
@@ -173,6 +174,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
     keeper_.takeProcessorFactory(new SimpleLatticeWriter::Factory());
     keeper_.takeProcessorFactory(new BracketingLatticeWriter::Factory());
     keeper_.takeProcessorFactory(new MorphologyLatticeWriter::Factory());
+    keeper_.takeProcessorFactory(new PhrasesLatticeWriter::Factory());
     keeper_.takeProcessorFactory(new JSONLatticeWriter::Factory());
     keeper_.takeProcessorFactory(new DotLatticeWriter::Factory());
     keeper_.takeProcessorFactory(new ApertiumLatticeReader::Factory());

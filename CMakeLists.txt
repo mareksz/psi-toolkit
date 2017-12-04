@@ -567,7 +567,7 @@ endif(WITH_LOW_MEMORY_COMPILATION)
 # BASE_TARGETS
 # ----------------------------------------------------
 set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet framework
-    formats-apertium formats-bracketing formats-dot formats-guessing formats-morphology formats-nkjp formats-psi
+    formats-apertium formats-bracketing formats-dot formats-guessing formats-morphology formats-phrases formats-nkjp formats-psi
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai

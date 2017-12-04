@@ -50,6 +50,7 @@ private:
     Dictionary dict_;
     std::string langCode_;
     int level_;
+    bool lexeme_ids_;
 
     static const std::string DEFAULT_LAMERLEMMA_SPEC;
 };
