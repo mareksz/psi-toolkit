@@ -1337,7 +1337,7 @@ Match: [type=NP && head=[pos!~"pron"]] [type=NP && case~"gen"]+;
 Eval:  delete(case!~"gen", 2);
        group(NP, 1);
 
-#>i kot	   
+#>i kot
 Rule "NP9.1: Conjunction + noun phrase"
 Match: [pos~"conj"] [type=NP];
 Eval:  delete(conj-type!~"phrase", 1);
@@ -1367,7 +1367,7 @@ Eval:  unify(case, 1, 2);
 
 ##KJ: Removed optional adverbs
 ## KJ: Changed the head of the group
-#> Dla Jassema	   
+#> Dla Jassema
 Rule "PP1.2: Named entity as prepositional phrase (eg. dla McCaina)"
 Match: [pos~"prep"] [type=NE];
 Eval:  delete(pos!~"prep", 2);
@@ -1379,7 +1379,7 @@ Match: [pos~"conj"] [type=PP];
 Eval:  delete(pos!~"conj", 1);
        group(CPP, 2);
 
-#> , dla kota 	   
+#> , dla kota
 Rule "PP2.2: Comma + prepositional phrase"
 Match: [base~","] [type=PP];
 Eval:  group(CPP, 2);
@@ -1395,7 +1395,7 @@ Eval:  group(PP, 1);
 #> Kosz na śmieci
 #> Miska na jedzenie dla psa
 Rule "NP11: Noun phrase (no pronoun) + prepositional attribute"
-Match: [type=NP] [type=PP]+;
+Match: [type=NP && head=[pos!~"pron"]] [type=PP]+;
 Eval:  group(NP, 1); # lemmatize(1)
 
 #> " Miska dla psa"

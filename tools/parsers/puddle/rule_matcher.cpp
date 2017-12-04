@@ -24,6 +24,7 @@ void RuleMatcher::applyRules(Lattice &lattice, std::string langCode) {
         int afterIndex = 0;
         std::vector<StringPiece> match;
         std::string tmpSentenceString = sentenceString;
+        std::cout << "sentence string: " << sentenceString << std::endl;
         while ( (matchedStartIndex = (*ruleIt)->matchPattern(tmpSentenceString,
                         afterIndex, match) ) > -1 ) {
             bool structureChanged = false;

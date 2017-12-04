@@ -152,6 +152,8 @@ bool Rule::partitionMatchesPattern(Lattice &lattice,
 int Rule::matchPattern(std::string &sentenceString,
         int &afterIndex, std::vector<StringPiece> &match) {
 
+    std::cout << "matchPattern of rule: " << getName() << std::endl;
+    std::cout << "compiled pattern: " << compiledPattern << std::endl; 
     int num_groups = pattern->NumberOfCapturingGroups();
 #if HAVE_RE2
     std::map<std::string, int> namedGroups = pattern->NamedCapturingGroups();
