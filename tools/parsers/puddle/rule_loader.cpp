@@ -624,6 +624,9 @@ std::string RuleLoader::getOperator(std::string &token) {
 
 void RuleLoader::compilePosCondition(std::string &comparisonOperator,
         std::string &value, TokenPatterns &tokenPatterns) {
+    std::cout << "compile pos condition:" << std::endl;
+    std::cout << "comparison operator: " << comparisonOperator << std::endl;
+    std::cout << "value: " << value << std::endl;
     std::string posString;
     if (value.find_first_of(".|*+?[]") != std::string::npos) {
         std::vector<std::string> values = tagset->getPosMatching(value);
@@ -787,9 +790,12 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns,
 #else
 std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns) {
 #endif
+
+    std::cout << "generateTokenPatternsString" << std::endl;
     std::stringstream ss;
     for (TokenPatterns::iterator patternIt = tokenPatterns.begin();
             patternIt != tokenPatterns.end(); ++ patternIt) {
+        std::cout << "token pattern. Condition: " << patternIt->base.condition << std::endl;
         std::string basePattern = "[^<>]+";
         std::string morphoPattern = "";
         std::string pattern = "";
@@ -820,8 +826,10 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns)
         for (std::vector<TokenPatternPart>::iterator partIt =
                 patternIt->parts.begin();
                 partIt != patternIt->parts.end(); ++ partIt) {
+            std::cout << "token pattern part. Condition: " << partIt->condition << std::endl;
             if (partIt->condition != "") {
                 if (morphoPattern != "") {
+                    std::cout << "morpho pattern non empty" << std::endl;
                     morphoPattern += "(?::[^:<>]+)*";
                 } else {
                     if (partIt != patternIt->parts.begin())
@@ -871,6 +879,13 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns)
             morphoPattern = "[^<>]+";
         else
             morphoPattern += "(?::(?:[^:<>]+))*";
+
+        std::cout << "morpho pattern before adding other interpretations: " << morphoPattern << std::endl;
+        // add possible other interpretations to morpho
+        morphoPattern = "(?:<[^<>]+<[^<>]+)*" + morphoPattern + "(?:<[^<>]+<[^<>]+)*";
+        std::cout << "final morpho pattern: " << morphoPattern << std::endl;
+        std::cout << "base pattern: " << basePattern << std::endl;
+
         pattern += "<";
         pattern += basePattern;
         pattern += "<";
@@ -885,19 +900,11 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns)
             else if (patternIt->modifier == "?")
                 pattern = "(?:" + pattern + ")?";
         }
+        std::cout << "adding pattern: " << pattern << std::endl;
         ss << pattern;
+        std::cout << "current ss: " << ss.str() << std::endl;
     }
-    std::string result = ss.str();
-    if (tokenPatterns.size() == 1) {
-        result = "(" + result + ")";
-        //make (<[^<>]+<[^<>]+)* of the (<[^<>]+<[^<>]+) pattern
-        //without the final asterisk, the pattern would only match tokens
-        //with single interpretations
-        if (result == "(<[^<>]+<[^<>]+)")
-        //    result += "*";
-            result = "(?:<[^<>]+<[^<>]+)*";
-    }
-    return result;
+    return ss.str();
 }
 
 ActionsPtr RuleLoader::compileRuleAction(std::string &matched, int ruleLeftSize,
@@ -1254,8 +1261,6 @@ std::string RuleLoader::generateCompiledTokenString(bool tokenMatch,
         else
             ss << "<[^<>]+";
 
-        ss << "<[^<>]+"; //edge text
-
         if (compiledHead != "")
             ss << compiledHead;
         else {
@@ -1265,8 +1270,9 @@ std::string RuleLoader::generateCompiledTokenString(bool tokenMatch,
                 ss << "<" << orth;
             else
                 ss << "<[^<>]+";
-    }
+        }
 
+    }
     std::cout << "before token patterns: " << ss.str() << std::endl;
 
 #if HAVE_RE2
@@ -1274,8 +1280,8 @@ std::string RuleLoader::generateCompiledTokenString(bool tokenMatch,
 #else
         ss << generateTokenPatternsString(tokenPatterns);
 #endif
-    }
-    if (compiledHead == "") { // patched by RJ
+
+    if (! no_prefix) {
         ss << ">";
     }
 
@@ -1311,6 +1317,11 @@ std::string RuleLoader::escapeSpecialChars(std::string text) {
 void RuleLoader::addConditionToPatterns(TokenPatterns &tokenPatterns,
         std::string conditionString, int attributeIndex,
         std::string comparisonOperator) {
+    std::cout << "add condition to patterns" << std::endl;
+    std::cout << "condition string: " << conditionString << std::endl;
+    std::cout << "attribute index: " << attributeIndex << std::endl;
+    std::cout << "comparison operator: " << comparisonOperator << std::endl;
+
     if (comparisonOperator == "~~") {
         for (TokenPatterns::iterator patternIt = tokenPatterns.begin();
                 patternIt != tokenPatterns.end(); ++ patternIt) {
