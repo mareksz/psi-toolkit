@@ -880,16 +880,18 @@ std::string RuleLoader::generateTokenPatternsString(TokenPatterns tokenPatterns)
         else
             morphoPattern += "(?::(?:[^:<>]+))*";
 
-        std::cout << "morpho pattern before adding other interpretations: " << morphoPattern << std::endl;
-        // add possible other interpretations to morpho
-        morphoPattern = "(?:<[^<>]+<[^<>]+)*" + morphoPattern + "(?:<[^<>]+<[^<>]+)*";
-        std::cout << "final morpho pattern: " << morphoPattern << std::endl;
+        std::cout << "morpho pattern: " << morphoPattern << std::endl;
         std::cout << "base pattern: " << basePattern << std::endl;
 
         pattern += "<";
         pattern += basePattern;
         pattern += "<";
         pattern += morphoPattern;
+
+        // add possible other interpretations to pattern
+        pattern = "(?:<[^<>]+<[^<>]+)*" + pattern + "(?:<[^<>]+<[^<>]+)*";
+        std::cout << "pattern with interpretations: " << pattern << std::endl;
+
         if (patternIt->modifier != "") {
             if (patternIt->modifier == "()")
                 pattern = "(?:" + pattern + ")";
