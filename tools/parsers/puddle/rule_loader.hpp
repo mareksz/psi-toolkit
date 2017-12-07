@@ -58,6 +58,12 @@ class RuleLoader {
                 RulePatternIndices &rulePatternIndices, int &bracketCount);
 #endif
 
+        std::string compileRulePattern2(std::string &matched, int &size,
+                RuleTokenPatterns &ruleTokenPatterns,
+                RuleTokenModifiers &ruleTokenModifiers,
+                RuleTokenRequirements &ruleTokenRequirements,
+                RulePatternIndices &rulePatternIndices, int &bracketCount);
+
     private:
         std::string compileNonTokens(std::string &matched);
         std::string compileRuleName(std::string matched);
@@ -73,6 +79,8 @@ class RuleLoader {
 #else
         std::string compileToken(std::string &token, bool no_prefix = false);
 #endif
+
+        std::string compileToken2(std::string &token, bool no_prefix = false);
 
         std::string getKey(std::string &token);
         std::string getValue(std::string &token);

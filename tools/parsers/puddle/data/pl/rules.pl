@@ -6,21 +6,6 @@
 # [ 5 ] W przypadku tradycyjnych zasobów własnych ( opłaty rolne , opłaty wyrównawcze od cukru , cła ) należy wskazać kwoty netto , tzn. kwoty brutto po odliczeniu 25% na poczet kosztów poboru .
 # Państwa członkowskie mogą stosować ograniczenia wskazane na tej liście jedynie w odniesieniu do bezpośredniego prowadzenia działalności przez meksykańską jednostkę handlową lub do świadczenia usług transgranicznych z Meksyku ; wobec powyższego , państwo członkowskie nie może stosować tych ograniczeń , w tym ograniczeń dotyczących prowadzenia działalności , do meksykańskich filii założonych w innym państwie członkowskim Wspólnoty , chyba że te ograniczenia mogą również być stosowane do przedsiębiorstw lub obywateli innych państw członkowskich zgodnie z prawem wspólnotowym .
 
-
-### test rules ###
-
-#Rule "test orth"
-#Match: [orth~"kot"];
-#Eval: add("interp", base, 1);
-
-Rule "test type"
-Match: [type~"NP"];
-Eval: add("interp", base, 1);
-
-Rule "test type with head pos"
-Match: [type~"NP" && head=[pos!~"pron"]];
-Eval: add("interp", base, 1);
-
 ###### compund conjunction rules ######
 
 Rule "interpunkcja"

@@ -256,6 +256,63 @@ std::string RuleLoader::compileRulePattern(std::string &matched, int &size,
     return compiledPattern;
 }
 
+std::string RuleLoader::compileRulePattern2(std::string &matched, int &size,
+        RuleTokenPatterns &ruleTokenPatterns,
+        RuleTokenModifiers &ruleTokenModifiers,
+        RuleTokenRequirements &ruleTokenRequirements,
+        RulePatternIndices &rulePatternIndices, int &bracketCount) {
+
+    std::cout << "compileRulePattern2" << std::endl;
+    std::cout << "matched: " <<  matched << std::endl;
+
+    Pattern regMatch("^(Match|Left|Right)\\s*:\\s*");
+    Pattern regWhite("\\s+");
+
+    RegExp::Replace(&matched, regMatch, "");
+
+    if ((matched == "") || (RegExp::FullMatch(matched, regWhite)))  {
+        throw PuddleRuleSyntaxException("No patterns defined in section.");
+    }
+
+    if (matched[matched.size() - 1] == ';') {
+        matched = matched.substr(0, matched.size() - 1);
+    }  else {
+        throw PuddleRuleSyntaxException(
+                "Syntax error, no semicolon at the end of the pattern section");
+    }
+
+    size = countTokens(matched);
+
+    std::string compiledMatch = "";
+    std::string token = "";
+    std::string before = "";
+    while ((token = getToken(matched, before)) != "") {
+        std::cout << "compiling token2: " << token << std::endl;
+
+        std::string compiledToken = compileToken2(token);
+        std::cout << "compiled token2: " << compiledToken << std::endl;
+        std::cout << "matched: " << matched << std::endl;
+
+        if (matched != "") {
+            std::cout << "matched non empty" << std::endl;
+            if (matched[0] == '+' || matched[0] == '*' || matched[0] == '?') {
+                std::cout << "matched is only a modifier" << std::endl;
+                compiledToken = "(" + compiledToken + matched[0] + ")";
+                matched = matched.substr(1, std::string::npos);
+            }
+        }
+
+        std::cout << "adding compiled token: " << compiledToken << " to compiled match: " << compiledMatch << std::endl;
+        compiledMatch += compiledToken;
+    }
+
+    std::cout << "token iteration ended, wrapping compiled match: " << compiledMatch << " in brackets" << std::endl;
+    compiledMatch = "(" + compiledMatch + ")";
+
+    return compiledMatch;
+}
+
+
 std::string RuleLoader::getToken(std::string &matched, std::string &before) {
     std::string opening = "[";
     std::string::iterator opening_begin_it = opening.begin();
@@ -500,6 +557,100 @@ std::string RuleLoader::compileToken(std::string &token,
     std::cout << "compiledToken: " << compiledToken << std::endl;
     return "(" + compiledToken + ")";
 }
+
+std::string RuleLoader::compileToken2(std::string &token,
+        bool no_prefix) {
+
+    std::cout << "compile token2: " << token << ", no_prefix: " << no_prefix << std::endl;
+
+
+    if ((token[0] == '[') && (token[token.size() - 1] == ']')) {
+        token = token.substr(1, token.size() - 2);
+    } else {
+        throw PuddleRuleSyntaxException("Illegal token '" + token + "'.");
+    }
+
+
+    std::string orth = "";
+    std::string compiledHead = "";
+    std::string type = "";
+    std::string orth = "";
+    std::string pos = "";
+
+    std::string key = getKey(token);
+    std::string compOperator = getOperator(token);
+    std::cout << "main key:" << key << ", main operator:" << compOperator << std::endl;
+
+    while (token != "") {
+        std::cout << "iteration of compiling token2. Token:" << token << std::endl;
+        bool icase = false;
+        std::string key = getKey(token);
+        std::string compOperator = getOperator(token);
+        std::cout << "key:" << key << ", operator:" << compOperator << std::endl;
+
+        std::string value;
+        if (key != "head") {
+            icase = false;
+            value = getValue(token);
+            if ((key == "base") || (key == "orth")) {
+                if (token.find("/i") == 0) {
+                    token = token.substr(2, std::string::npos);
+                    icase = true;
+                }
+            }
+        }
+
+        if (key == "head") {
+            std::string head = getHead(token);
+            std::cout << "key == head, head:" << head << std::endl;
+            if (head != "[]") {
+                compiledHead = compileToken2(head, true);
+            }
+            std::cout << "compiled head:" << compiledHead << std::endl;
+        } else if (key == "type") {
+            type = value;
+        } else if (key == "pos") {
+            // maybe store these things in TokenPatternParts
+            pos = value;
+
+        } else if (key == "base") {
+            base = value;
+        } else if (key == "orth") {
+            orth = value;
+        } else {  //attribute condition, e.g. number~"pl"
+            std::cout << "compile attribute condition" << std::endl;
+        }
+        if (token.find("&&") == 0) { // cut out && operator
+            token = token.substr(2, std::string::npos);
+
+        }
+
+    }
+
+    std::string compiledToken = "";
+    if (! no_prefix) {
+        compiledToken += "<<";
+        if (key == "head" || key == "type") { // in case this is a phrase
+            compiledToken += "g";
+        } else { // in case this is a token
+            compiledToken += "t";
+        }
+        // add start and end
+        compiledToken += "<\\d+<\\d+";
+
+    }
+
+    // here go conditions
+
+    if (! no_prefix) {
+        // add an ending
+        compiledToken += ">";
+    }
+
+    std::cout << "compiledToken: " << compiledToken << std::endl;
+    return "(" + compiledToken + ")";
+}
+
 
 std::string RuleLoader::getKey(std::string &token) {
     std::string comp_op = "!~=";
@@ -1466,6 +1617,8 @@ SyntokActionPtr RuleLoader::createSyntokAction(std::string &interpretationString
 }
 
 RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
+
+    std::cout << "parse rule string: " << ruleString << std::endl;
     std::string ruleName;
     std::string rulePattern;
     std::string rulePatternLeft, rulePatternMatch, rulePatternRight;
@@ -1497,7 +1650,6 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
         std::string line = *lineIt;
         if (line.find("Rule") == 0) {
             ruleName = this->compileRuleName(line);
-            std::cout << "Parsing rule: " << ruleName << std::endl;
         }
         else if (line.find("Left:") == 0) {
             if (chars != "") {
@@ -1511,13 +1663,13 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
                 if (hasLeft) {
                     rulePatternLeft = chars;
 #if HAVE_RE2
-                    rulePattern = this->compileRulePattern(chars, ruleLeftSize,
+                    rulePattern = this->compileRulePattern2(chars, ruleLeftSize,
                             ruleTokenPatterns, ruleTokenModifiers,
                             ruleTokenRequirements, rulePatternIndices,
                             bracketCount, negativePatterns);
 #else
 
-                    rulePattern = this->compileRulePattern(chars, ruleLeftSize,
+                    rulePattern = this->compileRulePattern2(chars, ruleLeftSize,
                             ruleTokenPatterns, ruleTokenModifiers,
                             ruleTokenRequirements, rulePatternIndices,
                             bracketCount);
@@ -1530,15 +1682,16 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
             }
             chars += line;
         } else if (line.find("Right:") == 0) {
+            std::cout << "parse rule string: right line" << std::endl;
             if (chars != "") {
                 rulePatternMatch = chars;
 #if HAVE_RE2
-                rulePattern += this->compileRulePattern(chars, ruleMatchSize,
+                rulePattern += this->compileRulePattern2(chars, ruleMatchSize,
                         ruleTokenPatterns, ruleTokenModifiers,
                         ruleTokenRequirements, rulePatternIndices,
                         bracketCount, negativePatterns);
 #else
-                rulePattern += this->compileRulePattern(chars, ruleMatchSize,
+                rulePattern += this->compileRulePattern2(chars, ruleMatchSize,
                         ruleTokenPatterns, ruleTokenModifiers,
                         ruleTokenRequirements, rulePatternIndices,
                         bracketCount);
@@ -1552,12 +1705,12 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
                 if (!hasRight) {
                     rulePatternMatch = chars;
 #if HAVE_RE2
-                    rulePattern += this->compileRulePattern(chars, ruleMatchSize,
+                    rulePattern += this->compileRulePattern2(chars, ruleMatchSize,
                             ruleTokenPatterns, ruleTokenModifiers,
                             ruleTokenRequirements, rulePatternIndices,
                             bracketCount, negativePatterns);
 #else
-                    rulePattern += this->compileRulePattern(chars, ruleMatchSize,
+                    rulePattern += this->compileRulePattern2(chars, ruleMatchSize,
                             ruleTokenPatterns, ruleTokenModifiers,
                             ruleTokenRequirements, rulePatternIndices,
                             bracketCount);
@@ -1565,12 +1718,12 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
                 } else {
                     rulePatternRight = chars;
 #if HAVE_RE2
-                    rulePattern += this->compileRulePattern(chars, ruleRightSize,
+                    rulePattern += this->compileRulePattern2(chars, ruleRightSize,
                             ruleTokenPatterns, ruleTokenModifiers,
                             ruleTokenRequirements, rulePatternIndices,
                             bracketCount, negativePatterns);
 #else
-                    rulePattern += this->compileRulePattern(chars, ruleRightSize,
+                    rulePattern += this->compileRulePattern2(chars, ruleRightSize,
                             ruleTokenPatterns, ruleTokenModifiers,
                             ruleTokenRequirements, rulePatternIndices,
                             bracketCount);
