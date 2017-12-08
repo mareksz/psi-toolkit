@@ -1,0 +1,33 @@
+
+OLD RULE:
+
+parse rule string: returning rule:
+rule name:
+compiled pattern: ((<<t<[^<>]+<[^<>]+<[^<>]+<[^<>]+(?:(?:<[^<>]+<[^<>]+)*<[^<>]+<[^<>]+(?:<[^<>]+<[^<>]+)*)*(?:(?:<[^<>]+<[^<>]+)*<[^<>]+<subst(?::(?:[^:<>]+))*(?:<[^<>]+<[^<>]+)*)(?:(?:<[^<>]+<[^<>]+)*<[^<>]+<[^<>]+(?:<[^<>]+<[^<>]+)*)*>))
+left size: 0
+match size: 1
+right size: 0
+ruleTokenPatterns:
+(<<t<[^<>]+<[^<>]+<[^<>]+<[^<>]+(?:(?:<[^<>]+<[^<>]+)*<[^<>]+<[^<>]+(?:<[^<>]+<[^<>]+)*)*(?:(?:<[^<>]+<[^<>]+)*<[^<>]+<subst(?::(?:[^:<>]+))*(?:<[^<>]+<[^<>]+)*)(?:(?:<[^<>]+<[^<>]+)*<[^<>]+<[^<>]+(?:<[^<>]+<[^<>]+)*)*>)
+ruleTokenModifiers:
+
+ruleTokenRequirements:
+1
+rulePatternIndices:
+1
+
+
+
+
+NEW RULE:
+
+parse rule string: returning rule:
+rule name: NP3.1: Single noun
+compiled pattern: ((<<t<\d+<\d+<[^<>]+<[^<>]+(?:<[^<>]+<[^<>]+)*<[^<>]+<(?=subst)[^<>]+(?:<[^<>]+<[^<>]+)*>))
+left size: 0
+match size: 1
+right size: 0
+ruleTokenPatterns:
+ruleTokenModifiers:
+ruleTokenRequirements:
+rulePatternIndices:

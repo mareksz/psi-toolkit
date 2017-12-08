@@ -309,6 +309,10 @@ std::string RuleLoader::compileRulePattern2(std::string &matched, int &size,
     std::cout << "token iteration ended, wrapping compiled match: " << compiledMatch << " in brackets" << std::endl;
     compiledMatch = "(" + compiledMatch + ")";
 
+    ruleTokenPatterns.push_back(compiledMatch);
+    ruleTokenRequirements.push_back(true);
+    ruleTokenModifiers.push_back("");
+    rulePatternIndices.push_back(1);
     return compiledMatch;
 }
 
@@ -1812,6 +1816,21 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
                 autoDelete, rulePatternLeft, rulePatternMatch,
                 rulePatternRight, negativePatterns) );
 #else
+    std::cout << "parse rule string: returning rule: " << std::endl;
+    std::cout << "rule name: " << ruleName << std::endl;
+    std::cout << "compiled pattern: " << rulePattern << std::endl;
+    std::cout << "left size: " << ruleLeftSize << std::endl;
+    std::cout << "match size: " << ruleMatchSize << std::endl;
+    std::cout << "right size: " << ruleRightSize << std::endl;
+    std::cout << "ruleTokenPatterns: " << std::endl;
+    std::copy(ruleTokenPatterns.begin(), ruleTokenPatterns.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+    std::cout << "ruleTokenModifiers: " << std::endl;
+    std::copy(ruleTokenModifiers.begin(), ruleTokenModifiers.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+    std::cout << "ruleTokenRequirements: " << std::endl;
+    std::copy(ruleTokenRequirements.begin(), ruleTokenRequirements.end(), std::ostream_iterator<bool>(std::cout, "\n"));
+    std::cout << "rulePatternIndices: " << std::endl;
+    std::copy(rulePatternIndices.begin(), rulePatternIndices.end(), std::ostream_iterator<int>(std::cout, "\n"));
+
     RulePtr rule = RulePtr( new Rule(ruleName, rulePattern,
                 ruleLeftSize, ruleMatchSize, ruleRightSize,
                 actions, ruleTokenPatterns, ruleTokenModifiers,
