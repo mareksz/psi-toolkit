@@ -570,16 +570,11 @@ std::string RuleLoader::compileToken2(std::string &token,
         throw PuddleRuleSyntaxException("Illegal token '" + token + "'.");
     }
 
-
-    std::string orth = "";
     std::string compiledHead = "";
-    std::string type = "";
-    std::string orth = "";
-    std::string pos = "";
-
-    std::string key = getKey(token);
-    std::string compOperator = getOperator(token);
-    std::cout << "main key:" << key << ", main operator:" << compOperator << std::endl;
+    std::vector<TokenPatternPart> orthPatterns;
+    std::vector<TokenPatternPart> typePatterns;
+    std::vector<TokenPatternPart> basePatterns;
+    std::vector<TokenPatternPart> posPatterns;
 
     while (token != "") {
         std::cout << "iteration of compiling token2. Token:" << token << std::endl;
@@ -591,7 +586,8 @@ std::string RuleLoader::compileToken2(std::string &token,
         std::string value;
         if (key != "head") {
             icase = false;
-            value = getValue(token);
+            value = escapeSpecialChars(getValue(token));
+            std::cout << "escaped value: " << value << std::endl;
             if ((key == "base") || (key == "orth")) {
                 if (token.find("/i") == 0) {
                     token = token.substr(2, std::string::npos);
@@ -606,23 +602,19 @@ std::string RuleLoader::compileToken2(std::string &token,
             if (head != "[]") {
                 compiledHead = compileToken2(head, true);
             }
-            std::cout << "compiled head:" << compiledHead << std::endl;
         } else if (key == "type") {
-            type = value;
+            typePatterns.push_back(TokenPatternPart(value, compOperator[0] == '!', false));
         } else if (key == "pos") {
-            // maybe store these things in TokenPatternParts
-            pos = value;
-
+            posPatterns.push_back(TokenPatternPart(value, compOperator[0] == '!', false));
         } else if (key == "base") {
-            base = value;
+            basePatterns.push_back(TokenPatternPart(value, compOperator[0] == '!', icase));
         } else if (key == "orth") {
-            orth = value;
+            orthPatterns.push_back(TokenPatternPart(value, compOperator[0] == '!', icase));
         } else {  //attribute condition, e.g. number~"pl"
-            std::cout << "compile attribute condition" << std::endl;
+            // not supported
         }
         if (token.find("&&") == 0) { // cut out && operator
             token = token.substr(2, std::string::npos);
-
         }
 
     }
@@ -630,7 +622,7 @@ std::string RuleLoader::compileToken2(std::string &token,
     std::string compiledToken = "";
     if (! no_prefix) {
         compiledToken += "<<";
-        if (key == "head" || key == "type") { // in case this is a phrase
+        if (compiledHead != "" || typePatterns.size() > 0) { // in case this is a phrase
             compiledToken += "g";
         } else { // in case this is a token
             compiledToken += "t";
@@ -638,9 +630,75 @@ std::string RuleLoader::compileToken2(std::string &token,
         // add start and end
         compiledToken += "<\\d+<\\d+";
 
+
+        compiledToken += "<";
+        for (std::vector<TokenPatternPart>::iterator it =
+                typePatterns.begin();
+                it != typePatterns.end(); ++ it) {
+            compiledToken += "(?";  //start of the lookahead
+            if (it->negative) {     //whether the lookahead should be negative or positive
+                compiledToken += "!";
+            } else {
+                compiledToken += "=";
+            }
+            compiledToken += it->condition + ")";
+        }
+        compiledToken += "[^<>]+";   //adding a pattern that will actually consume the type
+
+
+        compiledToken += "<";
+        for (std::vector<TokenPatternPart>::iterator it =
+                orthPatterns.begin();
+                it != orthPatterns.end(); ++ it) {
+
+            compiledToken += "(?";  //start of the lookahead
+            if (it->negative) {     //whether the lookahead should be negative or positive
+                compiledToken += "!";
+            } else {
+                compiledToken += "=";
+            }
+            compiledToken += it->condition + ")";
+        }
+        compiledToken += "[^<>]+";   //adding a pattern that will actually consume the orth
     }
 
-    // here go conditions
+    std::cout << "compiledHead: " << compiledHead << std::endl;
+    if (compiledHead != "") {
+        compiledToken += compiledHead;
+    } else {
+        compiledToken += "(?:<[^<>]+<[^<>]+)*";
+        if (basePatterns.size() > 0) { // base patterns have priority over pos patterns
+            compiledToken += "<";
+            for (std::vector<TokenPatternPart>::iterator it =
+                    basePatterns.begin();
+                    it != basePatterns.end(); ++ it) {
+                compiledToken += "(?";  //start of the lookahead
+                if (it->negative) {     //whether the lookahead should be negative or positive
+                    compiledToken += "!";
+                } else {
+                    compiledToken += "=";
+                }
+                compiledToken += it->condition + ")";
+            }
+            compiledToken += "[^<>]+<[^<>]+(?:<[^<>]+<[^<>]+)*";
+        } else {
+            compiledToken += "<[^<>]+<";
+            for (std::vector<TokenPatternPart>::iterator it =
+                    posPatterns.begin();
+                    it != posPatterns.end(); ++ it) {
+                compiledToken += "(?";  //start of the lookahead
+                if (it->negative) {     //whether the lookahead should be negative or positive
+                    compiledToken += "!";
+                } else {
+                    compiledToken += "=";
+                }
+                compiledToken += it->condition + ")";
+            }
+            compiledToken += "[^<>]+(?:<[^<>]+<[^<>]+)*";
+        }
+
+    }
+
 
     if (! no_prefix) {
         // add an ending
@@ -1452,7 +1510,7 @@ std::string RuleLoader::escapeSpecialChars(std::string text) {
     Pattern regAlt("\\\\\\|");
     Pattern regPlus("\\\\\\+");
     Pattern regAsterisk("\\\\\\*");
-    Pattern regOpt("\\\\\\?");
+    Pattern regOpt("\\?");
 
     RegExp::GlobalReplace(&text, regAmp, "\\&amp;");
     RegExp::GlobalReplace(&text, regLt, "\\&lt;");

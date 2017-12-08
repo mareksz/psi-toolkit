@@ -17,9 +17,11 @@ namespace puddle {
 
 class TokenPatternPart {
     public:
-        TokenPatternPart() : condition(""), negative(false) {}
+        TokenPatternPart() : condition(""), negative(false), caseSensitive(false) {}
+        TokenPatternPart(std::string aCondition, bool aNegative, bool aCaseSensitive) : condition(aCondition), negative(aNegative), caseSensitive(aCaseSensitive) {}
         std::string condition;
         bool negative;
+        bool caseSensitive;
 };
 class TokenPattern {
     public:
