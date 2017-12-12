@@ -49,6 +49,7 @@ namespace bonsai {
 bool Rule::apply(std::string &, Lattice &lattice, std::string langCode,
         int matchedStartIndex, RuleTokenSizes &ruleTokenSizes,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
+    std::cout << "applying rule: " << getName() << std::endl;
     bool ret = false;
     for (Actions::iterator actionIt = actions->begin();
             actionIt != actions->end(); ++ actionIt) {
@@ -65,17 +66,22 @@ bool Rule::test(std::string &, Lattice &lattice, std::string langCode,
         RuleTokenSizes &ruleTokenSizes,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
+    std::cout << "testing rule: " << getName() << std::endl;
     ruleTokenSizes.clear();
     ruleTokenSizes.assign(rulePatternIndices.size(), 0);
 
-    if (! requiredTokensMatched(match, ruleTokenSizes) )
+    if (! requiredTokensMatched(match, ruleTokenSizes) ) {
+        std::cout << "required tokens not matched, returning false" << std::endl;
         return false;
+
+    }
 
     int leftBound;
     int rightBound;
     int matchWidth = leftCount + matchCount - 1;
     if (! util::getRuleBoundaries(ruleTokenSizes, leftCount, matchWidth,
                 leftBound, rightBound))
+        std::cout << "rule boundaries problem, returning false" << std::endl;
         return false;
     rulePartitions = generateRulePartitions(lattice, langCode, leftBound,
             rightBound, matchedStartIndex);
@@ -97,6 +103,7 @@ bool Rule::test(std::string &, Lattice &lattice, std::string langCode,
                 ruleTokenSizes[lastIndex] --;
                 continue;
             }
+            std::cout << "action problem, returning false" << std::endl;
             return false;
         }
     }
@@ -135,6 +142,7 @@ std::list<Lattice::EdgeSequence> Rule::generateRulePartitions(Lattice &lattice,
 
 bool Rule::partitionMatchesPattern(Lattice &lattice,
         Lattice::EdgeSequence partition) {
+    std::
     std::string partitionString = lattice::getPartitionString(lattice,
             partition);
     int i = leftCount;
@@ -153,7 +161,7 @@ int Rule::matchPattern(std::string &sentenceString,
         int &afterIndex, std::vector<StringPiece> &match) {
 
     std::cout << "matchPattern of rule: " << getName() << std::endl;
-    std::cout << "compiled pattern: " << compiledPattern << std::endl; 
+    std::cout << "compiled pattern: " << compiledPattern << std::endl;
     int num_groups = pattern->NumberOfCapturingGroups();
 #if HAVE_RE2
     std::map<std::string, int> namedGroups = pattern->NamedCapturingGroups();

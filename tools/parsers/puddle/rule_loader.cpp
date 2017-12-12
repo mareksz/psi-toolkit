@@ -306,13 +306,104 @@ std::string RuleLoader::compileRulePattern2(std::string &matched, int &size,
         compiledMatch += compiledToken;
     }
 
+
+
+    //@todo: to ponizej wydzielic do metody
+    size_t i = 0;
+    int mindex = bracketCount + 1;
+    //as we add brackets covering the whole compiled pattern, the counter must be incremented
+    std::string s = compiledMatch;
+    std::string compiledPattern = "";
+    int brackets = 0;
+    int nonMatching = 0;
+    while ( (s != "") && (i < s.length()) ) {
+        compiledPattern += s[i];
+        if (s[i] == '(') {
+            if ((i > 0) && (s[i - 1] == '\\')) {
+                i ++;
+                continue;
+            }
+            if ( ((i+1) < s.length()) && (s[i + 1] == '?')) {
+                if ( ((i+2) < s.length()) && (s[i + 2] != 'P')) {
+                    nonMatching ++;
+                    i ++;
+                    continue;
+                }
+            }
+            if (brackets == 0) {
+                rulePatternIndices.push_back(mindex);
+            }
+            else {
+                if ( ((i+1) < s.length()) && (s[i + 1] != '?')) {
+                    compiledPattern += "?:";
+                    nonMatching ++;
+                    i ++;
+                    continue;
+                }
+            }
+            mindex ++;
+            brackets ++;
+        } else if (s[i] == ')') {
+            if ((i > 0) && (s[i - 1] == '\\'))
+            {
+                i ++;
+                continue;
+            }
+            if (nonMatching > 0) {
+                nonMatching --;
+                i ++;
+                continue;
+            }
+
+            brackets --;
+            if (brackets == 0) {
+                std::string pattern = s.substr(0, i + 1);
+                if ((i + 1) < s.length())
+                    s = s.substr(i + 1, std::string::npos);
+                else
+                    s = "";
+                char tested;
+                if (s != "" && (s[0] == '?' || s[0] == '*' || s[0] == '+') ) {
+                    tested = s[0];
+                } else {
+                    std::string pattern_test =
+                        pattern.substr(1, pattern.length() - 2);
+                    tested = pattern_test[pattern_test.length() - 1];
+                }
+                if (tested == '?' || tested == '*' || tested == '+') {
+                    std::string tmp = "";
+                    tmp += tested;
+                    ruleTokenModifiers.push_back(tmp);
+                    if (tested != '+')
+                        ruleTokenRequirements.push_back(false);
+                    else
+                        ruleTokenRequirements.push_back(true);
+                    //if (s != "" && s[0] == tested) {
+                    //    s = s.substr(1, std::string::npos);
+                    //}
+                } else {
+                    ruleTokenModifiers.push_back("");
+                    ruleTokenRequirements.push_back(true);
+                }
+                ruleTokenPatterns.push_back(pattern);
+                i = 0;
+                continue;
+            }
+        }
+        i ++;
+    }
+
     std::cout << "token iteration ended, wrapping compiled match: " << compiledMatch << " in brackets" << std::endl;
     compiledMatch = "(" + compiledMatch + ")";
 
+    bracketCount = mindex;
+
+    /*
     ruleTokenPatterns.push_back(compiledMatch);
     ruleTokenRequirements.push_back(true);
     ruleTokenModifiers.push_back("");
     rulePatternIndices.push_back(1);
+    */
     return compiledMatch;
 }
 
@@ -1799,8 +1890,10 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
         }
     }
 
-    if (bracketCount > 16) {
-        throw PuddleRuleSyntaxException("Rule '" + ruleName + "' is to complex.");
+    if (bracketCount > 200) {
+        std::stringstream ss;
+        ss << "Rule '" + ruleName + "' has "<< bracketCount << " brackets and is therefore too complex.";
+        throw PuddleRuleSyntaxException(ss.str());
     }
     bool repeat = false;
     bool autoDelete = false;
