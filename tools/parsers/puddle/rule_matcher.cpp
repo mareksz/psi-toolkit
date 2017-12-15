@@ -34,8 +34,10 @@ void RuleMatcher::applyRules(Lattice &lattice, std::string langCode) {
             std::string oldSentenceString = sentenceString;
             if ( (*ruleIt)->test(sentenceString, lattice, langCode, matchedStartIndex,
                         match, ruleTokenSizes, rulePartitions) ) {
+                std::cout << "rule tested ok" << std::endl;
                 if ((*ruleIt)->apply(sentenceString, lattice, langCode, matchedStartIndex,
                             ruleTokenSizes, rulePartitions) ) {
+                    std::cout << "rule applied" << std::endl;
                     sentenceString = generateSentenceString(lattice, langCode,
                             matchedStartIndex);
                     structureChanged = true;

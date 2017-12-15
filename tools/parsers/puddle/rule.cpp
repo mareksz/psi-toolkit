@@ -66,28 +66,33 @@ bool Rule::test(std::string &, Lattice &lattice, std::string langCode,
         RuleTokenSizes &ruleTokenSizes,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
-    std::cout << "testing rule: " << getName() << std::endl;
+    std::cout << "testing the rule: " << getName() << std::endl;
     ruleTokenSizes.clear();
     ruleTokenSizes.assign(rulePatternIndices.size(), 0);
+    std::cout << "cleared and assigned" << std::endl;
 
     if (! requiredTokensMatched(match, ruleTokenSizes) ) {
         std::cout << "required tokens not matched, returning false" << std::endl;
         return false;
 
     }
+    std::cout << "required tokens matched" << std::endl;
 
     int leftBound;
     int rightBound;
     int matchWidth = leftCount + matchCount - 1;
     if (! util::getRuleBoundaries(ruleTokenSizes, leftCount, matchWidth,
-                leftBound, rightBound))
+                leftBound, rightBound)) {
         std::cout << "rule boundaries problem, returning false" << std::endl;
         return false;
+    }
     rulePartitions = generateRulePartitions(lattice, langCode, leftBound,
             rightBound, matchedStartIndex);
+    std::cout << "rulePartitions generated" << std::endl;
 
     for (Actions::iterator actionIt = actions->begin();
             actionIt != actions->end(); ++ actionIt) {
+        std::cout << "testing action" << std::endl;
         if ( (*actionIt)->test(lattice, langCode, matchedStartIndex,
                     ruleTokenSizes, rulePartitions)
                 == false) {
@@ -142,7 +147,6 @@ std::list<Lattice::EdgeSequence> Rule::generateRulePartitions(Lattice &lattice,
 
 bool Rule::partitionMatchesPattern(Lattice &lattice,
         Lattice::EdgeSequence partition) {
-    std::
     std::string partitionString = lattice::getPartitionString(lattice,
             partition);
     int i = leftCount;
@@ -160,12 +164,14 @@ bool Rule::partitionMatchesPattern(Lattice &lattice,
 int Rule::matchPattern(std::string &sentenceString,
         int &afterIndex, std::vector<StringPiece> &match) {
 
-    std::cout << "matchPattern of rule: " << getName() << std::endl;
-    std::cout << "compiled pattern: " << compiledPattern << std::endl;
     int num_groups = pattern->NumberOfCapturingGroups();
 #if HAVE_RE2
     std::map<std::string, int> namedGroups = pattern->NamedCapturingGroups();
 #endif
+    std::cout << "matchPattern of rule: " << getName() << std::endl;
+    std::cout << "compiled pattern: " << compiledPattern << std::endl;
+    std::cout << "num groups: " << num_groups << std::endl;
+
     StringPiece* matchedS = new StringPiece[num_groups];
     Arg** matched = new Arg*[num_groups];
     for (int argIt = 0; argIt < num_groups; argIt ++) {
@@ -174,6 +180,7 @@ int Rule::matchPattern(std::string &sentenceString,
     }
     StringPiece sentence_str(sentenceString);
     StringPiece orig_str(sentenceString);
+
 
         std::string before = "";
 #if HAVE_RE2
@@ -189,6 +196,8 @@ int Rule::matchPattern(std::string &sentenceString,
             std::string prefix = sentenceString.substr(0, prefix_len);
             std::string suffix =
                 sentenceString.substr(suffix_start, std::string::npos);
+            std::cout << "found and consumed. Prefix: " << prefix << std::endl;
+            std::cout << "Suffix: " << suffix << std::endl;
             before += prefix;
             std::string matching = "";
             matching = matchedS[0].as_string();
@@ -380,22 +389,27 @@ void Rule::deleteAction(size_t index) {
 
         bool Rule::requiredTokensMatched(std::vector<StringPiece> &match,
                 RuleTokenSizes &ruleTokenSizes) {
+            std::cout << "requiredTokensMatched" << std::endl;
             int index = 0;
             int tokensMatched = 0;
             for (RulePatternIndices::iterator indexIt = rulePatternIndices.begin();
                     indexIt != rulePatternIndices.end(); ++ indexIt) {
                 std::string part = match[*indexIt].as_string();
+                std::cout << "part: " << part << std::endl;
                 if ((part == "") && (ruleTokenRequirements[index])) {
+                    std::cout << "part is empty but required, returning false" << std::endl;
                     return false;
                 }
                 ruleTokenSizes.at(index) = countTokensMatched(part);
                 if (ruleTokenRequirements[index] && ruleTokenSizes[index] == 0) {
+                    std::cout << "ruleTokenSizes[index] = " << ruleTokenSizes[index] << ", but is required. Returning false" << std::endl;
                     return false;
                 }
                 tokensMatched += ruleTokenSizes.at(index);
                 index ++;
             }
             if (tokensMatched == 0) {
+                std::cout << "No tokens matched. Returning false" << std::endl;
                 return false;
             }
             return true;
