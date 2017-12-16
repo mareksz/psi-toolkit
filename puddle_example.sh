@@ -1,1 +1,1 @@
-echo "kosz na papiery" | psi-pipe read-text ! tokenize --lang pl ! lemmatize ! puddle
+echo "dom kota" | psi-pipe read-text ! tokenize --lang pl ! lemmatize ! puddle

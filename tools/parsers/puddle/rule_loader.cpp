@@ -398,12 +398,6 @@ std::string RuleLoader::compileRulePattern2(std::string &matched, int &size,
 
     bracketCount = mindex;
 
-    /*
-    ruleTokenPatterns.push_back(compiledMatch);
-    ruleTokenRequirements.push_back(true);
-    ruleTokenModifiers.push_back("");
-    rulePatternIndices.push_back(1);
-    */
     return compiledMatch;
 }
 
@@ -798,10 +792,11 @@ std::string RuleLoader::compileToken2(std::string &token,
     if (! no_prefix) {
         // add an ending
         compiledToken += ">";
+        compiledToken = "(" + compiledToken + ")";
     }
 
     std::cout << "compiledToken: " << compiledToken << std::endl;
-    return "(" + compiledToken + ")";
+    return compiledToken;
 }
 
 
