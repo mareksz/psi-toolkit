@@ -22,7 +22,6 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
         int matchedStartIndex, RuleTokenSizes &ruleTokenSizes,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
-    std::cout << "applying group action:" << std::endl;
     int realStart;
     int realEnd;
     int realHead;

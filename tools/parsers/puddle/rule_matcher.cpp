@@ -24,20 +24,16 @@ void RuleMatcher::applyRules(Lattice &lattice, std::string langCode) {
         int afterIndex = 0;
         std::vector<StringPiece> match;
         std::string tmpSentenceString = sentenceString;
-        std::cout << "sentence string: " << sentenceString << std::endl;
         while ( (matchedStartIndex = (*ruleIt)->matchPattern(tmpSentenceString,
                         afterIndex, match) ) > -1 ) {
-            std::cout << "got match" << std::endl;
             bool structureChanged = false;
             RuleTokenSizes ruleTokenSizes;
             std::list<Lattice::EdgeSequence> rulePartitions;
             std::string oldSentenceString = sentenceString;
             if ( (*ruleIt)->test(sentenceString, lattice, langCode, matchedStartIndex,
                         match, ruleTokenSizes, rulePartitions) ) {
-                std::cout << "rule tested ok" << std::endl;
                 if ((*ruleIt)->apply(sentenceString, lattice, langCode, matchedStartIndex,
                             ruleTokenSizes, rulePartitions) ) {
-                    std::cout << "rule applied" << std::endl;
                     sentenceString = generateSentenceString(lattice, langCode,
                             matchedStartIndex);
                     structureChanged = true;
