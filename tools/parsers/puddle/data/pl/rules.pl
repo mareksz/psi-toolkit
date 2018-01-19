@@ -8,10 +8,13 @@
 
 ###### compund conjunction rules ######
 
+#>,
+#>i
 Rule "interpunkcja"
-Match: [orth~","];
+Match: ([orth~","] [orth~"i"]);
 Eval: add("interp", base, 1);
 
+### Polecenie "syntok" obecnie nie działa. Powinno sklejać tokeny w jeden niepodzielny token
 Rule "compound conjunction S1"
 Match: [base~"a"] (([orth~"to"/i] [orth~"ze"/i] [orth~"względu"/i] [orth~"na"/i] [orth~"fakt"/i] [orth~","] [orth~"iż"/i]) | ([orth~"to"/i] [orth~"ze"/i] [orth~"względu"/i] [orth~"na"/i] [orth~"fakt"/i] [orth~","] [orth~"że"/i]) | ([orth~"to"/i] [orth~"ze"/i] [orth~"względu"/i] [orth~"na"/i] [orth~"to"/i] [orth~","] [orth~"iż"/i]) | ([orth~"to"/i] [orth~"ze"/i] [orth~"względu"/i] [orth~"na"/i] [orth~"to"/i] [orth~","] [orth~"że"/i]) | ([orth~"w"/i] [orth~"przypadku"/i] [orth~","] [orth~"gdy"/i]) | ([orth~"w"/i] [orth~"przypadku"/i] [orth~","] [orth~"kiedy"/i]) | ([orth~"co"/i] [orth~"więcej"/i]) | ([orth~"dopiero"/i] [orth~"potem"/i]) | ([orth~"i"/i] [orth~"tak"/i]) | ([orth~"jeśli"/i] [orth~"nawet"/i]) | ([orth~"jeżeli"/i] [orth~"nawet"/i]) | ([orth~"mimo"/i] [orth~"tego"/i]) | ([orth~"mimo"/i] [orth~"to"/i]) | ([orth~"może"/i] [orth~"i"/i]) | ([orth~"nawet"/i] [orth~"jeśli"/i]) | ([orth~"nawet"/i] [orth~"jeżeli"/i]) | ([orth~"oprócz"/i] [orth~"tego"/i]) | ([orth~"poza"/i] [orth~"tym"/i]) | ([orth~"przede"/i] [orth~"wszystkim"/i]) | ([orth~"skutkiem"/i] [orth~"tego"/i]) | ([orth~"ściśle"/i] [orth~"mówiąc"/i]) | ([orth~"tym"/i] [orth~"samym"/i]) | ([orth~"w"/i] [orth~"szczególności"/i]) | ([orth~"więc"/i] [orth~"i"/i]) | ([orth~"wobec"/i] [orth~"tego"/i]) | ([orth~"wręcz"/i] [orth~"przeciwnie"/i]) | ([orth~"wskutek"/i] [orth~"tego"/i]) | [orth~"choć"/i] | [orth~"dodatkowo"/i] | [orth~"gdy"/i] | [orth~"jak"/i] | [orth~"jakby"/i] | [orth~"jednak"/i] | [orth~"jednakże"/i] | [orth~"jednocześnie"/i] | [orth~"jedynie"/i] | [orth~"jeśli"/i] | [orth~"jeśliby"/i] | [orth~"jeżeli"/i] | [orth~"kiedy"/i] | [orth~"konkretnie"/i] | [orth~"mianowicie"/i] | [orth~"może"/i] | ([orth~"na"/i] [orth~"dodatek"/i]) | [orth~"nadto"/i] | [orth~"następnie"/i] | [orth~"natomiast"/i] | [orth~"nawet"/i] | [orth~"ponadto"/i] | [orth~"ponieważ"/i] | [orth~"potem"/i] | [orth~"później"/i] | [orth~"przecie"/i] | [orth~"przeciwnie"/i] | [orth~"przeto"/i] | [orth~"raczej"/i] | [orth~"równocześnie"/i] | [orth~"szczególnie"/i] | [orth~"także"/i] | [orth~"to"/i] | [orth~"tylko"/i] | [orth~"tymczasem"/i] | [orth~"więc"/i] | [orth~"właściwie"/i] | [orth~"wreszcie"/i] | [orth~"wyjątkowo"/i] | [orth~"zarazem"/i] | [orth~"zatem"/i] | [orth~"że"/i]);
 Eval:  add("conj",  base, 1);
@@ -954,6 +957,8 @@ Eval:  add("conj:phrase",  base, 1);
 
 ###### token based rules #####
 
+##KJ: Disambiguation rules - discard less likely intepretations of tokens. 
+
 Rule "to"
 Match: [base~"to"] [pos~"subst|adj|ppas|pact" && orth!~"ma"];
 Eval:  unify(gender number case, 1, 2);
@@ -1021,6 +1026,7 @@ Eval:         delete(pos!~"conj",1);
       group(AP, 2);
 
 
+##KJ: Helper rules look redundant to me	  
 Rule "H1: Helper Rule"
 Match: [pos~"prep"] [pos~"subst"];
 Eval:  unify(case, 1, 2);
@@ -1041,24 +1047,31 @@ Eval:  unify(case gender number, 1, 2);
 #Eval:  unify(case gender number, 1, 2);
 #       unify(case gender number, 3, 4);
 
+#> któremu NP
 Rule "który"
 Match: [pos~"apron" && base~"któr.*"];
 #Right: [pos!~"subst"];
 Eval:  group(NP, 1);
 
+#> jakich NP
 Rule "jaki"
 Match: [pos~"apron" && base~"jaki.*"];
 #Right: [pos!~"subst"];
 Eval:  group(NP, 1);
 
+##KJ: "brutto" is treated as an adjective of arbitrary grammatical features in order to be unified with a preceding noun in arbitrary case, gender and number
+#> brutto adj
 Rule "brutto"
 Match: [base~"brutto"];
 Eval:  add("adj:*:*:*:pos", "brutto",1);
 
+#> netto adj
 Rule "netto"
 Match: [base~"netto"];
 Eval:  add("adj:*:*:*:pos", "netto",1);
 
+##KJ: "tzn." should be parsed as conjunction (same as "i"); So, "tzn. kot" should be parsed as CNP but it is NOT!
+#> tzn. conj
 Rule "tzn."
 Match: [base~"tzn\."];
 Eval:  add("conj", "tzn\.",1);
@@ -1082,133 +1095,126 @@ Eval:  delete(pos!~"prep",1);
 
 ###### Non word items #####
 
-#> Jassem
+#> Jassem NE
+#> Kowal subst
 Rule "NE1.1: Naive named entity - starts with a capital letter and consists of several unknown items"
 #Match: [pos~"ign" && orth~"\p{Lu}{1}[\p{L}{1}\'\-\/\.\d]*"] [pos~"ign"]*;
 #Match: [pos~"ign" && orth~"[[:Lu:]][[[:L*:]]\'\-\/\.\d]*"] [pos~"ign"]*;
 Match: [pos~"ign" && orth~"\p{Lu}[\p{L}\.\d\'\-\/]*"] [pos~"ign"]*;
 Eval:  group(NE, 1);
 
-#> "Jassem"
+#> "Jassem" NE
+#> "Kowal" subst
 Rule "NE1.2: Naive named entity - surrounded by quotes and consists of unknown items"
 Left:  [base~"\""];
 Match: [pos~"ign"]+ ;
 Right: [base~"\""];
 Eval:  group(NE, 2);
 
+##KJ: There must be something wrong with regexps. The rule used to work but no longer does.
 #> 2. stycznia 1965 r.
 #> 2. stycznia 1965 r
 Rule "DATE1: Date with month names and optional 'r.' (eg. 13 listopada 2008 r.)"
 Match: [orth~"\d?\d"] [orth~"\."]? [base~"styczeń|luty|marzec|kwieceń|maj|czerwiec|lipiec|sierpień|wrzesień|październik|listopad|grudzień"] ([base~"\d\d\d\d"] ([orth~"r\.?"] | [orth~"roku"])?)?;
 Eval:  group(DATE, 3);
 
-## KJ: To trzeba załatwić w tokenizatorze, bo on zwraca typ X, a nie DATE
+##KJ: Tokenizer should be corrected. It returns type X instead of DATE
 Rule "DATE2: Simple numerical date (eg. 13.11.2008)"
 Match: [base~"\d?\d\.\d?\d\.(\d\d)?\d\d"];
 Eval:  group(DATE, 1);
 
-## KJ: To trzeba załatwić w tokenizatorze, bo on zwraca typ X, a nie DATE
+##KJ: Tokenizer should be corrected. It returns type X instead of DATE
 Rule "TIME1: Simple time (e.g. 12:01)"
 Match: [pos~"ign" && base~"\d?\d[\.\:]\d\d"];
 Eval:  group(TIME, 1);
 
-
-#> 34 %
+##KJ: There must be something wrong with regexps. The rule works for numbers that have 2 or more digits. Does not work for 1-digit numbers.
+#>34 %
 Rule "NUM1: All tokens that begin with a numeral, followed by space and %"
 Match: [orth~"\d?\d"] [orth~"%"]?;
 Eval:  group(NUM, 1);
 
-#KJ: group must have at least two tokens
+##KJ: The rule does not work because group must consist of at least two tokens. "add" should be used instead of "group" but this is not compiled by the parser
+#>XIX NUM
 Rule "NUM2: Roman numbers from I to X with captial letters"
 Match: [orth~"(I|II|III|IV|V|VI|VII|VIII|IX|X)"];
 Eval:  group(NUM, 1);
 
-
+##KJ: Works for numerals longer than 2 digits
+#>( 54 ) NUM
 Rule "NUM4.1: Numerical tokens surrounded by braces"
-Match: [base~"\("] [type=NUM] [base~"\)"];
+Match: [base~"\("] [type=NUM] [base~"\)"]; 
 Eval:  group(NUM, 2);
 
+##KJ: Works for numerals longer than 2 digits
+#>[ 54 ]
+#>[5]
 Rule "NUM4.2: Numerical tokens surrounded by squared parentheses"
 Match: [base~"\["] [type=NUM] [base~"\]"];
 Eval:  group(NUM, 2);
 
+##KJ: 1) I suggest to remove this rule
+#>( a )
 Rule "NUM3.1: Single letters surrounded by ')'"
 #Match: [base~"\("] [base~"\p{L*}"] [base~"\)"];
 Match: [base~"\("] [base~"\p{L}"] [base~"\)"];
 Eval:  group(NUM, 2);
 
+##KJ: 1) I suggest to remove this rule
 Rule "NUM3.2: Single letters followed by ')'"
-#Match: [base~"\p{L*}"] [base~"\)"];
+#Match: [base~"\p{L*}"] ns [base~"\)"];
 Match: [base~"\p{L}"] [base~"\)"];
 Eval:  group(NUM, 1);
 
+##KJ: The rule does not work
+#> 5 albo 12
 Rule "NUM5: Conjunction of numerical phrases"
 Match: [type=NUM] (([pos~"conj"]|[base~","]) [type=NUM])+ ;
 Eval:  group(NUM, 1);
 
+#> "Jassem"
 Rule "NE2: Named entity surrounded by quotes"
 Match: [base~"\""] [type=NE] [base~"\""];
 Eval:  group(NE, 2);
 
+##KJ: The rule does not work
+#> ( Jassem )
 Rule "NE3: Named entity surrounded by parenthesis"
 #Match: [base~"\("] ([type=NE]|[orth~"\p{Lu}+"]) [base~"\)"];
 Match: [base~"\("] ([type=NE]|[orth~"p\{Lu}+"]) [base~"\)"];
 Eval:  group(NE, 2);
 
+##KJ: The rule does not work
+#> Jassem albo Jaworski
 Rule "NE4: Conjunction of named entities"
 Match: [type=NE] ([pos~"conj"]? [type=NE])+ ;
 Eval:  group(NE, 1);
 
 ###### adjective rules #####
 
-Rule "AP1.1: Adverb + at least 1 adjective"
-Match: [pos~"adv"]* ([pos~"adj" && orth!~"ma"]) ([pos~"adj" && orth!~"ma"])+;
-Eval:  unify(case gender number, 2, 3);
-       delete(pos!~"adv", 1);
-       delete(pos!~"adj|apron", 2);
-       group(AP, 2);
+#> oczekiwany
+#> wyglądający
+#> piękny 
+Rule "AP1: At least 1 adjective"
+Match: ([pos~"adj" | pos~"ppas" | pos~"pact"])+;
+Eval:  unify(case gender number, 1, 2);
+       group(AP, 1);
 
-Rule "AP1.2: Adverb + 1 adjective (back-up rule)"
-Match: [pos~"adv"]* ([pos~"adj" && orth!~"ma"]);
+#> długo oczekiwany
+#> pięknie wyglądający
+#> zawsze piękny 
+Rule "AP2: Adverb + at least 1 adjective"
+Match: [pos~"adv"]* [type=AP];
 Eval:  delete(pos!~"adv", 1);
-       delete(pos!~"adj|apron", 2);
-       group(AP, 2);
-
-Rule "AP1.3: Adverb + 2 adjective (back-up rule)"
-Match: [pos~"adv"]* ([pos~"adj" && orth!~"ma"]) ([pos~"adj" && orth!~"ma"]);
-Eval:  unify(case gender number, 2, 3);
-       delete(pos!~"adv", 1);
-       delete(pos!~"adj|apron", 2);
-       delete(pos!~"adj|apron", 3);
-       group(AP, 2);
-
-Rule "AP2.1: Participle as adjective (after noun)"
-#Left:  (([pos~"subst"] ([pos~"adj"]|[pos~"apron"]|[pos~"LP"])*)|[type=NP]);
-Left:  (([pos~"subst"] [pos~"adj" && orth!~"ma"]*)|[type=NP]);
-Match: [pos~"adv"]* [pos~"ppas|pact"] [pos~"pron" && base~"się"]? [pos~"adv"]*;
-Right: ([pos!~"subst|prep|adj|pron" && orth!~"ma"] | se);
-Eval:  unify(case gender number, 1, 3);
-       delete(pos!~"ppas|pact", 3);
-       group(AP, 3);
-
-Rule "AP2.2: Participle as adjective (before noun)"
-Match: [pos~"adv"]* [pos~"ppas|pact"] [pos~"pron" && base~"się"]? [pos~"adv"]*;
-#Right: ((([pos~"adj"]|[pos~"apron"]|[pos~"LP"])* [pos~"subst"])|[type=NP]);
-Right: (([pos~"adj" && orth!~"ma"]* [pos~"subst"])|[type=NP]);
-Eval:  unify(case gender number, 2, 5);
-       delete(pos!~"ppas|pact", 2);
        group(AP, 2);
 
 Rule "AP3.1: Conjuction + adjective phrase"
-Left:  [type=AP];
 Match: [pos~"conj"] [type=AP];
-Eval:  unify(case gender number, 1, 3);
-       delete(pos!~"conj", 2);
-       group(CAP, 3);
+Eval:  delete(pos!~"conj", 1);
+       group(CAP, 2);
 
 #Rule "AP3.2: Comma + adjective phrase"
-#Left:  ([pos~"adj"] | [pos~"LP"] | [pos~"apron"])
-#Match: [base~"interp"] ([pos~"adj"] | [pos~"LP"] | [pos~"apron"]);
+#Match: [base~","] [type=AP];
 #Eval:  group(CAP, 2);
 
 Rule "AP4: Adjective phrase + conjunctional adjective phrase"
@@ -1218,79 +1224,88 @@ Eval:  unify(case gender number, 1, 2);
 
 ####### nominal rules #####
 
-Rule "NP1.1: Adjective phrase + noun + adjective phrase"
+#>młot
+Rule "NP1.1: Single noun"
+Match: [pos~"subst"] ;
+Eval:  delete(pos!~"subst", 1);
+       group(NP, 1);
+
+#>czekanie
+#>bawienie się
+Rule "NP1.2: Single gerund"
+Match: [pos~"ger"] [pos~"pron" && base~"się"]?;
+Eval:  delete(pos!~"ger", 1);
+       delete(pos!~"pron", 2);
+       group(NP, 1);
+
+#>żeliwny młot kowalski	   
+Rule "NP2.1: Adjective phrase + noun + adjective phrase"
 Match: [type=AP] [pos~"subst"] [type=AP];
 Eval:  unify(case gender number, 1, 2, 3);
        delete(pos!~"subst", 2);
        group(NP, 2);
 
-Rule "NP1.2: Noun + adjective phrase"
+#>młot kowalski
+Rule "NP2.2: Noun + adjective phrase"
 Match: [pos~"subst"] [type=AP];
 Eval:  unify(case gender number, 1, 2);
        delete(pos!~"subst", 1);
        group(NP, 1);
 
-Rule "NP1.3: Adjective phrase + noun"
+#> żeliwny młot
+Rule "NP2.3: Adjective phrase + noun"
 Match: [type=AP] [pos~"subst"];
 Eval:  unify(case gender number, 1, 2);
        delete(pos!~"subst", 2);
        group(NP, 2);
 
-#Rule "NP1.3.1: Adjective phrase + gerund"
-#Match: [type=AP] [pos~"R|ODS"];
-#Eval:  unify(case gender number, 1, 2), ;
-#       delete(pos!~"R|ODS", 2);
-#       group(NP, 2);
-
-Rule "NP2.1: Adjective phrase + gerund + adjective phrase"
+#>Naiwne łudzenie się spokojne
+Rule "NP2.4: Adjective phrase + gerund + adjective phrase"
 Match: [type=AP] [pos~"ger"] [pos~"pron" && base~"się"]? [type=AP];
 Eval:  unify(case gender number, 1, 2, 4);
        delete(pos!~"ger", 2);
        group(NP, 2);
 
-Rule "NP2.2: Gerund + adjective phrase"
+#>łudzenie się spokojne
+Rule "NP2.5: Gerund + adjective phrase"
 Match: [pos~"ger"] [pos~"pron" && base~"się"]? [type=AP];
 Eval:  unify(case gender number, 1, 3);
        delete(pos!~"ger", 1);
        group(NP, 1);
 
-Rule "NP2.3: Adjective phrase + gerund"
+#>naiwne łudzenie się
+Rule "NP2.6: Adjective phrase + gerund"
 Match: [type=AP] [pos~"ger"] [pos~"pron" && base~"się"]?;
 Eval:  unify(case gender number, 1, 2);
        delete(pos!~"ger", 2);
        group(NP, 2);
 
-Rule "NP3.1: Single noun"
-Match: [pos~"subst"];
-Eval:  delete(pos!~"subst", 1);
-       group(NP, 1);
-
-Rule "NP3.2: Single gerund"
-Match: [pos~"ger"] [pos~"pron" && base~"się"]?;
-Eval:         delete(pos!~"ger", 1);
-       delete(pos!~"pron", 2);
-       group(NP, 1);
-
-Rule "NP4: Possessive pronoun + noun phrase"
+#>mój żeliwny młot kowalski	   
+Rule "NP3: Possessive pronoun + noun phrase"
 Match: [pos~"pron"] [type=NP && head=[pos!~"pron"]];
-Eval:  delete(pos!~"pron",1);
+Eval:  unify(case gender number, 1, 2);
+       delete(pos!~"pron",1);
        group(NP, 2);
 
-Rule "NP5.1: Cardinal number + noun phrase"
+#>cztery pory roku	   
+Rule "NP4.1: Cardinal number + noun phrase"
 Match: [pos~"num"] [type=NP && head=[pos!~"pron"]];
 Eval:  unify(case gender, 1, 2);
        delete(pos!~"num",1);
        group(NP, 2);
 
-Rule "NP5.2: Noun phrase + cardinal number"
+#>przybysze dwaj
+Rule "NP4.2: Noun phrase + cardinal number"
 Match: [type=NP && head=[pos!~"pron"]] [pos~"num"];
 Eval:  unify(case gender, 1, 2);
        delete(pos!~"num",2);
        group(NP, 1);
 
+#>one
+#>im   
 Rule "NP6: Pronoun as noun phrase"
 Match: [pos~"pron"];
-Eval:         delete(pos!~"pron", 1);
+Eval:  delete(pos!~"pron", 1);
       group(NP, 1);
 
 #Rule "NP7: Single adjective as noun phrase"
@@ -1332,6 +1347,7 @@ Eval:  group(NP, 1);
 ###### Higher order noun phrases #####
 
 #KJ: Rule NP8 does not work (according to something wrong in puddle)
+#> Pory roku
 Rule "NP8: Noun phrase + genitive attribute"
 Match: [type=NP && head=[pos!~"pron"]] [type=NP && case~"gen"]+;
 Eval:  delete(case!~"gen", 2);
@@ -1354,11 +1370,29 @@ Match: [type=NP] [type=CNP]+;
 Eval:  unify(case, 1, 2);
        group(NP, 1);
 
+####### Higher order noun phrases 2 #####
+
+#KJ: Temporarily, preposition 'do' does not work (discarded by lemmatization)
+#> Kosz na śmieci
+#> Miska na jedzenie dla psa
+Rule "NP11: Noun phrase (no pronoun) + prepositional attribute"
+Match: [type=NP && head=[pos!~"pron"]] [type=PP]+;
+Eval:  group(NP, 1); # lemmatize(1)
+
+#> " Miska dla psa"
+Rule "NP12.1: Noun phrase surrounded by quotes"
+Match: [base~"\""] [type=NP] [base~"\""];
+Eval:  group(NP, 2); # lemmatize(2)
+
+#> (Pies i kot)
+Rule "NP12.2: Noun phrase surrounded by parenthesis"
+Match: [base~"\("] [type=NP] [base~"\)"];
+Eval:  group(NP, 2);
+	   
 ###### Prepositional phrases #####
 ##KJ: Removed optional adverbs
-## KJ: Changed the head of the group
+##KJ: Changed the head of the group
 #> na śmieci
-
 Rule "PP1.1: Prepositions + noun phrase"
 Match: [pos~"prep"] [type=NP];
 Eval:  unify(case, 1, 2);
@@ -1366,7 +1400,7 @@ Eval:  unify(case, 1, 2);
        group(PP, 1);
 
 ##KJ: Removed optional adverbs
-## KJ: Changed the head of the group
+##KJ: Changed the head of the group
 #> Dla Jassema
 Rule "PP1.2: Named entity as prepositional phrase (eg. dla McCaina)"
 Match: [pos~"prep"] [type=NE];
@@ -1389,29 +1423,13 @@ Rule "PP3: Prepositional phrase + conjunctional prepositional phrase"
 Match: [type=PP] [type=CPP]+;
 Eval:  group(PP, 1);
 
-####### Higher order noun phrases 2 #####
-
-#KJ: Temporarily preposition 'do' does not work (discarded by lemmatization)
-#> Kosz na śmieci
-#> Miska na jedzenie dla psa
-Rule "NP11: Noun phrase (no pronoun) + prepositional attribute"
-Match: [type=NP && head=[pos!~"pron"]] [type=PP]+;
-Eval:  group(NP, 1); # lemmatize(1)
-
-#> " Miska dla psa"
-Rule "NP12.1: Noun phrase surrounded by quotes"
-Match: [base~"\""] [type=NP] [base~"\""];
-Eval:  group(NP, 2); # lemmatize(2)
-
-Rule "NP12.2: Noun phrase surrounded by parenthesis"
-Match: [base~"\("] [type=NP] [base~"\)"];
-Eval:  group(NP, 2);
-
+#> trochę za długo
 Rule "PP5: Preposition + left-over adjective phrase"
 Match: [pos~"adv"]? [pos~"prep"] [type=AP];
 Eval:  unify(case, 2, 3);
        group(PP, 3);
 
+##KJ: This rule is not clear to me	   
 Rule "PP6: Preposition + left-over numeral"
 Match: [pos~"adv"]? [pos~"prep"] [pos~"num"];
 Eval:  unify(case, 2, 3);
