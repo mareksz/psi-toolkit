@@ -1,0 +1,786 @@
+# # Auxilliary grammar file
+# ## All bytes
+
+export Any = Optimize[
+    "[1]" |   "[2]" |   "[3]" |   "[4]" |   "[5]" |   "[6]" |   "[7]" |   "[8]" |   "[9]" |  "[10]" |
+    "[11]" |  "[12]" |  "[13]" |  "[14]" |  "[15]" |  "[16]" |  "[17]" |  "[18]" |  "[19]" |  "[20]" |
+    "[21]" |  "[22]" |  "[23]" |  "[24]" |  "[25]" |  "[26]" |  "[27]" |  "[28]" |  "[29]" |  "[30]" |
+    "[31]" |  "[32]" |  "[33]" |  "[34]" |  "[35]" |  "[36]" |  "[37]" |  "[38]" |  "[39]" |  "[40]" |
+    "[41]" |  "[42]" |  "[43]" |  "[44]" |  "[45]" |  "[46]" |  "[47]" |  "[48]" |  "[49]" |  "[50]" |
+    "[51]" |  "[52]" |  "[53]" |  "[54]" |  "[55]" |  "[56]" |  "[57]" |  "[58]" |  "[59]" |  "[60]" |
+    "[61]" |  "[62]" |  "[63]" |  "[64]" |  "[65]" |  "[66]" |  "[67]" |  "[68]" |  "[69]" |  "[70]" |
+    "[71]" |  "[72]" |  "[73]" |  "[74]" |  "[75]" |  "[76]" |  "[77]" |  "[78]" |  "[79]" |  "[80]" |
+    "[81]" |  "[82]" |  "[83]" |  "[84]" |  "[85]" |  "[86]" |  "[87]" |  "[88]" |  "[89]" |  "[90]" |
+    "[91]" |  "[92]" |  "[93]" |  "[94]" |  "[95]" |  "[96]" |  "[97]" |  "[98]" |  "[99]" | "[100]" |
+    "[101]" | "[102]" | "[103]" | "[104]" | "[105]" | "[106]" | "[107]" | "[108]" | "[109]" | "[110]" |
+    "[111]" | "[112]" | "[113]" | "[114]" | "[115]" | "[116]" | "[117]" | "[118]" | "[119]" | "[120]" |
+    "[121]" | "[122]" | "[123]" | "[124]" | "[125]" | "[126]" | "[127]" | "[128]" | "[129]" | "[130]" |
+    "[131]" | "[132]" | "[133]" | "[134]" | "[135]" | "[136]" | "[137]" | "[138]" | "[139]" | "[140]" |
+    "[141]" | "[142]" | "[143]" | "[144]" | "[145]" | "[146]" | "[147]" | "[148]" | "[149]" | "[150]" |
+    "[151]" | "[152]" | "[153]" | "[154]" | "[155]" | "[156]" | "[157]" | "[158]" | "[159]" | "[160]" |
+    "[161]" | "[162]" | "[163]" | "[164]" | "[165]" | "[166]" | "[167]" | "[168]" | "[169]" | "[170]" |
+    "[171]" | "[172]" | "[173]" | "[174]" | "[175]" | "[176]" | "[177]" | "[178]" | "[179]" | "[180]" |
+    "[181]" | "[182]" | "[183]" | "[184]" | "[185]" | "[186]" | "[187]" | "[188]" | "[189]" | "[190]" |
+    "[191]" | "[192]" | "[193]" | "[194]" | "[195]" | "[196]" | "[197]" | "[198]" | "[199]" | "[200]" |
+    "[201]" | "[202]" | "[203]" | "[204]" | "[205]" | "[206]" | "[207]" | "[208]" | "[209]" | "[210]" |
+    "[211]" | "[212]" | "[213]" | "[214]" | "[215]" | "[216]" | "[217]" | "[218]" | "[219]" | "[220]" |
+    "[221]" | "[222]" | "[223]" | "[224]" | "[225]" | "[226]" | "[227]" | "[228]" | "[229]" | "[230]" |
+    "[231]" | "[232]" | "[233]" | "[234]" | "[235]" | "[236]" | "[237]" | "[238]" | "[239]" | "[240]" |
+    "[241]" | "[242]" | "[243]" | "[244]" | "[245]" | "[246]" | "[247]" | "[248]" | "[249]" | "[250]" |
+    "[251]" | "[252]" | "[253]" | "[254]" | "[255]"  
+];
+
+# ## White spaces
+Space = Optimize[
+" " | "\t" | "\n" | "\r" 
+];
+
+NotSpace = Optimize[Any - Space];
+
+# ## Punctuation marks
+Punct = Optimize[
+"!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," |
+"-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "\[" | "\\" |
+"\]" | "^" | "_" | "`" | "{" | "|" | "}" | "~"
+];
+
+# ## Character Rules
+# _Character Rules_ are responsible for listing all characters that may appear in Polish texts:
+# historical and temporary
+
+Lower = "a" | "ą".utf8 | "á" | "b" | "c" | "ć" | "d" | "e" | "é" | "ę" | "f" | "g" | "h" | "i" | "j" | "k" |
+        "l"    |    "ł" | "m" | "n" | "ń" | "o" | "ó" | "p" | "q" | "r" | "s" | "ś" | "t" | "u" |
+        "v" | "w" | "x" | "y" | "z" | "ź" | "ż" ;
+
+Upper =  "A" | "Ą" | "Á" | "B" | "C" | "Ć" |"D" | "E" | "É" |"Ę" |"F" | "G" | "H" | "I" | "J" | "K" |
+           "L" | "Ł" |" M" | "N" | "Ń" | "O" |"Ó" | "P" | "Q" | "R" | "S"| "Ś" | "T" | "U" | "V" |
+           "W" | "X" | "Y" | "Z"| "Ź" | "Ż" ;
+
+Letter = Lower | Upper ;
+
+LowerVowel = "a" | "ą" | "á" | "e" | "é" | "ę" | "i" | "o" | "ó" | "u" | "y" ;
+
+UpperVowel = "A" | "Ą" | "Á" | "E" | "É" | "Ę" | "I" | "O" | "Ó" | "U" | "Y" ;
+
+Vowel = LowerVowel | UpperVowel ;
+
+LowerConsonant = Lower - LowerVowel ;
+
+UpperConsonant = Upper - UpperVowel ;
+
+Consonant = LowerConsonant | UpperConsonant ;
+
+AnyString = Letter* ;
+
+NonEmptyString = Letter+ ;
+
+NonLetter = Any - Letter;
+
+Beginning = "[BOS]" | Space | Punct ;
+
+End = "[EOS]" | Space | Punct ;
+
+AnyPrefix = Beginning AnyString ;
+
+# ## Palatalization issues
+# The below automaton list consonants that are followed by the "j" character, if palatelized.
+
+Followed_by_j =   "c" | "s" | Vowel "z" |
+                  "C" | "S" | Vowel "Z" ;
+
+# The below automaton list characters that are followed by the "i" character, if palatelized.
+
+Followed_by_i =  "d" | "f" | "g" | "h" | "k" | "l" | "m" | "n" | "p" | "r" | "t" | "w" |
+                 "D" | "F" | "G" | "H" | "K" | "L" | "M" | "N" | "P" | "R" | "T" | "W" ;
+
+# ## Capitalization issue
+# The rules of the type "Ll" deal with capitalization issue (lower, upper character) for standard letters.
+# The rules of the type "Caca" deal with capitalization issue for acute letters (e. g. "ć").
+# The rules of the type "Anan" deal with capitalization issue for nasal vowels (e. g. "ą").
+# The rules of the type "Lclc" deal with capitalization issue for other Polish diacritic letters (e. g. "ż").
+
+Aa = ( "A" | "a" ) ;
+Anan = ( "Ą" | "ą" ) ;
+Aaaa = ( "Á" | "á" ) ;
+Bb = ( "B" | "b" ) ;
+Cc = ( "C" | "c" ) ;
+Caca = ( "Ć" | "ć" ) ;
+Dd = ( "D" | "d" ) ;
+Ee = ( "E" | "e" ) ;
+Enen = ( "Ę" | "ę" ) ;
+Ff = ( "F" | "f" ) ;
+Gg = ( "G" | "g" ) ;
+Hh = ( "H" | "h" ) ;
+Ii = ( "I" | "i" ) ;
+Jj = ( "J" | "j" ) ;
+Kk = ( "K" | "k" ) ;
+Ll = ( "L" | "l" ) ;
+Lclc = ( "Ł" | "ł" ) ;
+Mm = ( "M" | "m" ) ;
+Nn = ( "N" | "n" ) ;
+Nana = ( "Ń" | "ń" ) ;
+Oo = ( "O" | "o" ) ;
+Oaoa = ( "Ó" | "ó" ) ;
+Pp = ( "P" | "p" ) ;
+Qq = ( "Q" | "q" ) ;
+Rr = ( "R" | "r" ) ;
+Ss = ( "S" | "s" ) ;
+Sasa = ( "Ś" | "ś" ) ;
+Tt = ( "T" | "t" ) ;
+Uu = ( "U" | "u" ) ;
+Vv = ( "V" | "v" ) ;
+Ww = ( "W" | "w" ) ;
+Xx = ( "X" | "x" ) ;
+Zz = ( "Z" | "z" ) ;
+Zaza = ( "Ź" | "ź" ) ;
+Zczc = ( "Ż" | "ż" ) ;
+# # Dictionary
+# This file contains automata that are equivalent to word classes.
+# ## Verb prefixes
+VerbPrefix = Optimize[ 
+                       ( "" | Dd"o" | Nn"a" | Nn"ad" | Nn"ade" | Oo | Oo"d" | Oo"de"| Pp"o" |
+                         Pp"od" | Pp"ode" | Pp"oza" | Pp"rzeciw" | Pp"rze" | Pp"rzede" |
+                         Pp"rzy"| Uu | Ww | Ww"e" | Zz | Zz"a" | Zz"e" 
+                        ) ] ;
+
+
+Prefix_y = Optimize[ Beginning
+                     ( Aa"rc" | Aa"nt" | Dd"ec" | Ee"ur" | Ff"luor" | Kk"alor" |
+                     Mm"iędz" | Mm"ęcz" | Nn"ib" |Oo"ks" | Oo"pt" | Pp"er" |
+                     Pp"rz" |Ss"cynt" | Ss"ekst" |Tt"ach" | Tt | Ww | Nn"iew" |
+                     Pp"oprz" | Pp"ow" 
+                     )
+                    ] ;
+
+NonPrefix_y = AnyString - Prefix_y ;
+
+
+# ## Particles that should be separated from 'by'
+Particle_by = Optimize [ 
+                         ( Aa"lbo" | Aa"lbowiem" | Aa"le" | Aa"leż" | Aa"ż" | Bb"o" | 
+                           Bb"owiem" | Bb"yle" | Cc"zy" | Cc"zyż" | Cc"hyba" | Cc"zyli" | 
+                           Jj"ednak" | Ii  | Ll"ub" | Ll"ecz" | Nn"iech" | Nn"iechaj" |
+                           Nn"im" | Nn"iż" | Nn"uż" | Oo"raz" | Pp"onieważ" | Tt"edy" | 
+                           Ss"koro" | Ww"ięc" | Zz"anim" Zz"atem" | Zz"aś" )
+                       ] ;
+
+# ## Verbs. This category should be replaced by a macro
+Verb = Cc"hciał" ;
+# # Feliński's Rules (before 1830)
+
+# ## Rule: A_acute  (the letter no longer exists in Polish save for foreign words)
+# This rule replaces 'a_acute' with standard 'a'. Existing words are listed in the exceptions list.
+
+A_acute = (
+              ("Á" : "A") |
+              ("á" : "a")
+          ) ;
+
+export Rule001_01 = Optimize[
+       CDRewrite[ A_acute,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: Infinitive 'ź_into_ć'
+# This rule replaces 'ź' that ends verb infinitives with 'ć'.
+# The words "wiedź" and "kładź" have been removed from tests, as they exist in modern vocabulary
+
+# > bydź -> być
+
+# > uledz -> ulec
+# > piedz -> piec
+# > módz -> móc
+
+Infinitive_z =
+            "y" ("dź" : "ć")           |
+            ("ie" | "a") ("dź" : "ść") |
+            ("e"  | "ó") ("dz" : "c") ;
+
+export Rule001_02 = Optimize[
+       CDRewrite[ Infinitive_z,
+                  AnyString,
+                  End,
+                  Any* ] ];
+
+# ## Rule: Imperative 'iej'
+# This rule replaces imperatives ending "iej" into "ij"; "rzej"" into "rzyj".
+# The word "zwiej" has been removed from tests, as it exists in modern vocabulary
+
+# > rwiej -> rwij
+# > tniej -> tnij
+
+# > drzej -> drzyj
+
+Imperative_iej =
+                  ("tniej" : "tnij")       |
+                  ("rwiej" : "rwij")       |
+                  ("drzej" : "drzyj")  ;
+
+export Rule001_03 = Optimize[
+       CDRewrite[ Imperative_iej,
+                  VerbPrefix,
+                  End,
+                  Any* ] ];
+
+# ## Rule: Preposition 'z'
+# These rules replace 's' at the end of a preposition with 'z'.
+# The below rule handles bare prepositions.
+# > bes -> bez
+# > s -> z
+# > przes -> przez
+
+
+Preposition_z =
+                 Bb ("es" : "ez")        |
+                 Pp ("rzes" : "rzez" )    |
+                 ( ("s" : "z") | ("S" : "Z") ) ;
+
+export Rule001_04 = Optimize[
+       CDRewrite[ Preposition_z,
+                  Beginning,
+                  End,
+                  Any* ] ];
+
+# The below rule handles bare prepositions that prefix nouns.
+# > beskresie -> bezkresie
+# > roskoszy -> rozkoszy
+
+Preposition_z_inflect =
+                         Bb("eskres" : "ezkres") |
+                         Rr("oskosz" : "ozkosz") ;
+
+export Rule001_05 = Optimize[
+       CDRewrite[ Preposition_z_inflect,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: Letter 'j' before 'i'
+# In a context VyiC 'y' disappears.
+# The rule also processes the word "szyyi", which is removed from tests, as it is finally and uncorrectly converted into "szji" according to rule 005_01. 
+# The rule should not affect words ending with "yi", e.g. "kolacyi", which are processed by another rule. 
+
+# > krayina -> kraina
+# > stoyisz -> stoisz
+# > kolacyi -> kolacji
+# > przyimować -> przyjmować
+
+Jota_before_i =  Vowel
+                     ("y": "")
+                       "i" 
+                          Consonant;
+
+export Rule001_06 = Optimize[
+       CDRewrite[ Jota_before_i,
+                  NonEmptyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: Letter 'j' before vowel other than 'i'
+# The rule replaces 'y', occurring before vowel other than 'i', with 'j'.
+# Attention: The rule should not be used for prefixes ending with 'y', e.g. "arcy"
+# > Yabłko -> Jabłko
+# > swoye -> swoje
+# > swoie -> swoje
+
+Jota_before_vowel =     NonPrefix_y
+                        ( (("y" | "i") : "j") | (("Y" | "I") : "J") )
+                            (Vowel - "i");
+
+export Rule001_07 = Optimize[
+       CDRewrite[ Jota_before_vowel,
+                  AnyPrefix - Prefix_y,
+                  "",
+                  Any* ] ];
+
+# #    Jota_back_to_y =
+# #                           ("j" : "y") ;
+
+# #    export Rule001_08 = Optimize[
+# #           CDRewrite[ Jota_back_to_y,
+# #                      Prefix_y,
+# #                      "",
+# #                      Any* ] ];
+
+
+# Otherwise the rule replaces 'y' or 'i' occurring after vowel with 'j'.
+# > bayka -> bajka
+# > kray -> kraj
+# > wyimować -> wyjmować
+
+Jota_after_vowel =
+                   Vowel
+                       (("y" | "i") : "j") ;
+
+export Rule001_09 = Optimize[
+       CDRewrite[ Jota_after_vowel,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: Letter 'i' before vowel
+# The rule replaces 'i', occurring at the beginning of the word and before vowel, with 'j'.
+# > iayko -> jajko
+
+Jota_at_beginning =
+                     ( ("i" : "j") | ("I" : "J") )
+                             Vowel ;
+
+export Rule001_10 = Optimize[
+       CDRewrite[ Jota_at_beginning,
+                  Beginning,
+                  NonEmptyString,
+                  Any* ] ];
+
+
+# # Delagacyja Rules (1830)
+# These are rules introduced by Akademia Umiejętności in 1830
+
+# ## Rule: O_acute
+# The rule replaces 'ó' (o_acute) with 'o' in selected words
+# > aktór -> aktor
+# > honór > honor
+# > fawór -> fawor
+# > dzięciół -> dzięcioł
+# > gruczół -> gruczoł
+# > mozóły -> mozoły
+
+O_acute = (
+              Aa ( "któr" : "ktor" )         |
+              Hh ( "onór" : "onor" )         |
+              Ff ( "awór" : "awor" )         | 
+              Dd ( "zięció" : "zięcio" ) ( "ł" | "l" ) |
+              Gg ( "ruczó": "ruczo" )    ( "ł" | "l" ) |
+              Mm ( "ozó" : "ozo" )       ( "ł" | "l" ) Vowel       
+           )  ;
+
+export Rule002_01 = Optimize[
+       CDRewrite[ O_acute,
+                  Beginning,
+                  AnyString,
+                  Any* ] ];
+
+# The word ód has been removed from tests, as it exists in modern vocabulary
+
+# > pód -> pod
+
+O_acute_end = (
+                  ( "ód" : "od" )  |
+                  ( "Ód" : "Od" )  | 
+                  Pp ( "ód" : "od" ) 
+              ) ;
+
+export Rule002_02 = Optimize[
+       CDRewrite[ O_acute_end,
+                  Beginning,
+                  End,
+                  Any* ] ];
+
+# ## Rule: Polonization of foreign names
+# The rule reverts the original spelling of foreign names.
+# The rule changes Marija int Marya, which then finally is converted into Maria
+# > Marija -> Maria
+# > Maryja -> Maria
+# > Julija -> Julia
+# > Fabijan -> Fabian
+# > Scypijon -> Scypion
+# > Grecyja -> Grecya
+
+Foreign_names = (
+                   ( "Marij" : "Mary" )       |
+                   ( "Maryj" : "Mary" )       |
+                   ( "Julij" : "Juli" )       | 
+                   ( "Fabijan" : "Fabian" )   |
+                   ( "Scypijon" : "Scypion" ) | 
+                   ( "Niobe" : "Nyobe" )      |
+                   ("Grecyj" : "Grecy")
+               ) ;
+
+export Rule002_03 = Optimize[
+       CDRewrite[ Foreign_names,
+                  Beginning,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: Foreign words with "gie"
+# The rule deletes 'i' from  "gie" in the foreign words.
+# > gienerał -> generał
+# > geniusz -> geniusz
+# > Eugieniusz -> Eugeniusz
+# > Gienewy -> Genewy
+
+Foreign_names_with_ge = (
+                             ( "Eugieniusz" : "Eugeniusz" )    |
+                             Ee ("wangieli" : "wangeli" )      | 
+                             Gg ("ie" : "e") "nerał"           |
+                             Gg ("ie" : "e") "niusz"           |
+                             Gg ("ie" : "e") "ografi"          |
+                             Gg ("ie" : "e") "nealog"          |
+                             Gg ("ie" : "e") "ometr"           | 
+                             ("Gie" : "Ge") "rman"             |
+                             ("Gie" : "Ge") "new"              |
+                             ("Gie" : "Ge") "rtrud"           
+                        ) ;
+
+export Rule002_04 = Optimize[
+       CDRewrite[ Foreign_names_with_ge,
+                  Beginning,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: Past Participle "łszy"
+# The rule inserts 'ł' before "szy" in past participle forms
+# > poszedszy -> poszedłszy
+# > usiadszy -> usiadłszy
+# > zjadszy -> zjadłszy
+# > zdarszy -> zdarłszy
+# > zaniósszy -> zaniósłszy
+# > znalazszy -> znalazłszy
+
+Past_participle = (
+                     ( "dszy" : "dłszy" ) |
+                     ( "rszy" : "rłszy" ) | 
+                     ( "sszy" : "słszy" ) |
+                     ( "zszy" : "złszy")
+                 ) ;
+
+export Rule002_05 = Optimize[
+       CDRewrite[ Past_participle,
+                  NonEmptyString,
+                  End,
+                  Any* ] ];
+
+# ## Rule: Remove 'z' from 'źrz"
+# The rule removes 'z' form "źrzódło" etc.
+# > źrzódło-> źródło
+# > śrzoda -> środa
+
+Remove_z_from_zrz = (
+                        ( "śrz" : "śr" ) |
+                        ( "Śrz" : "Śr" ) | 
+                        ( "źrz" : "źr" ) |
+                        ( "Źrz" : "Źr" )
+                    ) ;
+
+export Rule002_06 = Optimize[
+       CDRewrite[ Remove_z_from_zrz,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: "adjective_endings"
+# The rule replaces obsolete adjective endings: "iemi" with "imi"; "emi" with "ymi"; "em" with "ym"
+# Attention: The rule (particularly: "em->ym") may cause a lot of exceptions 
+# > wysokiemi -> wysokimi
+# > długiemi -> długimi
+# > nowemi -> nowymi
+# > dobremi -> dobrymi
+# > dobrem -> dobrym
+
+Adjective_endings = (
+                        ("iemi" : "imi")    |
+                        ("emi" : "ymi")     |
+                        ("em" : "ym")
+                    ) ;
+
+export Rule002_07 = Optimize[
+       CDRewrite[ Adjective_endings,
+                  NonEmptyString,
+                  End,
+                  Any* ] ];
+
+# ## Rule 'X'
+# The rule replaces "x" with "ks".
+# > Xawery -> Ksawery
+
+Replace_x =
+             ( ("X":"Ks") | ( "x" : "ks" ) ) ;
+
+export Rule002_08 =
+       CDRewrite[ Replace_x,
+                  AnyString,
+                  AnyString,
+                  Any* ] ;
+# # Akademia Rules (1891)
+# These are rules introduced by Akademia Umiejętności in 1891
+
+# ## Rule: E_acute  (the letter no longer exists in Polish)
+# This rule replaces 'e_acute' with standard 'e'.
+
+E_acute = (
+              ("É" : "E") |
+              ("é" : "e")
+          ) ;
+
+export Rule003_01 = Optimize[
+       CDRewrite[ E_acute,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: "z" replaced by "s" in adjective endings: "izki"
+# > blizki -> bliski
+
+Ending_izki = 
+              ("izk" : "isk") ;
+               
+export Rule003_02 = Optimize[
+       CDRewrite[ Ending_izki,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: "z" replaced by "s" in nouns ended by "ęstwo"
+# > zwycięztwo -> zwycięstwo
+
+Ending_eztwo = 
+              ("ęztw" : "ęstw") ;
+               
+export Rule003_03 = Optimize[
+       CDRewrite[ Ending_eztwo,
+                  AnyString,
+                  AnyString,
+                  Any* ] ];
+
+# ## Rule: "z" replaced by "s" in some particles
+# > zkąd -> skąd
+# > ztamtąd -> stamtąd
+# > zchodzić -> schodzić
+# > ztężeć -> stężeć
+# > ztok -> stok
+# > zpływać -> spływać
+
+Prep_z_s =     ( 
+               ("Z": "S") | ("z" : "s")
+               )
+               ("ch" | "f" | "k" | "p" | "t" ) ;
+               
+export Rule003_04 = Optimize[
+       CDRewrite[ Prep_z_s,
+                  Beginning,
+                  AnyString,
+                  Any* ] ];
+# # Rules by Akademia Umiejętności in Cracow, 1918
+# ## Rule: palatalization of preposistion 'z' in verbs
+# The rule converts 'z' into 'ś' in verbs starting with 'ci'
+# > zcierpieć -> ścierpieć
+# > zcisnąć -> ścisnąć
+
+Soft_z =         ( 
+                   ("z" : "ś") | 
+                   ("Z" : "Ś") 
+                 )
+                       "ci" ;
+
+export Rule004_01 = Optimize[
+       CDRewrite[ Soft_z,
+                  Beginning,
+                  NonEmptyString,
+                  Any* ] ];
+
+# # Rules form 1936
+
+# ## Rule: Ending_ja
+# The rule replaces endings: "yja" with "ja", "yj" with "ji".
+# The words 'decyzyj', 'lekcyj', 'dygresyj' have been removed from tests, as they exist in modern vocabulary
+# > decyzyja -> decyzja
+# > decyzyje -> decyzje
+
+# > lekcyja -> lekcja
+
+# > degresyja -> degresja
+
+
+Ending_yj = ( ( "yj" | "yi") : "ji" ) ;
+
+export Rule005_01 = Optimize[
+       CDRewrite[ Ending_yj,
+                  Followed_by_j,
+                  End,
+                  Any* ] ];
+
+Ending_yja =
+            ( ("yj" | "yi") : "j" )
+                ("a" | "i" | "ę" | "ą" | "e" | "om" | "ami" | "ach" ) ;
+
+export Rule005_02 = Optimize[
+       CDRewrite[ Ending_yja,
+                  Followed_by_j,
+                  End,
+                  Any* ] ];
+
+# ## Rule: Ending_iake 
+# The rule replaces ending "yja" with "ia", "yj" with "ii"
+# The words 'historyj', 'religij', 'geografij' have been removed from tests, as they exist
+# > historyja -> historia
+# > historyje -> historie
+
+
+# > kopyj -> kopii
+# > religija -> religia
+
+
+
+
+Ending_ij =
+              ( ( "yj" | "ij" ) : "ii" ) ;
+
+export Rule005_03 = Optimize[
+       CDRewrite[ Ending_ij,
+                  Followed_by_i,
+                  End,
+                  Any* ] ];
+
+Ending_ija =
+              ( ( "yj" | "ij" ) : "i" )
+                       ("a" | "i" | "ę" | "ą" | "e" | "om" | "ami" | "ach" ) ;
+
+export Rule005_04 = Optimize[
+       CDRewrite[ Ending_ija,
+                  Followed_by_i,
+                  End,
+                  Any* ] ];
+
+# ## After 1936 it was agreed that after all consonants (except for "c', "s", "z"), "y" or "j" are replaced by "i"
+# > Danya -> Dania
+# > Danja -> Dania
+
+I_after_consonant = 
+              ( ("y" | "j") : "i" ) ;
+
+export Rule005_05 = Optimize[
+       CDRewrite[ I_after_consonant,
+                  Followed_by_i,
+                  Vowel,
+                  Any* ] ];
+
+
+# ## The rule 005_06 has been removed to 900-One2N.md.
+# ## The rules 005-07 - 005-13 have been removed to 901-N2One.md.
+# ## Rule 'Puhar'
+# The rule replaces "Puhar" with "Puchar"
+
+Replace_puhar =
+               Pp("uhar": "uchar") ;
+
+export Rule100_02 = Optimize[
+       CDRewrite[ Replace_puhar,
+                  Beginning,
+                  AnyString,
+                  Any* ] ];
+
+# The file gathers rules that divide words. Names of the rules point out from their origin, e.g., the prefix 005 denotes that the rule belongs to the 005 family (rules changed in 1936).
+
+# ## The below rule handles verbs preceded by particle "nie"
+# > niechciał -> nie chciał
+
+NieVerb = Nn"ie"
+                ("" : " ")
+                          Verb ;
+
+export Rule005_06 = Optimize[
+       CDRewrite[ NieVerb,
+                  Beginning,
+                  End,
+                  Any* ] ];
+
+# ## The problem appeared with prepositions: "potem", "zaczem":
+# ## The below rule handles prepositions ending with "czem".
+# The word 'zaczem' has been removed from tests, as it exists in modern vocabulary
+# > poczem -> po czym
+# > przyczem -> przy czym
+
+Preposition_before_czem = 
+                         "za" ("":" ") ("czem":"czym")   |
+                         "po" ("":" ") ("czem":" czym")  |
+                         "przy" ("":" ") ("czem":"czym") | 
+                         "przy" ("":" ") ("tem":"tym") ;
+
+export Rule005_07 = Optimize[
+       CDRewrite[ Preposition_before_czem,
+                  Beginning,
+                  End,
+                  Any* ] ];
+
+# ## Particle "by" 
+# "By" particles and their inflected forms should be separated from particles and conjunctions
+
+# ### Inflected singular forms of "by"
+Singular_by = 
+                ("bym" | "byś" | "by") ;
+
+# ### Inflected plural forms of "by"
+Plural_by = 
+                ("byśmy" | "byście" | "by") ;
+
+# ### All inflected forms of "by"
+Ending_by = ( Singular_by | Plural_by );
+
+
+Separate_by = 
+                  Particle_by
+                      ("": " ") 
+                          Ending_by ;
+
+export Rule005_08 = Optimize[
+       CDRewrite[ Separate_by,
+                  Beginning,
+                  End,
+                  Any* ] ]; 
+
+# ## "Nie + modal verbs
+# The particle "nie" should be separated from modal verbs.
+
+SeparateModal = 
+               Nn"ie"
+                   ("" : " ")
+                       ("można" | "trzeba" | "wolno" | "powinno" | "potrzeba" ) ;
+
+export Rule005_09 = Optimize[
+       CDRewrite[ SeparateModal,
+                  Beginning,
+                  End,
+                  Any* ] ];
+
+# ## Specific rules for word division 
+# These are rules that divide words into parts (usually: preposition + noun)
+SeparateWord =
+                ( "bez"    ("": " ") ("mała" | "wątpienia") |
+                  "beze"   ("": " ") "mnie" |
+                  "do"     ("": " ") ("cna" | "syta" | "niedawna") |
+                  "na"     ("": " ") ("pewno" | "czczo" | "jaw" | "ogół" | "podorędziu" | "przemian" | "zabój" ) |
+                  "nade"   ("": " ") "wszystko" |
+                  "od"     ("": " ") ("niechcenia" | "razu" ) |
+                  "ode"    ("": " ") "mnie" |
+                  "po"     ("": " ") ("cichu" | "ciemku" | "kryjomu" | "społu" | "trochu" | "troszku") |
+                  "pode"   ("": " ") "mną" |
+                  "przede" ("": " ") ("dniem" | "wszystkim") |
+                  "w"      ("": " ") "ogóle" |
+                  "we"     ("": " ") "mnie" |
+                  "z"      ("": " ") ("powodu" | "pomocą" | "cicha" | "głupia" | "daleka" | "dala" ) |
+                  "za"     ("": " ") ("mąż" | "pomocą" | "świeża" | "widna" ) |
+                  "ze"     ("": " ") "mną"
+                ) ;
+ 
+
+export Rule005_10 = Optimize[
+       CDRewrite[ SeparateWord,
+                  Beginning,
+                  End,
+                  Any* ] ];
+
+# Conjunctions "dlatego" "dlaczego" are written jointly. The rule stands only for "dlaczego" because "dla tego" may have a different meaning.
+
+# ## The below rule handles "dlaczego"
+# > dla czego -> dlaczego
+
+Dlaczego = Dd"la"
+                (" " : "")
+                          "czego" ;
+
+export Rule003_05 = Optimize[
+       CDRewrite[ Dlaczego,
+                  Beginning,
+                  End,
+                  Any* ] ];
