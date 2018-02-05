@@ -7,18 +7,18 @@
 
 
 const std::string Selector::Factory::DEFAULT_IN_TAG = "conditional";
-const std::string Selector::Factory::DEFAULT_FALLBACK_TAG = "token";
+const std::string Selector::Factory::DEFAULT_FALLBACK_TAGS = "token";
 const std::string Selector::Factory::DEFAULT_OUT_TAGS = "selected,token";
 
 
 Selector::Selector(
     const std::string& inTag,
-    const std::string& fallbackTag,
+    const std::string& fallbackTags,
     const std::string& testTag,
     const std::string& outTagsSpecification,
     bool withBlank)
     : inTag_(inTag),
-      fallbackTag_(fallbackTag),
+      fallbackTags_(fallbackTags),
       testTag_(testTag),
       outTags_(
           LayerTagManager::splitCollectionSpecification(outTagsSpecification)),
@@ -28,12 +28,12 @@ Selector::Selector(
 Annotator* Selector::Factory::doCreateAnnotator(
     const boost::program_options::variables_map& options) {
     std::string inTag = options["in-tag"].as<std::string>();
-    std::string fallbackTag = options["fallback-tag"].as<std::string>();
+    std::string fallbackTags = options["fallback-tag"].as<std::string>();
     std::string testTag = options["test-tag"].as<std::string>();
     std::string outTag = options["out-tags"].as<std::string>();
     bool withBlank = options.count("with-blank");
 
-    return new Selector(inTag, fallbackTag, testTag, outTag, withBlank);
+    return new Selector(inTag, fallbackTags, testTag, outTag, withBlank);
 }
 
 std::list<std::list<std::string> > Selector::Factory::doRequiredLayerTags() {
@@ -55,7 +55,7 @@ void Selector::Factory::doAddLanguageIndependentOptionsHandled(
      ->default_value(DEFAULT_IN_TAG),
      "tag to select when condition succeeds")
     ("fallback-tag", boost::program_options::value<std::string>()
-     ->default_value(DEFAULT_FALLBACK_TAG),
+     ->default_value(DEFAULT_FALLBACK_TAGS),
      "tag to select when condition fails")
     ("test-tag", boost::program_options::value<std::string>()
      ->default_value(std::string()),
@@ -108,7 +108,7 @@ Selector::Worker::Worker(Selector & processor, Lattice & lattice) :
 void Selector::Worker::doRun() {
     AnnotationItemManager& aim = lattice_.getAnnotationItemManager();
     LayerTagManager& ltm = lattice_.getLayerTagManager();
-    LayerTagMask fallbackMask = ltm.getMask(processor_.fallbackTag_);
+    LayerTagMask fallbackMask = ltm.getMask(processor_.fallbackTags_);
     LayerTagMask inMask = ltm.getMask(processor_.inTag_);
 
     Lattice::VertexIterator vi(lattice_);

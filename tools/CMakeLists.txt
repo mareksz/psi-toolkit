@@ -42,6 +42,7 @@ set(tools_DIRS
     converters/unumsunt
     converters/joiner
     converters/selector
+    converters/antiselector
     translators/bonsai
     translators/bonsai/irstlm
     translators/bonsai/rules

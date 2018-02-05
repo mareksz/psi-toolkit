@@ -26,6 +26,8 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
         ("get-tokens",      "simple-writer --tags token")
         ("write-segments",  "simple-writer --tags segment")
         ("get-segments",    "simple-writer --tags segment")
+        ("write-selected",  "simple-writer --tags selected --sep \" \" --no-alts")
+        ("get-selected",    "simple-writer --tags selected --sep \" \" --no-alts")
 
         ("xml-writer", "bracketing-writer --skip-symbol-edges --opening-bracket \n"
             "<edge tags=\"%T\" category=\"%c\" attrs=\"%A\"> --closing-bracket </edge>\n"
@@ -58,6 +60,10 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
             " selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
         ("diachronizer", "iayko --bypass-exceptions ! niema ! morfologik !"
             " selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
+        ("better-diachronizer", "morfologik !"
+            " antiselector --in-tag morfologik --out-tags !pl,tonorm ! iayko --in-tag to-norm !"
+            " niema ! selector --fallback-tag iayko !"
+            " simple-writer --tags selected --sep \" \" --no-alts")
         ;
 
 

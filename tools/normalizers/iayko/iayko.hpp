@@ -57,22 +57,24 @@ public:
         static const std::string DEFAULT_FAR_PATH;
         static const std::string DEFAULT_FSTS_PATH;
         static const std::string DEFAULT_EXCEPTIONS_PATH;
+        static const std::string DEFAULT_IN_TAG;
     };
 
     Iayko(const std::string& langCode,
           const std::string& far,
           const std::string& fst,
-          std::vector< std::string > exceptions);
+          std::vector< std::string > exceptions,
+          const std::string& inTag);
     Iayko(const std::string& langCode,
           std::vector< std::pair<std::string, std::string> > spec,
-          std::vector< std::string > exceptions);
+          std::vector< std::string > exceptions,
+          const std::string& inTag);
     ~Iayko();
 
     OpenFSTAdapterInterface* getAdapter();
     bool isActive();
 
     static const std::list<std::string> requiredTags;
-    static const std::list<std::string> tagsToOperateOn;
     static const std::list<std::string> providedTags;
     static const std::list<std::string> tagsToPut;
 private:
@@ -98,6 +100,7 @@ private:
 
     std::string langCode_;
     std::vector< std::string > exceptions_;
+    std::string inTag_;
     OpenFSTAdapterInterface* openFSTAdapter_;
 };
 

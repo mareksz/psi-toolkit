@@ -1,5 +1,5 @@
-#ifndef SELECTOR_HDR
-#define SELECTOR_HDR
+#ifndef ANTISELECTOR_HDR
+#define ANTISELECTOR_HDR
 
 #include <list>
 #include <string>
@@ -8,7 +8,7 @@
 
 #include "language_dependent_annotator_factory.hpp"
 
-class Selector: public Annotator
+class Antiselector: public Annotator
 {
 
 public:
@@ -39,14 +39,13 @@ public:
         virtual std::string doGetSubType() const;
 
         static const std::string DEFAULT_IN_TAG;
-        static const std::string DEFAULT_FALLBACK_TAGS;
+        static const std::string DEFAULT_FALLBACK_TAG;
         static const std::string DEFAULT_OUT_TAGS;
     };
 
-    Selector(
+    Antiselector(
         const std::string& inTag,
-        const std::string& fallbackTags,
-        const std::string& testTag,
+        const std::string& fallbackTag,
         const std::string& outTagsSpecification,
         bool withBlank);
 
@@ -54,11 +53,10 @@ private:
     class Worker : public LatticeWorker
     {
     public:
-        Worker(Selector& processor, Lattice& lattice);
+        Worker(Antiselector& processor, Lattice& lattice);
     private:
         virtual void doRun();
-        bool isConditionSatisfied_(Lattice::EdgeDescriptor& edge);
-        Selector& processor_;
+        Antiselector& processor_;
         LayerTagCollection outTags_;
     };
 
@@ -67,8 +65,7 @@ private:
     virtual std::string doInfo();
 
     std::string inTag_;
-    std::string fallbackTags_;
-    std::string testTag_;
+    std::string fallbackTag_;
     std::list<std::string> outTags_;
     bool withBlank_;
 };

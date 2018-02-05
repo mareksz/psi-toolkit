@@ -571,7 +571,7 @@ set(BASE_TARGETS common common-plugins utf8case sundown fex tiniconv uchardet fr
     formats-simple formats-json-simple formats-txt formats-utt tools-datastructures-psi_query
     maxent tools-tokenizers-tp tools-tokenizers-detok tools-segmenters-srx tools-recognizers-langguesser
     tools-parsers-gobio tools-parsers-puddle tools-taggers-metagger tools-taggers-inflector tools-translators-bonsai
-    tools-converters-unumsunt tools-converters-joiner tools-converters-selector tools-translators-transferer tools-normalizers-simplenorm)
+    tools-converters-unumsunt tools-converters-joiner tools-converters-selector tools-converters-antiselector tools-translators-transferer tools-normalizers-simplenorm)
 
 # ----------------------------------------------------
 # TESTS_TARGETS

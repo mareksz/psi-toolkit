@@ -26,10 +26,10 @@ const std::string Iayko::Factory::DEFAULT_FSTS_PATH
 const std::string Iayko::Factory::DEFAULT_EXCEPTIONS_PATH
     = "%ITSDATA%/%LANG%/exceptions.lst";
 
-const std::list<std::string> Iayko::requiredTags = boost::assign::list_of
-        ("token");
+const std::string Iayko::Factory::DEFAULT_IN_TAG
+    = "token";
 
-const std::list<std::string> Iayko::tagsToOperateOn = boost::assign::list_of
+const std::list<std::string> Iayko::requiredTags = boost::assign::list_of
         ("token");
 
 const std::list<std::string> Iayko::providedTags = boost::assign::list_of
@@ -57,6 +57,7 @@ Annotator* Iayko::Factory::doCreateAnnotator(
     std::string md = options["md"].as<std::string>();
     std::string saveFar= options["save-far"].as<std::string>();
     std::string exceptionsFileSpec = options["exceptions"].as<std::string>();
+    std::string inTag = options["in-tag"].as<std::string>();
 
     std::vector<std::string> exceptions;
     if (options.count("bypass-exceptions")) {
@@ -117,7 +118,7 @@ Annotator* Iayko::Factory::doCreateAnnotator(
             throw PsiException("Options --fsts and --spec must not be used together");
         }
 
-        return new Iayko(lang, transducersSpec, exceptions);
+        return new Iayko(lang, transducersSpec, exceptions, inTag);
     }
 
     std::string far = getRealFileName(farFileSpec, lang);
@@ -194,10 +195,10 @@ Annotator* Iayko::Factory::doCreateAnnotator(
         }
         fin.close();
 
-        return new Iayko(lang, transducersSpec, exceptions);
+        return new Iayko(lang, transducersSpec, exceptions, inTag);
     }
 
-    return new Iayko(lang, far, fst, exceptions);
+    return new Iayko(lang, far, fst, exceptions, inTag);
 }
 
 
@@ -238,6 +239,9 @@ void Iayko::Factory::doAddLanguageIndependentOptionsHandled(
         boost::program_options::value<std::string>()
         ->default_value(DEFAULT_EXCEPTIONS_PATH),
         "a text file with list of exceptions")
+    ("in-tag", boost::program_options::value<std::string>()
+        ->default_value(DEFAULT_IN_TAG),
+        "tag to operate on")
     ;
 }
 
@@ -332,11 +336,11 @@ void Iayko::Worker::doRun()
     {
         LayerTagManager& ltm = lattice_.getLayerTagManager();
 
-        LayerTagMask tokenMask_ = ltm.getMaskWithLangCode(
-                Iayko::tagsToOperateOn, iaykoProcessor.langCode_);
+        LayerTagMask tokenMask = ltm.getMaskWithLangCode(
+                iaykoProcessor.inTag_, iaykoProcessor.langCode_);
 
         Lattice::EdgesSortedByTargetIterator edgeIter
-            = lattice_.edgesSortedByTarget(tokenMask_);
+            = lattice_.edgesSortedByTarget(tokenMask);
 
         Lattice::EdgeDescriptor lastTokenEdge;
         Lattice::EdgeDescriptor lastSeparatingEdge;
@@ -388,7 +392,9 @@ std::string Iayko::doInfo()
 Iayko::Iayko(const std::string& langCode,
              const std::string& far,
              const std::string& fst,
-             std::vector<std::string> exceptions)
+             std::vector<std::string> exceptions,
+             const std::string& inTag)
+    : inTag_(inTag)
 {
     init_(langCode, exceptions);
 
@@ -400,7 +406,9 @@ Iayko::Iayko(const std::string& langCode,
 
 Iayko::Iayko(const std::string& langCode,
              std::vector< std::pair<std::string, std::string> > spec,
-             std::vector<std::string> exceptions)
+             std::vector<std::string> exceptions,
+             const std::string& inTag)
+    : inTag_(inTag)
 {
     init_(langCode, exceptions);
 

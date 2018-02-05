@@ -89,6 +89,7 @@
 
 #include "joiner.hpp"
 #include "selector.hpp"
+#include "antiselector.hpp"
 
 #include "from_configuration_annotator_factory.hpp"
 #include "configuration_finder.hpp"
@@ -254,6 +255,7 @@ MainFactoriesKeeper::MainFactoriesKeeper() {
 
     keeper_.takeProcessorFactory(new Joiner::Factory());
     keeper_.takeProcessorFactory(new Selector::Factory());
+    keeper_.takeProcessorFactory(new Antiselector::Factory());
 
     ConfigurationFinder configurationFinder(
         Configurator::getInstance().getMainDir(),
