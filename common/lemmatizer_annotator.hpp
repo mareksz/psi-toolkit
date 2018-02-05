@@ -21,6 +21,7 @@ private:
                                            std::back_insert_iterator<std::string> > >
        lowerCaseConverter_;
     std::string langCode_;
+    std::string tokenTag_;
 
 
 public:
@@ -30,6 +31,11 @@ public:
         lowerCaseConverter_ = StringCaseConverterManager::getInstance().
             getLowerCaseConverter(lemmatizer_.getLanguage());
         langCode_ = lemmatizer_.getLanguage();
+        if (options.count("token-tag")) {
+            tokenTag_ = options["token-tag"].as<std::string>();
+        } else {
+            tokenTag_ = "token";
+        }
     }
 
     class Factory : public AnnotatorFactory {
@@ -258,12 +264,12 @@ public:
         };
 
     public:
-        Worker(Processor& processor, Lattice& lattice)
+        Worker(Processor& processor, Lattice& lattice, const std::string& tokenTag)
             :LatticeWorker(lattice),
              processor_(processor),
              tokenMask_(
                  lattice.getLayerTagManager().getMaskWithLangCode(
-                     "token",
+                     tokenTag,
                      dynamic_cast<LemmatizerAnnotator&>(processor_).lemmatizer_.getLanguage())) {
         }
 
@@ -312,7 +318,7 @@ public:
     };
 
     virtual LatticeWorker* doCreateLatticeWorker(Lattice& lattice) {
-        return new Worker(*this, lattice);
+        return new Worker(*this, lattice, tokenTag_);
     }
 
     virtual std::string doInfo() {

@@ -61,8 +61,10 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
         ("diachronizer", "iayko --bypass-exceptions ! niema ! morfologik !"
             " selector --fallback-tag iayko ! simple-writer --tags selected --sep \" \" --no-alts")
         ("better-diachronizer", "morfologik !"
-            " antiselector --in-tag morfologik --out-tags !pl,tonorm ! iayko --in-tag to-norm !"
-            " niema ! selector --fallback-tag iayko !"
+            " antiselector --in-tag morfologik --out-tags !pl,tonorm !"
+            " iayko --in-tag tonorm --bypass-exceptions !"
+            " niema ! morfologik --token-tag niema !"
+            " selector --fallback-tag \"iayko;morfologik\" !"
             " simple-writer --tags selected --sep \" \" --no-alts")
         ;
 

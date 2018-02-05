@@ -126,6 +126,9 @@ boost::program_options::options_description Morfologik::optionsHandled() {
         ("dict", boost::program_options::value<std::string>()
             ->default_value(DICTIONARIES[0]), dictionaryDescription.c_str())
         ("keep-original", "keep original Morfologik's settings i.e. do not break brief forms")
+        ("token-tag", boost::program_options::value<std::string>()
+            ->default_value(std::string("token")),
+            "tag to operate on instead of token tag")
     ;
 
     return desc;
