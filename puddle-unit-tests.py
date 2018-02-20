@@ -13,7 +13,6 @@ with open('/psi-toolkit/tools/parsers/puddle/data/pl/rules.pl') as rules_file:
             print("Checking phrase: '%s', condition: %s ..." % (test_phrase, condition), end='')
             psi = PSIToolkit.PipeRunner('tokenize --lang pl ! lemmatize ! puddle')
             result = psi.run(test_phrase)
-
+            
             print("OK")
-            print(result)
             #time.sleep(1)

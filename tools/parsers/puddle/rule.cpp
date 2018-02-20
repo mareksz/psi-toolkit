@@ -67,6 +67,7 @@ bool Rule::test(std::string &, Lattice &lattice, std::string langCode,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
 
+    std::cout << "\ttesting rule " << getName() << std::endl;
     ruleTokenSizes.clear();
     ruleTokenSizes.assign(rulePatternIndices.size(), 0);
 
@@ -74,6 +75,8 @@ bool Rule::test(std::string &, Lattice &lattice, std::string langCode,
     if (! requiredTokensMatched(match, ruleTokenSizes) ) {
         return false;
     }
+
+    std::cout << "\trequired tokens matched" << std::endl;
 
     int leftBound;
     int rightBound;
@@ -83,12 +86,17 @@ bool Rule::test(std::string &, Lattice &lattice, std::string langCode,
 
         return false;
     }
+    std::cout << "\trule boundaries got" << std::endl;
+
     rulePartitions = generateRulePartitions(lattice, langCode, leftBound,
             rightBound, matchedStartIndex);
 
+    std::cout << "\trule partitions generated" << std::endl;
 
     for (Actions::iterator actionIt = actions->begin();
             actionIt != actions->end(); ++ actionIt) {
+
+        std::cout << "\t\ttesting action of type: " <<  (*actionIt)->getType() << std::endl;
 
         if ( (*actionIt)->test(lattice, langCode, matchedStartIndex,
                     ruleTokenSizes, rulePartitions)

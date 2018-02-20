@@ -240,6 +240,7 @@ UnifyAction::generateUnifiedEdgesList(Lattice &lattice, std::string langCode,
 
 bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
         int matchedStartIndex, RuleTokenSizes &ruleTokenSizes) {
+    std::cout << "\t\ttesting if unifying is possible" << std::endl;
     bool toApply = true;
     std::vector<std::string>::iterator attribute_it = unifiedAttributes.begin();
     for (std::vector<std::string>::iterator pattern_it = unifiedPatterns.begin();
@@ -269,6 +270,7 @@ bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
             int offset = vertex;
             int vertexI = 0;
             while (vertexI < count) {
+                std::cout << "\t\t\tvertexI="<<vertexI<<", count="<<count << std::endl;
                 vertex = lattice::getVertex(lattice, langCode, vertexI, offset);
                 std::list<Lattice::EdgeDescriptor> edges =
                     lattice::getTopEdges(lattice, langCode, vertex);
