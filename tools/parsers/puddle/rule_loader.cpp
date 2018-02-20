@@ -78,14 +78,11 @@ std::string RuleLoader::compileNonTokens(std::string &matched) {
     Pattern regSpecialNeg("!(sb|se|ns)");
     Pattern regSpecial("(^|[ \\(\\)\\|])(sb|se|ns)");
 
-    std::cout << "\t\tcompileNonTokens: matched: " << matched << std::endl;
-
     RegExp::GlobalReplace(&matched, regSpecialNeg,
             "((?:<<t<[^<>]+<[^<>]+<[^>]+>)|(?:<<g<[^<>+]<[^<>]+<[^<>]+<[^>]+))");
     RegExp::GlobalReplace(&matched, regSpecial, "\\1(?:<<s<[^<>]+<\\2<>)");
     RegExp::GlobalReplace(&matched, regWhite, "");
 
-    std::cout << "\t\tcompileNonTokens: modified matched: " << matched << std::endl;
     return matched;
 }
 
@@ -104,8 +101,6 @@ std::string RuleLoader::compileRulePattern(std::string &matched, int &size,
         RuleTokenModifiers &ruleTokenModifiers,
         RuleTokenRequirements &ruleTokenRequirements,
         RulePatternIndices &rulePatternIndices, int &bracketCount) {
-
-    std::cout << "compileRulePattern: " << matched << std::endl;
 
     Pattern regMatch("^(Match|Left|Right)\\s*:\\s*");
     Pattern regWhite("\\s+");
@@ -130,9 +125,6 @@ std::string RuleLoader::compileRulePattern(std::string &matched, int &size,
     std::string before = "";
     while ((token = getToken(matched, before)) != "") {
         std::string compiledToken = compileToken(token);
-        std::cout << "\tcompiled token: " << compiledToken << std::endl;
-        std::cout << "\tbefore: " << before << std::endl;
-        std::cout << "\tmatched: " << matched << std::endl;
         std::stringstream compiledStream;
         compiledStream << compileNonTokens(before) << compiledToken;
         while (matched != "" &&
@@ -141,8 +133,6 @@ std::string RuleLoader::compileRulePattern(std::string &matched, int &size,
             compiledStream <<  matched[0];
             matched = matched.substr(1, std::string::npos);
         }
-        std::cout << "\tmodified matched: " << matched << std::endl;
-        std::cout << "\tcompiled: " << compiledStream.str() << std::endl;
         compiledMatch += compiledStream.str();
     }
 
@@ -388,8 +378,6 @@ std::string RuleLoader::compileToken(std::string &token,
         bool no_prefix) {
 
 
-    std::cout << "\tcompiling token: " << token << ", no_prefix: " << no_prefix << std::endl;
-
     if ((token[0] == '[') && (token[token.size() - 1] == ']')) {
         token = token.substr(1, token.size() - 2);
     } else {
@@ -412,7 +400,7 @@ std::string RuleLoader::compileToken(std::string &token,
         std::string value;
         if (key != "head") {
             icase = false;
-            if (key == "orth") {
+            if (key == "orth" || key == "base") {
                 value = getValue(token);
             } else {
                 value = escapeSpecialChars(getValue(token));
@@ -439,7 +427,6 @@ std::string RuleLoader::compileToken(std::string &token,
         } else if (key == "base") {
             basePatterns.push_back(TokenPatternPart(value, compOperator[0] == '!', icase));
         } else if (key == "orth") {
-            std::cout << "\t\tpushing back orth pattern: " << value << std::endl;
             orthPatterns.push_back(TokenPatternPart(value, compOperator[0] == '!', icase));
         } else {  //attribute condition, e.g. number~"pl"
             // not supported
@@ -485,7 +472,6 @@ std::string RuleLoader::compileToken(std::string &token,
             } else {
                 compiledToken += "=";
             }
-            std::cout << "\t\tadding orth condition: " << it->condition << std::endl;
             compiledToken += it->condition + ")";
         }
         compiledToken += "[^<>]+";   //adding a pattern that will actually consume the orth
@@ -1534,7 +1520,6 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
         std::string line = *lineIt;
         if (line.find("Rule") == 0) {
             ruleName = this->compileRuleName(line);
-            std::cout << "Compiling rule: " << ruleName << std::endl;
         }
         else if (line.find("Left:") == 0) {
             if (chars != "") {
@@ -1632,8 +1617,6 @@ RulePtr RuleLoader::parseRuleString(std::string &ruleString) {
     ActionsPtr actions = this->compileRuleAction(chars,
             ruleLeftSize, ruleMatchSize, ruleRightSize, ruleName,
             repeat, autoDelete);
-
-    std::cout << "Compiled rule: " << ruleName << ": " << rulePattern << std::endl;
 
 #if HAVE_RE2
     RulePtr rule = RulePtr( new Rule(ruleName, rulePattern,

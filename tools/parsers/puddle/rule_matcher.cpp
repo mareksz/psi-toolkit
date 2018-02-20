@@ -25,8 +25,6 @@ void RuleMatcher::applyRules(Lattice &lattice, std::string langCode) {
         std::vector<StringPiece> match;
         std::string tmpSentenceString = sentenceString;
 
-        std::cout << "Matching rule: " << (*ruleIt)->getName() << " on sentence: " << sentenceString << std::endl;
-
         while ( (matchedStartIndex = (*ruleIt)->matchPattern(tmpSentenceString,
                         afterIndex, match) ) > -1 ) {
             bool structureChanged = false;
