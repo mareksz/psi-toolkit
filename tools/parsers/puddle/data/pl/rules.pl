@@ -104,7 +104,7 @@ Eval:  group(NUM, 1);
 ##KJ: Works for numerals longer than 2 digits
 #>( 54 ) NUM
 Rule "NUM4.1: Numerical tokens surrounded by braces"
-Match: [base~"\("] [type=NUM] [base~"\)"]; 
+Match: [base~"\("] [type=NUM] [base~"\)"];
 Eval:  group(NUM, 2);
 
 ##KJ: Works for numerals longer than 2 digits
@@ -155,7 +155,7 @@ Eval:  group(NE, 1);
 
 #> oczekiwany
 #> wyglądający
-#> piękny 
+#> piękny
 Rule "AP1: At least 1 adjective"
 Match: ([pos~"adj" | pos~"ppas" | pos~"pact"])+;
 Eval:  unify(case gender number, 1, 2);
@@ -163,7 +163,7 @@ Eval:  unify(case gender number, 1, 2);
 
 #> długo oczekiwany
 #> pięknie wyglądający
-#> zawsze piękny 
+#> zawsze piękny
 Rule "AP2: Adverb + at least 1 adjective"
 Match: [pos~"adv"]* [type=AP];
 Eval:  delete(pos!~"adv", 1);
@@ -199,7 +199,7 @@ Eval:  delete(pos!~"ger", 1);
        delete(pos!~"pron", 2);
        group(NP, 1);
 
-#>żeliwny młot kowalski	   
+#>żeliwny młot kowalski
 Rule "NP2.1: Adjective phrase + noun + adjective phrase"
 Match: [type=AP] [pos~"subst"] [type=AP];
 Eval:  unify(case gender number, 1, 2, 3);
@@ -241,7 +241,7 @@ Eval:  unify(case gender number, 1, 2);
        delete(pos!~"ger", 2);
        group(NP, 2);
 
-#>mój żeliwny młot kowalski	   
+#>mój żeliwny młot kowalski
 Rule "NP3: Possessive pronoun + noun phrase"
 Match: [pos~"pron"] [type=NP && head=[pos!~"pron"]];
 Eval:  unify(case gender number, 1, 2);
@@ -249,7 +249,7 @@ Eval:  unify(case gender number, 1, 2);
        group(NP, 2);
 
 ##KJ: The rule does not work
-#>cztery pory roku	   
+#>cztery pory roku
 Rule "NP4.1: Cardinal number + noun phrase"
 Match: [pos~"num"] [type=NP && head=[pos!~"pron"]];
 Eval:  unify(case gender, 1, 2);
@@ -265,7 +265,7 @@ Eval:  unify(case gender, 1, 2);
        group(NP, 1);
 
 #>one
-#>im   
+#>im
 Rule "NP6: Pronoun as noun phrase"
 Match: [pos~"ppron3"];
 Eval:  delete(pos!~"pron", 1);
@@ -333,6 +333,55 @@ Match: [type=NP] [type=CNP]+;
 Eval:  unify(case, 1, 2);
        group(NP, 1);
 
+
+###### Prepositional phrases #####
+##KJ: Removed optional adverbs
+##KJ: Changed the head of the group
+#> na śmieci
+Rule "PP1.1: Prepositions + noun phrase"
+Match: [pos~"prep"] [type=NP];
+Eval:  unify(case, 1, 2);
+      delete(pos!~"prep", 1);
+      group(PP, 1);
+
+##KJ: Removed optional adverbs
+##KJ: Changed the head of the group
+#> Dla Jassema
+Rule "PP1.2: Named entity as prepositional phrase (eg. dla McCaina)"
+Match: [pos~"prep"] [type=NE];
+Eval:  delete(pos!~"prep", 2);
+      group(PP, 1);
+
+#> i dla kota
+Rule "PP2.1: Conjunction + prepositional phrase"
+Match: [pos~"conj"] [type=PP];
+Eval:  delete(pos!~"conj", 1);
+      group(CPP, 2);
+
+#> , dla kota
+Rule "PP2.2: Comma + prepositional phrase"
+Match: [base~","] [type=PP];
+Eval:  group(CPP, 2);
+
+#> dla psa, dla kota i dla wnuczki
+Rule "PP3: Prepositional phrase + conjunctional prepositional phrase"
+Match: [type=PP] [type=CPP]+;
+Eval:  group(PP, 1);
+
+##KJ: The rule is not clear
+##KJ: It is worth to check the word "trochę" (lamerlemma creates lots of discarded alternatives)
+#> trochę zbyt długi
+Rule "PP5: Preposition + left-over adjective phrase"
+Match: [pos~"adv"]? [pos~"prep"] [type=AP];
+Eval:  unify(case, 2, 3);
+      group(PP, 3);
+
+##KJ: This rule is not clear to me
+Rule "PP6: Preposition + left-over numeral"
+Match: [pos~"adv"]? [pos~"prep"] [pos~"num"];
+Eval:  unify(case, 2, 3);
+      group(PP, 3);
+
 ####### Higher order noun phrases 2 #####
 
 #KJ: Temporarily, preposition 'do' does not work (discarded by lemmatization)
@@ -351,54 +400,6 @@ Eval:  group(NP, 2); # lemmatize(2)
 Rule "NP12.2: Noun phrase surrounded by parenthesis"
 Match: [base~"\("] [type=NP] [base~"\)"];
 Eval:  group(NP, 2);
-	   
-###### Prepositional phrases #####
-##KJ: Removed optional adverbs
-##KJ: Changed the head of the group
-#> na śmieci
-Rule "PP1.1: Prepositions + noun phrase"
-Match: [pos~"prep"] [type=NP];
-Eval:  unify(case, 1, 2);
-       delete(pos!~"prep", 1);
-       group(PP, 1);
-
-##KJ: Removed optional adverbs
-##KJ: Changed the head of the group
-#> Dla Jassema
-Rule "PP1.2: Named entity as prepositional phrase (eg. dla McCaina)"
-Match: [pos~"prep"] [type=NE];
-Eval:  delete(pos!~"prep", 2);
-       group(PP, 1);
-
-#> i dla kota
-Rule "PP2.1: Conjunction + prepositional phrase"
-Match: [pos~"conj"] [type=PP];
-Eval:  delete(pos!~"conj", 1);
-       group(CPP, 2);
-
-#> , dla kota
-Rule "PP2.2: Comma + prepositional phrase"
-Match: [base~","] [type=PP];
-Eval:  group(CPP, 2);
-
-#> dla psa, dla kota i dla wnuczki
-Rule "PP3: Prepositional phrase + conjunctional prepositional phrase"
-Match: [type=PP] [type=CPP]+;
-Eval:  group(PP, 1);
-
-##KJ: The rule is not clear
-##KJ: It is worth to check the word "trochę" (lamerlemma creates lots of discarded alternatives)
-#> trochę zbyt długi
-Rule "PP5: Preposition + left-over adjective phrase"
-Match: [pos~"adv"]? [pos~"prep"] [type=AP];
-Eval:  unify(case, 2, 3);
-       group(PP, 3);
-
-##KJ: This rule is not clear to me	   
-Rule "PP6: Preposition + left-over numeral"
-Match: [pos~"adv"]? [pos~"prep"] [pos~"num"];
-Eval:  unify(case, 2, 3);
-       group(PP, 3);
 
 ###### verbal rules 1 ######
 

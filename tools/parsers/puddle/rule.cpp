@@ -167,8 +167,6 @@ int Rule::matchPattern(std::string &sentenceString,
 #endif
 
 
-
-
     StringPiece* matchedS = new StringPiece[num_groups];
     Arg** matched = new Arg*[num_groups];
     for (int argIt = 0; argIt < num_groups; argIt ++) {
