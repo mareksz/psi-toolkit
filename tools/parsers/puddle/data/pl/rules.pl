@@ -22,12 +22,14 @@ Match: [pos~"apron" && base~"jaki.*"];
 Eval:  group(NP, 1);
 
 ##KJ: "brutto" is treated as an adjective of arbitrary grammatical features in order to be unified with a preceding noun in arbitrary case, gender and number
-#>brutto#>adj
+##RJ: puddle hangs on brutto!
+##>brutto#>adj
 Rule "brutto"
 Match: [base~"brutto"];
 Eval:  add("adj:*:*:*:pos", "brutto",1);
 
-#>netto#>adj
+##RJ: puddle hangs on netto!
+##>netto#>adj
 Rule "netto"
 Match: [base~"netto"];
 Eval:  add("adj:*:*:*:pos", "netto",1);
