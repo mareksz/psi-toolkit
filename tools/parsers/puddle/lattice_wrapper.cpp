@@ -194,6 +194,7 @@ namespace poleng {
              */
             Lattice::VertexDescriptor getVertex(Lattice &lattice,
                     std::string langCode, int edgeIndex, int offset) {
+                //std::cout << "\t\t\t\tgetVertex lang code" << std::endl;
                 LayerTagMask mask = lattice.getLayerTagManager().getAlternativeMask(
                     lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
                         "form", langCode),
@@ -201,6 +202,7 @@ namespace poleng {
                         "parse", langCode),
                     lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
                         "token", langCode));
+                //std::cout << "\t\t\t\tmask got" << std::endl;
                 return getVertex(lattice, edgeIndex, mask, offset);
             }
 
@@ -208,13 +210,16 @@ namespace poleng {
                     int edgeIndex, LayerTagMask mask, int offset) {
                 Lattice::VertexDescriptor vertex = offset;
                 int edgePosition = 0;
+                //std::cout << "\t\t\t\tget vertex: edge index=" << edgeIndex << std::endl;
                 while (edgePosition < edgeIndex) {
+                    //std::cout << "\t\t\t\titeration: edge position="<< edgePosition << ", edge index=" << edgeIndex << std::endl;
                     Lattice::InOutEdgesIterator edgeIt =
                         lattice.outEdges(vertex, mask);
                     if (! edgeIt.hasNext()) {
                         vertex ++;
                         if (vertex == lattice.getLastVertex())
                             return lattice.getLastVertex();
+                        edgePosition ++;
                         continue;
                     }
 
@@ -225,6 +230,7 @@ namespace poleng {
                         vertex ++;
                         if (vertex == lattice.getLastVertex())
                             return lattice.getLastVertex();
+                        edgePosition ++;
                         continue;
                     }
 
