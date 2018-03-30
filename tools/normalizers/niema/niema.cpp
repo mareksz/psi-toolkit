@@ -453,57 +453,58 @@ void Niema::Worker::doRun()
 
                     if (!condition.empty() && normalized_parts != condition_parts) {
                         std::stringstream errorSs;
-                        errorSs << "Condition \"" << condition << "\" cannot be"
-                            << " applied for text \"" << normalized_text << "\"";
-                        throw FileFormatException(errorSs.str());
-                    }
-
-                    if (normalized_parts == 1) {
-                        AnnotationItem ai("T", normalized_text);
-                        if (!condition.empty()) {
-                            aim.setValue(ai, "condition", condition);
-                        }
-                        edgesToAdd.push_back(Lattice::EdgeSpec(
-                                sourceSpec,
-                                targetSpec,
-                                ai,
-                                outputTags_));
+                        // errorSs << "Condition \"" << condition << "\" cannot be"
+                        //     << " applied for text \"" << normalized_text << "\"";
+                        // throw FileFormatException(errorSs.str());
                     } else {
-                        int currentVertexSpec;
-                        int nextVertexSpec;
-                        for (size_t i = 0; i < normalized_parts; ++i) {
-                            if (i > 0) {
-                                AnnotationItem aiBlank("B", std::string(" "));
-                                currentVertexSpec = nextVertexSpec;
-                                nextVertexSpec = verticesToUse.size();
-                                verticesToUse.push_back(INT_MAX);
+
+                        if (normalized_parts == 1) {
+                            AnnotationItem ai("T", normalized_text);
+                            if (!condition.empty()) {
+                                aim.setValue(ai, "condition", condition);
+                            }
+                            edgesToAdd.push_back(Lattice::EdgeSpec(
+                                    sourceSpec,
+                                    targetSpec,
+                                    ai,
+                                    outputTags_));
+                        } else {
+                            int currentVertexSpec;
+                            int nextVertexSpec;
+                            for (size_t i = 0; i < normalized_parts; ++i) {
+                                if (i > 0) {
+                                    AnnotationItem aiBlank("B", std::string(" "));
+                                    currentVertexSpec = nextVertexSpec;
+                                    nextVertexSpec = verticesToUse.size();
+                                    verticesToUse.push_back(INT_MAX);
+                                    edgesToAdd.push_back(Lattice::EdgeSpec(
+                                            currentVertexSpec,
+                                            nextVertexSpec,
+                                            aiBlank,
+                                            outputTags_));
+                                }
+
+                                AnnotationItem ai("T", normalized_text_tokenized[i]);
+                                if (!condition.empty()) {
+                                    aim.setValue(ai, "condition", conditions[i]);
+                                }
+                                if (i == 0) {
+                                    currentVertexSpec = sourceSpec;
+                                } else {
+                                    currentVertexSpec = nextVertexSpec;
+                                }
+                                if (i == normalized_parts - 1) {
+                                    nextVertexSpec = targetSpec;
+                                } else {
+                                    nextVertexSpec = verticesToUse.size();
+                                    verticesToUse.push_back(INT_MAX);
+                                }
                                 edgesToAdd.push_back(Lattice::EdgeSpec(
                                         currentVertexSpec,
                                         nextVertexSpec,
-                                        aiBlank,
+                                        ai,
                                         outputTags_));
                             }
-
-                            AnnotationItem ai("T", normalized_text_tokenized[i]);
-                            if (!condition.empty()) {
-                                aim.setValue(ai, "condition", conditions[i]);
-                            }
-                            if (i == 0) {
-                                currentVertexSpec = sourceSpec;
-                            } else {
-                                currentVertexSpec = nextVertexSpec;
-                            }
-                            if (i == normalized_parts - 1) {
-                                nextVertexSpec = targetSpec;
-                            } else {
-                                nextVertexSpec = verticesToUse.size();
-                                verticesToUse.push_back(INT_MAX);
-                            }
-                            edgesToAdd.push_back(Lattice::EdgeSpec(
-                                    currentVertexSpec,
-                                    nextVertexSpec,
-                                    ai,
-                                    outputTags_));
                         }
                     }
                 }

@@ -179,11 +179,24 @@ void Selector::Worker::doRun() {
             edgesToAdd.clear();
             if (processor_.withBlank_
                     || lattice_.getAnnotationCategory(fallbackEdge) != "B") {
-                lattice_.addEdge(
-                    vertex,
-                    fallbackTarget,
-                    lattice_.getEdgeAnnotationItem(fallbackEdge),
-                    outTags_);
+                AnnotationItem ai = lattice_.getEdgeAnnotationItem(fallbackEdge);
+                if (lattice_.getLayerTagManager().isThere(
+                            "morfologik", lattice_.getEdgeLayerTags(fallbackEdge))) {
+                    AnnotationItem ai2(
+                            ai,
+                            lattice_.getEdgeTextAsStringFrag(fallbackEdge));
+                    lattice_.addEdge(
+                            vertex,
+                            fallbackTarget,
+                            ai2,
+                            outTags_);
+                } else {
+                    lattice_.addEdge(
+                            vertex,
+                            fallbackTarget,
+                            ai,
+                            outTags_);
+                }
             }
         }
     }

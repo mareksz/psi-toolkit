@@ -65,7 +65,7 @@ std::map<std::string, std::string> ShallowAliaser::ALIASES =
             " iayko --in-tag tonorm !"
             " niema ! morfologik --token-tag niema !"
             " selector --fallback-tag \"iayko;morfologik\" !"
-            " simple-writer --tags selected --sep \" \" --no-alts")
+            " simple-writer --tags selected --fallback-tags token --sep \"\" --with-blank --no-alts")
         ;
 
 
