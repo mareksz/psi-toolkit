@@ -159,13 +159,18 @@ Eval:  group(NE, 1);
 
 ###### adjective rules #####
 
+#Rule "AP1.2: Two adjectives"
+#Match: ([pos~"adj" | pos~"ppas" | pos~"pact"]) ([pos~"adj" | pos~"ppas" | pos~"pact"]);
+#Eval:  unify(case gender number, 1, 2);
+#       group(AP, 2);
+
+
 #>oczekiwany#>AP
 #>wyglądający#>AP
 #>piękny#>AP
-Rule "AP1: At least 1 adjective"
-Match: ([pos~"adj" | pos~"ppas" | pos~"pact"])+;
-Eval:  unify(case gender number, 1, 2);
-       group(AP, 1);
+Rule "AP1.3: Exactly 1 adjective"
+Match: ([pos~"adj" | pos~"ppas" | pos~"pact"]);
+Eval:  group(AP, 1);
 
 #>długo oczekiwany#>AP
 #>pięknie wyglądający#>AP

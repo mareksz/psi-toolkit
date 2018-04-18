@@ -253,6 +253,14 @@ bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
 
         bool wasAllNulls = false;
 
+
+        std::cout << "\t\t\ttokenIndices: [";
+        for (std::vector<int>::iterator index_it = tokenIndices.begin();
+                index_it != tokenIndices.end(); ++ index_it) {
+                std::cout << *index_it << ' ';
+        }
+        std::cout << "]\n";
+
         std::set<std::string> refValues;
         for (std::vector<int>::iterator index_it = tokenIndices.begin();
                 index_it != tokenIndices.end(); ++ index_it) {

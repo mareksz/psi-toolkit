@@ -22,6 +22,7 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
         int matchedStartIndex, RuleTokenSizes &ruleTokenSizes,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
+    std::cout << "\tgroup action apply\n";
     int realStart;
     int realEnd;
     int realHead;
@@ -63,6 +64,8 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
     //        lattice, startVertex, endVertex
     //        );
     //int headEdgeIndex = realHead - realStart
+    std::cout << "\tvertices got, adding parse edges\n";
+
     lattice::addParseEdges(
             lattice,
             langCode,
