@@ -159,16 +159,16 @@ Eval:  group(NE, 1);
 
 ###### adjective rules #####
 
-#Rule "AP1.2: Two adjectives"
-#Match: ([pos~"adj" | pos~"ppas" | pos~"pact"]) ([pos~"adj" | pos~"ppas" | pos~"pact"]);
-#Eval:  unify(case gender number, 1, 2);
-#       group(AP, 2);
+Rule "AP1.1: Two adjectives"
+Match: ([pos~"adj" | pos~"ppas" | pos~"pact"]) ([pos~"adj" | pos~"ppas" | pos~"pact"]);
+Eval:  unify(case gender number, 1, 2);
+       group(AP, 2);
 
 
 #>oczekiwany#>AP
 #>wyglądający#>AP
 #>piękny#>AP
-Rule "AP1.3: Exactly 1 adjective"
+Rule "AP1.2: Exactly 1 adjective"
 Match: ([pos~"adj" | pos~"ppas" | pos~"pact"]);
 Eval:  group(AP, 1);
 
@@ -176,7 +176,7 @@ Eval:  group(AP, 1);
 #>pięknie wyglądający#>AP
 #>zawsze piękny#>AP
 Rule "AP2: Adverb + at least 1 adjective"
-Match: [pos~"adv"]* [type=AP];
+Match: [pos~"adv"] [type=AP]+;
 Eval:  delete(pos!~"adv", 1);
        group(AP, 2);
 
@@ -354,6 +354,8 @@ Match: [pos~"prep"] [type=NP];
 Eval:  unify(case, 1, 2);
       delete(pos!~"prep", 1);
       group(PP, 1);
+
+
 
 ##KJ: Removed optional adverbs
 ##KJ: Changed the head of the group

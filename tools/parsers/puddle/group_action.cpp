@@ -23,6 +23,7 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
     std::cout << "\tgroup action apply\n";
+    std::cout << "\tmatched start index=" << matchedStartIndex << std::endl;
     int realStart;
     int realEnd;
     int realHead;
@@ -33,7 +34,16 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
                 + " is empty"
                 );
     }
+    std::cout << "\t\truleTokenSizes: [";
+    for (RuleTokenSizes::const_iterator i = ruleTokenSizes.begin(); i != ruleTokenSizes.end(); ++i)
+        std::cout << *i << ' ';
+    std::cout << "]\n";
+    std::cout << "\tstart=" << start << ", end=" << end << ", head=" << head << std::endl;
 
+
+
+    std::cout << "\trealStart=" << realStart << ", realEnd=" << realEnd << ", realHead=" << realHead << std::endl;
+    std::cout << "\tgroup=" << this->group << std::endl;
     Lattice::VertexDescriptor startVertex = lattice::getVertex(
             lattice, langCode, realStart, matchedStartIndex);
     //Lattice::VertexDescriptor startVertex = matchedStartIndex + realStart;
