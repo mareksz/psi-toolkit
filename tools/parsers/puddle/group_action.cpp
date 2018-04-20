@@ -45,19 +45,23 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
     std::cout << "\trealStart=" << realStart << ", realEnd=" << realEnd << ", realHead=" << realHead << std::endl;
     std::cout << "\tgroup=" << this->group << std::endl;
     Lattice::VertexDescriptor startVertex = lattice::getVertex(
-            lattice, langCode, realStart, matchedStartIndex);
+            lattice, langCode, realStart, matchedStartIndex + realStart);
     //Lattice::VertexDescriptor startVertex = matchedStartIndex + realStart;
     ////@todo: rozwiazanie tymczasowe. nie uwzglednia to chyba lewego kontekstu
     //Lattice::VertexDescriptor headVertex = lattice::getVertex(
     //        lattice, matchedStartIndex + realHead);
     Lattice::VertexDescriptor headVertex = lattice::getVertex(
-            lattice, langCode, realHead, matchedStartIndex);
+            lattice, langCode, realHead, matchedStartIndex + realHead);
     //Lattice::VertexDescriptor headVertex = matchedStartIndex + realHead;
     ////@todo: rozwiazanie tymczasowe. nie uwzglednia to chyba lewego kontekstu
     //Lattice::VertexDescriptor endVertex = lattice::getVertex(
     //        lattice, matchedStartIndex + realEnd);
     Lattice::VertexDescriptor endVertex = lattice::getVertex(
-            lattice, langCode, realEnd, matchedStartIndex);
+            lattice, langCode, realEnd, matchedStartIndex+ realEnd);
+
+    std::cout << "\tstartVertex=" << startVertex << std::endl;
+    std::cout << "\theadVertex=" << headVertex << std::endl;
+    std::cout << "\tendVertex=" << endVertex << std::endl;
     //Lattice::VertexDescriptor endVertex = matchedStartIndex + realEnd;
     ////@todo: rozwiazanie tymczasowe. nie uwzglednia to chyba lewego kontekstu
     std::list<Lattice::EdgeDescriptor> startEdges = lattice::getTopEdges(

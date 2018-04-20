@@ -353,7 +353,7 @@ Rule "PP1.1: Prepositions + noun phrase"
 Match: [pos~"prep"] [type=NP];
 Eval:  unify(case, 1, 2);
       delete(pos!~"prep", 1);
-      group(PP, 1);
+      group(PP, 2);
 
 
 

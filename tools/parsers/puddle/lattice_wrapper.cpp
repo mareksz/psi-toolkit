@@ -376,11 +376,16 @@ namespace poleng {
                     std::list<Lattice::EdgeSequence> groupSequences,
                     int headEdgeIndex,
                     Lattice::Score) {
+                std::cout << "\taddParseEdges" << std::endl;
                 Lattice::VertexDescriptor startVertex =
                     lattice.getEdgeBeginIndex(startEdges.front());
                 Lattice::VertexDescriptor endVertex =
                     lattice.getEdgeBeginIndex(endEdges.front()) +
                     lattice.getEdgeLength(endEdges.front());
+
+                std::cout << "\tape startVertex=" << startVertex << std::endl;
+                std::cout << "\tape endVertex=" << endVertex << std::endl;
+
                 std::list<std::string> tagNames;
                 tagNames.push_back("parse");
                 tagNames.push_back("puddle");
