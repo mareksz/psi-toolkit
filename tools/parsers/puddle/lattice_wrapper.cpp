@@ -394,6 +394,7 @@ namespace poleng {
                             tagNames, langCode);
                 for (std::list<Lattice::EdgeDescriptor>::iterator edgeIt =
                         headEdges.begin(); edgeIt != headEdges.end(); ++ edgeIt) {
+                    std::cout << "\tape head edges iteration" << std::endl;
                     AnnotationItem annotationItem(parseCategory);
                     std::list< std::pair<std::string, std::string> > values =
                         lattice.getAnnotationItemManager().getValues(
@@ -410,8 +411,10 @@ namespace poleng {
                             groupSequences.begin();
                             seqIt != groupSequences.end();
                             ++ seqIt) {
+                        std::cout << "\tape group sequences iteration." << std::endl;
                         if (sequenceContainsEdge(lattice, *seqIt, *edgeIt)) {
 //                            bool firstPartition = true;
+                            std::cout << "\tape sequence contains edge" << std::endl;
                             Lattice::InOutEdgesIterator outEdgesIt = lattice.outEdges(
                                     startVertex, lattice.getLayerTagManager().getMask(tags));
                             while (outEdgesIt.hasNext()) {
@@ -434,6 +437,7 @@ namespace poleng {
                             }
                             //if (firstPartition) {
                             //there is no such an edge yet. add a new one
+                            std::cout << "\tape lattice add edge" << std::endl;
                             lattice.addEdge(
                                     startVertex,
                                     endVertex,
@@ -445,6 +449,7 @@ namespace poleng {
                         }
                     }
                 }
+                std::cout << "\tape end" << std::endl;
             }
 
             void addSyntokEdges(Lattice &lattice, std::string langCode,

@@ -353,7 +353,7 @@ Rule "PP1.1: Prepositions + noun phrase"
 Match: [pos~"prep"] [type=NP];
 Eval:  unify(case, 1, 2);
       delete(pos!~"prep", 1);
-      group(PP, 2);
+      group(PP, 1);
 
 
 
@@ -379,7 +379,7 @@ Eval:  group(CPP, 2);
 #>dla psa, dla kota i dla wnuczki#>PP
 Rule "PP3: Prepositional phrase + conjunctional prepositional phrase"
 Match: [type=PP] [type=CPP]+;
-Eval:  group(PP, 1);
+Eval:  group(PP, 2);
 
 ##KJ: The rule is not clear
 ##KJ: It is worth to check the word "trochę" (lamerlemma creates lots of discarded alternatives)
