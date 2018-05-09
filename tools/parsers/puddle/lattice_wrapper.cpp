@@ -194,7 +194,6 @@ namespace poleng {
              */
             Lattice::VertexDescriptor getVertex(Lattice &lattice,
                     std::string langCode, int edgeIndex, int offset) {
-                //std::cout << "\t\t\t\tgetVertex lang code" << std::endl;
                 LayerTagMask mask = lattice.getLayerTagManager().getAlternativeMask(
                     lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
                         "form", langCode),
@@ -202,7 +201,6 @@ namespace poleng {
                         "parse", langCode),
                     lattice.getLayerTagManager().createSingletonTagCollectionWithLangCode(
                         "token", langCode));
-                //std::cout << "\t\t\t\tmask got" << std::endl;
                 return getVertex(lattice, edgeIndex, mask, offset);
             }
 
@@ -210,9 +208,7 @@ namespace poleng {
                     int edgeIndex, LayerTagMask mask, int offset) {
                 Lattice::VertexDescriptor vertex = offset;
                 int edgePosition = 0;
-                //std::cout << "\t\t\t\tget vertex: edge index=" << edgeIndex << std::endl;
                 while (edgePosition < edgeIndex) {
-                    //std::cout << "\t\t\t\titeration: edge position="<< edgePosition << ", edge index=" << edgeIndex << std::endl;
                     Lattice::InOutEdgesIterator edgeIt =
                         lattice.outEdges(vertex, mask);
                     if (! edgeIt.hasNext()) {
@@ -376,15 +372,11 @@ namespace poleng {
                     std::list<Lattice::EdgeSequence> groupSequences,
                     int headEdgeIndex,
                     Lattice::Score) {
-                std::cout << "\taddParseEdges" << std::endl;
                 Lattice::VertexDescriptor startVertex =
                     lattice.getEdgeBeginIndex(startEdges.front());
                 Lattice::VertexDescriptor endVertex =
                     lattice.getEdgeBeginIndex(endEdges.front()) +
                     lattice.getEdgeLength(endEdges.front());
-
-                std::cout << "\tape startVertex=" << startVertex << std::endl;
-                std::cout << "\tape endVertex=" << endVertex << std::endl;
 
                 std::list<std::string> tagNames;
                 tagNames.push_back("parse");
@@ -394,7 +386,6 @@ namespace poleng {
                             tagNames, langCode);
                 for (std::list<Lattice::EdgeDescriptor>::iterator edgeIt =
                         headEdges.begin(); edgeIt != headEdges.end(); ++ edgeIt) {
-                    std::cout << "\tape head edges iteration" << std::endl;
                     AnnotationItem annotationItem(parseCategory);
                     std::list< std::pair<std::string, std::string> > values =
                         lattice.getAnnotationItemManager().getValues(
@@ -411,10 +402,8 @@ namespace poleng {
                             groupSequences.begin();
                             seqIt != groupSequences.end();
                             ++ seqIt) {
-                        std::cout << "\tape group sequences iteration." << std::endl;
                         if (sequenceContainsEdge(lattice, *seqIt, *edgeIt)) {
 //                            bool firstPartition = true;
-                            std::cout << "\tape sequence contains edge" << std::endl;
                             Lattice::InOutEdgesIterator outEdgesIt = lattice.outEdges(
                                     startVertex, lattice.getLayerTagManager().getMask(tags));
                             while (outEdgesIt.hasNext()) {
@@ -437,7 +426,6 @@ namespace poleng {
                             }
                             //if (firstPartition) {
                             //there is no such an edge yet. add a new one
-                            std::cout << "\tape lattice add edge" << std::endl;
                             lattice.addEdge(
                                     startVertex,
                                     endVertex,
@@ -449,7 +437,6 @@ namespace poleng {
                         }
                     }
                 }
-                std::cout << "\tape end" << std::endl;
             }
 
             void addSyntokEdges(Lattice &lattice, std::string langCode,

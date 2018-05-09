@@ -22,8 +22,6 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
         int matchedStartIndex, RuleTokenSizes &ruleTokenSizes,
         std::list<Lattice::EdgeSequence> &rulePartitions) {
 
-    std::cout << "\tgroup action apply\n";
-    std::cout << "\tmatched start index=" << matchedStartIndex << std::endl;
     int realStart;
     int realEnd;
     int realHead;
@@ -34,16 +32,6 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
                 + " is empty"
                 );
     }
-    std::cout << "\t\truleTokenSizes: [";
-    for (RuleTokenSizes::const_iterator i = ruleTokenSizes.begin(); i != ruleTokenSizes.end(); ++i)
-        std::cout << *i << ' ';
-    std::cout << "]\n";
-    std::cout << "\tstart=" << start << ", end=" << end << ", head=" << head << std::endl;
-
-
-
-    std::cout << "\trealStart=" << realStart << ", realEnd=" << realEnd << ", realHead=" << realHead << std::endl;
-    std::cout << "\tgroup=" << this->group << std::endl;
     Lattice::VertexDescriptor startVertex = lattice::getVertex(
             lattice, langCode, realStart, matchedStartIndex + realStart);
     //Lattice::VertexDescriptor startVertex = matchedStartIndex + realStart;
@@ -59,9 +47,6 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
     Lattice::VertexDescriptor endVertex = lattice::getVertex(
             lattice, langCode, realEnd, matchedStartIndex+ realEnd);
 
-    std::cout << "\tstartVertex=" << startVertex << std::endl;
-    std::cout << "\theadVertex=" << headVertex << std::endl;
-    std::cout << "\tendVertex=" << endVertex << std::endl;
     //Lattice::VertexDescriptor endVertex = matchedStartIndex + realEnd;
     ////@todo: rozwiazanie tymczasowe. nie uwzglednia to chyba lewego kontekstu
     std::list<Lattice::EdgeDescriptor> startEdges = lattice::getTopEdges(
@@ -78,7 +63,6 @@ bool GroupAction::apply(Lattice &lattice, std::string langCode,
     //        lattice, startVertex, endVertex
     //        );
     //int headEdgeIndex = realHead - realStart
-    std::cout << "\tvertices got, adding parse edges\n";
 
     lattice::addParseEdges(
             lattice,

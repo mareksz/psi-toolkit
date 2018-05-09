@@ -212,11 +212,6 @@ namespace poleng {
 
                 bool getUnifyActionTokenParams(RuleTokenSizes &ruleTokenSizes,
                         int index, int &count, int &before) {
-                    std::cout << "\t\t\tgetUnifyActionTokenParams. index=" << index << ", rule token sizes size: " << ruleTokenSizes.size() << std::endl;
-                    std::cout << "\t\t\truleTokenSizes: [";
-                    for (RuleTokenSizes::const_iterator i = ruleTokenSizes.begin(); i != ruleTokenSizes.end(); ++i)
-                        std::cout << *i << ' ';
-                    std::cout << "]\n";
 
                     count = ruleTokenSizes[index - 1];
                     if (count == 0) {
@@ -228,7 +223,6 @@ namespace poleng {
                         before += ruleTokenSizes[i];
                         i ++;
                     }
-                    std::cout << "\t\t\tcount="<<count << ", before="<< before <<std::endl;
                     return true;
                 }
 

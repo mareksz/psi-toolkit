@@ -240,11 +240,6 @@ UnifyAction::generateUnifiedEdgesList(Lattice &lattice, std::string langCode,
 
 bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
         int matchedStartIndex, RuleTokenSizes &ruleTokenSizes) {
-    std::cout << "\t\ttesting if unifying is possible" << std::endl;
-    std::cout << "\t\truleTokenSizes: [";
-    for (RuleTokenSizes::const_iterator i = ruleTokenSizes.begin(); i != ruleTokenSizes.end(); ++i)
-        std::cout << *i << ' ';
-    std::cout << "]\n";
 
     bool toApply = true;
     std::vector<std::string>::iterator attribute_it = unifiedAttributes.begin();
@@ -252,14 +247,6 @@ bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
             pattern_it != unifiedPatterns.end(); ++ pattern_it) {
 
         bool wasAllNulls = false;
-
-
-        std::cout << "\t\t\ttokenIndices: [";
-        for (std::vector<int>::iterator index_it = tokenIndices.begin();
-                index_it != tokenIndices.end(); ++ index_it) {
-                std::cout << *index_it << ' ';
-        }
-        std::cout << "]\n";
 
         std::set<std::string> refValues;
         for (std::vector<int>::iterator index_it = tokenIndices.begin();
@@ -283,18 +270,14 @@ bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
             int offset = vertex;
             int vertexI = 0;
             while (vertexI < count) {
-                std::cout << "\t\t\tvertexI="<<vertexI<<", count="<<count << std::endl;
                 vertex = lattice::getVertex(lattice, langCode, vertexI, offset);
-                //std::cout << "\t\t\tvertex got" << std::endl;
                 std::list<Lattice::EdgeDescriptor> edges =
                     lattice::getTopEdges(lattice, langCode, vertex);
-                //std::cout << "\t\t\tedges got, processing" << std::endl;
                 bool allValuesNull = true;
                 std::set<std::string> values;
                 for (std::list<Lattice::EdgeDescriptor>::iterator edgeIt =
                         edges.begin();
                         edgeIt != edges.end(); ++ edgeIt) {
-                    //std::cout << "\t\t\t\tprocessing edge" << std::endl;
                     AnnotationItem annotationItem =
                         lattice.getEdgeAnnotationItem(*edgeIt);
                     if (lattice::isDiscarded(lattice, *edgeIt))
@@ -309,7 +292,6 @@ bool UnifyAction::isUnifyingPossible(Lattice &lattice, std::string langCode,
                         values.insert(value);
                     }
                 }
-                //std::cout << "\t\t\t\tedges processed" << std::endl;
                 if (! values.empty()) {
                     if (refValues.empty()) {
                         refValues.insert(values.begin(), values.end());
