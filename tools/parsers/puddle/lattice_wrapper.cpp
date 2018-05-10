@@ -426,13 +426,19 @@ namespace poleng {
                             }
                             //if (firstPartition) {
                             //there is no such an edge yet. add a new one
-                            lattice.addEdge(
+                            try {
+
+                                lattice.addEdge(
                                     startVertex,
                                     endVertex,
                                     annotationItem,
                                     tags,
                                     *seqIt
                                     );
+                            } catch(EdgeSelfReferenceException & e) {
+                                // ignore
+
+                            }
                             //}
                         }
                     }

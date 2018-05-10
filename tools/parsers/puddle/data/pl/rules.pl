@@ -252,10 +252,6 @@ Left:  [pos~".*"];
 Match: [type=NUM] [type=NP];
 Eval:  group(NP, 3);
 
-Rule "NP+NE1: Named entity as apposition (after noun phrase)"
-Match: [type=NP] [type=NE]+;
-Eval:  group(NP, 1);
-
 Rule "PR+DATE1: Date as prepositional phrase (eg. do 3 marca 2004)"
 Match: [pos~"adv"]? [pos~"prep"] [type=DATE];
 Eval:  group(PP, 3);
@@ -270,12 +266,11 @@ Eval:  group(NP, 1);
 
 ###### Higher order noun phrases #####
 
-#KJ: Rule NP8 does not work (according to something wrong in puddle)
 #>Pory roku#>NP
 Rule "NP8: Noun phrase + genitive attribute"
-Match: [type=NP && head=[pos!~"pron"]] [type=NP && case~"gen"]+;
+Match: [type=NP && head=[pos!~"pron"]] [type=NP && case~"gen"];
 Eval:  delete(case!~"gen", 2);
-       group(NP, 1);
+       group(NP, 2);
 
 #>i kot#>CNP
 Rule "NP9.1: Conjunction + noun phrase"
@@ -287,12 +282,6 @@ Eval:  delete(conj-type!~"phrase", 1);
 Rule "NP9.2: Comma + noun phrase"
 Match: [base~","] [type=NP];
 Eval:  group(CNP, 2);
-
-#>pies i kot#>NP
-Rule "NP10: Noun phrase + conjunctional noun phrase"
-Match: [type=NP] [type=CNP];
-Eval:  unify(case, 1, 2);
-       group(NP, 1);
 
 
 ###### Prepositional phrases #####
@@ -346,7 +335,7 @@ Eval:  unify(case, 2, 3);
 #>Kosz na śmieci#>NP
 #>Miska na jedzenie dla psa#>NP
 Rule "NP11: Noun phrase (no pronoun) + prepositional attribute"
-Match: [type=NP && head=[pos!~"pron"]] [type=PP]+;
+Match: [type=NP && head=[pos!~"pron"]] [type=PP];
 Eval:  group(NP, 1); # lemmatize(1)
 
 #>"Miska dla psa"#>NP
@@ -405,8 +394,13 @@ Eval:  group(CIP, 2);
 #Match: [base~","] [type=IP];
 # Eval:  group(CIP, 2);
 
-Rule "NP10: Noun phrase + partciple phrase"
-Match: [type=NP && head=[pos!~"pron"]] ([type=IP]|[type=CIP])+;
+Rule "NP10a: Noun phrase + partciple phrase"
+Match: [type=NP && head=[pos!~"pron"]] [type=CIP];
+Eval:         unify(case gender number, 1, 2);
+group(NP, 1);
+
+Rule "NP10b: Noun phrase + partciple phrase"
+Match: [type=NP && head=[pos!~"pron"]] [type=IP];
 Eval:         unify(case gender number, 1, 2);
 group(NP, 1);
 

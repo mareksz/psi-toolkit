@@ -27,6 +27,7 @@ void RuleMatcher::applyRules(Lattice &lattice, std::string langCode) {
 
         while ( (matchedStartIndex = (*ruleIt)->matchPattern(tmpSentenceString,
                         afterIndex, match) ) > -1 ) {
+            //std::cout << "Matched rule: " << (*ruleIt)->getName() << std::endl;
             bool structureChanged = false;
             RuleTokenSizes ruleTokenSizes;
             std::list<Lattice::EdgeSequence> rulePartitions;
