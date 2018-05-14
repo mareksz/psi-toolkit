@@ -435,7 +435,7 @@ namespace poleng {
                                     tags,
                                     *seqIt
                                     );
-                            } catch(EdgeSelfReferenceException & e) {
+                            } catch(...) {
                                 // ignore
 
                             }
